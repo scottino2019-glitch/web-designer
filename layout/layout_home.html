@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <title>Layout - Il Mio Sito</title>
+  <style>
+    body {
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  margin: 0;
+  padding: 0;
+  
+  /* 🎨 PATTERN SVG OTTIMIZZATO */
+  background-color: #0a0a0a;
+  background-image: url("data:image/svg+xml,%3Csvg width='84' height='84' viewBox='0 0 84 84' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='84' height='84' fill='%230a0a0a'/%3E%3Cpath d='M -21 0 A 21 21 0 0 1 21 0' stroke='%23ffeb3b' stroke-width='1.5' fill='none' opacity='0.15' transform='translate(0 0) rotate(12)'/%3E%3Cpath d='M -21 0 A 21 21 0 0 1 21 0' stroke='%23ffeb3b' stroke-width='1.5' fill='none' opacity='0.15' transform='translate(42 0) rotate(12)'/%3E%3Cpath d='M -21 0 A 21 21 0 0 1 21 0' stroke='%23ffeb3b' stroke-width='1.5' fill='none' opacity='0.15' transform='translate(0 42) rotate(12)'/%3E%3Cpath d='M -21 0 A 21 21 0 0 1 21 0' stroke='%23ffeb3b' stroke-width='1.5' fill='none' opacity='0.15' transform='translate(42 42) rotate(12)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 84px 84px;
+  min-height: 100vh;
+}
+    
+    /* NAVBAR */
+    .navbar {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      margin: 20px;
+      overflow: hidden;
+    }
+    .navbar-header {
+      padding: 20px 28px;
+      border-bottom: 1px solid rgba(229, 231, 235, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .navbar-brand {
+      font-size: 24px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .navbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .navbar-actions button {
+      background: rgba(102, 126, 234, 0.2);
+      border: 1px solid rgba(102, 126, 234, 0.3);
+      color: #667eea;
+      cursor: pointer;
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+    .navbar-actions button:hover {
+      background: #667eea;
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    /* BREADCRUMBS */
+    .breadcrumb-container {
+      padding: 16px 28px;
+      background: rgba(255, 255, 255, 0.1);
+    }
+    .breadcrumb-nav {
+      display: flex;
+      align-items: center;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      font-size: 15px;
+    }
+    .breadcrumb-nav li {
+      display: flex;
+      align-items: center;
+    }
+    .breadcrumb-nav a {
+  color: rgba(255, 255, 255, 0.95) !important;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s;
+  backdrop-filter: blur(10px);
+}
+.breadcrumb-nav .current {
+  color: red !important;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+  font-weight: 800;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.3);
+}
+    .breadcrumb-separator {
+      margin: 0 12px;
+      color: rgba(255, 255, 255, 0.7);
+      font-weight: 300;
+    }
+
+    /* DROPDOWN */
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+    .dropdown-trigger {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      padding: 8px 12px;
+      border-radius: 10px;
+      transition: all 0.3s;
+      color: white;
+    }
+    .dropdown-trigger:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-1px);
+    }
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      min-width: 220px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      z-index: 1000;
+      top: 100%;
+      left: 0;
+      margin-top: 8px;
+      overflow: hidden;
+    }
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+    .dropdown-item {
+      color: #374151;
+      padding: 14px 20px;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.3s;
+      border-bottom: 1px solid rgba(229, 231, 235, 0.5);
+      font-weight: 500;
+    }
+    .dropdown-item:last-child {
+      border-bottom: none;
+    }
+    .dropdown-item:hover {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      transform: translateX(8px);
+    }
+    .dropdown-arrow {
+      transition: transform 0.3s;
+      width: 14px;
+      height: 14px;
+    }
+    .dropdown:hover .dropdown-arrow {
+      transform: rotate(180deg);
+    }
+
+    /* CONTENUTO */
+    .content {
+  padding: 32px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+h1 {
+  font-size: 3.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, white, rgba(255,255,255,0.8));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0 0 24px 0;
+  display: inline-block;
+  animation: bounce 2s infinite alternate ease-in-out;
+  animation-delay: 0.5s;
+  letter-spacing: -0.02em;
+}
+
+p {
+  color: rgba(255,255,255,0.9);
+  font-size: 1.25rem;
+  margin-bottom: 40px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+/* Gradienti card mantenuti... */
+    
+   
+/* ANIMAZIONE BOUNCE */
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-20px);
+  }
+  60% {
+    transform: translateY(-12px);
+  }
+}
+
+h2 {
+  font-size: 2rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, blue, rgba(255,255,255,0.8));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 16px;
+  
+  /* LA TUA ANIMAZIONE */
+  animation-name: bounce;
+  animation-duration: 2s;        /* ← ridotto da 5s (troppo lento) */
+  animation-delay: 0.5s;         /* ← piccolo delay */
+  animation-iteration-count: infinite;  /* ← infinito invece di 10 */
+  animation-direction: alternate;
+  animation-timing-function: ease-in-out;
+  animation-fill-mode: both;
+}
+
+
+  </style>
+</head>
+<body>
+  <nav style="position:sticky;top:0;z-index:99999;background:rgba(255,255,255,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.2);padding:16px 28px;margin:20px;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.1);">
+  <div style="max-width:1400px;margin:0 auto;">
+    <div style="font-size:26px;font-weight:800;background:linear-gradient(135deg,#ff6b6b,#ffd93d);-webkit-background-clip:text;background-clip:text;color:transparent;text-align:center;margin-bottom:12px;">
+      📱 Interfacce Responsive
+    </div>
+    <ol id="bc" style="display:flex;align-items:center;justify-content:center;gap:12px;list-style:none;padding:0;margin:0;flex-wrap:wrap;">
+      <li><a href="/index.html" style="padding:10px 18px;background:rgba(255,255,255,0.3);color:red;text-decoration:none;border-radius:25px;font-weight:600;display:flex;align-items:center;gap:6px;border:1px solid rgba(rgb(99, 102, 241));">🏠 Home</a></li>
+ <li style="color:rgba(rgb(99, 102, 241));font-weight:bold;font-size:20px;">></li>
+         <li><span style="padding:10px 18px;background:rgba(34,197,94,0.4);color:white;border:2px solid rgba(255,255,255,0.5);border-radius:25px;font-weight:800;display:flex;align-items:center;gap:6px;"> 🏠 Layout home</span></li>
+    </ol>
+  </div>
+</nav>
+
+  <!-- CONTENUTO -->
+  <main class="content">
+<section class="bg-zinc-50 overflow-hidden">
+ <div class="max-w-screen-xl 2xl:max-w-screen-3xl px-8 md:px-12 mx-auto py-12 lg:py-24 space-y-24 h-svh flex flex-col justify-center">
+  <div class="flex flex-col sm:flex-row mx-auto">
+   <!--- Starts component --> 
+      <a href="patterngeneretor.html"> <img src="https://images.unsplash.com/photo-1605011365301-03970fa610ee?w=1000&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fGxheW91dHxlbnwwfHwwfHx8MA%3D%3D" class="rounded-xl  rotate-6 hover:rotate-0 duration-500 hover:-translate-y-12 h-full w-full object-cover hover:scale-150 transform origin-bottom" alt="Pattern">Pattern </a>
+      <a href="gridlayoutgenerator.html"> <img src="https://images.unsplash.com/photo-1629752187687-3d3c7ea3a21b?w=1000&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8bGF5b3V0fGVufDB8fDB8fHww" class="rounded-xl  -rotate-12 hover:rotate-0 duration-500 hover:-translate-y-12 h-full w-full object-cover hover:scale-150 transform origin-bottom" alt="Generatore">Generatore</a>
+      <a href="generatore_grid_flex.html"> <img src="https://images.unsplash.com/photo-1522542550221-31fd19575a2d?w=1000&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8bGF5b3V0fGVufDB8fDB8fHww" class="rounded-xl  rotate-6 hover:rotate-0 duration-500 hover:-translate-y-12 h-full w-full object-cover hover:scale-150 transform origin-bottom" alt="generatore2">Generatore 2 </a>
+      <a href="gen_grid_flex.html"> <img src="https://images.unsplash.com/photo-1573867639040-6dd25fa5f597?w=1000&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bGF5b3V0fGVufDB8fDB8fHww" class="rounded-xl  -rotate-12 hover:rotate-0 duration-500 hover:-translate-y-12 h-full w-full object-cover hover:scale-150 transform origin-bottom" alt="generatore3">Generatore 3 </a>
+           <a href="layout.html"> <img src="https://images.unsplash.com/photo-1605011369457-1d1d4e37cbc1?w=1000&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MzJ8fGxheW91dHxlbnwwfHwwfHx8MA%3D%3D" class="rounded-xl  -rotate-12 hover:rotate-0 duration-500 hover:-translate-y-12 h-full w-full object-cover hover:scale-150 transform origin-bottom" alt="layout">Layout</a>
+        <a href="parallax-generator.html"> <img src="https://plus.unsplash.com/premium_photo-1671209794135-81a40aa4171e?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" class="rounded-xl  -rotate-12 hover:rotate-0 duration-500 hover:-translate-y-12 h-full w-full object-cover hover:scale-150 transform origin-bottom"alt="layout">Parallax</a>
+      <a href="Glassmorphism.html"> <img src="https://images.unsplash.com/photo-1684569547016-d0bdc13d2c50?q=80&w=627&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" class="rounded-xl  -rotate-12 hover:rotate-0 duration-500 hover:-translate-y-12 h-full w-full object-cover hover:scale-150 transform origin-bottom" alt="layout">Glassmorph</a>
+    
+  </div> 
+</section>    
+
+    
+  </main>
+
+  <script>
+       // breadcrumbs
+const pageData = {
+  '/': {
+    label: 'Home',
+    icon: '🏠'
+  },
+  '/layout/': {
+    label: 'Layout',
+    icon: '📱'
+    children: [
+          { url: '/layout/pattern', label: 'Pattern', icon: '🌈' },
+          { url: '/layout/generatore', label: 'Generatore Grid', icon: '📱' },
+          { url: '/layout/generatore2', label: 'Generatore Grid-Flex', icon: '📱' },
+          { url: '/layout/generatore3', label: 'Generatore Flex-grid', icon: '📱' },
+          { url: '/layout/layout', label: 'layout', icon: Layout'🖌️' },
+          { url: '/layout/parallax', label: 'parallax', icon: Layout'🏄' },
+                 { url: '/layout/glassmorph', label: 'glassmorph', icon: Layout'🔮' },
+        
+        ]  }
+  // Aggiungi qui altre lingue quando le crei:
+  // '/cinese/': { label: 'Cinese', icon: '🇨🇳' },
+  // '/coreano/': { label: 'Coreano', icon: '🇰🇷' },
+};
+
+function createBreadcrumbs(currentPath) {
+  const breadcrumbContainer = document.getElementById('breadcrumb');
+  if (!breadcrumbContainer) return;
+  
+  breadcrumbContainer.innerHTML = '';
+
+  const segments = getPathSegments(currentPath);
+
+  segments.forEach((segment, index) => {
+    const isLast = index === segments.length - 1;
+    const segmentData = pageData[segment.path];
+    if (!segmentData) return;
+
+    const li = document.createElement('li');
+
+    if (isLast) {
+      li.innerHTML = `
+        <span class="current">
+          <span>${segmentData.icon}</span>
+          <span>${segmentData.label}</span>
+        </span>
+      `;
+    } else {
+      li.innerHTML = `
+        <a href="${mapUrlToFile(segment.path)}">
+          <span>${segmentData.icon}</span>
+          <span>${segmentData.label}</span>
+        </a>
+      `;
+    }
+
+    breadcrumbContainer.appendChild(li);
+
+    if (!isLast) {
+      const separator = document.createElement('span');
+      separator.className = 'breadcrumb-separator';
+      separator.textContent = '›';
+      breadcrumbContainer.appendChild(separator);
+    }
+  });
+}
+
+function mapUrlToFile(path) {
+  switch (path) {
+    case '/': return 'index.html';
+    case '/template/': return 'template.html';
+    case '/layout': return 'layout_home.html';
+    case '/layout/pattern': return 'patterngeneretor.html.html';
+    case '/layout/generatore': return 'gridlayoutgenerator.html';
+    case '/layout/generatore2': return 'generatore_grid_flex.html';
+    case '/layout/generatore3': return 'gen_grid_flex.html';
+   case '/layout/parallax': return 'parallax-generator.html';
+    case '/layout/glassmorph': return 'Glassmorphims.html';
+    case '/layout/layout': return 'layout.html';    default: return 'index.html';
+  }
+}
+
+function getPathSegments(path) {
+  if (path === '/') {
+    return [{ path: '/', label: 'Home' }];
+  }
+  const segments = [];
+  const parts = path.split('/').filter(part => part !== '');
+  let currentPath = '';
+  segments.push({ path: '/', label: 'Home' });
+  parts.forEach(part => {
+    currentPath += '/' + part;
+    segments.push({ path: currentPath + '/', label: part });
+  });
+  return segments;
+}
+
+// AVVIA breadcrumbs Home
+createBreadcrumbs('/layout');  </script>
+</body>
+</html>
