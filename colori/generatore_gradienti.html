@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generatore Gradienti CSS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            box-sizing: border-box;
+        }
+        .gradient-transition {
+            transition: all 0.3s ease;
+        }
+        .gradient-preview {
+            min-height: 200px;
+            border-radius: 12px;
+            transition: all 0.5s ease;
+        }
+        .color-stop {
+            transition: all 0.3s ease;
+        }
+        .color-stop:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body class="min-h-full bg-gradient-to-br from-indigo-50 to-purple-50 font-sans">
+    <main class="container mx-auto px-4 py-8">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">🌈 Generatore Gradienti CSS</h1>
+            <p class="text-gray-600">Crea gradienti bellissimi e copia il codice CSS</p>
+              <div id="breadcrumb-container" style="
+  position: sticky; top: 0; z-index: 9999 !important; 
+  background: rgba(255,255,255,0.98) !important; 
+  backdrop-filter: blur(20px) !important; 
+  border-bottom: 1px solid #e5e7eb !important; 
+  padding: 16px 24px !important; 
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1) !important;
+  margin: 0 !important;
+">
+  <div style="max-width: 1280px; margin: 0 auto;">
+    <div style="font-size: 24px; font-weight: 800; background: linear-gradient(135deg, #ec4899, #f59e0b); -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 12px;">
+      🎨 Color Tools Hub
+    </div>
+    <ol id="breadcrumb" style="
+      display: flex !important; align-items: center !important; 
+      list-style: none !important; padding: 0 !important; margin: 0 !important;
+      gap: 8px !important; font-size: 14px !important;
+    "></ol>
+  </div>
+</div>
+        </header>
+
+        <div class="max-w-6xl mx-auto">
+            <!-- Anteprima Gradiente -->
+            <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">🎨 Anteprima</h2>
+                <div id="gradientPreview" class="gradient-preview w-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
+                    <div class="text-white text-xl font-semibold bg-black bg-opacity-20 px-6 py-3 rounded-lg backdrop-blur-sm">
+                        Il tuo gradiente
+                    </div>
+                </div>
+            </div>
+
+            <!-- Controlli Gradiente -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <!-- Controlli Base -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">⚙️ Impostazioni Base</h3>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Tipo di Gradiente</label>
+                            <select id="gradientType" onchange="updateGradient()" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                                <option value="linear">Lineare</option>
+                                <option value="radial">Radiale</option>
+                                <option value="conic">Conico</option>
+                            </select>
+                        </div>
+
+                        <div id="directionControl">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Direzione</label>
+                            <select id="gradientDirection" onchange="updateGradient()" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                                <option value="to right">→ Sinistra a Destra</option>
+                                <option value="to left">← Destra a Sinistra</option>
+                                <option value="to bottom">↓ Alto a Basso</option>
+                                <option value="to top">↑ Basso a Alto</option>
+                                <option value="to bottom right">↘ Diagonale (↘)</option>
+                                <option value="to bottom left">↙ Diagonale (↙)</option>
+                                <option value="to top right">↗ Diagonale (↗)</option>
+                                <option value="to top left">↖ Diagonale (↖)</option>
+                            </select>
+                        </div>
+
+                        <div id="angleControl" class="hidden">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Angolo: <span id="angleValue">0°</span></label>
+                            <input type="range" id="gradientAngle" min="0" max="360" value="0" onchange="updateGradient()" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Colori -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">🎨 Colori</h3>
+                    
+                    <div id="colorStops" class="space-y-3 mb-4">
+                        <!-- I color stops verranno generati qui -->
+                    </div>
+
+                    <div class="flex gap-2">
+                        <button onclick="addColorStop()" class="flex-1 bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg gradient-transition">
+                            ➕ Aggiungi Colore
+                        </button>
+                        <button onclick="removeColorStop()" class="flex-1 bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg gradient-transition">
+                            ➖ Rimuovi Colore
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Preset Gradienti -->
+            <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">✨ Preset Popolari</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4" id="gradientPresets">
+                    <!-- I preset verranno generati qui -->
+                </div>
+            </div>
+
+            <!-- Codice CSS -->
+            <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">💻 Codice CSS</h3>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-700 mb-3">CSS Standard</h4>
+                        <div class="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm overflow-x-auto">
+                            <pre id="cssCode">background: linear-gradient(to right, #8b5cf6, #ec4899);</pre>
+                        </div>
+                        <button onclick="copyCode('css')" class="mt-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm gradient-transition">
+                            📋 Copia CSS
+                        </button>
+                    </div>
+                    
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-700 mb-3">Tailwind CSS</h4>
+                        <div class="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm overflow-x-auto">
+                            <pre id="tailwindCode">bg-gradient-to-r from-purple-500 to-pink-500</pre>
+                        </div>
+                        <button onclick="copyCode('tailwind')" class="mt-2 bg-cyan-500 hover:bg-cyan-600 text-white px-4 py-2 rounded-lg text-sm gradient-transition">
+                            📋 Copia Tailwind
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <h4 class="text-lg font-semibold text-gray-700 mb-3">Esempio Completo</h4>
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <code class="text-sm text-gray-700">
+                            .my-gradient {<br>
+                            &nbsp;&nbsp;<span id="fullCssExample">background: linear-gradient(to right, #8b5cf6, #ec4899);</span><br>
+                            &nbsp;&nbsp;width: 100%;<br>
+                            &nbsp;&nbsp;height: 200px;<br>
+                            }
+                        </code>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Suggerimenti -->
+            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">💡 Suggerimenti</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700">
+                    <div>
+                        <h4 class="font-semibold mb-2">🎨 Design Tips:</h4>
+                        <ul class="space-y-1">
+                            <li>• Usa massimo 3-4 colori per gradienti puliti</li>
+                            <li>• I colori simili creano transizioni più morbide</li>
+                            <li>• Testa sempre su sfondi diversi</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold mb-2">⚡ Performance:</h4>
+                        <ul class="space-y-1">
+                            <li>• I gradienti CSS sono più veloci delle immagini</li>
+                            <li>• Evita gradienti troppo complessi su mobile</li>
+                            <li>• Usa fallback per browser vecchi</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast per copia -->
+        <div id="copyToast" class="fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg transform translate-y-full opacity-0 gradient-transition">
+            Codice copiato! 📋
+        </div>
+    </main>
+
+    <script>
+        let colorStops = [
+            { color: '#8b5cf6', position: 0 },
+            { color: '#ec4899', position: 100 }
+        ];
+
+        const gradientPresets = [
+            { name: 'Sunset', colors: ['#ff7e5f', '#feb47b'], type: 'linear', direction: 'to right' },
+            { name: 'Ocean', colors: ['#2193b0', '#6dd5ed'], type: 'linear', direction: 'to right' },
+            { name: 'Purple', colors: ['#667eea', '#764ba2'], type: 'linear', direction: 'to bottom' },
+            { name: 'Green', colors: ['#11998e', '#38ef7d'], type: 'linear', direction: 'to right' },
+            { name: 'Fire', colors: ['#f12711', '#f5af19'], type: 'linear', direction: 'to bottom right' },
+            { name: 'Cool', colors: ['#2196f3', '#21cbf3'], type: 'linear', direction: 'to right' },
+            { name: 'Warm', colors: ['#ff9a9e', '#fecfef'], type: 'linear', direction: 'to bottom' },
+            { name: 'Dark', colors: ['#434343', '#000000'], type: 'linear', direction: 'to right' },
+            { name: 'Rainbow', colors: ['#ff0000', '#ff7f00', '#ffff00', '#00ff00', '#0000ff', '#8b00ff'], type: 'linear', direction: 'to right' },
+            { name: 'Pastel', colors: ['#ffecd2', '#fcb69f'], type: 'linear', direction: 'to bottom' },
+            { name: 'Neon', colors: ['#00f260', '#0575e6'], type: 'linear', direction: 'to right' },
+            { name: 'Cosmic', colors: ['#667eea', '#764ba2', '#f093fb'], type: 'linear', direction: 'to bottom right' }
+        ];
+
+        function initializeApp() {
+            renderColorStops();
+            renderPresets();
+            updateGradient();
+        }
+
+        function renderColorStops() {
+            const container = document.getElementById('colorStops');
+            container.innerHTML = '';
+
+            colorStops.forEach((stop, index) => {
+                const stopDiv = document.createElement('div');
+                stopDiv.className = 'color-stop flex items-center gap-3 p-3 bg-gray-50 rounded-lg';
+                stopDiv.innerHTML = `
+                    <input type="color" value="${stop.color}" onchange="updateColorStop(${index}, this.value)" 
+                           class="w-12 h-12 rounded-lg border-2 border-gray-300 cursor-pointer">
+                    <div class="flex-1">
+                        <input type="range" min="0" max="100" value="${stop.position}" 
+                               onchange="updateColorPosition(${index}, this.value)"
+                               class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                        <div class="flex justify-between text-xs text-gray-500 mt-1">
+                            <span>0%</span>
+                            <span>${stop.position}%</span>
+                            <span>100%</span>
+                        </div>
+                    </div>
+                    <code class="text-xs bg-white px-2 py-1 rounded">${stop.color}</code>
+                `;
+                container.appendChild(stopDiv);
+            });
+        }
+
+        function renderPresets() {
+            const container = document.getElementById('gradientPresets');
+            container.innerHTML = '';
+
+            gradientPresets.forEach((preset, index) => {
+                const presetDiv = document.createElement('div');
+                presetDiv.className = 'cursor-pointer rounded-lg overflow-hidden shadow-md hover:shadow-lg gradient-transition';
+                
+                const gradientCSS = generateGradientCSS(preset.colors, preset.type, preset.direction);
+                presetDiv.innerHTML = `
+                    <div class="h-16 w-full" style="background: ${gradientCSS}"></div>
+                    <div class="p-2 bg-white">
+                        <p class="text-xs font-medium text-gray-700 text-center">${preset.name}</p>
+                    </div>
+                `;
+                presetDiv.onclick = () => applyPreset(preset);
+                container.appendChild(presetDiv);
+            });
+        }
+
+        function generateGradientCSS(colors, type = 'linear', direction = 'to right') {
+            if (type === 'linear') {
+                return `linear-gradient(${direction}, ${colors.join(', ')})`;
+            } else if (type === 'radial') {
+                return `radial-gradient(circle, ${colors.join(', ')})`;
+            } else if (type === 'conic') {
+                return `conic-gradient(${colors.join(', ')})`;
+            }
+        }
+
+        function applyPreset(preset) {
+            // Aggiorna i controlli
+            document.getElementById('gradientType').value = preset.type;
+            document.getElementById('gradientDirection').value = preset.direction;
+            
+            // Aggiorna i color stops
+            colorStops = preset.colors.map((color, index) => ({
+                color: color,
+                position: index * (100 / (preset.colors.length - 1))
+            }));
+            
+            renderColorStops();
+            updateGradient();
+        }
+
+        function updateColorStop(index, color) {
+            colorStops[index].color = color;
+            updateGradient();
+        }
+
+        function updateColorPosition(index, position) {
+            colorStops[index].position = parseInt(position);
+            renderColorStops();
+            updateGradient();
+        }
+
+        function addColorStop() {
+            if (colorStops.length < 6) {
+                const newPosition = colorStops.length > 0 ? 
+                    Math.min(100, Math.max(...colorStops.map(s => s.position)) + 20) : 50;
+                colorStops.push({
+                    color: '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0'),
+                    position: newPosition
+                });
+                renderColorStops();
+                updateGradient();
+            }
+        }
+
+        function removeColorStop() {
+            if (colorStops.length > 2) {
+                colorStops.pop();
+                renderColorStops();
+                updateGradient();
+            }
+        }
+
+        function updateGradient() {
+            const type = document.getElementById('gradientType').value;
+            const direction = document.getElementById('gradientDirection').value;
+            const angle = document.getElementById('gradientAngle').value;
+            
+            // Mostra/nascondi controlli appropriati
+            const directionControl = document.getElementById('directionControl');
+            const angleControl = document.getElementById('angleControl');
+            
+            if (type === 'linear') {
+                directionControl.classList.remove('hidden');
+                angleControl.classList.add('hidden');
+            } else {
+                directionControl.classList.add('hidden');
+                angleControl.classList.remove('hidden');
+                document.getElementById('angleValue').textContent = angle + '°';
+            }
+
+            // Ordina i color stops per posizione
+            const sortedStops = [...colorStops].sort((a, b) => a.position - b.position);
+            
+            // Genera il gradiente
+            let gradientCSS;
+            const colorString = sortedStops.map(stop => `${stop.color} ${stop.position}%`).join(', ');
+            
+            if (type === 'linear') {
+                gradientCSS = `linear-gradient(${direction}, ${colorString})`;
+            } else if (type === 'radial') {
+                gradientCSS = `radial-gradient(circle, ${colorString})`;
+            } else if (type === 'conic') {
+                gradientCSS = `conic-gradient(from ${angle}deg, ${colorString})`;
+            }
+
+            // Aggiorna l'anteprima
+            document.getElementById('gradientPreview').style.background = gradientCSS;
+            
+            // Aggiorna il codice CSS
+            updateCSSCode(gradientCSS, type, direction, angle);
+        }
+
+        function updateCSSCode(gradientCSS, type, direction, angle) {
+            const cssCode = document.getElementById('cssCode');
+            const tailwindCode = document.getElementById('tailwindCode');
+            const fullExample = document.getElementById('fullCssExample');
+            
+            cssCode.textContent = `background: ${gradientCSS};`;
+            fullExample.textContent = `background: ${gradientCSS};`;
+            
+            // Genera codice Tailwind approssimativo
+            let tailwindClass = 'bg-gradient-to-r';
+            if (type === 'linear') {
+                const directionMap = {
+                    'to right': 'bg-gradient-to-r',
+                    'to left': 'bg-gradient-to-l',
+                    'to bottom': 'bg-gradient-to-b',
+                    'to top': 'bg-gradient-to-t',
+                    'to bottom right': 'bg-gradient-to-br',
+                    'to bottom left': 'bg-gradient-to-bl',
+                    'to top right': 'bg-gradient-to-tr',
+                    'to top left': 'bg-gradient-to-tl'
+                };
+                tailwindClass = directionMap[direction] || 'bg-gradient-to-r';
+            }
+            
+            // Approssima i colori per Tailwind
+            const firstColor = getTailwindColor(colorStops[0].color);
+            const lastColor = getTailwindColor(colorStops[colorStops.length - 1].color);
+            
+            tailwindCode.textContent = `${tailwindClass} ${firstColor} ${lastColor}`;
+        }
+
+        function getTailwindColor(hex) {
+            // Mappa approssimativa dei colori Tailwind
+            const colorMap = {
+                '#ef4444': 'from-red-500', '#dc2626': 'to-red-600',
+                '#f97316': 'from-orange-500', '#ea580c': 'to-orange-600',
+                '#eab308': 'from-yellow-500', '#ca8a04': 'to-yellow-600',
+                '#22c55e': 'from-green-500', '#16a34a': 'to-green-600',
+                '#06b6d4': 'from-cyan-500', '#0891b2': 'to-cyan-600',
+                '#3b82f6': 'from-blue-500', '#2563eb': 'to-blue-600',
+                '#8b5cf6': 'from-purple-500', '#7c3aed': 'to-purple-600',
+                '#ec4899': 'from-pink-500', '#db2777': 'to-pink-600'
+            };
+            
+            // Trova il colore più vicino o usa una classe generica
+            return colorMap[hex] || `from-[${hex}]`;
+        }
+
+        function copyCode(type) {
+            let textToCopy = '';
+            if (type === 'css') {
+                textToCopy = document.getElementById('cssCode').textContent;
+            } else if (type === 'tailwind') {
+                textToCopy = document.getElementById('tailwindCode').textContent;
+            }
+            
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                showToast();
+            });
+        }
+
+        function showToast() {
+            const toast = document.getElementById('copyToast');
+            toast.classList.remove('translate-y-full', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-full', 'opacity-0');
+            }, 2000);
+        }
+
+        // Inizializza l'app
+        initializeApp();
+              // 🎨 BREADCRUMBS COLORI COMPLETI
+(function() {
+  const ol = document.getElementById('breadcrumb');
+  if (!ol) return;
+  
+  ol.innerHTML = `
+    <li><a href="/index.html" style="padding: 8px 16px; background: #dbeafe; color: #1e40af; text-decoration: none; border-radius: 9999px; font-weight: 500; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 6px;">🏠 Home</a></li>
+    <li style="color: #9ca3af; font-weight: bold; font-size: 18px; margin: 0 12px;">›</li>
+    <li style="position: relative; display: inline-block; margin-right: 12px;">
+      <span id="colori-trigger" style="padding: 8px 16px; background: #fef3c7; color: #d97706; border: 2px solid #fde68a; border-radius: 9999px; font-weight: 700; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 6px;">🎨 Colori ▼</span>
+      <div id="colori-dropdown" style="position: absolute; top: 100%; left: 0; margin-top: 8px; width: 300px; background: rgba(255,255,255,0.98); backdrop-filter: blur(20px); border: 1px solid #e5e7eb; border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.3s; z-index: 10000; padding: 8px 0;">
+        <a href="colori_home.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">🏠 Home</a>
+        <a href="color-picker.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">  🎨 Picker</a>
+        <a href="color-tools-suite.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">🛠️ Color Tools Suite </a>
+        <a href="designer.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;"> 🖌️ Designer </a>
+        <a href="designer2.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">
+✏️ Designer 2 </a>
+        <a href="generatore_colore.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">
+🔴 Generatore Colore      </a>
+        <a href="generatore_di_colore.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500; border-top: 1px solid #f3f4f6;">  🟢 Generatore di Colore</a>
+        <a href="hub_app.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">📱 Hub App</a>
+          <a href="elementi-color.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">🎨  Elementi</a>
+      </div>
+    </li>
+    <li style="color: #9ca3af; font-weight: bold; font-size: 18px; margin: 0 12px;">›</li>
+    <li id="current-page" style="display: flex; align-items: center;"></li>
+  `;
+  
+  // Imposta pagina corrente (cambia il nome!)
+  const currentPage = document.getElementById('current-page');
+  currentPage.innerHTML = `
+    <span style="padding: 8px 16px; background: #dcfce7; color: #166534; border: 2px solid #bbf7d0; border-radius: 9999px; font-weight: 800; box-shadow: 0 4px 8px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 6px;">
+🌈 Generatore Gradienti
+</span>
+  `;
+  
+  // Dropdown events
+  document.getElementById('colori-trigger').onmouseenter = () => {
+    document.getElementById('colori-dropdown').style.opacity = '1';
+    document.getElementById('colori-dropdown').style.visibility = 'visible';
+    document.getElementById('colori-dropdown').style.transform = 'translateY(0)';
+  };
+  document.getElementById('colori-dropdown').onmouseleave = () => {
+    document.getElementById('colori-dropdown').style.opacity = '0';
+    document.getElementById('colori-dropdown').style.visibility = 'hidden';
+    document.getElementById('colori-dropdown').style.transform = 'translateY(-10px)';
+  };
+  
+  // Hover links
+  document.querySelectorAll('#colori-dropdown a').forEach(link => {
+    link.onmouseenter = () => {
+      link.style.background = 'linear-gradient(135deg, #ec4899, #f59e0b)';
+      link.style.color = 'white';
+      link.style.transform = 'translateX(4px)';
+    };
+    link.onmouseleave = () => {
+      link.style.background = '';
+      link.style.color = '#374151';
+      link.style.transform = '';
+    };
+  });
+})();
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9918d76e75d05091',t:'MTc2MDk2NjczMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

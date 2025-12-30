@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generatore di Colori</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            box-sizing: border-box;
+        }
+        .color-transition {
+            transition: all 0.3s ease;
+        }
+        .color-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+    </style>
+</head>
+<body class="min-h-full bg-gradient-to-br from-purple-50 to-blue-50 font-sans">
+    <main class="container mx-auto px-4 py-8">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">🎨 Generatore di Colori</h1>
+            <p class="text-gray-600">Scopri palette perfette e copia i codici colore</p>
+            <div id="breadcrumb-container" style="
+  position: sticky; top: 0; z-index: 9999 !important; 
+  background: rgba(255,255,255,0.98) !important; 
+  backdrop-filter: blur(20px) !important; 
+  border-bottom: 1px solid #e5e7eb !important; 
+  padding: 16px 24px !important; 
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1) !important;
+  margin: 0 !important;
+">
+  <div style="max-width: 1280px; margin: 0 auto;">
+    <div style="font-size: 24px; font-weight: 800; background: linear-gradient(135deg, #ec4899, #f59e0b); -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 12px;">
+      🎨 Color Tools Hub
+    </div>
+    <ol id="breadcrumb" style="
+      display: flex !important; align-items: center !important; 
+      list-style: none !important; padding: 0 !important; margin: 0 !important;
+      gap: 8px !important; font-size: 14px !important;
+    "></ol>
+  </div>
+</div>
+        </header>
+
+        <div class="max-w-4xl mx-auto">
+            <!-- Controlli -->
+            <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <button onclick="generateRandomPalette()" class="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-3 px-6 rounded-lg color-transition">
+                        🎲 Palette Casuale
+                    </button>
+                    <button onclick="generateMonochrome()" class="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-semibold py-3 px-6 rounded-lg color-transition">
+                        🌊 Monocromatica
+                    </button>
+                    <button onclick="generateComplementary()" class="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold py-3 px-6 rounded-lg color-transition">
+                        ⚡ Complementari
+                    </button>
+                </div>
+                
+                <div class="flex flex-col sm:flex-row gap-4 items-center mb-4">
+                    <label for="baseColor" class="text-gray-700 font-medium">Colore base:</label>
+                    <input type="color" id="baseColor" value="#6366f1" class="w-16 h-12 rounded-lg border-2 border-gray-300 cursor-pointer">
+                    <button onclick="generateFromBase()" class="bg-gray-700 hover:bg-gray-800 text-white font-semibold py-2 px-4 rounded-lg color-transition">
+                        Genera da Base
+                    </button>
+                </div>
+
+                <div class="border-t pt-4">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">🎨 Scegli Colori Manualmente</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-5 gap-3" id="manualColorPickers">
+                        <div class="flex flex-col items-center">
+                            <input type="color" id="color1" value="#6366f1" class="w-16 h-16 rounded-lg border-2 border-gray-300 cursor-pointer mb-2" onchange="updateManualPalette()">
+                            <span class="text-xs text-gray-600">Colore 1</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <input type="color" id="color2" value="#8b5cf6" class="w-16 h-16 rounded-lg border-2 border-gray-300 cursor-pointer mb-2" onchange="updateManualPalette()">
+                            <span class="text-xs text-gray-600">Colore 2</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <input type="color" id="color3" value="#06b6d4" class="w-16 h-16 rounded-lg border-2 border-gray-300 cursor-pointer mb-2" onchange="updateManualPalette()">
+                            <span class="text-xs text-gray-600">Colore 3</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <input type="color" id="color4" value="#10b981" class="w-16 h-16 rounded-lg border-2 border-gray-300 cursor-pointer mb-2" onchange="updateManualPalette()">
+                            <span class="text-xs text-gray-600">Colore 4</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <input type="color" id="color5" value="#f59e0b" class="w-16 h-16 rounded-lg border-2 border-gray-300 cursor-pointer mb-2" onchange="updateManualPalette()">
+                            <span class="text-xs text-gray-600">Colore 5</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Palette di Colori -->
+            <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Palette Attuale</h2>
+                <div id="colorPalette" class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                    <!-- I colori verranno generati qui -->
+                </div>
+            </div>
+
+            <!-- Codice CSS/HTML per Integrare -->
+            <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">💻 Codice per Integrare</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-700 mb-3">CSS Variables</h3>
+                        <div class="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm overflow-x-auto">
+                            <pre id="cssCode">:root {
+  --color-1: #6366f1;
+  --color-2: #8b5cf6;
+  --color-3: #06b6d4;
+  --color-4: #10b981;
+  --color-5: #f59e0b;
+}</pre>
+                        </div>
+                        <button onclick="copyCode('css')" class="mt-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm color-transition">
+                            📋 Copia CSS
+                        </button>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-700 mb-3">Tailwind Config</h3>
+                        <div class="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm overflow-x-auto">
+                            <pre id="tailwindCode">colors: {
+  'primary': '#6366f1',
+  'secondary': '#8b5cf6',
+  'accent': '#06b6d4',
+  'success': '#10b981',
+  'warning': '#f59e0b'
+}</pre>
+                        </div>
+                        <button onclick="copyCode('tailwind')" class="mt-2 bg-cyan-500 hover:bg-cyan-600 text-white px-4 py-2 rounded-lg text-sm color-transition">
+                            📋 Copia Tailwind
+                        </button>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <h3 class="text-lg font-semibold text-gray-700 mb-3">Esempi di Utilizzo</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h4 class="font-medium text-gray-800 mb-2">CSS</h4>
+                            <code class="text-sm text-gray-700">
+                                .button { background: var(--color-1); }<br>
+                                .header { color: var(--color-2); }
+                            </code>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h4 class="font-medium text-gray-800 mb-2">Tailwind</h4>
+                            <code class="text-sm text-gray-700">
+                                &lt;button class="bg-primary"&gt;<br>
+                                &lt;h1 class="text-secondary"&gt;
+                            </code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Informazioni Colore Selezionato -->
+            <div id="colorInfo" class="bg-white rounded-xl shadow-lg p-6 hidden">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">Dettagli Colore</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <div id="selectedColorPreview" class="w-full h-32 rounded-lg mb-4 border-2 border-gray-200"></div>
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center">
+                                <span class="font-medium text-gray-700">HEX:</span>
+                                <code id="hexValue" class="bg-gray-100 px-3 py-1 rounded cursor-pointer hover:bg-gray-200 color-transition"></code>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="font-medium text-gray-700">RGB:</span>
+                                <code id="rgbValue" class="bg-gray-100 px-3 py-1 rounded cursor-pointer hover:bg-gray-200 color-transition"></code>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="font-medium text-gray-700">HSL:</span>
+                                <code id="hslValue" class="bg-gray-100 px-3 py-1 rounded cursor-pointer hover:bg-gray-200 color-transition"></code>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-gray-800 mb-3">Variazioni</h4>
+                        <div id="colorVariations" class="grid grid-cols-3 gap-2">
+                            <!-- Le variazioni verranno generate qui -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast per copia -->
+        <div id="copyToast" class="fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg transform translate-y-full opacity-0 color-transition">
+            Colore copiato! 📋
+        </div>
+    </main>
+
+    <script>
+        let currentPalette = [];
+
+        // Genera una palette casuale
+        function generateRandomPalette() {
+            currentPalette = [];
+            for (let i = 0; i < 5; i++) {
+                const hue = Math.floor(Math.random() * 360);
+                const saturation = 60 + Math.floor(Math.random() * 40);
+                const lightness = 45 + Math.floor(Math.random() * 30);
+                currentPalette.push(hslToHex(hue, saturation, lightness));
+            }
+            displayPalette();
+        }
+
+        // Genera palette monocromatica
+        function generateMonochrome() {
+            const baseHue = Math.floor(Math.random() * 360);
+            currentPalette = [];
+            for (let i = 0; i < 5; i++) {
+                const lightness = 20 + (i * 15);
+                currentPalette.push(hslToHex(baseHue, 70, lightness));
+            }
+            displayPalette();
+        }
+
+        // Genera colori complementari
+        function generateComplementary() {
+            const baseHue = Math.floor(Math.random() * 360);
+            const complementHue = (baseHue + 180) % 360;
+            currentPalette = [
+                hslToHex(baseHue, 70, 30),
+                hslToHex(baseHue, 70, 50),
+                hslToHex(baseHue, 70, 70),
+                hslToHex(complementHue, 70, 50),
+                hslToHex(complementHue, 70, 70)
+            ];
+            displayPalette();
+        }
+
+        // Genera da colore base
+        function generateFromBase() {
+            const baseColor = document.getElementById('baseColor').value;
+            const hsl = hexToHsl(baseColor);
+            currentPalette = [];
+            
+            for (let i = 0; i < 5; i++) {
+                const newHue = (hsl.h + (i * 30)) % 360;
+                currentPalette.push(hslToHex(newHue, hsl.s, hsl.l));
+            }
+            displayPalette();
+        }
+
+        // Mostra la palette
+        function displayPalette() {
+            const paletteContainer = document.getElementById('colorPalette');
+            paletteContainer.innerHTML = '';
+
+            currentPalette.forEach((color, index) => {
+                const colorCard = document.createElement('div');
+                colorCard.className = 'color-card bg-white rounded-lg shadow-md overflow-hidden cursor-pointer color-transition';
+                colorCard.innerHTML = `
+                    <div class="h-24 w-full" style="background-color: ${color}"></div>
+                    <div class="p-3">
+                        <p class="text-sm font-mono text-gray-700">${color}</p>
+                    </div>
+                `;
+                colorCard.onclick = () => selectColor(color);
+                paletteContainer.appendChild(colorCard);
+            });
+            
+            // Aggiorna i selettori manuali per riflettere la palette corrente
+            for (let i = 0; i < 5; i++) {
+                const colorInput = document.getElementById(`color${i + 1}`);
+                if (colorInput && currentPalette[i]) {
+                    colorInput.value = currentPalette[i];
+                }
+            }
+        }
+
+        // Seleziona un colore per i dettagli
+        function selectColor(color) {
+            const colorInfo = document.getElementById('colorInfo');
+            const preview = document.getElementById('selectedColorPreview');
+            const hexValue = document.getElementById('hexValue');
+            const rgbValue = document.getElementById('rgbValue');
+            const hslValue = document.getElementById('hslValue');
+
+            preview.style.backgroundColor = color;
+            hexValue.textContent = color;
+            
+            const rgb = hexToRgb(color);
+            rgbValue.textContent = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+            
+            const hsl = hexToHsl(color);
+            hslValue.textContent = `hsl(${Math.round(hsl.h)}, ${Math.round(hsl.s)}%, ${Math.round(hsl.l)}%)`;
+
+            // Genera variazioni
+            generateVariations(color);
+            
+            colorInfo.classList.remove('hidden');
+
+            // Aggiungi event listeners per copiare
+            [hexValue, rgbValue, hslValue].forEach(element => {
+                element.onclick = () => copyToClipboard(element.textContent);
+            });
+        }
+
+        // Genera variazioni del colore
+        function generateVariations(baseColor) {
+            const variationsContainer = document.getElementById('colorVariations');
+            const hsl = hexToHsl(baseColor);
+            
+            const variations = [
+                { name: 'Più scuro', color: hslToHex(hsl.h, hsl.s, Math.max(hsl.l - 20, 10)) },
+                { name: 'Normale', color: baseColor },
+                { name: 'Più chiaro', color: hslToHex(hsl.h, hsl.s, Math.min(hsl.l + 20, 90)) },
+                { name: 'Desaturato', color: hslToHex(hsl.h, Math.max(hsl.s - 30, 0), hsl.l) },
+                { name: 'Saturato', color: hslToHex(hsl.h, Math.min(hsl.s + 30, 100), hsl.l) },
+                { name: 'Complementare', color: hslToHex((hsl.h + 180) % 360, hsl.s, hsl.l) }
+            ];
+
+            variationsContainer.innerHTML = '';
+            variations.forEach(variation => {
+                const variationDiv = document.createElement('div');
+                variationDiv.className = 'text-center cursor-pointer';
+                variationDiv.innerHTML = `
+                    <div class="h-12 w-full rounded mb-1 border border-gray-200" style="background-color: ${variation.color}"></div>
+                    <p class="text-xs text-gray-600">${variation.name}</p>
+                `;
+                variationDiv.onclick = () => copyToClipboard(variation.color);
+                variationsContainer.appendChild(variationDiv);
+            });
+        }
+
+        // Copia negli appunti
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast();
+            });
+        }
+
+        // Mostra toast di conferma
+        function showToast() {
+            const toast = document.getElementById('copyToast');
+            toast.classList.remove('translate-y-full', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-full', 'opacity-0');
+            }, 2000);
+        }
+
+        // Funzioni di conversione colore
+        function hslToHex(h, s, l) {
+            l /= 100;
+            const a = s * Math.min(l, 1 - l) / 100;
+            const f = n => {
+                const k = (n + h / 30) % 12;
+                const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+                return Math.round(255 * color).toString(16).padStart(2, '0');
+            };
+            return `#${f(0)}${f(8)}${f(4)}`;
+        }
+
+        function hexToRgb(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : null;
+        }
+
+        function hexToHsl(hex) {
+            const rgb = hexToRgb(hex);
+            const r = rgb.r / 255;
+            const g = rgb.g / 255;
+            const b = rgb.b / 255;
+
+            const max = Math.max(r, g, b);
+            const min = Math.min(r, g, b);
+            let h, s, l = (max + min) / 2;
+
+            if (max === min) {
+                h = s = 0;
+            } else {
+                const d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                switch (max) {
+                    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                    case g: h = (b - r) / d + 2; break;
+                    case b: h = (r - g) / d + 4; break;
+                }
+                h /= 6;
+            }
+
+            return { h: h * 360, s: s * 100, l: l * 100 };
+        }
+
+        // Aggiorna palette manuale
+        function updateManualPalette() {
+            currentPalette = [
+                document.getElementById('color1').value,
+                document.getElementById('color2').value,
+                document.getElementById('color3').value,
+                document.getElementById('color4').value,
+                document.getElementById('color5').value
+            ];
+            displayPalette();
+            updateCodeSections();
+        }
+
+        // Aggiorna le sezioni di codice
+        function updateCodeSections() {
+            const cssCode = document.getElementById('cssCode');
+            const tailwindCode = document.getElementById('tailwindCode');
+            
+            cssCode.textContent = `:root {
+  --color-1: ${currentPalette[0]};
+  --color-2: ${currentPalette[1]};
+  --color-3: ${currentPalette[2]};
+  --color-4: ${currentPalette[3]};
+  --color-5: ${currentPalette[4]};
+}`;
+
+            tailwindCode.textContent = `colors: {
+  'primary': '${currentPalette[0]}',
+  'secondary': '${currentPalette[1]}',
+  'accent': '${currentPalette[2]}',
+  'success': '${currentPalette[3]}',
+  'warning': '${currentPalette[4]}'
+}`;
+        }
+
+        // Copia codice specifico
+        function copyCode(type) {
+            let textToCopy = '';
+            if (type === 'css') {
+                textToCopy = document.getElementById('cssCode').textContent;
+            } else if (type === 'tailwind') {
+                textToCopy = document.getElementById('tailwindCode').textContent;
+            }
+            
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                showToast();
+            });
+        }
+
+        // Modifica displayPalette per aggiornare anche il codice
+        const originalDisplayPalette = displayPalette;
+        displayPalette = function() {
+            originalDisplayPalette();
+            updateCodeSections();
+        };
+
+        // Genera palette iniziale
+        updateManualPalette();
+            // 🎨 BREADCRUMBS COLORI COMPLETI
+(function() {
+  const ol = document.getElementById('breadcrumb');
+  if (!ol) return;
+  
+  ol.innerHTML = `
+    <li><a href="/index.html" style="padding: 8px 16px; background: #dbeafe; color: #1e40af; text-decoration: none; border-radius: 9999px; font-weight: 500; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 6px;">🏠 Home</a></li>
+    <li style="color: #9ca3af; font-weight: bold; font-size: 18px; margin: 0 12px;">›</li>
+    <li style="position: relative; display: inline-block; margin-right: 12px;">
+      <span id="colori-trigger" style="padding: 8px 16px; background: #fef3c7; color: #d97706; border: 2px solid #fde68a; border-radius: 9999px; font-weight: 700; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 6px;">🎨 Colori ▼</span>
+      <div id="colori-dropdown" style="position: absolute; top: 100%; left: 0; margin-top: 8px; width: 300px; background: rgba(255,255,255,0.98); backdrop-filter: blur(20px); border: 1px solid #e5e7eb; border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.3s; z-index: 10000; padding: 8px 0;">
+        <a href="colori_home.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">🏠 Home</a>
+        <a href="color-picker.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">  🎨 Picker</a>
+        <a href="color-tools-suite.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">🛠️ Color Tools Suite </a>
+        <a href="designer.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;"> 🖌️ Designer </a>
+        <a href="designer2.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">
+✏️ Designer 2 </a>
+        <a href="generatore_colore.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">
+🔴 Generatore Colore      </a>
+        <a href="generatore_gradienti.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500; border-top: 1px solid #f3f4f6;">🌈 Generatore Gradienti</a>
+        <a href="hub_app.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">📱 Hub App</a>
+        <a href="elementi-color.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">🎨  Elementi</a>
+      </div>
+    </li>
+    <li style="color: #9ca3af; font-weight: bold; font-size: 18px; margin: 0 12px;">›</li>
+    <li id="current-page" style="display: flex; align-items: center;"></li>
+  `;
+  
+  // Imposta pagina corrente (cambia il nome!)
+  const currentPage = document.getElementById('current-page');
+  currentPage.innerHTML = `
+    <span style="padding: 8px 16px; background: #dcfce7; color: #166534; border: 2px solid #bbf7d0; border-radius: 9999px; font-weight: 800; box-shadow: 0 4px 8px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 6px;">
+  🟢 Generatore di Colore</span>
+  `;
+  
+  // Dropdown events
+  document.getElementById('colori-trigger').onmouseenter = () => {
+    document.getElementById('colori-dropdown').style.opacity = '1';
+    document.getElementById('colori-dropdown').style.visibility = 'visible';
+    document.getElementById('colori-dropdown').style.transform = 'translateY(0)';
+  };
+  document.getElementById('colori-dropdown').onmouseleave = () => {
+    document.getElementById('colori-dropdown').style.opacity = '0';
+    document.getElementById('colori-dropdown').style.visibility = 'hidden';
+    document.getElementById('colori-dropdown').style.transform = 'translateY(-10px)';
+  };
+  
+  // Hover links
+  document.querySelectorAll('#colori-dropdown a').forEach(link => {
+    link.onmouseenter = () => {
+      link.style.background = 'linear-gradient(135deg, #ec4899, #f59e0b)';
+      link.style.color = 'white';
+      link.style.transform = 'translateX(4px)';
+    };
+    link.onmouseleave = () => {
+      link.style.background = '';
+      link.style.color = '#374151';
+      link.style.transform = '';
+    };
+  });
+})();
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9918ce90f5135091',t:'MTc2MDk2NjM2Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

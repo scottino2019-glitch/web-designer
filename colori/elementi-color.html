@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tailwind CSS Playground</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+    <header class="bg-white shadow-xl border-b-4 border-blue-500">
+        <div class="max-w-7xl mx-auto px-6 py-6">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">🎨 Tailwind CSS Playground</h1>
+            <p class="text-gray-600 text-lg">Sperimenta con i colori e vedi il codice generato automaticamente</p>
+        </div>
+        <div id="breadcrumb-container" style="
+  position: sticky; top: 0; z-index: 9999 !important; 
+  background: rgba(255,255,255,0.98) !important; 
+  backdrop-filter: blur(20px) !important; 
+  border-bottom: 1px solid #e5e7eb !important; 
+  padding: 16px 24px !important; 
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1) !important;
+  margin: 0 !important;
+">
+  <div style="max-width: 1280px; margin: 0 auto;">
+    <div style="font-size: 24px; font-weight: 800; background: linear-gradient(135deg, #ec4899, #f59e0b); -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 12px;">
+      🎨 Color Tools Hub
+    </div>
+    <ol id="breadcrumb" style="
+      display: flex !important; align-items: center !important; 
+      list-style: none !important; padding: 0 !important; margin: 0 !important;
+      gap: 8px !important; font-size: 14px !important;
+    "></ol>
+  </div>
+</div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-8">
+        <!-- Controlli -->
+        <div class="bg-white rounded-2xl shadow-2xl p-8 mb-8 border border-gray-100">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">🎛️ Controlli Design</h2>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Colori -->
+                <div>
+                    <h3 class="text-lg font-semibold text-blue-700 mb-4">🎨 Colori</h3>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Colore Sfondo</label>
+                            <select id="bgColor" onchange="updateDesign()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                <option value="bg-white">Bianco</option>
+                                <option value="bg-blue-500" selected>Blu</option>
+                                <option value="bg-green-500">Verde</option>
+                                <option value="bg-red-500">Rosso</option>
+                                <option value="bg-purple-500">Viola</option>
+                                <option value="bg-yellow-500">Giallo</option>
+                                <option value="bg-pink-500">Rosa</option>
+                                <option value="bg-indigo-500">Indaco</option>
+                                <option value="bg-gray-500">Grigio</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Colore Testo</label>
+                            <select id="textColor" onchange="updateDesign()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                <option value="text-white" selected>Bianco</option>
+                                <option value="text-black">Nero</option>
+                                <option value="text-blue-600">Blu</option>
+                                <option value="text-green-600">Verde</option>
+                                <option value="text-red-600">Rosso</option>
+                                <option value="text-purple-600">Viola</option>
+                                <option value="text-yellow-600">Giallo</option>
+                                <option value="text-pink-600">Rosa</option>
+                                <option value="text-gray-600">Grigio</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dimensioni -->
+                <div>
+                    <h3 class="text-lg font-semibold text-green-700 mb-4">📏 Dimensioni</h3>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Padding</label>
+                            <select id="padding" onchange="updateDesign()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                <option value="p-2">Piccolo (p-2)</option>
+                                <option value="p-4" selected>Medio (p-4)</option>
+                                <option value="p-6">Grande (p-6)</option>
+                                <option value="p-8">Extra (p-8)</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Dimensione Testo</label>
+                            <select id="textSize" onchange="updateDesign()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                <option value="text-sm">Piccolo (text-sm)</option>
+                                <option value="text-base" selected>Normale (text-base)</option>
+                                <option value="text-lg">Grande (text-lg)</option>
+                                <option value="text-xl">Extra (text-xl)</option>
+                                <option value="text-2xl">XXL (text-2xl)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Effetti -->
+                <div>
+                    <h3 class="text-lg font-semibold text-purple-700 mb-4">✨ Effetti</h3>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Bordi</label>
+                            <select id="rounded" onchange="updateDesign()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                <option value="">Nessuno</option>
+                                <option value="rounded">Piccoli (rounded)</option>
+                                <option value="rounded-lg" selected>Medi (rounded-lg)</option>
+                                <option value="rounded-xl">Grandi (rounded-xl)</option>
+                                <option value="rounded-full">Completi (rounded-full)</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Ombra</label>
+                            <select id="shadow" onchange="updateDesign()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                <option value="">Nessuna</option>
+                                <option value="shadow-sm">Piccola (shadow-sm)</option>
+                                <option value="shadow-md" selected>Media (shadow-md)</option>
+                                <option value="shadow-lg">Grande (shadow-lg)</option>
+                                <option value="shadow-xl">Extra (shadow-xl)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Anteprima e Codice -->
+        <div class="grid lg:grid-cols-2 gap-8">
+            <!-- Anteprima -->
+            <div class="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100">
+                <h3 class="text-xl font-bold text-gray-800 mb-6">👁️ Anteprima</h3>
+                <div class="bg-gray-100 p-8 rounded-xl min-h-64 flex items-center justify-center">
+                    <div id="preview" class="bg-blue-500 text-white p-4 rounded-lg shadow-md font-bold text-base">
+                        Il tuo elemento personalizzato! 🎉
+                    </div>
+                </div>
+            </div>
+
+            <!-- Codice Generato -->
+            <div class="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100">
+                <h3 class="text-xl font-bold text-gray-800 mb-6">📝 Codice Generato</h3>
+                <div class="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm overflow-auto">
+                    <pre id="generatedCode">&lt;div class="bg-blue-500 text-white p-4 rounded-lg shadow-md font-bold text-base"&gt;
+  Il tuo elemento personalizzato! 🎉
+&lt;/div&gt;</pre>
+                </div>
+                <button onclick="copyCode()" class="mt-4 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors">
+                    📋 Copia Codice
+                </button>
+            </div>
+        </div>
+
+        <!-- Esempi Predefiniti -->
+        <div class="mt-8 bg-white rounded-2xl shadow-2xl p-8 border border-gray-100">
+            <h3 class="text-xl font-bold text-gray-800 mb-6">🚀 Esempi Rapidi</h3>
+            <div class="grid md:grid-cols-4 gap-4">
+                <button onclick="loadPreset('button')" class="bg-blue-100 hover:bg-blue-200 text-blue-800 p-4 rounded-lg transition-colors">
+                    <div class="text-2xl mb-2">🔘</div>
+                    <div class="font-semibold">Pulsante</div>
+                </button>
+                <button onclick="loadPreset('card')" class="bg-green-100 hover:bg-green-200 text-green-800 p-4 rounded-lg transition-colors">
+                    <div class="text-2xl mb-2">🃏</div>
+                    <div class="font-semibold">Card</div>
+                </button>
+                <button onclick="loadPreset('alert')" class="bg-red-100 hover:bg-red-200 text-red-800 p-4 rounded-lg transition-colors">
+                    <div class="text-2xl mb-2">⚠️</div>
+                    <div class="font-semibold">Alert</div>
+                </button>
+                <button onclick="loadPreset('badge')" class="bg-purple-100 hover:bg-purple-200 text-purple-800 p-4 rounded-lg transition-colors">
+                    <div class="text-2xl mb-2">🏷️</div>
+                    <div class="font-semibold">Badge</div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Guida Colori -->
+        <div class="mt-8 bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-8 border border-blue-200">
+            <h3 class="text-xl font-bold text-blue-800 mb-6">🎨 Guida Colori Tailwind</h3>
+            <div class="grid md:grid-cols-5 gap-4">
+                <div class="space-y-2">
+                    <h4 class="font-semibold text-blue-700">Blu</h4>
+                    <div class="space-y-1">
+                        <div class="w-full h-6 bg-blue-100 rounded text-xs flex items-center justify-center">100</div>
+                        <div class="w-full h-6 bg-blue-300 rounded text-xs flex items-center justify-center">300</div>
+                        <div class="w-full h-6 bg-blue-500 rounded text-xs flex items-center justify-center text-white">500</div>
+                        <div class="w-full h-6 bg-blue-700 rounded text-xs flex items-center justify-center text-white">700</div>
+                        <div class="w-full h-6 bg-blue-900 rounded text-xs flex items-center justify-center text-white">900</div>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <h4 class="font-semibold text-green-700">Verde</h4>
+                    <div class="space-y-1">
+                        <div class="w-full h-6 bg-green-100 rounded text-xs flex items-center justify-center">100</div>
+                        <div class="w-full h-6 bg-green-300 rounded text-xs flex items-center justify-center">300</div>
+                        <div class="w-full h-6 bg-green-500 rounded text-xs flex items-center justify-center text-white">500</div>
+                        <div class="w-full h-6 bg-green-700 rounded text-xs flex items-center justify-center text-white">700</div>
+                        <div class="w-full h-6 bg-green-900 rounded text-xs flex items-center justify-center text-white">900</div>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <h4 class="font-semibold text-red-700">Rosso</h4>
+                    <div class="space-y-1">
+                        <div class="w-full h-6 bg-red-100 rounded text-xs flex items-center justify-center">100</div>
+                        <div class="w-full h-6 bg-red-300 rounded text-xs flex items-center justify-center">300</div>
+                        <div class="w-full h-6 bg-red-500 rounded text-xs flex items-center justify-center text-white">500</div>
+                        <div class="w-full h-6 bg-red-700 rounded text-xs flex items-center justify-center text-white">700</div>
+                        <div class="w-full h-6 bg-red-900 rounded text-xs flex items-center justify-center text-white">900</div>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <h4 class="font-semibold text-purple-700">Viola</h4>
+                    <div class="space-y-1">
+                        <div class="w-full h-6 bg-purple-100 rounded text-xs flex items-center justify-center">100</div>
+                        <div class="w-full h-6 bg-purple-300 rounded text-xs flex items-center justify-center">300</div>
+                        <div class="w-full h-6 bg-purple-500 rounded text-xs flex items-center justify-center text-white">500</div>
+                        <div class="w-full h-6 bg-purple-700 rounded text-xs flex items-center justify-center text-white">700</div>
+                        <div class="w-full h-6 bg-purple-900 rounded text-xs flex items-center justify-center text-white">900</div>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <h4 class="font-semibold text-gray-700">Grigio</h4>
+                    <div class="space-y-1">
+                        <div class="w-full h-6 bg-gray-100 rounded text-xs flex items-center justify-center">100</div>
+                        <div class="w-full h-6 bg-gray-300 rounded text-xs flex items-center justify-center">300</div>
+                        <div class="w-full h-6 bg-gray-500 rounded text-xs flex items-center justify-center text-white">500</div>
+                        <div class="w-full h-6 bg-gray-700 rounded text-xs flex items-center justify-center text-white">700</div>
+                        <div class="w-full h-6 bg-gray-900 rounded text-xs flex items-center justify-center text-white">900</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Preset per esempi rapidi
+        const presets = {
+            button: {
+                bgColor: 'bg-blue-500',
+                textColor: 'text-white',
+                padding: 'p-4',
+                textSize: 'text-base',
+                rounded: 'rounded-lg',
+                shadow: 'shadow-md',
+                content: 'Pulsante Personalizzato 🔘'
+            },
+            card: {
+                bgColor: 'bg-white',
+                textColor: 'text-gray-800',
+                padding: 'p-6',
+                textSize: 'text-lg',
+                rounded: 'rounded-xl',
+                shadow: 'shadow-lg',
+                content: 'Card Elegante 🃏'
+            },
+            alert: {
+                bgColor: 'bg-red-500',
+                textColor: 'text-white',
+                padding: 'p-4',
+                textSize: 'text-base',
+                rounded: 'rounded-lg',
+                shadow: 'shadow-md',
+                content: 'Attenzione! ⚠️'
+            },
+            badge: {
+                bgColor: 'bg-purple-500',
+                textColor: 'text-white',
+                padding: 'p-2',
+                textSize: 'text-sm',
+                rounded: 'rounded-full',
+                shadow: 'shadow-sm',
+                content: 'Badge 🏷️'
+            }
+        };
+
+        // Aggiorna il design in tempo reale
+        function updateDesign() {
+            const bgColor = document.getElementById('bgColor').value;
+            const textColor = document.getElementById('textColor').value;
+            const padding = document.getElementById('padding').value;
+            const textSize = document.getElementById('textSize').value;
+            const rounded = document.getElementById('rounded').value;
+            const shadow = document.getElementById('shadow').value;
+            
+            const preview = document.getElementById('preview');
+            const content = preview.textContent;
+            
+            // Costruisci le classi
+            const classes = [
+                bgColor,
+                textColor,
+                padding,
+                textSize,
+                rounded,
+                shadow,
+                'font-bold'
+            ].filter(cls => cls).join(' ');
+            
+            // Aggiorna l'anteprima
+            preview.className = classes;
+            
+            // Genera il codice HTML
+            const code = `<div class="${classes}">
+  ${content}
+</div>`;
+            
+            document.getElementById('generatedCode').textContent = code;
+        }
+
+        // Carica un preset
+        function loadPreset(type) {
+            if (presets[type]) {
+                const preset = presets[type];
+                
+                // Aggiorna i controlli
+                document.getElementById('bgColor').value = preset.bgColor;
+                document.getElementById('textColor').value = preset.textColor;
+                document.getElementById('padding').value = preset.padding;
+                document.getElementById('textSize').value = preset.textSize;
+                document.getElementById('rounded').value = preset.rounded;
+                document.getElementById('shadow').value = preset.shadow;
+                
+                // Aggiorna il contenuto
+                document.getElementById('preview').textContent = preset.content;
+                
+                // Aggiorna il design
+                updateDesign();
+            }
+        }
+
+        // Copia il codice negli appunti
+        function copyCode() {
+            const code = document.getElementById('generatedCode').textContent;
+            
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(code).then(() => {
+                    showCopyFeedback();
+                });
+            } else {
+                // Fallback per browser più vecchi
+                const textArea = document.createElement('textarea');
+                textArea.value = code;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showCopyFeedback();
+            }
+        }
+
+        // Mostra feedback per la copia
+        function showCopyFeedback() {
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.textContent = '✅ Copiato!';
+            btn.classList.add('bg-green-500');
+            btn.classList.remove('bg-blue-500');
+            
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.classList.remove('bg-green-500');
+                btn.classList.add('bg-blue-500');
+            }, 2000);
+        }
+
+        // Inizializzazione
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDesign();
+        });
+        // 🎨 BREADCRUMBS COLORI COMPLETI
+(function() {
+  const ol = document.getElementById('breadcrumb');
+  if (!ol) return;
+  
+  ol.innerHTML = `
+    <li><a href="/index.html" style="padding: 8px 16px; background: #dbeafe; color: #1e40af; text-decoration: none; border-radius: 9999px; font-weight: 500; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 6px;">🏠 Home</a></li>
+    <li style="color: #9ca3af; font-weight: bold; font-size: 18px; margin: 0 12px;">›</li>
+    <li style="position: relative; display: inline-block; margin-right: 12px;">
+      <span id="colori-trigger" style="padding: 8px 16px; background: #fef3c7; color: #d97706; border: 2px solid #fde68a; border-radius: 9999px; font-weight: 700; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 6px;">🎨 Colori ▼</span>
+      <div id="colori-dropdown" style="position: absolute; top: 100%; left: 0; margin-top: 8px; width: 300px; background: rgba(255,255,255,0.98); backdrop-filter: blur(20px); border: 1px solid #e5e7eb; border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.3s; z-index: 10000; padding: 8px 0;">
+        <a href="colori_home.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">🏠 Home</a>
+        <a href="color-tools-suite.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">🛠️ Color Tools Suite</a>
+        <a href="designer.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">🖌️ Designer</a>
+        <a href="designer2.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">✏️ Designer 2</a>
+        <a href="generatore_colore.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">🔴 Generatore Colore</a>
+        <a href="generatore_di_colore.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">🟢 Generatore di Colore</a>
+        <a href="generatore_gradienti.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500; border-top: 1px solid #f3f4f6;">🌈 Generatore Gradienti</a>
+        <a href="hub_app.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">📱 Hub App</a>
+        <a href="color-picker.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">🎨  Picker</a>
+      </div>
+    </li>
+    <li style="color: #9ca3af; font-weight: bold; font-size: 18px; margin: 0 12px;">›</li>
+    <li id="current-page" style="display: flex; align-items: center;"></li>
+  `;
+  
+  // Imposta pagina corrente (cambia il nome!)
+  const currentPage = document.getElementById('current-page');
+  currentPage.innerHTML = `
+    <span style="padding: 8px 16px; background: #dcfce7; color: #166534; border: 2px solid #bbf7d0; border-radius: 9999px; font-weight: 800; box-shadow: 0 4px 8px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 6px;">
+      🎨 Elementi
+    </span>
+  `;
+  
+  // Dropdown events
+  document.getElementById('colori-trigger').onmouseenter = () => {
+    document.getElementById('colori-dropdown').style.opacity = '1';
+    document.getElementById('colori-dropdown').style.visibility = 'visible';
+    document.getElementById('colori-dropdown').style.transform = 'translateY(0)';
+  };
+  document.getElementById('colori-dropdown').onmouseleave = () => {
+    document.getElementById('colori-dropdown').style.opacity = '0';
+    document.getElementById('colori-dropdown').style.visibility = 'hidden';
+    document.getElementById('colori-dropdown').style.transform = 'translateY(-10px)';
+  };
+  
+  // Hover links
+  document.querySelectorAll('#colori-dropdown a').forEach(link => {
+    link.onmouseenter = () => {
+      link.style.background = 'linear-gradient(135deg, #ec4899, #f59e0b)';
+      link.style.color = 'white';
+      link.style.transform = 'translateX(4px)';
+    };
+    link.onmouseleave = () => {
+      link.style.background = '';
+      link.style.color = '#374151';
+      link.style.transform = '';
+    };
+  });
+})();
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98f30935d719b56d',t:'MTc2MDU3MDMxMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

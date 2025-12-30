@@ -1,0 +1,774 @@
+<!doctype html>
+<html lang="it" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generatore Colori CSS</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+        body {
+            box-sizing: border-box;
+        }
+        
+        .code-display {
+            background: #1a1a1a;
+            color: #e6e6e6;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.4;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+        
+        .preview-area {
+            min-height: 200px;
+            background: #f8fafc;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            border: 2px dashed #e2e8f0;
+        }
+        
+        .color-picker {
+            width: 50px;
+            height: 50px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .demo-element {
+            padding: 20px 30px;
+            border-radius: 12px;
+            font-weight: 600;
+            text-align: center;
+            min-width: 200px;
+            transition: all 0.3s ease;
+        }
+        
+        .gradient-preview {
+            width: 100%;
+            height: 60px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .shadow-preview {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 8px;
+            margin: 10px;
+            display: inline-block;
+        }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full bg-gradient-to-br from-purple-50 to-pink-50">
+  <div class="min-h-full"><!-- Header -->
+   <header class="bg-white shadow-sm">
+    <div class="max-w-6xl mx-auto px-6 py-8 text-center">
+     <h1 id="main-title" class="text-4xl font-bold text-gray-800 mb-4">Generatore Colori CSS</h1>
+     <p id="subtitle" class="text-lg text-gray-600 max-w-2xl mx-auto">Crea palette di colori, gradienti e ombre personalizzate. Scegli i colori e genera il codice CSS!</p>
+    </div>
+           <div id="breadcrumb-container" style="
+  position: sticky; top: 0; z-index: 9999 !important; 
+  background: rgba(255,255,255,0.98) !important; 
+  backdrop-filter: blur(20px) !important; 
+  border-bottom: 1px solid #e5e7eb !important; 
+  padding: 16px 24px !important; 
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1) !important;
+  margin: 0 !important;
+">
+  <div style="max-width: 1280px; margin: 0 auto;">
+    <div style="font-size: 24px; font-weight: 800; background: linear-gradient(135deg, #ec4899, #f59e0b); -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 12px;">
+      🎨 Color Tools Hub
+    </div>
+    <ol id="breadcrumb" style="
+      display: flex !important; align-items: center !important; 
+      list-style: none !important; padding: 0 !important; margin: 0 !important;
+      gap: 8px !important; font-size: 14px !important;
+    "></ol>
+  </div>
+</div>
+   </header><!-- Main Content -->
+   <main class="max-w-6xl mx-auto px-6 py-8">
+    <div class="grid lg:grid-cols-2 gap-8"><!-- Controls Panel -->
+     <div class="bg-white rounded-xl shadow-lg p-6">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6">Controlli Colore</h2><!-- Element Type -->
+      <div class="mb-6"><label class="block text-sm font-semibold text-gray-700 mb-3">Tipo Elemento</label>
+       <div class="grid grid-cols-3 gap-2"><button id="btn-button" class="element-btn bg-blue-500 text-white px-3 py-2 rounded-lg font-medium text-sm"> Bottone </button> <button id="btn-card" class="element-btn bg-gray-200 text-gray-700 px-3 py-2 rounded-lg font-medium text-sm"> Card </button> <button id="btn-text" class="element-btn bg-gray-200 text-gray-700 px-3 py-2 rounded-lg font-medium text-sm"> Testo </button> <button id="btn-hero" class="element-btn bg-gray-200 text-gray-700 px-3 py-2 rounded-lg font-medium text-sm"> Hero </button> <button id="btn-badge" class="element-btn bg-gray-200 text-gray-700 px-3 py-2 rounded-lg font-medium text-sm"> Badge </button> <button id="btn-navbar" class="element-btn bg-gray-200 text-gray-700 px-3 py-2 rounded-lg font-medium text-sm"> Navbar </button>
+       </div>
+      </div><!-- Style Type -->
+      <div class="mb-6"><label class="block text-sm font-semibold text-gray-700 mb-3">Tipo Stile</label>
+       <div class="grid grid-cols-2 gap-3"><button id="style-solid" class="style-btn bg-purple-500 text-white px-4 py-3 rounded-lg font-medium"> Colore Solido </button> <button id="style-gradient" class="style-btn bg-gray-200 text-gray-700 px-4 py-3 rounded-lg font-medium"> Gradiente </button> <button id="style-shadow" class="style-btn bg-gray-200 text-gray-700 px-4 py-3 rounded-lg font-medium"> Ombra </button> <button id="style-border" class="style-btn bg-gray-200 text-gray-700 px-4 py-3 rounded-lg font-medium"> Bordo </button>
+       </div>
+      </div><!-- Color Controls -->
+      <div id="color-controls"><!-- Solid Color Controls -->
+       <div id="solid-controls" class="mb-6"><label class="block text-sm font-semibold text-gray-700 mb-3">Colore Principale</label>
+        <div class="flex items-center gap-4"><input type="color" id="primary-color" class="color-picker" value="#3b82f6">
+         <div><input type="text" id="primary-hex" class="px-3 py-2 border border-gray-300 rounded-lg w-24 text-sm" value="#3b82f6">
+          <p class="text-xs text-gray-500 mt-1">Codice HEX</p>
+         </div>
+        </div>
+       </div><!-- Gradient Controls -->
+       <div id="gradient-controls" class="mb-6 hidden"><label class="block text-sm font-semibold text-gray-700 mb-3">Gradiente</label>
+        <div class="space-y-4">
+         <div class="flex items-center gap-4"><input type="color" id="gradient-color1" class="color-picker" value="#3b82f6"> <input type="text" id="gradient-hex1" class="px-3 py-2 border border-gray-300 rounded-lg w-24 text-sm" value="#3b82f6"> <span class="text-sm text-gray-600">Colore 1</span>
+         </div>
+         <div class="flex items-center gap-4"><input type="color" id="gradient-color2" class="color-picker" value="#8b5cf6"> <input type="text" id="gradient-hex2" class="px-3 py-2 border border-gray-300 rounded-lg w-24 text-sm" value="#8b5cf6"> <span class="text-sm text-gray-600">Colore 2</span>
+         </div>
+         <div><label class="block text-sm font-medium text-gray-700 mb-2">Direzione</label> <select id="gradient-direction" class="w-full p-2 border border-gray-300 rounded-lg"> <option value="to right">Orizzontale →</option> <option value="to bottom">Verticale ↓</option> <option value="to bottom right">Diagonale ↘</option> <option value="45deg">45 gradi</option> <option value="135deg">135 gradi</option> </select>
+         </div>
+         <div class="gradient-preview" id="gradient-preview"></div>
+        </div>
+       </div><!-- Shadow Controls -->
+       <div id="shadow-controls" class="mb-6 hidden"><label class="block text-sm font-semibold text-gray-700 mb-3">Ombra</label>
+        <div class="space-y-4">
+         <div class="flex items-center gap-4"><input type="color" id="shadow-color" class="color-picker" value="#000000"> <input type="text" id="shadow-hex" class="px-3 py-2 border border-gray-300 rounded-lg w-24 text-sm" value="#000000">
+         </div>
+         <div class="grid grid-cols-2 gap-4">
+          <div><label class="block text-xs text-gray-600 mb-1">Offset X</label> <input type="range" id="shadow-x" min="-20" max="20" value="0" class="w-full"> <span id="shadow-x-value" class="text-xs text-gray-500">0px</span>
+          </div>
+          <div><label class="block text-xs text-gray-600 mb-1">Offset Y</label> <input type="range" id="shadow-y" min="-20" max="20" value="4" class="w-full"> <span id="shadow-y-value" class="text-xs text-gray-500">4px</span>
+          </div>
+          <div><label class="block text-xs text-gray-600 mb-1">Blur</label> <input type="range" id="shadow-blur" min="0" max="50" value="10" class="w-full"> <span id="shadow-blur-value" class="text-xs text-gray-500">10px</span>
+          </div>
+          <div><label class="block text-xs text-gray-600 mb-1">Opacità</label> <input type="range" id="shadow-opacity" min="0" max="100" value="25" class="w-full"> <span id="shadow-opacity-value" class="text-xs text-gray-500">0.25</span>
+          </div>
+         </div>
+         <div class="text-center">
+          <div class="shadow-preview" id="shadow-preview"></div>
+         </div>
+        </div>
+       </div><!-- Border Controls -->
+       <div id="border-controls" class="mb-6 hidden"><label class="block text-sm font-semibold text-gray-700 mb-3">Bordo</label>
+        <div class="space-y-4">
+         <div class="flex items-center gap-4"><input type="color" id="border-color" class="color-picker" value="#3b82f6"> <input type="text" id="border-hex" class="px-3 py-2 border border-gray-300 rounded-lg w-24 text-sm" value="#3b82f6">
+         </div>
+         <div class="grid grid-cols-2 gap-4">
+          <div><label class="block text-sm font-medium text-gray-700 mb-2">Spessore</label> <select id="border-width" class="w-full p-2 border border-gray-300 rounded-lg"> <option value="1px">Sottile (1px)</option> <option value="2px" selected>Normale (2px)</option> <option value="3px">Spesso (3px)</option> <option value="4px">Molto Spesso (4px)</option> </select>
+          </div>
+          <div><label class="block text-sm font-medium text-gray-700 mb-2">Stile</label> <select id="border-style" class="w-full p-2 border border-gray-300 rounded-lg"> <option value="solid">Solido</option> <option value="dashed">Tratteggiato</option> <option value="dotted">Punteggiato</option> <option value="double">Doppio</option> </select>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div><!-- Generate Button --> <button id="generate-btn" class="w-full bg-gradient-to-r from-purple-500 to-pink-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-purple-600 hover:to-pink-700 transition-all"> 🎨 Genera Codice CSS </button>
+     </div><!-- Preview Panel -->
+     <div class="bg-white rounded-xl shadow-lg p-6">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6">Anteprima &amp; Codice</h2><!-- Preview Area -->
+      <div class="preview-area mb-6">
+       <div id="demo-element" class="demo-element">
+        Elemento Demo
+       </div>
+      </div><!-- Quick Presets -->
+      <div class="mb-6">
+       <h3 class="font-semibold text-gray-700 mb-3">Preset Rapidi</h3>
+       <div class="grid grid-cols-4 gap-2"><button class="preset-btn w-8 h-8 rounded border-2 border-gray-300" style="background: #3b82f6;" data-color="#3b82f6"></button> <button class="preset-btn w-8 h-8 rounded border-2 border-gray-300" style="background: #ef4444;" data-color="#ef4444"></button> <button class="preset-btn w-8 h-8 rounded border-2 border-gray-300" style="background: #10b981;" data-color="#10b981"></button> <button class="preset-btn w-8 h-8 rounded border-2 border-gray-300" style="background: #f59e0b;" data-color="#f59e0b"></button> <button class="preset-btn w-8 h-8 rounded border-2 border-gray-300" style="background: #8b5cf6;" data-color="#8b5cf6"></button> <button class="preset-btn w-8 h-8 rounded border-2 border-gray-300" style="background: #ec4899;" data-color="#ec4899"></button> <button class="preset-btn w-8 h-8 rounded border-2 border-gray-300" style="background: #6b7280;" data-color="#6b7280"></button> <button class="preset-btn w-8 h-8 rounded border-2 border-gray-300" style="background: #1f2937;" data-color="#1f2937"></button>
+       </div>
+      </div><!-- Generated Code -->
+      <div>
+       <div class="flex justify-between items-center mb-3">
+        <h3 class="font-semibold text-gray-700">Codice CSS Generato</h3><button id="copy-btn" class="bg-green-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-600 transition-colors"> 📋 Copia </button>
+       </div>
+       <div id="code-display" class="code-display">
+        /* Clicca "Genera Codice CSS" per vedere il risultato */
+       </div>
+      </div>
+     </div>
+    </div>
+   </main>
+  </div>
+  <script>
+        // State
+        let selectedElement = 'button';
+        let selectedStyle = 'solid';
+        let currentColors = {
+            primary: '#3b82f6',
+            gradient1: '#3b82f6',
+            gradient2: '#8b5cf6',
+            shadow: '#000000',
+            border: '#3b82f6'
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            setupEventListeners();
+            updatePreview();
+        });
+
+        function setupEventListeners() {
+            // Element type buttons
+            document.getElementById('btn-button').addEventListener('click', () => selectElement('button'));
+            document.getElementById('btn-card').addEventListener('click', () => selectElement('card'));
+            document.getElementById('btn-text').addEventListener('click', () => selectElement('text'));
+            document.getElementById('btn-hero').addEventListener('click', () => selectElement('hero'));
+            document.getElementById('btn-badge').addEventListener('click', () => selectElement('badge'));
+            document.getElementById('btn-navbar').addEventListener('click', () => selectElement('navbar'));
+
+            // Style type buttons
+            document.getElementById('style-solid').addEventListener('click', () => selectStyle('solid'));
+            document.getElementById('style-gradient').addEventListener('click', () => selectStyle('gradient'));
+            document.getElementById('style-shadow').addEventListener('click', () => selectStyle('shadow'));
+            document.getElementById('style-border').addEventListener('click', () => selectStyle('border'));
+
+            // Color inputs
+            setupColorInputs();
+            setupGradientInputs();
+            setupShadowInputs();
+            setupBorderInputs();
+
+            // Preset buttons
+            document.querySelectorAll('.preset-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const color = this.dataset.color;
+                    applyPresetColor(color);
+                });
+            });
+
+            // Generate and copy buttons
+            document.getElementById('generate-btn').addEventListener('click', generateCode);
+            document.getElementById('copy-btn').addEventListener('click', copyCode);
+        }
+
+        function setupColorInputs() {
+            const primaryColor = document.getElementById('primary-color');
+            const primaryHex = document.getElementById('primary-hex');
+
+            primaryColor.addEventListener('input', function() {
+                currentColors.primary = this.value;
+                primaryHex.value = this.value;
+                updatePreview();
+            });
+
+            primaryHex.addEventListener('input', function() {
+                if (this.value.match(/^#[0-9A-F]{6}$/i)) {
+                    currentColors.primary = this.value;
+                    primaryColor.value = this.value;
+                    updatePreview();
+                }
+            });
+        }
+
+        function setupGradientInputs() {
+            const color1 = document.getElementById('gradient-color1');
+            const hex1 = document.getElementById('gradient-hex1');
+            const color2 = document.getElementById('gradient-color2');
+            const hex2 = document.getElementById('gradient-hex2');
+            const direction = document.getElementById('gradient-direction');
+
+            [color1, hex1, color2, hex2, direction].forEach(input => {
+                input.addEventListener('input', function() {
+                    currentColors.gradient1 = color1.value;
+                    currentColors.gradient2 = color2.value;
+                    hex1.value = color1.value;
+                    hex2.value = color2.value;
+                    updateGradientPreview();
+                    updatePreview();
+                });
+            });
+        }
+
+        function setupShadowInputs() {
+            const shadowColor = document.getElementById('shadow-color');
+            const shadowHex = document.getElementById('shadow-hex');
+            const shadowX = document.getElementById('shadow-x');
+            const shadowY = document.getElementById('shadow-y');
+            const shadowBlur = document.getElementById('shadow-blur');
+            const shadowOpacity = document.getElementById('shadow-opacity');
+
+            [shadowColor, shadowHex, shadowX, shadowY, shadowBlur, shadowOpacity].forEach(input => {
+                input.addEventListener('input', function() {
+                    currentColors.shadow = shadowColor.value;
+                    shadowHex.value = shadowColor.value;
+                    
+                    document.getElementById('shadow-x-value').textContent = shadowX.value + 'px';
+                    document.getElementById('shadow-y-value').textContent = shadowY.value + 'px';
+                    document.getElementById('shadow-blur-value').textContent = shadowBlur.value + 'px';
+                    document.getElementById('shadow-opacity-value').textContent = (shadowOpacity.value / 100).toFixed(2);
+                    
+                    updateShadowPreview();
+                    updatePreview();
+                });
+            });
+        }
+
+        function setupBorderInputs() {
+            const borderColor = document.getElementById('border-color');
+            const borderHex = document.getElementById('border-hex');
+            const borderWidth = document.getElementById('border-width');
+            const borderStyle = document.getElementById('border-style');
+
+            [borderColor, borderHex, borderWidth, borderStyle].forEach(input => {
+                input.addEventListener('input', function() {
+                    currentColors.border = borderColor.value;
+                    borderHex.value = borderColor.value;
+                    updatePreview();
+                });
+            });
+        }
+
+        function selectElement(type) {
+            selectedElement = type;
+            updateButtonStates('.element-btn', 'btn-' + type);
+            updatePreview();
+        }
+
+        function selectStyle(type) {
+            selectedStyle = type;
+            updateButtonStates('.style-btn', 'style-' + type);
+            showStyleControls(type);
+            updatePreview();
+        }
+
+        function updateButtonStates(selector, activeId) {
+            document.querySelectorAll(selector).forEach(btn => {
+                btn.classList.remove('bg-blue-500', 'bg-purple-500', 'text-white');
+                btn.classList.add('bg-gray-200', 'text-gray-700');
+            });
+
+            const activeBtn = document.getElementById(activeId);
+            if (activeBtn) {
+                activeBtn.classList.remove('bg-gray-200', 'text-gray-700');
+                if (selector === '.element-btn') {
+                    activeBtn.classList.add('bg-blue-500', 'text-white');
+                } else {
+                    activeBtn.classList.add('bg-purple-500', 'text-white');
+                }
+            }
+        }
+
+        function showStyleControls(type) {
+            // Hide all controls
+            document.getElementById('solid-controls').classList.add('hidden');
+            document.getElementById('gradient-controls').classList.add('hidden');
+            document.getElementById('shadow-controls').classList.add('hidden');
+            document.getElementById('border-controls').classList.add('hidden');
+
+            // Show selected control
+            document.getElementById(type + '-controls').classList.remove('hidden');
+        }
+
+        function applyPresetColor(color) {
+            currentColors.primary = color;
+            document.getElementById('primary-color').value = color;
+            document.getElementById('primary-hex').value = color;
+            
+            if (selectedStyle === 'gradient') {
+                currentColors.gradient1 = color;
+                document.getElementById('gradient-color1').value = color;
+                document.getElementById('gradient-hex1').value = color;
+                updateGradientPreview();
+            }
+            
+            updatePreview();
+        }
+
+        function updateGradientPreview() {
+            const direction = document.getElementById('gradient-direction').value;
+            const gradient = `linear-gradient(${direction}, ${currentColors.gradient1}, ${currentColors.gradient2})`;
+            document.getElementById('gradient-preview').style.background = gradient;
+        }
+
+        function updateShadowPreview() {
+            const x = document.getElementById('shadow-x').value;
+            const y = document.getElementById('shadow-y').value;
+            const blur = document.getElementById('shadow-blur').value;
+            const opacity = document.getElementById('shadow-opacity').value / 100;
+            const color = currentColors.shadow;
+            
+            const shadow = `${x}px ${y}px ${blur}px rgba(${hexToRgb(color).r}, ${hexToRgb(color).g}, ${hexToRgb(color).b}, ${opacity})`;
+            document.getElementById('shadow-preview').style.boxShadow = shadow;
+        }
+
+        function updatePreview() {
+            const demoElement = document.getElementById('demo-element');
+            
+            // Reset styles
+            demoElement.style.cssText = '';
+            demoElement.className = 'demo-element';
+            
+            // Set element content and base styles
+            switch(selectedElement) {
+                case 'button':
+                    demoElement.innerHTML = 'Bottone Demo';
+                    demoElement.style.padding = '12px 24px';
+                    demoElement.style.border = 'none';
+                    demoElement.style.cursor = 'pointer';
+                    break;
+                case 'card':
+                    demoElement.innerHTML = '<h4 style="margin-bottom:8px;">Titolo Card</h4><p style="font-size:14px;opacity:0.8;">Contenuto della card</p>';
+                    demoElement.style.padding = '24px';
+                    demoElement.style.background = 'white';
+                    break;
+                case 'text':
+                    demoElement.innerHTML = 'Testo Demo';
+                    demoElement.style.fontSize = '24px';
+                    demoElement.style.padding = '16px';
+                    break;
+                case 'hero':
+                    demoElement.innerHTML = '<h2 style="font-size:28px;margin-bottom:8px;">Hero Title</h2><p>Sottotitolo hero</p>';
+                    demoElement.style.padding = '40px';
+                    demoElement.style.color = 'white';
+                    break;
+                case 'badge':
+                    demoElement.innerHTML = 'Badge';
+                    demoElement.style.padding = '6px 12px';
+                    demoElement.style.fontSize = '12px';
+                    demoElement.style.borderRadius = '20px';
+                    break;
+                case 'navbar':
+                    demoElement.innerHTML = '<span style="font-weight:600;">Logo</span><span style="font-size:14px;">Menu</span>';
+                    demoElement.style.padding = '16px 24px';
+                    demoElement.style.display = 'flex';
+                    demoElement.style.justifyContent = 'space-between';
+                    demoElement.style.alignItems = 'center';
+                    break;
+            }
+
+            // Apply selected style
+            switch(selectedStyle) {
+                case 'solid':
+                    if (selectedElement === 'text') {
+                        demoElement.style.color = currentColors.primary;
+                    } else {
+                        demoElement.style.background = currentColors.primary;
+                        demoElement.style.color = 'white';
+                    }
+                    break;
+                    
+                case 'gradient':
+                    const direction = document.getElementById('gradient-direction').value;
+                    const gradient = `linear-gradient(${direction}, ${currentColors.gradient1}, ${currentColors.gradient2})`;
+                    demoElement.style.background = gradient;
+                    demoElement.style.color = 'white';
+                    break;
+                    
+                case 'shadow':
+                    const x = document.getElementById('shadow-x').value;
+                    const y = document.getElementById('shadow-y').value;
+                    const blur = document.getElementById('shadow-blur').value;
+                    const opacity = document.getElementById('shadow-opacity').value / 100;
+                    const shadowColor = currentColors.shadow;
+                    const rgb = hexToRgb(shadowColor);
+                    
+                    demoElement.style.boxShadow = `${x}px ${y}px ${blur}px rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${opacity})`;
+                    demoElement.style.background = 'white';
+                    demoElement.style.color = '#333';
+                    break;
+                    
+                case 'border':
+                    const borderWidth = document.getElementById('border-width').value;
+                    const borderStyle = document.getElementById('border-style').value;
+                    
+                    demoElement.style.border = `${borderWidth} ${borderStyle} ${currentColors.border}`;
+                    demoElement.style.background = 'white';
+                    demoElement.style.color = '#333';
+                    break;
+            }
+        }
+
+        function generateCode() {
+            let css = '';
+            let html = '';
+            
+            const className = `styled-${selectedElement}`;
+            
+            // Generate HTML
+            switch(selectedElement) {
+                case 'button':
+                    html = `<button class="${className}">Il Mio Bottone</button>`;
+                    break;
+                case 'card':
+                    html = `<div class="${className}">
+  <h4>Titolo Card</h4>
+  <p>Contenuto della card</p>
+</div>`;
+                    break;
+                case 'text':
+                    html = `<h3 class="${className}">Il Mio Testo</h3>`;
+                    break;
+                case 'hero':
+                    html = `<section class="${className}">
+  <h1>Hero Title</h1>
+  <p>Sottotitolo della hero section</p>
+</section>`;
+                    break;
+                case 'badge':
+                    html = `<span class="${className}">Badge</span>`;
+                    break;
+                case 'navbar':
+                    html = `<nav class="${className}">
+  <div class="logo">Logo</div>
+  <div class="menu">Menu</div>
+</nav>`;
+                    break;
+            }
+
+            // Generate CSS
+            css = generateElementCSS(className);
+
+            const fullCode = `<style>
+${css}
+</style>
+
+${html}`;
+
+            document.getElementById('code-display').textContent = fullCode;
+            showNotification('✅ Codice generato con successo!');
+        }
+
+        function generateElementCSS(className) {
+            let css = `.${className} {\n`;
+            
+            // Base styles
+            switch(selectedElement) {
+                case 'button':
+                    css += '  padding: 12px 24px;\n';
+                    css += '  border: none;\n';
+                    css += '  border-radius: 8px;\n';
+                    css += '  font-weight: 600;\n';
+                    css += '  cursor: pointer;\n';
+                    css += '  font-size: 16px;\n';
+                    break;
+                case 'card':
+                    css += '  padding: 24px;\n';
+                    css += '  border-radius: 12px;\n';
+                    css += '  max-width: 300px;\n';
+                    break;
+                case 'text':
+                    css += '  font-size: 24px;\n';
+                    css += '  font-weight: bold;\n';
+                    css += '  padding: 16px;\n';
+                    break;
+                case 'hero':
+                    css += '  padding: 60px 40px;\n';
+                    css += '  border-radius: 16px;\n';
+                    css += '  text-align: center;\n';
+                    css += '  max-width: 600px;\n';
+                    css += '  margin: 0 auto;\n';
+                    break;
+                case 'badge':
+                    css += '  padding: 6px 12px;\n';
+                    css += '  border-radius: 20px;\n';
+                    css += '  font-size: 12px;\n';
+                    css += '  font-weight: 600;\n';
+                    css += '  display: inline-block;\n';
+                    break;
+                case 'navbar':
+                    css += '  padding: 16px 32px;\n';
+                    css += '  border-radius: 12px;\n';
+                    css += '  display: flex;\n';
+                    css += '  align-items: center;\n';
+                    css += '  justify-content: space-between;\n';
+                    css += '  max-width: 800px;\n';
+                    css += '  margin: 0 auto;\n';
+                    break;
+            }
+
+            // Apply style-specific properties
+            switch(selectedStyle) {
+                case 'solid':
+                    if (selectedElement === 'text') {
+                        css += `  color: ${currentColors.primary};\n`;
+                    } else {
+                        css += `  background: ${currentColors.primary};\n`;
+                        css += '  color: white;\n';
+                    }
+                    break;
+                    
+                case 'gradient':
+                    const direction = document.getElementById('gradient-direction').value;
+                    css += `  background: linear-gradient(${direction}, ${currentColors.gradient1}, ${currentColors.gradient2});\n`;
+                    css += '  color: white;\n';
+                    break;
+                    
+                case 'shadow':
+                    const x = document.getElementById('shadow-x').value;
+                    const y = document.getElementById('shadow-y').value;
+                    const blur = document.getElementById('shadow-blur').value;
+                    const opacity = document.getElementById('shadow-opacity').value / 100;
+                    const shadowColor = currentColors.shadow;
+                    const rgb = hexToRgb(shadowColor);
+                    
+                    css += `  box-shadow: ${x}px ${y}px ${blur}px rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${opacity});\n`;
+                    css += '  background: white;\n';
+                    css += '  color: #333;\n';
+                    break;
+                    
+                case 'border':
+                    const borderWidth = document.getElementById('border-width').value;
+                    const borderStyle = document.getElementById('border-style').value;
+                    
+                    css += `  border: ${borderWidth} ${borderStyle} ${currentColors.border};\n`;
+                    css += '  background: white;\n';
+                    css += '  color: #333;\n';
+                    break;
+            }
+
+            css += '}\n';
+            return css;
+        }
+
+        function hexToRgb(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : null;
+        }
+
+        function copyCode() {
+            const code = document.getElementById('code-display').textContent;
+            
+            if (code.includes('Clicca "Genera Codice CSS"')) {
+                showNotification('❌ Genera prima il codice!');
+                return;
+            }
+
+            navigator.clipboard.writeText(code).then(() => {
+                showNotification('✅ Codice copiato negli appunti!');
+            }).catch(() => {
+                showNotification('❌ Errore nella copia');
+            });
+        }
+
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg z-50 text-white font-medium';
+            notification.textContent = message;
+            
+            if (message.includes('❌')) {
+                notification.classList.add('bg-red-500');
+            } else {
+                notification.classList.add('bg-green-500');
+            }
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Element SDK integration
+        const defaultConfig = {
+            main_title: "Generatore Colori CSS",
+            subtitle: "Crea palette di colori, gradienti e ombre personalizzate. Scegli i colori e genera il codice CSS!"
+        };
+
+        async function onConfigChange(newConfig) {
+            const titleElement = document.getElementById('main-title');
+            const subtitleElement = document.getElementById('subtitle');
+            
+            if (titleElement) {
+                titleElement.textContent = newConfig.main_title || defaultConfig.main_title;
+            }
+            if (subtitleElement) {
+                subtitleElement.textContent = newConfig.subtitle || defaultConfig.subtitle;
+            }
+        }
+
+        function mapToCapabilities(config) {
+            return {
+                recolorables: [],
+                borderables: [],
+                fontEditable: undefined,
+                fontSizeable: undefined
+            };
+        }
+
+        function mapToEditPanelValues(config) {
+            return new Map([
+                ["main_title", config.main_title || defaultConfig.main_title],
+                ["subtitle", config.subtitle || defaultConfig.subtitle]
+            ]);
+        }
+
+        if (window.elementSdk) {
+            window.elementSdk.init({
+                defaultConfig,
+                onConfigChange,
+                mapToCapabilities,
+                mapToEditPanelValues
+            });
+        }
+
+        // Initialize gradient and shadow previews
+        setTimeout(() => {
+            updateGradientPreview();
+            updateShadowPreview();
+        }, 100);
+       // 🎨 BREADCRUMBS COLORI COMPLETI
+(function() {
+  const ol = document.getElementById('breadcrumb');
+  if (!ol) return;
+  
+  ol.innerHTML = `
+    <li><a href="/index.html" style="padding: 8px 16px; background: #dbeafe; color: #1e40af; text-decoration: none; border-radius: 9999px; font-weight: 500; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 6px;">🏠 Home</a></li>
+    <li style="color: #9ca3af; font-weight: bold; font-size: 18px; margin: 0 12px;">›</li>
+    <li style="position: relative; display: inline-block; margin-right: 12px;">
+      <span id="colori-trigger" style="padding: 8px 16px; background: #fef3c7; color: #d97706; border: 2px solid #fde68a; border-radius: 9999px; font-weight: 700; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 6px;">🎨 Colori ▼</span>
+      <div id="colori-dropdown" style="position: absolute; top: 100%; left: 0; margin-top: 8px; width: 300px; background: rgba(255,255,255,0.98); backdrop-filter: blur(20px); border: 1px solid #e5e7eb; border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.3s; z-index: 10000; padding: 8px 0;">
+        <a href="colori_home.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">🏠 Home</a>
+        <a href="color-picker.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">  🎨 Picker</a>
+        <a href="color-tools-suite.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">🛠️ Color Tools Suite </a>
+        <a href="designer.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;"> 🖌️ Designer </a>
+        <a href="designer2.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">
+✏️ Designer 2 </a>
+        <a href="generatore_di_colore.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">🟢 Generatore di Colore</a>
+        <a href="generatore_gradienti.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500; border-top: 1px solid #f3f4f6;">🌈 Generatore Gradienti</a>
+        <a href="hub_app.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">📱 Hub App</a>
+        <a href="elementi-color.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">🎨  Elementi</a>
+      </div>
+    </li>
+    <li style="color: #9ca3af; font-weight: bold; font-size: 18px; margin: 0 12px;">›</li>
+    <li id="current-page" style="display: flex; align-items: center;"></li>
+  `;
+  
+  // Imposta pagina corrente (cambia il nome!)
+  const currentPage = document.getElementById('current-page');
+  currentPage.innerHTML = `
+    <span style="padding: 8px 16px; background: #dcfce7; color: #166534; border: 2px solid #bbf7d0; border-radius: 9999px; font-weight: 800; box-shadow: 0 4px 8px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 6px;">
+🔴 Generatore Colore</span>
+  `;
+  
+  // Dropdown events
+  document.getElementById('colori-trigger').onmouseenter = () => {
+    document.getElementById('colori-dropdown').style.opacity = '1';
+    document.getElementById('colori-dropdown').style.visibility = 'visible';
+    document.getElementById('colori-dropdown').style.transform = 'translateY(0)';
+  };
+  document.getElementById('colori-dropdown').onmouseleave = () => {
+    document.getElementById('colori-dropdown').style.opacity = '0';
+    document.getElementById('colori-dropdown').style.visibility = 'hidden';
+    document.getElementById('colori-dropdown').style.transform = 'translateY(-10px)';
+  };
+  
+  // Hover links
+  document.querySelectorAll('#colori-dropdown a').forEach(link => {
+    link.onmouseenter = () => {
+      link.style.background = 'linear-gradient(135deg, #ec4899, #f59e0b)';
+      link.style.color = 'white';
+      link.style.transform = 'translateX(4px)';
+    };
+    link.onmouseleave = () => {
+      link.style.background = '';
+      link.style.color = '#374151';
+      link.style.transform = '';
+    };
+  });
+})();
+    </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'998f9aac5633ed15',t:'MTc2MjIxMjA0Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

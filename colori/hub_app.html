@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hub App Utilità & Grafica</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            box-sizing: border-box;
+        }
+        .app-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .app-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .tool-active {
+            display: block;
+        }
+        .tool-hidden {
+            display: none;
+        }
+        .color-picker-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 4px;
+        }
+        .color-swatch {
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+        .color-swatch:hover {
+            transform: scale(1.1);
+            border-color: #374151;
+        }
+        .gradient-preview {
+            height: 100px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body class="min-h-full bg-gray-50 font-sans">
+    <!-- Header -->
+    <header class="gradient-bg text-white py-8">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-4xl font-bold mb-2">🛠️ Hub App Utilità & Grafica</h1>
+            <p class="text-xl opacity-90">Strumenti professionali per creativi e sviluppatori</p>
+        </div>
+              <div id="breadcrumb-container" style="
+  position: sticky; top: 0; z-index: 9999 !important; 
+  background: rgba(255,255,255,0.98) !important; 
+  backdrop-filter: blur(20px) !important; 
+  border-bottom: 1px solid #e5e7eb !important; 
+  padding: 16px 24px !important; 
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1) !important;
+  margin: 0 !important;
+">
+  <div style="max-width: 1280px; margin: 0 auto;">
+    <div style="font-size: 24px; font-weight: 800; background: linear-gradient(135deg, #ec4899, #f59e0b); -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 12px;">
+      🎨 Color Tools Hub
+    </div>
+    <ol id="breadcrumb" style="
+      display: flex !important; align-items: center !important; 
+      list-style: none !important; padding: 0 !important; margin: 0 !important;
+      gap: 8px !important; font-size: 14px !important;
+    "></ol>
+  </div>
+</div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex overflow-x-auto py-4 space-x-4">
+                <button onclick="showTool('home')" class="nav-btn bg-blue-500 text-white px-4 py-2 rounded-lg whitespace-nowrap">
+                    🏠 Home
+                </button>
+                <button onclick="showTool('color-palette')" class="nav-btn bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg whitespace-nowrap">
+                    🎨 Palette Colori
+                </button>
+                <button onclick="showTool('gradient-generator')" class="nav-btn bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg whitespace-nowrap">
+                    🌈 Generatore Gradienti
+                </button>
+                <button onclick="showTool('text-formatter')" class="nav-btn bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg whitespace-nowrap">
+                    📝 Formattatore Testo
+                </button>
+                <button onclick="showTool('unit-converter')" class="nav-btn bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg whitespace-nowrap">
+                    📏 Convertitore Unità
+                </button>
+                <button onclick="showTool('password-generator')" class="nav-btn bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg whitespace-nowrap">
+                    🔐 Generatore Password
+                </button>
+                <button onclick="showTool('base64-encoder')" class="nav-btn bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg whitespace-nowrap">
+                    🔄 Base64 Encoder
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-8">
+        <!-- Home -->
+        <div id="home" class="tool-section tool-active">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Scegli il tuo strumento</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Una collezione di app professionali per semplificare il tuo lavoro creativo e tecnico. Ogni strumento è ottimizzato per la massima usabilità.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Palette Colori -->
+                <div class="app-card bg-white rounded-xl shadow-lg p-6" onclick="showTool('color-palette')">
+                    <div class="text-4xl mb-4">🎨</div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Palette Colori</h3>
+                    <p class="text-gray-600 mb-4">Crea e gestisci palette di colori professionali con codici HEX, RGB e HSL.</p>
+                    <div class="flex space-x-2">
+                        <div class="w-4 h-4 bg-red-500 rounded"></div>
+                        <div class="w-4 h-4 bg-blue-500 rounded"></div>
+                        <div class="w-4 h-4 bg-green-500 rounded"></div>
+                        <div class="w-4 h-4 bg-yellow-500 rounded"></div>
+                    </div>
+                </div>
+
+                <!-- Generatore Gradienti -->
+                <div class="app-card bg-white rounded-xl shadow-lg p-6" onclick="showTool('gradient-generator')">
+                    <div class="text-4xl mb-4">🌈</div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Generatore Gradienti</h3>
+                    <p class="text-gray-600 mb-4">Crea gradienti CSS personalizzati con anteprima in tempo reale.</p>
+                    <div class="h-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded"></div>
+                </div>
+
+                <!-- Formattatore Testo -->
+                <div class="app-card bg-white rounded-xl shadow-lg p-6" onclick="showTool('text-formatter')">
+                    <div class="text-4xl mb-4">📝</div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Formattatore Testo</h3>
+                    <p class="text-gray-600 mb-4">Trasforma il testo: maiuscole, minuscole, capitalizza e molto altro.</p>
+                    <div class="text-sm text-gray-500 font-mono">MAIUSCOLO → minuscolo → Capitalizzato</div>
+                </div>
+
+                <!-- Convertitore Unità -->
+                <div class="app-card bg-white rounded-xl shadow-lg p-6" onclick="showTool('unit-converter')">
+                    <div class="text-4xl mb-4">📏</div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Convertitore Unità</h3>
+                    <p class="text-gray-600 mb-4">Converti lunghezze, pesi, temperature e unità digitali.</p>
+                    <div class="text-sm text-gray-500">1 metro = 100 centimetri</div>
+                </div>
+
+                <!-- Generatore Password -->
+                <div class="app-card bg-white rounded-xl shadow-lg p-6" onclick="showTool('password-generator')">
+                    <div class="text-4xl mb-4">🔐</div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Generatore Password</h3>
+                    <p class="text-gray-600 mb-4">Genera password sicure con opzioni personalizzabili.</p>
+                    <div class="text-sm text-gray-500 font-mono">A7k#mP9$xR2!</div>
+                </div>
+
+                <!-- Base64 Encoder -->
+                <div class="app-card bg-white rounded-xl shadow-lg p-6" onclick="showTool('base64-encoder')">
+                    <div class="text-4xl mb-4">🔄</div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Base64 Encoder</h3>
+                    <p class="text-gray-600 mb-4">Codifica e decodifica testo in Base64 per sviluppatori.</p>
+                    <div class="text-sm text-gray-500 font-mono">SGVsbG8gV29ybGQ=</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Palette Colori -->
+        <div id="color-palette" class="tool-section tool-hidden">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">🎨 Palette Colori</h2>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-lg font-semibold mb-4">Selettore Colore</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Colore Principale</label>
+                                <div class="flex gap-2">
+                                    <input type="color" id="mainColor" value="#3b82f6" onchange="updateColorInfo()" class="w-16 h-12 rounded-lg border-2 border-gray-300">
+                                    <input type="text" id="colorHex" value="#3b82f6" onchange="updateFromHex()" class="flex-1 p-3 border border-gray-300 rounded-lg font-mono">
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-3 gap-4 text-sm">
+                                <div>
+                                    <label class="block text-gray-600 mb-1">HEX</label>
+                                    <div id="hexValue" class="font-mono bg-gray-100 p-2 rounded">#3b82f6</div>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-600 mb-1">RGB</label>
+                                    <div id="rgbValue" class="font-mono bg-gray-100 p-2 rounded">59, 130, 246</div>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-600 mb-1">HSL</label>
+                                    <div id="hslValue" class="font-mono bg-gray-100 p-2 rounded">217, 91%, 60%</div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h4 class="font-semibold mb-2">Palette Armoniose</h4>
+                                <div class="space-y-2">
+                                    <button onclick="generateHarmony('complementary')" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg">Complementari</button>
+                                    <button onclick="generateHarmony('triadic')" class="w-full bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg">Triadici</button>
+                                    <button onclick="generateHarmony('analogous')" class="w-full bg-purple-500 hover:bg-purple-600 text-white py-2 px-4 rounded-lg">Analoghi</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-lg font-semibold mb-4">Palette Generata</h3>
+                        <div id="colorPalette" class="space-y-3">
+                            <!-- I colori verranno generati qui -->
+                        </div>
+                        
+                        <div class="mt-6">
+                            <button onclick="exportPalette()" class="w-full bg-gray-800 hover:bg-gray-900 text-white py-2 px-4 rounded-lg">
+                                📋 Esporta Palette
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Generatore Gradienti -->
+        <div id="gradient-generator" class="tool-section tool-hidden">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">🌈 Generatore Gradienti</h2>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Colore Iniziale</label>
+                            <input type="color" id="gradientStart" value="#ff6b6b" onchange="updateGradient()" class="w-full h-12 rounded-lg border-2 border-gray-300">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Colore Finale</label>
+                            <input type="color" id="gradientEnd" value="#4ecdc4" onchange="updateGradient()" class="w-full h-12 rounded-lg border-2 border-gray-300">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Direzione: <span id="angleValue">45°</span></label>
+                            <input type="range" id="gradientAngle" min="0" max="360" value="45" onchange="updateGradient()" class="w-full">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Tipo</label>
+                            <select id="gradientType" onchange="updateGradient()" class="w-full p-3 border border-gray-300 rounded-lg">
+                                <option value="linear">Lineare</option>
+                                <option value="radial">Radiale</option>
+                            </select>
+                        </div>
+
+                        <div class="space-y-2">
+                            <button onclick="randomGradient()" class="w-full bg-purple-500 hover:bg-purple-600 text-white py-2 px-4 rounded-lg">🎲 Gradiente Casuale</button>
+                            <button onclick="copyGradientCSS()" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg">📋 Copia CSS</button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-lg font-semibold mb-4">Anteprima</h3>
+                        <div id="gradientPreview" class="gradient-preview border-2 border-gray-200"></div>
+                        
+                        <div class="mt-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Codice CSS</label>
+                            <textarea id="gradientCSS" rows="4" class="w-full p-3 border border-gray-300 rounded-lg font-mono text-sm" readonly></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Formattatore Testo -->
+        <div id="text-formatter" class="tool-section tool-hidden">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">📝 Formattatore Testo</h2>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div>
+                        <label for="inputText" class="block text-sm font-medium text-gray-700 mb-2">Testo di Input</label>
+                        <textarea id="inputText" rows="10" placeholder="Inserisci qui il tuo testo..." 
+                                  class="w-full p-3 border border-gray-300 rounded-lg" 
+                                  oninput="updateTextStats()">Questo è un esempio di testo che può essere formattato in diversi modi.</textarea>
+                        
+                        <div class="mt-4 grid grid-cols-3 gap-4 text-sm text-gray-600">
+                            <div>Caratteri: <span id="charCount">0</span></div>
+                            <div>Parole: <span id="wordCount">0</span></div>
+                            <div>Righe: <span id="lineCount">0</span></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Azioni di Formattazione</label>
+                        <div class="grid grid-cols-2 gap-2 mb-4">
+                            <button onclick="formatText('uppercase')" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-3 rounded text-sm">MAIUSCOLO</button>
+                            <button onclick="formatText('lowercase')" class="bg-green-500 hover:bg-green-600 text-white py-2 px-3 rounded text-sm">minuscolo</button>
+                            <button onclick="formatText('capitalize')" class="bg-purple-500 hover:bg-purple-600 text-white py-2 px-3 rounded text-sm">Capitalizza</button>
+                            <button onclick="formatText('sentence')" class="bg-orange-500 hover:bg-orange-600 text-white py-2 px-3 rounded text-sm">Frase</button>
+                            <button onclick="formatText('reverse')" class="bg-red-500 hover:bg-red-600 text-white py-2 px-3 rounded text-sm">Inverti</button>
+                            <button onclick="formatText('removeSpaces')" class="bg-gray-500 hover:bg-gray-600 text-white py-2 px-3 rounded text-sm">Rimuovi Spazi</button>
+                        </div>
+
+                        <label for="outputText" class="block text-sm font-medium text-gray-700 mb-2">Testo Formattato</label>
+                        <textarea id="outputText" rows="10" class="w-full p-3 border border-gray-300 rounded-lg" readonly></textarea>
+                        
+                        <button onclick="copyFormattedText()" class="w-full mt-4 bg-gray-800 hover:bg-gray-900 text-white py-2 px-4 rounded-lg">
+                            📋 Copia Testo
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Convertitore Unità -->
+        <div id="unit-converter" class="tool-section tool-hidden">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">📏 Convertitore Unità</h2>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Categoria</label>
+                            <select id="unitCategory" onchange="updateUnitOptions()" class="w-full p-3 border border-gray-300 rounded-lg">
+                                <option value="length">Lunghezza</option>
+                                <option value="weight">Peso</option>
+                                <option value="temperature">Temperatura</option>
+                                <option value="digital">Dati Digitali</option>
+                            </select>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Da</label>
+                                <select id="fromUnit" onchange="convertUnits()" class="w-full p-3 border border-gray-300 rounded-lg">
+                                    <!-- Opzioni generate dinamicamente -->
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">A</label>
+                                <select id="toUnit" onchange="convertUnits()" class="w-full p-3 border border-gray-300 rounded-lg">
+                                    <!-- Opzioni generate dinamicamente -->
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <label for="inputValue" class="block text-sm font-medium text-gray-700 mb-2">Valore</label>
+                            <input type="number" id="inputValue" value="1" oninput="convertUnits()" 
+                                   class="w-full p-3 border border-gray-300 rounded-lg">
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-lg font-semibold mb-4">Risultato</h3>
+                        <div class="bg-gray-50 p-6 rounded-lg text-center">
+                            <div class="text-3xl font-bold text-blue-600 mb-2" id="conversionResult">1</div>
+                            <div class="text-gray-600" id="conversionUnit">metro</div>
+                        </div>
+
+                        <div class="mt-6">
+                            <h4 class="font-semibold mb-2">Conversioni Rapide</h4>
+                            <div id="quickConversions" class="space-y-2 text-sm">
+                                <!-- Conversioni rapide generate dinamicamente -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Generatore Password -->
+        <div id="password-generator" class="tool-section tool-hidden">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">🔐 Generatore Password</h2>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Lunghezza: <span id="lengthValue">12</span></label>
+                            <input type="range" id="passwordLength" min="4" max="50" value="12" onchange="updatePasswordLength()" class="w-full">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="flex items-center">
+                                <input type="checkbox" id="includeUppercase" checked onchange="generatePassword()" class="mr-2">
+                                <span>Lettere maiuscole (A-Z)</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" id="includeLowercase" checked onchange="generatePassword()" class="mr-2">
+                                <span>Lettere minuscole (a-z)</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" id="includeNumbers" checked onchange="generatePassword()" class="mr-2">
+                                <span>Numeri (0-9)</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" id="includeSymbols" checked onchange="generatePassword()" class="mr-2">
+                                <span>Simboli (!@#$%^&*)</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" id="excludeSimilar" onchange="generatePassword()" class="mr-2">
+                                <span>Escludi caratteri simili (0, O, l, I)</span>
+                            </label>
+                        </div>
+
+                        <button onclick="generatePassword()" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold">
+                            🎲 Genera Nuova Password
+                        </button>
+                    </div>
+
+                    <div>
+                        <h3 class="text-lg font-semibold mb-4">Password Generata</h3>
+                        <div class="bg-gray-50 p-4 rounded-lg mb-4">
+                            <div id="generatedPassword" class="font-mono text-lg break-all">A7k#mP9$xR2!</div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2 mb-4">
+                            <button onclick="copyPassword()" class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg">
+                                📋 Copia
+                            </button>
+                            <button onclick="generatePassword()" class="bg-purple-500 hover:bg-purple-600 text-white py-2 px-4 rounded-lg">
+                                🔄 Rigenera
+                            </button>
+                        </div>
+
+                        <div class="space-y-2">
+                            <h4 class="font-semibold">Sicurezza Password</h4>
+                            <div class="bg-gray-200 rounded-full h-2">
+                                <div id="strengthBar" class="bg-green-500 h-2 rounded-full transition-all duration-300" style="width: 80%"></div>
+                            </div>
+                            <div id="strengthText" class="text-sm text-green-600 font-medium">Forte</div>
+                        </div>
+
+                        <div class="mt-4 text-sm text-gray-600">
+                            <h4 class="font-semibold mb-2">Suggerimenti:</h4>
+                            <ul class="space-y-1">
+                                <li>• Usa almeno 12 caratteri</li>
+                                <li>• Combina lettere, numeri e simboli</li>
+                                <li>• Non riutilizzare password</li>
+                                <li>• Usa un gestore di password</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Base64 Encoder -->
+        <div id="base64-encoder" class="tool-section tool-hidden">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">🔄 Base64 Encoder/Decoder</h2>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-lg font-semibold mb-4">Testo Normale</h3>
+                        <textarea id="plainText" rows="10" placeholder="Inserisci il testo da codificare..." 
+                                  class="w-full p-3 border border-gray-300 rounded-lg" 
+                                  oninput="encodeToBase64()">Hello World!</textarea>
+                        
+                        <div class="mt-4 space-y-2">
+                            <button onclick="encodeToBase64()" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg">
+                                ➡️ Codifica in Base64
+                            </button>
+                            <button onclick="copyPlainText()" class="w-full bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded-lg">
+                                📋 Copia Testo
+                            </button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-lg font-semibold mb-4">Base64</h3>
+                        <textarea id="base64Text" rows="10" placeholder="Inserisci il Base64 da decodificare..." 
+                                  class="w-full p-3 border border-gray-300 rounded-lg font-mono" 
+                                  oninput="decodeFromBase64()">SGVsbG8gV29ybGQh</textarea>
+                        
+                        <div class="mt-4 space-y-2">
+                            <button onclick="decodeFromBase64()" class="w-full bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg">
+                                ⬅️ Decodifica da Base64
+                            </button>
+                            <button onclick="copyBase64Text()" class="w-full bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded-lg">
+                                📋 Copia Base64
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8 space-y-6">
+                    <div class="bg-blue-50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-blue-800 mb-2">ℹ️ Cos'è Base64?</h4>
+                        <p class="text-blue-700 text-sm mb-3">Base64 è un metodo di codifica che converte dati binari in testo ASCII usando solo 64 caratteri sicuri: A-Z, a-z, 0-9, + e /</p>
+                        
+                        <div class="bg-white p-3 rounded border">
+                            <h5 class="font-medium text-blue-800 mb-2">Esempio Passo-Passo con "Hi!":</h5>
+                            <div class="space-y-2 text-sm">
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div>
+                                        <div class="font-medium text-gray-700">1. Testo originale:</div>
+                                        <div class="font-mono bg-gray-100 p-2 rounded">Hi!</div>
+                                    </div>
+                                    <div>
+                                        <div class="font-medium text-gray-700">2. In binario:</div>
+                                        <div class="font-mono bg-gray-100 p-2 rounded text-xs">01001000 01101001 00100001</div>
+                                    </div>
+                                    <div>
+                                        <div class="font-medium text-gray-700">3. Raggruppato (6 bit):</div>
+                                        <div class="font-mono bg-gray-100 p-2 rounded text-xs">010010 000110 100100 100001</div>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+                                    <div>
+                                        <div class="font-medium text-gray-700">4. Valori decimali:</div>
+                                        <div class="font-mono bg-gray-100 p-2 rounded">18, 6, 36, 33</div>
+                                    </div>
+                                    <div>
+                                        <div class="font-medium text-gray-700">5. Caratteri Base64:</div>
+                                        <div class="font-mono bg-green-100 p-2 rounded font-bold">SGkh</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-green-50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-green-800 mb-2">🔍 Prova Interattiva</h4>
+                        <p class="text-green-700 text-sm mb-3">Inserisci una singola lettera per vedere la conversione passo-passo:</p>
+                        
+                        <div class="flex gap-2 mb-3">
+                            <input type="text" id="demoChar" maxlength="1" value="A" oninput="showBase64Demo()" 
+                                   class="w-16 p-2 border border-green-300 rounded text-center font-mono text-lg">
+                            <button onclick="showBase64Demo()" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm">
+                                Analizza
+                            </button>
+                        </div>
+                        
+                        <div id="demoResult" class="space-y-2 text-sm">
+                            <!-- Risultato demo generato dinamicamente -->
+                        </div>
+                    </div>
+
+                    <div class="bg-yellow-50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-yellow-800 mb-2">🛠️ Quando si usa Base64?</h4>
+                        <div class="text-yellow-700 text-sm space-y-1">
+                            <div>• <strong>Email:</strong> Per allegare immagini nel codice HTML</div>
+                            <div>• <strong>Web:</strong> Per incorporare immagini direttamente nel CSS/HTML</div>
+                            <div>• <strong>API:</strong> Per trasmettere dati binari in formato JSON</div>
+                            <div>• <strong>URL:</strong> Per passare dati complessi nei parametri</div>
+                            <div>• <strong>Database:</strong> Per salvare file come testo</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Variabili globali
+        let currentTool = 'home';
+
+        // Funzioni di navigazione
+        function showTool(toolName) {
+            // Nascondi tutti gli strumenti
+            document.querySelectorAll('.tool-section').forEach(section => {
+                section.classList.remove('tool-active');
+                section.classList.add('tool-hidden');
+            });
+
+            // Mostra lo strumento selezionato
+            document.getElementById(toolName).classList.remove('tool-hidden');
+            document.getElementById(toolName).classList.add('tool-active');
+
+            // Aggiorna i pulsanti di navigazione
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-500', 'text-white');
+                btn.classList.add('bg-gray-100', 'hover:bg-gray-200');
+            });
+            event.target.classList.remove('bg-gray-100', 'hover:bg-gray-200');
+            event.target.classList.add('bg-blue-500', 'text-white');
+
+            currentTool = toolName;
+
+            // Inizializza lo strumento se necessario
+            if (toolName === 'color-palette') {
+                updateColorInfo();
+            } else if (toolName === 'gradient-generator') {
+                updateGradient();
+            } else if (toolName === 'text-formatter') {
+                updateTextStats();
+            } else if (toolName === 'unit-converter') {
+                updateUnitOptions();
+            } else if (toolName === 'password-generator') {
+                generatePassword();
+            } else if (toolName === 'base64-encoder') {
+                encodeToBase64();
+            }
+        }
+
+        // === PALETTE COLORI ===
+        function updateColorInfo() {
+            const color = document.getElementById('mainColor').value;
+            document.getElementById('colorHex').value = color;
+            
+            const rgb = hexToRgb(color);
+            const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+            
+            document.getElementById('hexValue').textContent = color.toUpperCase();
+            document.getElementById('rgbValue').textContent = `${rgb.r}, ${rgb.g}, ${rgb.b}`;
+            document.getElementById('hslValue').textContent = `${Math.round(hsl.h)}, ${Math.round(hsl.s)}%, ${Math.round(hsl.l)}%`;
+            
+            generateHarmony('complementary');
+        }
+
+        function updateFromHex() {
+            const hex = document.getElementById('colorHex').value;
+            if (/^#[0-9A-F]{6}$/i.test(hex)) {
+                document.getElementById('mainColor').value = hex;
+                updateColorInfo();
+            }
+        }
+
+        function generateHarmony(type) {
+            const baseColor = document.getElementById('mainColor').value;
+            const rgb = hexToRgb(baseColor);
+            const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+            
+            let colors = [baseColor];
+            
+            switch(type) {
+                case 'complementary':
+                    colors.push(hslToHex((hsl.h + 180) % 360, hsl.s, hsl.l));
+                    colors.push(hslToHex(hsl.h, hsl.s, Math.max(0, hsl.l - 20)));
+                    colors.push(hslToHex(hsl.h, hsl.s, Math.min(100, hsl.l + 20)));
+                    break;
+                case 'triadic':
+                    colors.push(hslToHex((hsl.h + 120) % 360, hsl.s, hsl.l));
+                    colors.push(hslToHex((hsl.h + 240) % 360, hsl.s, hsl.l));
+                    break;
+                case 'analogous':
+                    colors.push(hslToHex((hsl.h + 30) % 360, hsl.s, hsl.l));
+                    colors.push(hslToHex((hsl.h - 30 + 360) % 360, hsl.s, hsl.l));
+                    colors.push(hslToHex((hsl.h + 60) % 360, hsl.s, hsl.l));
+                    break;
+            }
+            
+            displayPalette(colors);
+        }
+
+        function displayPalette(colors) {
+            const container = document.getElementById('colorPalette');
+            container.innerHTML = '';
+            
+            colors.forEach((color, index) => {
+                const colorDiv = document.createElement('div');
+                colorDiv.className = 'flex items-center gap-3 p-3 border border-gray-200 rounded-lg';
+                colorDiv.innerHTML = `
+                    <div class="w-12 h-12 rounded-lg border-2 border-gray-300" style="background-color: ${color}"></div>
+                    <div class="flex-1">
+                        <div class="font-mono text-sm">${color.toUpperCase()}</div>
+                        <div class="text-xs text-gray-500">Colore ${index + 1}</div>
+                    </div>
+                    <button onclick="copyToClipboard('${color}')" class="bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded text-sm">
+                        📋
+                    </button>
+                `;
+                container.appendChild(colorDiv);
+            });
+        }
+
+        function exportPalette() {
+            const colors = Array.from(document.querySelectorAll('#colorPalette .font-mono')).map(el => el.textContent);
+            const paletteText = colors.join('\n');
+            copyToClipboard(paletteText);
+            showToast('Palette copiata negli appunti!');
+        }
+
+        // === GENERATORE GRADIENTI ===
+        function updateGradient() {
+            const start = document.getElementById('gradientStart').value;
+            const end = document.getElementById('gradientEnd').value;
+            const angle = document.getElementById('gradientAngle').value;
+            const type = document.getElementById('gradientType').value;
+            
+            document.getElementById('angleValue').textContent = angle + '°';
+            
+            let css;
+            if (type === 'linear') {
+                css = `linear-gradient(${angle}deg, ${start}, ${end})`;
+            } else {
+                css = `radial-gradient(circle, ${start}, ${end})`;
+            }
+            
+            document.getElementById('gradientPreview').style.background = css;
+            document.getElementById('gradientCSS').value = `background: ${css};`;
+        }
+
+        function randomGradient() {
+            const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7', '#dda0dd', '#98d8c8', '#f7dc6f'];
+            const start = colors[Math.floor(Math.random() * colors.length)];
+            const end = colors[Math.floor(Math.random() * colors.length)];
+            const angle = Math.floor(Math.random() * 360);
+            
+            document.getElementById('gradientStart').value = start;
+            document.getElementById('gradientEnd').value = end;
+            document.getElementById('gradientAngle').value = angle;
+            
+            updateGradient();
+        }
+
+        function copyGradientCSS() {
+            const css = document.getElementById('gradientCSS').value;
+            copyToClipboard(css);
+            showToast('CSS copiato negli appunti!');
+        }
+
+        // === FORMATTATORE TESTO ===
+        function updateTextStats() {
+            const text = document.getElementById('inputText').value;
+            document.getElementById('charCount').textContent = text.length;
+            document.getElementById('wordCount').textContent = text.trim() ? text.trim().split(/\s+/).length : 0;
+            document.getElementById('lineCount').textContent = text.split('\n').length;
+        }
+
+        function formatText(action) {
+            const input = document.getElementById('inputText').value;
+            let output = '';
+            
+            switch(action) {
+                case 'uppercase':
+                    output = input.toUpperCase();
+                    break;
+                case 'lowercase':
+                    output = input.toLowerCase();
+                    break;
+                case 'capitalize':
+                    output = input.replace(/\b\w/g, l => l.toUpperCase());
+                    break;
+                case 'sentence':
+                    output = input.toLowerCase().replace(/(^\s*\w|[\.\!\?]\s*\w)/g, c => c.toUpperCase());
+                    break;
+                case 'reverse':
+                    output = input.split('').reverse().join('');
+                    break;
+                case 'removeSpaces':
+                    output = input.replace(/\s+/g, '');
+                    break;
+            }
+            
+            document.getElementById('outputText').value = output;
+        }
+
+        function copyFormattedText() {
+            const text = document.getElementById('outputText').value;
+            copyToClipboard(text);
+            showToast('Testo copiato negli appunti!');
+        }
+
+        // === CONVERTITORE UNITÀ ===
+        const unitData = {
+            length: {
+                meter: { name: 'Metro', factor: 1 },
+                kilometer: { name: 'Chilometro', factor: 1000 },
+                centimeter: { name: 'Centimetro', factor: 0.01 },
+                millimeter: { name: 'Millimetro', factor: 0.001 },
+                inch: { name: 'Pollice', factor: 0.0254 },
+                foot: { name: 'Piede', factor: 0.3048 },
+                yard: { name: 'Iarda', factor: 0.9144 },
+                mile: { name: 'Miglio', factor: 1609.34 }
+            },
+            weight: {
+                kilogram: { name: 'Chilogrammo', factor: 1 },
+                gram: { name: 'Grammo', factor: 0.001 },
+                pound: { name: 'Libbra', factor: 0.453592 },
+                ounce: { name: 'Oncia', factor: 0.0283495 },
+                ton: { name: 'Tonnellata', factor: 1000 }
+            },
+            temperature: {
+                celsius: { name: 'Celsius', factor: 1 },
+                fahrenheit: { name: 'Fahrenheit', factor: 1 },
+                kelvin: { name: 'Kelvin', factor: 1 }
+            },
+            digital: {
+                byte: { name: 'Byte', factor: 1 },
+                kilobyte: { name: 'Kilobyte', factor: 1024 },
+                megabyte: { name: 'Megabyte', factor: 1024 * 1024 },
+                gigabyte: { name: 'Gigabyte', factor: 1024 * 1024 * 1024 },
+                terabyte: { name: 'Terabyte', factor: 1024 * 1024 * 1024 * 1024 }
+            }
+        };
+
+        function updateUnitOptions() {
+            const category = document.getElementById('unitCategory').value;
+            const units = unitData[category];
+            
+            const fromSelect = document.getElementById('fromUnit');
+            const toSelect = document.getElementById('toUnit');
+            
+            fromSelect.innerHTML = '';
+            toSelect.innerHTML = '';
+            
+            Object.keys(units).forEach(key => {
+                const option1 = new Option(units[key].name, key);
+                const option2 = new Option(units[key].name, key);
+                fromSelect.add(option1);
+                toSelect.add(option2);
+            });
+            
+            convertUnits();
+        }
+
+        function convertUnits() {
+            const category = document.getElementById('unitCategory').value;
+            const fromUnit = document.getElementById('fromUnit').value;
+            const toUnit = document.getElementById('toUnit').value;
+            const inputValue = parseFloat(document.getElementById('inputValue').value) || 0;
+            
+            let result;
+            
+            if (category === 'temperature') {
+                result = convertTemperature(inputValue, fromUnit, toUnit);
+            } else {
+                const fromFactor = unitData[category][fromUnit].factor;
+                const toFactor = unitData[category][toUnit].factor;
+                result = (inputValue * fromFactor) / toFactor;
+            }
+            
+            document.getElementById('conversionResult').textContent = result.toLocaleString('it-IT', { maximumFractionDigits: 6 });
+            document.getElementById('conversionUnit').textContent = unitData[category][toUnit].name;
+            
+            generateQuickConversions(category, fromUnit, inputValue);
+        }
+
+        function convertTemperature(value, from, to) {
+            let celsius;
+            
+            // Converti a Celsius
+            switch(from) {
+                case 'celsius': celsius = value; break;
+                case 'fahrenheit': celsius = (value - 32) * 5/9; break;
+                case 'kelvin': celsius = value - 273.15; break;
+            }
+            
+            // Converti da Celsius alla unità target
+            switch(to) {
+                case 'celsius': return celsius;
+                case 'fahrenheit': return celsius * 9/5 + 32;
+                case 'kelvin': return celsius + 273.15;
+            }
+        }
+
+        function generateQuickConversions(category, fromUnit, inputValue) {
+            const container = document.getElementById('quickConversions');
+            const units = unitData[category];
+            container.innerHTML = '';
+            
+            Object.keys(units).slice(0, 4).forEach(key => {
+                if (key !== fromUnit) {
+                    let result;
+                    if (category === 'temperature') {
+                        result = convertTemperature(inputValue, fromUnit, key);
+                    } else {
+                        const fromFactor = units[fromUnit].factor;
+                        const toFactor = units[key].factor;
+                        result = (inputValue * fromFactor) / toFactor;
+                    }
+                    
+                    const div = document.createElement('div');
+                    div.className = 'flex justify-between bg-gray-50 p-2 rounded';
+                    div.innerHTML = `
+                        <span>${units[key].name}</span>
+                        <span class="font-mono">${result.toLocaleString('it-IT', { maximumFractionDigits: 3 })}</span>
+                    `;
+                    container.appendChild(div);
+                }
+            });
+        }
+
+        // === GENERATORE PASSWORD ===
+        function updatePasswordLength() {
+            const length = document.getElementById('passwordLength').value;
+            document.getElementById('lengthValue').textContent = length;
+            generatePassword();
+        }
+
+        function generatePassword() {
+            const length = parseInt(document.getElementById('passwordLength').value);
+            const includeUppercase = document.getElementById('includeUppercase').checked;
+            const includeLowercase = document.getElementById('includeLowercase').checked;
+            const includeNumbers = document.getElementById('includeNumbers').checked;
+            const includeSymbols = document.getElementById('includeSymbols').checked;
+            const excludeSimilar = document.getElementById('excludeSimilar').checked;
+            
+            let charset = '';
+            if (includeUppercase) charset += excludeSimilar ? 'ABCDEFGHJKLMNPQRSTUVWXYZ' : 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            if (includeLowercase) charset += excludeSimilar ? 'abcdefghjkmnpqrstuvwxyz' : 'abcdefghijklmnopqrstuvwxyz';
+            if (includeNumbers) charset += excludeSimilar ? '23456789' : '0123456789';
+            if (includeSymbols) charset += '!@#$%^&*()_+-=[]{}|;:,.<>?';
+            
+            if (!charset) {
+                document.getElementById('generatedPassword').textContent = 'Seleziona almeno un tipo di carattere';
+                return;
+            }
+            
+            let password = '';
+            for (let i = 0; i < length; i++) {
+                password += charset.charAt(Math.floor(Math.random() * charset.length));
+            }
+            
+            document.getElementById('generatedPassword').textContent = password;
+            updatePasswordStrength(password);
+        }
+
+        function updatePasswordStrength(password) {
+            let score = 0;
+            let feedback = '';
+            
+            if (password.length >= 8) score += 20;
+            if (password.length >= 12) score += 20;
+            if (/[a-z]/.test(password)) score += 10;
+            if (/[A-Z]/.test(password)) score += 10;
+            if (/[0-9]/.test(password)) score += 10;
+            if (/[^A-Za-z0-9]/.test(password)) score += 20;
+            if (password.length >= 16) score += 10;
+            
+            const strengthBar = document.getElementById('strengthBar');
+            const strengthText = document.getElementById('strengthText');
+            
+            if (score < 30) {
+                strengthBar.className = 'bg-red-500 h-2 rounded-full transition-all duration-300';
+                strengthText.textContent = 'Debole';
+                strengthText.className = 'text-sm text-red-600 font-medium';
+            } else if (score < 60) {
+                strengthBar.className = 'bg-yellow-500 h-2 rounded-full transition-all duration-300';
+                strengthText.textContent = 'Media';
+                strengthText.className = 'text-sm text-yellow-600 font-medium';
+            } else {
+                strengthBar.className = 'bg-green-500 h-2 rounded-full transition-all duration-300';
+                strengthText.textContent = 'Forte';
+                strengthText.className = 'text-sm text-green-600 font-medium';
+            }
+            
+            strengthBar.style.width = Math.min(score, 100) + '%';
+        }
+
+        function copyPassword() {
+            const password = document.getElementById('generatedPassword').textContent;
+            copyToClipboard(password);
+            showToast('Password copiata negli appunti!');
+        }
+
+        // === BASE64 ENCODER ===
+        function encodeToBase64() {
+            const plainText = document.getElementById('plainText').value;
+            try {
+                const encoded = btoa(unescape(encodeURIComponent(plainText)));
+                document.getElementById('base64Text').value = encoded;
+            } catch (error) {
+                document.getElementById('base64Text').value = 'Errore nella codifica';
+            }
+        }
+
+        function decodeFromBase64() {
+            const base64Text = document.getElementById('base64Text').value;
+            try {
+                const decoded = decodeURIComponent(escape(atob(base64Text)));
+                document.getElementById('plainText').value = decoded;
+            } catch (error) {
+                document.getElementById('plainText').value = 'Errore nella decodifica - Base64 non valido';
+            }
+        }
+
+        function copyPlainText() {
+            const text = document.getElementById('plainText').value;
+            copyToClipboard(text);
+            showToast('Testo copiato negli appunti!');
+        }
+
+        function copyBase64Text() {
+            const text = document.getElementById('base64Text').value;
+            copyToClipboard(text);
+            showToast('Base64 copiato negli appunti!');
+        }
+
+        // === FUNZIONI UTILITY ===
+        function hexToRgb(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : null;
+        }
+
+        function rgbToHsl(r, g, b) {
+            r /= 255; g /= 255; b /= 255;
+            const max = Math.max(r, g, b), min = Math.min(r, g, b);
+            let h, s, l = (max + min) / 2;
+
+            if (max === min) {
+                h = s = 0;
+            } else {
+                const d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                switch (max) {
+                    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                    case g: h = (b - r) / d + 2; break;
+                    case b: h = (r - g) / d + 4; break;
+                }
+                h /= 6;
+            }
+
+            return { h: h * 360, s: s * 100, l: l * 100 };
+        }
+
+        function hslToHex(h, s, l) {
+            h /= 360; s /= 100; l /= 100;
+            const a = s * Math.min(l, 1 - l);
+            const f = n => {
+                const k = (n + h * 12) % 12;
+                const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+                return Math.round(255 * color).toString(16).padStart(2, '0');
+            };
+            return `#${f(0)}${f(8)}${f(4)}`;
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).catch(() => {
+                // Fallback per browser più vecchi
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+            });
+        }
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 2000);
+        }
+
+        // === DEMO BASE64 INTERATTIVA ===
+        function showBase64Demo() {
+            const char = document.getElementById('demoChar').value || 'A';
+            const container = document.getElementById('demoResult');
+            
+            if (char.length === 0) {
+                container.innerHTML = '<div class="text-gray-500">Inserisci un carattere per vedere la demo</div>';
+                return;
+            }
+            
+            // Ottieni il codice ASCII
+            const ascii = char.charCodeAt(0);
+            
+            // Converti in binario (8 bit)
+            const binary = ascii.toString(2).padStart(8, '0');
+            
+            // Aggiungi padding per Base64 (deve essere multiplo di 6)
+            const paddedBinary = binary + '0000'; // Padding per arrivare a 12 bit
+            
+            // Dividi in gruppi da 6 bit
+            const group1 = paddedBinary.substring(0, 6);
+            const group2 = paddedBinary.substring(6, 12);
+            
+            // Converti in decimale
+            const decimal1 = parseInt(group1, 2);
+            const decimal2 = parseInt(group2, 2);
+            
+            // Tabella Base64
+            const base64Chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+            const base64Char1 = base64Chars[decimal1];
+            const base64Char2 = base64Chars[decimal2];
+            
+            // Risultato finale con padding
+            const base64Result = base64Char1 + base64Char2 + '==';
+            
+            container.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                        <div class="font-medium text-green-700">Carattere: <span class="font-mono text-lg">'${char}'</span></div>
+                        <div class="text-green-600">Codice ASCII: <span class="font-mono">${ascii}</span></div>
+                    </div>
+                    <div>
+                        <div class="font-medium text-green-700">Binario (8 bit):</div>
+                        <div class="font-mono bg-white p-1 rounded border text-xs">${binary}</div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-2">
+                    <div>
+                        <div class="font-medium text-green-700">Gruppi da 6 bit:</div>
+                        <div class="font-mono bg-white p-1 rounded border text-xs">
+                            <span class="bg-blue-100 px-1">${group1}</span> 
+                            <span class="bg-yellow-100 px-1">${group2}</span>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="font-medium text-green-700">Valori decimali:</div>
+                        <div class="font-mono bg-white p-1 rounded border">${decimal1}, ${decimal2}</div>
+                    </div>
+                </div>
+                <div class="mt-2 p-2 bg-white rounded border">
+                    <div class="font-medium text-green-700 mb-1">Risultato Base64:</div>
+                    <div class="font-mono text-lg font-bold text-center bg-green-100 p-2 rounded">
+                        ${base64Result}
+                    </div>
+                    <div class="text-xs text-green-600 text-center mt-1">
+                        (== indica padding per completare il gruppo)
+                    </div>
+                </div>
+            `;
+        }
+
+        // Inizializzazione
+        document.addEventListener('DOMContentLoaded', function() {
+            updateColorInfo();
+            updateGradient();
+            updateTextStats();
+            updateUnitOptions();
+            generatePassword();
+            encodeToBase64();
+            showBase64Demo();
+        });
+
+        // 🎨 BREADCRUMBS COLORI COMPLETI
+(function() {
+  const ol = document.getElementById('breadcrumb');
+  if (!ol) return;
+  
+  ol.innerHTML = `
+    <li><a href="/index.html" style="padding: 8px 16px; background: #dbeafe; color: #1e40af; text-decoration: none; border-radius: 9999px; font-weight: 500; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 6px;">🏠 Home</a></li>
+    <li style="color: #9ca3af; font-weight: bold; font-size: 18px; margin: 0 12px;">›</li>
+    <li style="position: relative; display: inline-block; margin-right: 12px;">
+      <span id="colori-trigger" style="padding: 8px 16px; background: #fef3c7; color: #d97706; border: 2px solid #fde68a; border-radius: 9999px; font-weight: 700; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 6px;">🎨 Colori ▼</span>
+      <div id="colori-dropdown" style="position: absolute; top: 100%; left: 0; margin-top: 8px; width: 300px; background: rgba(255,255,255,0.98); backdrop-filter: blur(20px); border: 1px solid #e5e7eb; border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.3s; z-index: 10000; padding: 8px 0;">
+        <a href="colori_home.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">🏠 Home</a>
+        <a href="color-picker.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">  🎨 Picker</a>
+        <a href="color-tools-suite.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">🛠️ Color Tools Suite </a>
+        <a href="designer.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;"> 🖌️ Designer </a>
+        <a href="designer2.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">
+✏️ Designer 2 </a>
+        <a href="generatore_colore.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">
+🔴 Generatore Colore      </a>
+        <a href="generatore_di_colore.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500; border-top: 1px solid #f3f4f6;">  🟢 Generatore di Colore</a>
+        <a href="generatore_gradienti.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">🌈 Generatore Gradienti</a>
+         <a href="elementi-color.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">🎨 Elementi</a>
+      </div>
+    </li>
+    <li style="color: #9ca3af; font-weight: bold; font-size: 18px; margin: 0 12px;">›</li>
+    <li id="current-page" style="display: flex; align-items: center;"></li>
+  `;
+  
+  // Imposta pagina corrente (cambia il nome!)
+  const currentPage = document.getElementById('current-page');
+  currentPage.innerHTML = `
+    <span style="padding: 8px 16px; background: #dcfce7; color: #166534; border: 2px solid #bbf7d0; border-radius: 9999px; font-weight: 800; box-shadow: 0 4px 8px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 6px;">
+📱 Hub App</span>
+  `;
+  
+  // Dropdown events
+  document.getElementById('colori-trigger').onmouseenter = () => {
+    document.getElementById('colori-dropdown').style.opacity = '1';
+    document.getElementById('colori-dropdown').style.visibility = 'visible';
+    document.getElementById('colori-dropdown').style.transform = 'translateY(0)';
+  };
+  document.getElementById('colori-dropdown').onmouseleave = () => {
+    document.getElementById('colori-dropdown').style.opacity = '0';
+    document.getElementById('colori-dropdown').style.visibility = 'hidden';
+    document.getElementById('colori-dropdown').style.transform = 'translateY(-10px)';
+  };
+  
+  // Hover links
+  document.querySelectorAll('#colori-dropdown a').forEach(link => {
+    link.onmouseenter = () => {
+      link.style.background = 'linear-gradient(135deg, #ec4899, #f59e0b)';
+      link.style.color = 'white';
+      link.style.transform = 'translateX(4px)';
+    };
+    link.onmouseleave = () => {
+      link.style.background = '';
+      link.style.color = '#374151';
+      link.style.transform = '';
+    };
+  });
+})();
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99190cf0f12dedb7',t:'MTc2MDk2ODkyMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
