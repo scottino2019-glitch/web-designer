@@ -265,9 +265,55 @@
     .dropdown:hover .dropdown-arrow {
       transform: rotate(180deg);
     }
-    @media (max-width: 700px) {
-      .card__thumb { height: 130px; }
-    }
+    /* MOBILE ADATTAMENTO */
+@media (max-width: 768px) {
+  header {
+    padding: 20px 15px !important;
+    font-size: 1.7rem !important;
+  }
+  
+  main {
+    margin: 20px auto !important;
+    padding: 0 12px 24px !important;
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+  }
+  
+  .card {
+    padding: 20px 16px !important;
+    margin-bottom: 15px !important;
+  }
+  
+  .card h3 {
+    font-size: 1.2rem !important;
+  }
+  
+  .card p {
+    font-size: 1rem !important;
+  }
+  
+  .card a {
+    padding: 12px 20px !important;
+    font-size: 1rem !important;
+  }
+  
+  .breadcrumb-container {
+    margin: 10px !important;
+    padding: 12px !important;
+  }
+  
+  #breadcrumb {
+    font-size: 13px !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+  }
+}
+
+@media (max-width: 480px) {
+  header {
+    font-size: 1.4rem !important;
+  }
+}
   </style>
 </head>
 <body>
