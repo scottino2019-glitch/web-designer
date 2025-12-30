@@ -1,0 +1,883 @@
+<!doctype html>
+<html lang="it" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generatore Animazioni CSS</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+        body {
+            box-sizing: border-box;
+        }
+        
+        .code-display {
+            background: #1a1a1a;
+            color: #e6e6e6;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.4;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+        
+        .preview-area {
+            min-height: 180px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+        
+        .demo-button {
+            background: #3b82f6;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            font-size: 16px;
+        }
+        
+        .demo-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            max-width: 200px;
+            text-align: center;
+        }
+        
+        .demo-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: #3b82f6;
+        }
+        
+        .demo-icon {
+            width: 60px;
+            height: 60px;
+            background: #3b82f6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+        
+        .demo-hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            border-radius: 16px;
+            text-align: center;
+            max-width: 300px;
+        }
+        
+        .demo-badge {
+            background: #3b82f6;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+        
+        .demo-image {
+            width: 120px;
+            height: 80px;
+            background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .demo-navbar {
+            background: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 280px;
+        }
+        
+        .demo-modal {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            max-width: 250px;
+            text-align: center;
+        }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full bg-gradient-to-br from-blue-50 to-indigo-100">
+  <div class="min-h-full">
+
+      
+      <!-- Header -->
+   <header class="bg-white shadow-sm">
+        <!-- NAVBAR INVULNERABILE (mettila PRIMA di tutto) -->
+<div id="breadcrumb-container" style="position: sticky; top: 0; z-index: 9999; background: rgba(255,255,255,0.98); backdrop-filter: blur(20px); border-bottom: 1px solid #e5e7eb; padding: 16px 24px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin: 0;">
+  <div style="max-width: 1280px; margin: 0 auto;">
+    <div style="font-size: 24px; font-weight: 800; background: linear-gradient(135deg, #4f46e5, #7c3aed); -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 12px;">
+      🎬 Hub Generatore Animazioni
+    </div>
+    <ol id="breadcrumb" style="display: flex; align-items: center; list-style: none; padding: 0; margin: 0; gap: 8px; font-size: 14px;"></ol>
+  </div>
+</div>
+    <div class="max-w-6xl mx-auto px-6 py-8 text-center">
+     <h1 id="main-title" class="text-4xl font-bold text-gray-800 mb-4">Generatore Animazioni CSS</h1>
+     <p id="subtitle" class="text-lg text-gray-600 max-w-2xl mx-auto">Crea animazioni personalizzate per i tuoi elementi web. Scegli l'effetto, personalizza e copia il codice!</p>
+    </div>
+   </header><!-- Main Content -->
+   <main class="max-w-6xl mx-auto px-6 py-8">
+    <div class="grid lg:grid-cols-2 gap-8"><!-- Controls Panel -->
+     <div class="bg-white rounded-xl shadow-lg p-6">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6">Controlli</h2><!-- Element Type -->
+      <div class="mb-6"><label class="block text-sm font-semibold text-gray-700 mb-3">Tipo Elemento</label>
+       <div class="grid grid-cols-3 gap-2"><button id="btn-button" class="control-btn bg-blue-500 text-white px-3 py-2 rounded-lg font-medium text-sm"> Bottone </button> <button id="btn-card" class="control-btn bg-gray-200 text-gray-700 px-3 py-2 rounded-lg font-medium text-sm"> Card </button> <button id="btn-text" class="control-btn bg-gray-200 text-gray-700 px-3 py-2 rounded-lg font-medium text-sm"> Testo </button> <button id="btn-icon" class="control-btn bg-gray-200 text-gray-700 px-3 py-2 rounded-lg font-medium text-sm"> Icona </button> <button id="btn-hero" class="control-btn bg-gray-200 text-gray-700 px-3 py-2 rounded-lg font-medium text-sm"> Hero </button> <button id="btn-badge" class="control-btn bg-gray-200 text-gray-700 px-3 py-2 rounded-lg font-medium text-sm"> Badge </button> <button id="btn-image" class="control-btn bg-gray-200 text-gray-700 px-3 py-2 rounded-lg font-medium text-sm"> Immagine </button> <button id="btn-navbar" class="control-btn bg-gray-200 text-gray-700 px-3 py-2 rounded-lg font-medium text-sm"> Navbar </button> <button id="btn-modal" class="control-btn bg-gray-200 text-gray-700 px-3 py-2 rounded-lg font-medium text-sm"> Modal </button>
+       </div>
+      </div><!-- Animation Type -->
+      <div class="mb-6"><label class="block text-sm font-semibold text-gray-700 mb-3">Tipo Animazione</label>
+       <div class="grid grid-cols-2 gap-3"><button id="anim-hover" class="anim-btn bg-indigo-500 text-white px-4 py-3 rounded-lg font-medium"> Hover </button> <button id="anim-entrance" class="anim-btn bg-gray-200 text-gray-700 px-4 py-3 rounded-lg font-medium"> Entrata </button> <button id="anim-continuous" class="anim-btn bg-gray-200 text-gray-700 px-4 py-3 rounded-lg font-medium"> Continua </button> <button id="anim-click" class="anim-btn bg-gray-200 text-gray-700 px-4 py-3 rounded-lg font-medium"> Click </button>
+       </div>
+      </div><!-- Effects -->
+      <div class="mb-6"><label class="block text-sm font-semibold text-gray-700 mb-3">Effetto</label>
+       <div id="effects-container" class="grid grid-cols-2 gap-2"><!-- Populated by JS -->
+       </div>
+      </div><!-- Duration -->
+      <div class="mb-6"><label class="block text-sm font-semibold text-gray-700 mb-3">Durata</label> <select id="duration-select" class="w-full p-3 border border-gray-300 rounded-lg"> <option value="0.2s">Veloce (0.2s)</option> <option value="0.3s" selected>Normale (0.3s)</option> <option value="0.5s">Lenta (0.5s)</option> <option value="1s">Molto Lenta (1s)</option> </select>
+      </div><!-- Generate Button --> <button id="generate-btn" class="w-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-indigo-600 hover:to-purple-700 transition-all"> 🎨 Genera Codice CSS </button>
+     </div><!-- Preview Panel -->
+     <div class="bg-white rounded-xl shadow-lg p-6">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6">Anteprima &amp; Codice</h2><!-- Preview Area -->
+      <div class="preview-area mb-6">
+       <div id="demo-element" class="demo-button">
+        Elemento Demo
+       </div>
+      </div><!-- Instructions -->
+      <div class="bg-blue-50 rounded-lg p-4 mb-6">
+       <p id="instructions-text" class="text-sm text-blue-800">Passa il mouse sopra l'elemento per vedere l'animazione</p>
+      </div><!-- Generated Code -->
+      <div>
+       <div class="flex justify-between items-center mb-3">
+        <h3 class="font-semibold text-gray-700">Codice CSS Generato</h3><button id="copy-btn" class="bg-green-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-600 transition-colors"> 📋 Copia </button>
+       </div>
+       <div id="code-display" class="code-display">
+        /* Clicca "Genera Codice CSS" per vedere il risultato */
+       </div>
+      </div>
+     </div>
+    </div>
+   </main>
+  </div>
+  <!-- Sezione Animazioni -->
+<section id="section-animazioni" class="w-full max-w-4xl bg-white bg-opacity-20 backdrop-blur-lg rounded-lg p-6 mb-8 animate-fadeInUp" style="animation-delay: 0.4s;">
+  
+      <h2 class="text-3xl font-semibold mb-4 text-center">Homepage</h2>
+  <div class="flex justify-center space-x-4">
+<a href="animazioni_home.html"><button class="bg-purple-600 hover:bg-purple-700 text-white font-semibold px-4 py-2 rounded shadow transition-transform transform hover:scale-110 duration-300">
+      Ritorna
+    </button></a>
+    <div class="w-12 h-12 bg-pink-500 rounded-full animate-bounce"></div>
+  </div>
+      <h2 class="text-3xl font-semibold mb-4 text-center">Generatore 2</h2>
+  <div class="flex justify-center space-x-4">
+<a href="generatore_anime.html"><button class="bg-purple-600 hover:bg-purple-700 text-white font-semibold px-4 py-2 rounded shadow transition-transform transform hover:scale-110 duration-300">
+      vai
+    </button></a>
+    <div class="w-12 h-12 bg-pink-500 rounded-full animate-bounce"></div>
+  </div>
+      <h2 class="text-3xl font-semibold mb-4 text-center">Generatore 3</h2>
+  <div class="flex justify-center space-x-4">
+<a href="cssanimation.html"><button class="bg-purple-600 hover:bg-purple-700 text-white font-semibold px-4 py-2 rounded shadow transition-transform transform hover:scale-110 duration-300">
+      vai
+    </button></a>
+    <div class="w-12 h-12 bg-pink-500 rounded-full animate-bounce"></div>
+  </div>
+</section>
+  <script>
+        // State
+        let selectedElement = 'button';
+        let selectedAnimation = 'hover';
+        let selectedEffect = 'scale';
+        let selectedDuration = '0.3s';
+
+        // Effects for each animation type
+        const animationEffects = {
+            hover: ['scale', 'shadow', 'rotate', 'translate'],
+            entrance: ['fadeIn', 'slideIn', 'bounceIn', 'scaleIn'],
+            continuous: ['pulse', 'bounce', 'rotate', 'glow'],
+            click: ['shake', 'bounce', 'pulse', 'scale']
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            setupEventListeners();
+            updateEffects();
+            updatePreview();
+        });
+
+        function setupEventListeners() {
+            // Element type buttons
+            document.getElementById('btn-button').addEventListener('click', () => selectElement('button'));
+            document.getElementById('btn-card').addEventListener('click', () => selectElement('card'));
+            document.getElementById('btn-text').addEventListener('click', () => selectElement('text'));
+            document.getElementById('btn-icon').addEventListener('click', () => selectElement('icon'));
+            document.getElementById('btn-hero').addEventListener('click', () => selectElement('hero'));
+            document.getElementById('btn-badge').addEventListener('click', () => selectElement('badge'));
+            document.getElementById('btn-image').addEventListener('click', () => selectElement('image'));
+            document.getElementById('btn-navbar').addEventListener('click', () => selectElement('navbar'));
+            document.getElementById('btn-modal').addEventListener('click', () => selectElement('modal'));
+
+            // Animation type buttons
+            document.getElementById('anim-hover').addEventListener('click', () => selectAnimation('hover'));
+            document.getElementById('anim-entrance').addEventListener('click', () => selectAnimation('entrance'));
+            document.getElementById('anim-continuous').addEventListener('click', () => selectAnimation('continuous'));
+            document.getElementById('anim-click').addEventListener('click', () => selectAnimation('click'));
+
+            // Duration select
+            document.getElementById('duration-select').addEventListener('change', function() {
+                selectedDuration = this.value;
+                updatePreview();
+            });
+
+            // Generate button
+            document.getElementById('generate-btn').addEventListener('click', generateCode);
+
+            // Copy button
+            document.getElementById('copy-btn').addEventListener('click', copyCode);
+        }
+
+        function selectElement(type) {
+            selectedElement = type;
+            updateButtonStates('.control-btn', 'btn-' + type);
+            updatePreview();
+        }
+
+        function selectAnimation(type) {
+            selectedAnimation = type;
+            updateButtonStates('.anim-btn', 'anim-' + type);
+            updateEffects();
+            updateInstructions();
+            updatePreview();
+        }
+
+        function selectEffect(effect) {
+            selectedEffect = effect;
+            updateButtonStates('.effect-btn', null, effect);
+            updatePreview();
+        }
+
+        function updateButtonStates(selector, activeId, activeText = null) {
+            document.querySelectorAll(selector).forEach(btn => {
+                btn.classList.remove('bg-blue-500', 'bg-indigo-500', 'bg-green-500', 'text-white');
+                btn.classList.add('bg-gray-200', 'text-gray-700');
+            });
+
+            if (activeId) {
+                const activeBtn = document.getElementById(activeId);
+                if (activeBtn) {
+                    activeBtn.classList.remove('bg-gray-200', 'text-gray-700');
+                    if (selector === '.control-btn') {
+                        activeBtn.classList.add('bg-blue-500', 'text-white');
+                    } else {
+                        activeBtn.classList.add('bg-indigo-500', 'text-white');
+                    }
+                }
+            }
+
+            if (activeText) {
+                document.querySelectorAll(selector).forEach(btn => {
+                    if (btn.textContent.toLowerCase() === activeText.toLowerCase()) {
+                        btn.classList.remove('bg-gray-200', 'text-gray-700');
+                        btn.classList.add('bg-green-500', 'text-white');
+                    }
+                });
+            }
+        }
+
+        function updateEffects() {
+            const container = document.getElementById('effects-container');
+            const effects = animationEffects[selectedAnimation] || [];
+            
+            container.innerHTML = '';
+            
+            effects.forEach((effect, index) => {
+                const btn = document.createElement('button');
+                btn.className = `effect-btn px-3 py-2 rounded-lg text-sm font-medium transition-all ${index === 0 ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-700'}`;
+                btn.textContent = effect.charAt(0).toUpperCase() + effect.slice(1);
+                btn.addEventListener('click', () => selectEffect(effect));
+                container.appendChild(btn);
+            });
+
+            if (effects.length > 0) {
+                selectedEffect = effects[0];
+            }
+        }
+
+        function updateInstructions() {
+            const instructions = {
+                hover: 'Passa il mouse sopra l\'elemento per vedere l\'animazione',
+                entrance: 'Animazione di entrata (si attiva al caricamento)',
+                continuous: 'Animazione continua (sempre attiva)',
+                click: 'Clicca sull\'elemento per vedere l\'animazione'
+            };
+            
+            document.getElementById('instructions-text').textContent = instructions[selectedAnimation] || '';
+        }
+
+        function updatePreview() {
+            const demoElement = document.getElementById('demo-element');
+            
+            // Reset element
+            demoElement.className = '';
+            demoElement.style.cssText = '';
+            demoElement.innerHTML = '';
+            
+            // Set element type
+            switch(selectedElement) {
+                case 'button':
+                    demoElement.className = 'demo-button';
+                    demoElement.innerHTML = 'Bottone Demo';
+                    break;
+                case 'card':
+                    demoElement.className = 'demo-card';
+                    demoElement.innerHTML = '<div style="width:20px;height:20px;background:#3b82f6;border-radius:4px;margin:0 auto 12px;"></div><h4 style="font-weight:600;margin-bottom:4px;">Titolo</h4><p style="font-size:14px;color:#666;">Contenuto card</p>';
+                    break;
+                case 'text':
+                    demoElement.className = 'demo-text';
+                    demoElement.innerHTML = 'Testo Demo';
+                    break;
+                case 'icon':
+                    demoElement.className = 'demo-icon';
+                    demoElement.innerHTML = '🎯';
+                    break;
+                case 'hero':
+                    demoElement.className = 'demo-hero';
+                    demoElement.innerHTML = '<h2 style="font-size:28px;font-weight:bold;margin-bottom:12px;">Hero Title</h2><p style="font-size:16px;opacity:0.9;">Sottotitolo hero section</p>';
+                    break;
+                case 'badge':
+                    demoElement.className = 'demo-badge';
+                    demoElement.innerHTML = 'Nuovo';
+                    break;
+                case 'image':
+                    demoElement.className = 'demo-image';
+                    demoElement.innerHTML = 'IMG';
+                    break;
+                case 'navbar':
+                    demoElement.className = 'demo-navbar';
+                    demoElement.innerHTML = '<div style="font-weight:600;color:#3b82f6;">Logo</div><div style="display:flex;gap:16px;font-size:14px;color:#666;"><span>Home</span><span>About</span><span>Contact</span></div>';
+                    break;
+                case 'modal':
+                    demoElement.className = 'demo-modal';
+                    demoElement.innerHTML = '<h4 style="font-weight:600;margin-bottom:8px;color:#333;">Modal Title</h4><p style="font-size:14px;color:#666;margin-bottom:16px;">Contenuto del modal</p><button style="background:#3b82f6;color:white;padding:8px 16px;border:none;border-radius:6px;font-size:12px;">OK</button>';
+                    break;
+            }
+
+            // Apply animation preview
+            applyPreviewAnimation(demoElement);
+        }
+
+        function applyPreviewAnimation(element) {
+            if (selectedAnimation === 'hover') {
+                element.style.transition = `all ${selectedDuration} ease`;
+                
+                element.addEventListener('mouseenter', function() {
+                    switch(selectedEffect) {
+                        case 'scale':
+                            this.style.transform = 'scale(1.1)';
+                            break;
+                        case 'shadow':
+                            this.style.boxShadow = '0 10px 25px rgba(0,0,0,0.2)';
+                            break;
+                        case 'rotate':
+                            this.style.transform = 'rotate(5deg)';
+                            break;
+                        case 'translate':
+                            this.style.transform = 'translateY(-8px)';
+                            break;
+                    }
+                });
+
+                element.addEventListener('mouseleave', function() {
+                    this.style.transform = '';
+                    this.style.boxShadow = '';
+                });
+
+            } else if (selectedAnimation === 'entrance') {
+                setTimeout(() => {
+                    switch(selectedEffect) {
+                        case 'fadeIn':
+                            element.style.animation = `fadeIn ${selectedDuration} ease-out`;
+                            break;
+                        case 'slideIn':
+                            element.style.animation = `slideIn ${selectedDuration} ease-out`;
+                            break;
+                        case 'bounceIn':
+                            element.style.animation = `bounceIn ${selectedDuration} ease-out`;
+                            break;
+                        case 'scaleIn':
+                            element.style.animation = `scaleIn ${selectedDuration} ease-out`;
+                            break;
+                    }
+                }, 100);
+
+            } else if (selectedAnimation === 'continuous') {
+                switch(selectedEffect) {
+                    case 'pulse':
+                        element.style.animation = 'pulse 2s infinite';
+                        break;
+                    case 'bounce':
+                        element.style.animation = 'bounce 1s infinite';
+                        break;
+                    case 'rotate':
+                        element.style.animation = 'rotate 2s linear infinite';
+                        break;
+                    case 'glow':
+                        element.style.animation = 'glow 2s infinite';
+                        break;
+                }
+
+            } else if (selectedAnimation === 'click') {
+                element.style.cursor = 'pointer';
+                
+                element.addEventListener('click', function() {
+                    switch(selectedEffect) {
+                        case 'shake':
+                            this.style.animation = 'shake 0.5s ease-in-out';
+                            setTimeout(() => this.style.animation = '', 500);
+                            break;
+                        case 'bounce':
+                            this.style.animation = 'clickBounce 0.6s ease-out';
+                            setTimeout(() => this.style.animation = '', 600);
+                            break;
+                        case 'pulse':
+                            this.style.animation = 'clickPulse 0.3s ease-out';
+                            setTimeout(() => this.style.animation = '', 300);
+                            break;
+                        case 'scale':
+                            this.style.transform = 'scale(0.95)';
+                            setTimeout(() => this.style.transform = '', 150);
+                            break;
+                    }
+                });
+            }
+        }
+
+        function generateCode() {
+            let css = '';
+            let html = '';
+            
+            // Generate HTML
+            const className = `animated-${selectedElement}`;
+            
+            switch(selectedElement) {
+                case 'button':
+                    html = `<button class="${className}">Il Mio Bottone</button>`;
+                    break;
+                case 'card':
+                    html = `<div class="${className}">
+  <div class="card-icon"></div>
+  <h4>Titolo Card</h4>
+  <p>Contenuto della card</p>
+</div>`;
+                    break;
+                case 'text':
+                    html = `<h3 class="${className}">Il Mio Testo</h3>`;
+                    break;
+                case 'icon':
+                    html = `<div class="${className}">🎯</div>`;
+                    break;
+                case 'hero':
+                    html = `<section class="${className}">
+  <h1>Hero Title</h1>
+  <p>Sottotitolo della hero section</p>
+  <button>Call to Action</button>
+</section>`;
+                    break;
+                case 'badge':
+                    html = `<span class="${className}">Nuovo</span>`;
+                    break;
+                case 'image':
+                    html = `<div class="${className}">
+  <span>Immagine</span>
+</div>`;
+                    break;
+                case 'navbar':
+                    html = `<nav class="${className}">
+  <div class="logo">Logo</div>
+  <ul class="nav-links">
+    <li>Home</li>
+    <li>About</li>
+    <li>Contact</li>
+  </ul>
+</nav>`;
+                    break;
+                case 'modal':
+                    html = `<div class="${className}">
+  <h4>Modal Title</h4>
+  <p>Contenuto del modal</p>
+  <button>Chiudi</button>
+</div>`;
+                    break;
+            }
+
+            // Generate CSS
+            css += generateBaseCSS(className);
+            css += generateAnimationCSS(className);
+
+            const fullCode = `<style>
+${css}
+</style>
+
+${html}`;
+
+            document.getElementById('code-display').textContent = fullCode;
+            showNotification('✅ Codice generato con successo!');
+        }
+
+        function generateBaseCSS(className) {
+            let css = '';
+            
+            switch(selectedElement) {
+                case 'button':
+                    css = `.${className} {
+  background: #3b82f6;
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 16px;
+`;
+                    break;
+                case 'card':
+                    css = `.${className} {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  max-width: 200px;
+  text-align: center;
+`;
+                    break;
+                case 'text':
+                    css = `.${className} {
+  font-size: 24px;
+  font-weight: bold;
+  color: #3b82f6;
+`;
+                    break;
+                case 'icon':
+                    css = `.${className} {
+  width: 60px;
+  height: 60px;
+  background: #3b82f6;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: white;
+`;
+                    break;
+                case 'hero':
+                    css = `.${className} {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 60px 40px;
+  border-radius: 16px;
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto;
+`;
+                    break;
+                case 'badge':
+                    css = `.${className} {
+  background: #3b82f6;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+`;
+                    break;
+                case 'image':
+                    css = `.${className} {
+  width: 200px;
+  height: 150px;
+  background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+`;
+                    break;
+                case 'navbar':
+                    css = `.${className} {
+  background: white;
+  padding: 16px 32px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 800px;
+  margin: 0 auto;
+`;
+                    break;
+                case 'modal':
+                    css = `.${className} {
+  background: white;
+  padding: 32px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  max-width: 400px;
+  margin: 0 auto;
+  text-align: center;
+`;
+                    break;
+            }
+
+            if (selectedAnimation === 'hover') {
+                css += `  transition: all ${selectedDuration} ease;\n`;
+            }
+
+            css += '}\n\n';
+            return css;
+        }
+
+        function generateAnimationCSS(className) {
+            let css = '';
+
+            if (selectedAnimation === 'hover') {
+                css += `.${className}:hover {\n`;
+                switch(selectedEffect) {
+                    case 'scale':
+                        css += '  transform: scale(1.1);\n';
+                        break;
+                    case 'shadow':
+                        css += '  box-shadow: 0 10px 25px rgba(0,0,0,0.2);\n';
+                        break;
+                    case 'rotate':
+                        css += '  transform: rotate(5deg);\n';
+                        break;
+                    case 'translate':
+                        css += '  transform: translateY(-8px);\n';
+                        break;
+                }
+                css += '}\n';
+
+            } else if (selectedAnimation === 'entrance') {
+                css += `@keyframes ${selectedEffect} {\n`;
+                switch(selectedEffect) {
+                    case 'fadeIn':
+                        css += '  0% { opacity: 0; transform: translateY(20px); }\n';
+                        css += '  100% { opacity: 1; transform: translateY(0); }\n';
+                        break;
+                    case 'slideIn':
+                        css += '  0% { transform: translateX(-100%); opacity: 0; }\n';
+                        css += '  100% { transform: translateX(0); opacity: 1; }\n';
+                        break;
+                    case 'bounceIn':
+                        css += '  0% { transform: scale(0.3); opacity: 0; }\n';
+                        css += '  50% { transform: scale(1.05); }\n';
+                        css += '  70% { transform: scale(0.9); }\n';
+                        css += '  100% { transform: scale(1); opacity: 1; }\n';
+                        break;
+                    case 'scaleIn':
+                        css += '  0% { transform: scale(0); opacity: 0; }\n';
+                        css += '  100% { transform: scale(1); opacity: 1; }\n';
+                        break;
+                }
+                css += '}\n\n';
+                css += `.${className} {\n  animation: ${selectedEffect} ${selectedDuration} ease-out;\n}\n`;
+
+            } else if (selectedAnimation === 'continuous') {
+                css += `@keyframes ${selectedEffect} {\n`;
+                switch(selectedEffect) {
+                    case 'pulse':
+                        css += '  0%, 100% { transform: scale(1); }\n';
+                        css += '  50% { transform: scale(1.05); }\n';
+                        break;
+                    case 'bounce':
+                        css += '  0%, 20%, 53%, 80%, 100% { transform: translate3d(0,0,0); }\n';
+                        css += '  40%, 43% { transform: translate3d(0,-30px,0); }\n';
+                        css += '  70% { transform: translate3d(0,-15px,0); }\n';
+                        break;
+                    case 'rotate':
+                        css += '  0% { transform: rotate(0deg); }\n';
+                        css += '  100% { transform: rotate(360deg); }\n';
+                        break;
+                    case 'glow':
+                        css += '  0%, 100% { box-shadow: 0 0 5px #3b82f6; }\n';
+                        css += '  50% { box-shadow: 0 0 20px #3b82f6, 0 0 30px #3b82f6; }\n';
+                        break;
+                }
+                css += '}\n\n';
+                css += `.${className} {\n  animation: ${selectedEffect} 2s infinite;\n}\n`;
+
+            } else if (selectedAnimation === 'click') {
+                if (selectedEffect === 'scale') {
+                    css += `.${className}:active {\n  transform: scale(0.95);\n}\n`;
+                } else {
+                    css += `@keyframes ${selectedEffect} {\n`;
+                    switch(selectedEffect) {
+                        case 'shake':
+                            css += '  0%, 100% { transform: translateX(0); }\n';
+                            css += '  10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }\n';
+                            css += '  20%, 40%, 60%, 80% { transform: translateX(10px); }\n';
+                            break;
+                        case 'bounce':
+                            css += '  0%, 20%, 53%, 80%, 100% { transform: translate3d(0,0,0); }\n';
+                            css += '  40%, 43% { transform: translate3d(0,-20px,0); }\n';
+                            break;
+                        case 'pulse':
+                            css += '  0% { transform: scale(1); }\n';
+                            css += '  50% { transform: scale(1.1); }\n';
+                            css += '  100% { transform: scale(1); }\n';
+                            break;
+                    }
+                    css += '}\n\n';
+                    css += `.${className}.clicked {\n  animation: ${selectedEffect} 0.5s ease-out;\n}\n`;
+                }
+            }
+
+            return css;
+        }
+
+        function copyCode() {
+            const code = document.getElementById('code-display').textContent;
+            
+            if (code.includes('Clicca "Genera Codice CSS"')) {
+                showNotification('❌ Genera prima il codice!');
+                return;
+            }
+
+            navigator.clipboard.writeText(code).then(() => {
+                showNotification('✅ Codice copiato negli appunti!');
+            }).catch(() => {
+                showNotification('❌ Errore nella copia');
+            });
+        }
+
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg z-50 text-white font-medium';
+            notification.textContent = message;
+            
+            if (message.includes('❌')) {
+                notification.classList.add('bg-red-500');
+            } else {
+                notification.classList.add('bg-green-500');
+            }
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Element SDK integration
+        const defaultConfig = {
+            main_title: "Generatore Animazioni CSS",
+            subtitle: "Crea animazioni personalizzate per i tuoi elementi web. Scegli l'effetto, personalizza e copia il codice!"
+        };
+
+        async function onConfigChange(newConfig) {
+            const titleElement = document.getElementById('main-title');
+            const subtitleElement = document.getElementById('subtitle');
+            
+            if (titleElement) {
+                titleElement.textContent = newConfig.main_title || defaultConfig.main_title;
+            }
+            if (subtitleElement) {
+                subtitleElement.textContent = newConfig.subtitle || defaultConfig.subtitle;
+            }
+        }
+
+        function mapToCapabilities(config) {
+            return {
+                recolorables: [],
+                borderables: [],
+                fontEditable: undefined,
+                fontSizeable: undefined
+            };
+        }
+
+        function mapToEditPanelValues(config) {
+            return new Map([
+                ["main_title", config.main_title || defaultConfig.main_title],
+                ["subtitle", config.subtitle || defaultConfig.subtitle]
+            ]);
+        }
+
+        if (window.elementSdk) {
+            window.elementSdk.init({
+                defaultConfig,
+                onConfigChange,
+                mapToCapabilities,
+                mapToEditPanelValues
+            });
+        }
+       // breadcrumb
+
+
+(function() {
+  const ol = document.getElementById('breadcrumb');
+  ol.innerHTML = `
+    <li><a href="index.html" style="padding: 8px 16px; background: #dbeafe; color: #1e40af; text-decoration: none; border-radius: 9999px; font-weight: 500; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 6px;">🏠 Home</a></li>
+    <li style="color: #9ca3af; font-weight: bold; font-size: 18px; margin: 0 12px;">›</li>
+    <li style="position: relative; display: inline-block; margin-right: 12px;">
+      <span id="anim-trigger" style="padding: 8px 16px; background: #f3e8ff; color: #7c3aed; border: 2px solid #e9d5ff; border-radius: 9999px; font-weight: 700; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 6px;">🎬 Animazioni ▼</span>
+      <div id="anim-drop" style="position: absolute; top: 100%; left: 0; margin-top: 8px; width: 280px; background: rgba(255,255,255,0.98); backdrop-filter: blur(20px); border: 1px solid #e5e7eb; border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.3s; z-index: 10000; padding: 8px 0;">
+        <a href="animazioni_home.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">🎬 home</a>
+        <a href="animazioni_esempi.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">✨ Esempi</a>
+        <a href="animazioni-css.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">⚡
+Animazioni css</a>
+        <a href="animazioni1.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">☁️ Animazioni</a>
+        <a href="generatore_anime.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500; border-top: 1px solid #f3f4f6;">⚡Generatore</a>
+                <a href="cssanimazioni.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500; border-top: 1px solid #f3f4f6;">🌀 Anime CSS 2</a>
+      </div>
+    </li>
+    <li style="color: #9ca3af; font-weight: bold; font-size: 18px; margin: 0 12px;">›</li>
+    <li><span style="padding: 8px 16px; background: #dcfce7; color: #166534; border: 2px solid #bbf7d0; border-radius: 9999px; font-weight: 800; box-shadow: 0 4px 8px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 6px;">💓 Generatore </span></li>
+  `;
+  
+  // Dropdown events
+  document.getElementById('anim-trigger').onmouseenter = () => {
+    document.getElementById('anim-drop').style.opacity = '1';
+    document.getElementById('anim-drop').style.visibility = 'visible';
+    document.getElementById('anim-drop').style.transform = 'translateY(0)';
+  };
+  document.getElementById('anim-drop').onmouseleave = () => {
+    document.getElementById('anim-drop').style.opacity = '0';
+    document.getElementById('anim-drop').style.visibility = 'hidden';
+    document.getElementById('anim-drop').style.transform = 'translateY(-10px)';
+  };
+})();
+    </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'998f7594a733ee67',t:'MTc2MjIxMDUyNy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

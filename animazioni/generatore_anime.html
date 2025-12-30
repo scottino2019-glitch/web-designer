@@ -1,0 +1,1005 @@
+<!doctype html>
+<html lang="it" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hub Generatore Animazioni</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+        body {
+            box-sizing: border-box;
+        }
+        
+        /* Animazioni personalizzate */
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(-3deg); }
+            50% { transform: rotate(3deg); }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 5px currentColor; }
+            50% { box-shadow: 0 0 20px currentColor, 0 0 30px currentColor; }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        @keyframes slideInLeft {
+            0% { transform: translateX(-100%); opacity: 0; }
+            100% { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes slideInRight {
+            0% { transform: translateX(100%); opacity: 0; }
+            100% { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes fadeInUp {
+            0% { transform: translateY(30px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes zoomIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        @keyframes rainbow {
+            0% { background: #ff0000; }
+            16% { background: #ff8000; }
+            33% { background: #ffff00; }
+            50% { background: #00ff00; }
+            66% { background: #0080ff; }
+            83% { background: #8000ff; }
+            100% { background: #ff0000; }
+        }
+        
+        .wiggle { animation: wiggle 1s ease-in-out infinite; }
+        .float { animation: float 3s ease-in-out infinite; }
+        .glow { animation: glow 2s ease-in-out infinite; }
+        .shake { animation: shake 0.5s ease-in-out infinite; }
+        .heartbeat { animation: heartbeat 1.5s ease-in-out infinite; }
+        .slide-in-left { animation: slideInLeft 0.6s ease-out; }
+        .slide-in-right { animation: slideInRight 0.6s ease-out; }
+        .fade-in-up { animation: fadeInUp 0.8s ease-out; }
+        .zoom-in { animation: zoomIn 0.5s ease-out; }
+        .rainbow { animation: rainbow 3s linear infinite; }
+        
+        /* Syntax highlighting */
+        .code-block {
+            background: #1a1a1a;
+            color: #e6e6e6;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+        
+        .code-block .keyword { color: #569cd6; }
+        .code-block .string { color: #ce9178; }
+        .code-block .comment { color: #6a9955; }
+        .code-block .property { color: #9cdcfe; }
+        .code-block .value { color: #ce9178; }
+        .code-block .selector { color: #d7ba7d; }
+        .code-block .tag { color: #569cd6; }
+        .code-block .attribute { color: #92c5f8; }
+        
+        /* Utility classes */
+        .preview-area {
+            min-height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .element-card {
+            transition: all 0.3s ease;
+        }
+        
+        .element-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full bg-gradient-to-br from-indigo-50 via-white to-purple-50 font-sans">
+  <div class="min-h-full"><!-- Header -->
+   <header class="bg-white shadow-sm border-b">
+       <!-- NAVBAR INVULNERABILE (mettila PRIMA di tutto) -->
+<div id="breadcrumb-container" style="position: sticky; top: 0; z-index: 9999; background: rgba(255,255,255,0.98); backdrop-filter: blur(20px); border-bottom: 1px solid #e5e7eb; padding: 16px 24px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin: 0;">
+  <div style="max-width: 1280px; margin: 0 auto;">
+    <div style="font-size: 24px; font-weight: 800; background: linear-gradient(135deg, #4f46e5, #7c3aed); -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 12px;">
+      🎬 Hub Generatore Animazioni
+    </div>
+    <ol id="breadcrumb" style="display: flex; align-items: center; list-style: none; padding: 0; margin: 0; gap: 8px; font-size: 14px;"></ol>
+  </div>
+</div>
+    <div class="max-w-7xl mx-auto px-6 py-8">
+     <div class="text-center">
+      <h1 id="main-title" class="text-5xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-4">Hub Generatore Animazioni</h1>
+      <p id="subtitle" class="text-xl text-gray-600 max-w-3xl mx-auto">Crea animazioni personalizzate per bottoni, card, hero, testo e molto altro. Genera il codice pronto da copiare!</p><button id="cta-button" onclick="scrollToGenerator()" class="mt-6 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white px-8 py-3 rounded-full font-semibold transform hover:scale-105 transition-all duration-300 shadow-lg"> Inizia a Creare </button>
+     </div>
+    </div>
+   </header><!-- Element Type Selector -->
+   <section class="py-12 bg-white">
+    <div class="max-w-7xl mx-auto px-6">
+     <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">Scegli il Tipo di Elemento</h2>
+     <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6"><!-- Bottoni -->
+      <div class="element-card bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 cursor-pointer border-2 border-transparent hover:border-blue-300" onclick="selectElementType('button')">
+       <div class="text-center">
+        <div class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg mx-auto inline-block mb-4 transform hover:scale-105 transition-all duration-300">
+         Bottone
+        </div>
+        <h3 class="font-semibold text-gray-800 mb-2">Bottoni</h3>
+        <p class="text-sm text-gray-600">CTA, submit, link e bottoni interattivi</p>
+       </div>
+      </div><!-- Card -->
+      <div class="element-card bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 cursor-pointer border-2 border-transparent hover:border-green-300" onclick="selectElementType('card')">
+       <div class="text-center">
+        <div class="bg-white rounded-lg shadow-md p-4 mx-auto mb-4 max-w-24 transform hover:scale-105 hover:shadow-lg transition-all duration-300">
+         <div class="w-4 h-4 bg-green-500 rounded mb-2"></div>
+         <div class="text-xs text-gray-600">
+          Card
+         </div>
+        </div>
+        <h3 class="font-semibold text-gray-800 mb-2">Card</h3>
+        <p class="text-sm text-gray-600">Contenitori, prodotti, profili</p>
+       </div>
+      </div><!-- Hero -->
+      <div class="element-card bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-6 cursor-pointer border-2 border-transparent hover:border-purple-300" onclick="selectElementType('hero')">
+       <div class="text-center">
+        <div class="bg-gradient-to-r from-purple-500 to-pink-500 text-white p-4 rounded-lg mx-auto mb-4 max-w-24 text-xs transform hover:scale-105 transition-all duration-300">
+         HERO
+        </div>
+        <h3 class="font-semibold text-gray-800 mb-2">Hero Section</h3>
+        <p class="text-sm text-gray-600">Sezioni principali, banner</p>
+       </div>
+      </div><!-- Testo -->
+      <div class="element-card bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl p-6 cursor-pointer border-2 border-transparent hover:border-yellow-300" onclick="selectElementType('text')">
+       <div class="text-center">
+        <div class="mx-auto mb-4">
+         <h4 class="text-lg font-bold text-yellow-600 transform hover:scale-105 transition-all duration-300">Testo</h4>
+        </div>
+        <h3 class="font-semibold text-gray-800 mb-2">Testo</h3>
+        <p class="text-sm text-gray-600">Titoli, paragrafi, etichette</p>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section><!-- Generator Interface -->
+   <section id="generator" class="py-12 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-6">
+     <div class="grid lg:grid-cols-2 gap-8"><!-- Controls -->
+      <div class="bg-white rounded-xl shadow-lg p-6">
+       <h3 class="text-2xl font-bold text-gray-800 mb-6">Personalizza Animazione</h3><!-- Element Type Display -->
+       <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+        <h4 class="font-semibold text-gray-700 mb-2">Elemento Selezionato:</h4><span id="selected-element-type" class="inline-block bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-sm font-medium"> Seleziona un elemento sopra </span>
+       </div><!-- Animation Type -->
+       <div class="mb-6"><label class="block text-sm font-semibold text-gray-700 mb-3">Tipo di Animazione</label>
+        <div class="grid grid-cols-2 gap-2"><button onclick="selectAnimation('hover')" class="animation-type-btn px-4 py-2 border rounded-lg text-sm font-medium transition-all duration-200 bg-indigo-500 text-white"> Hover </button> <button onclick="selectAnimation('entrance')" class="animation-type-btn px-4 py-2 border rounded-lg text-sm font-medium transition-all duration-200 border-gray-300 text-gray-700 hover:bg-gray-50"> Entrata </button> <button onclick="selectAnimation('continuous')" class="animation-type-btn px-4 py-2 border rounded-lg text-sm font-medium transition-all duration-200 border-gray-300 text-gray-700 hover:bg-gray-50"> Continua </button> <button onclick="selectAnimation('click')" class="animation-type-btn px-4 py-2 border rounded-lg text-sm font-medium transition-all duration-200 border-gray-300 text-gray-700 hover:bg-gray-50"> Click </button>
+        </div>
+       </div><!-- Animation Effects -->
+       <div class="mb-6"><label class="block text-sm font-semibold text-gray-700 mb-3">Effetti</label>
+        <div id="effects-container" class="grid grid-cols-2 gap-2"><!-- Effects will be populated based on animation type -->
+        </div>
+       </div><!-- Duration -->
+       <div class="mb-6"><label class="block text-sm font-semibold text-gray-700 mb-3">Durata</label> <select id="duration-select" onchange="updatePreview()" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"> <option value="duration-75">Velocissimo (75ms)</option> <option value="duration-150">Veloce (150ms)</option> <option value="duration-300" selected>Normale (300ms)</option> <option value="duration-500">Lento (500ms)</option> <option value="duration-700">Molto Lento (700ms)</option> <option value="duration-1000">1 secondo</option> </select>
+       </div><!-- Easing -->
+       <div class="mb-6"><label class="block text-sm font-semibold text-gray-700 mb-3">Curva di Animazione</label> <select id="easing-select" onchange="updatePreview()" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"> <option value="ease-linear">Linear</option> <option value="ease-in">Ease In</option> <option value="ease-out">Ease Out</option> <option value="ease-in-out" selected>Ease In Out</option> </select>
+       </div><!-- Colors (for applicable elements) -->
+       <div id="color-section" class="mb-6"><label class="block text-sm font-semibold text-gray-700 mb-3">Colori</label>
+        <div class="grid grid-cols-4 gap-2"><button onclick="selectColor('blue')" class="color-btn w-12 h-12 bg-blue-500 rounded-lg border-2 border-gray-300 hover:border-gray-500 transition-colors"></button> <button onclick="selectColor('green')" class="color-btn w-12 h-12 bg-green-500 rounded-lg border-2 border-gray-300 hover:border-gray-500 transition-colors"></button> <button onclick="selectColor('purple')" class="color-btn w-12 h-12 bg-purple-500 rounded-lg border-2 border-gray-300 hover:border-gray-500 transition-colors"></button> <button onclick="selectColor('red')" class="color-btn w-12 h-12 bg-red-500 rounded-lg border-2 border-gray-300 hover:border-gray-500 transition-colors"></button> <button onclick="selectColor('yellow')" class="color-btn w-12 h-12 bg-yellow-500 rounded-lg border-2 border-gray-300 hover:border-gray-500 transition-colors"></button> <button onclick="selectColor('pink')" class="color-btn w-12 h-12 bg-pink-500 rounded-lg border-2 border-gray-300 hover:border-gray-500 transition-colors"></button> <button onclick="selectColor('indigo')" class="color-btn w-12 h-12 bg-indigo-500 rounded-lg border-2 border-gray-300 hover:border-gray-500 transition-colors"></button> <button onclick="selectColor('gray')" class="color-btn w-12 h-12 bg-gray-500 rounded-lg border-2 border-gray-300 hover:border-gray-500 transition-colors"></button>
+        </div>
+       </div><!-- Generate Button --> <button onclick="generateCode()" class="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white py-3 px-6 rounded-lg font-semibold transform hover:scale-105 transition-all duration-300 shadow-lg"> 🎨 Genera Codice </button>
+      </div><!-- Preview -->
+      <div class="bg-white rounded-xl shadow-lg p-6">
+       <h3 class="text-2xl font-bold text-gray-800 mb-6">Anteprima</h3><!-- Preview Area -->
+       <div class="preview-area rounded-lg p-8 flex items-center justify-center mb-6">
+        <div id="preview-element" class="bg-blue-500 text-white px-6 py-3 rounded-lg font-medium">
+         Seleziona un elemento
+        </div>
+       </div><!-- Instructions -->
+       <div class="bg-gray-50 rounded-lg p-4 mb-6">
+        <p id="preview-instructions" class="text-sm text-gray-600 text-center">Scegli un tipo di elemento per vedere l'anteprima</p>
+       </div><!-- Generated Code -->
+       <div>
+        <div class="flex justify-between items-center mb-3">
+         <h4 class="font-semibold text-gray-700">Codice Generato</h4><button onclick="copyGeneratedCode()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"> 📋 Copia </button>
+        </div>
+        <div id="generated-code" class="code-block"><span class="comment">// Seleziona un elemento e personalizza l'animazione</span> <span class="comment">// Il codice apparirà qui</span>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section><!-- Preset Gallery -->
+   <section class="py-12 bg-white">
+    <div class="max-w-7xl mx-auto px-6">
+     <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">Preset Popolari</h2>
+     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"><!-- Preset 1: Bottone Hover -->
+      <div class="bg-gray-50 rounded-xl p-6">
+       <h3 class="font-semibold text-gray-800 mb-4">Bottone Hover Elegante</h3>
+       <div class="flex justify-center mb-4"><button class="bg-blue-500 hover:bg-blue-600 hover:scale-105 hover:shadow-lg text-white px-6 py-3 rounded-lg transition-all duration-300"> Hover Me </button>
+       </div><button onclick="loadPreset('button-elegant')" class="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 rounded-lg text-sm transition-colors"> Usa Questo Preset </button>
+      </div><!-- Preset 2: Card Float -->
+      <div class="bg-gray-50 rounded-xl p-6">
+       <h3 class="font-semibold text-gray-800 mb-4">Card Galleggiante</h3>
+       <div class="flex justify-center mb-4">
+        <div class="bg-white rounded-lg shadow-md hover:shadow-xl hover:-translate-y-2 p-4 transition-all duration-300 cursor-pointer">
+         <div class="w-8 h-8 bg-green-500 rounded mb-2"></div>
+         <p class="text-sm text-gray-600">Card Content</p>
+        </div>
+       </div><button onclick="loadPreset('card-float')" class="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 rounded-lg text-sm transition-colors"> Usa Questo Preset </button>
+      </div><!-- Preset 3: Testo Glow -->
+      <div class="bg-gray-50 rounded-xl p-6">
+       <h3 class="font-semibold text-gray-800 mb-4">Testo Luminoso</h3>
+       <div class="flex justify-center mb-4">
+        <h4 class="text-xl font-bold text-purple-600 glow">Glow Text</h4>
+       </div><button onclick="loadPreset('text-glow')" class="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 rounded-lg text-sm transition-colors"> Usa Questo Preset </button>
+      </div><!-- Preset 4: Hero Entrance -->
+      <div class="bg-gray-50 rounded-xl p-6">
+       <h3 class="font-semibold text-gray-800 mb-4">Hero Entrata</h3>
+       <div class="flex justify-center mb-4">
+        <div class="text-center fade-in-up">
+         <h4 class="text-lg font-bold text-gray-800">Hero Title</h4>
+         <p class="text-sm text-gray-600">Subtitle</p>
+        </div>
+       </div><button onclick="loadPreset('hero-entrance')" class="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 rounded-lg text-sm transition-colors"> Usa Questo Preset </button>
+      </div><!-- Preset 5: Bottone Pulse -->
+      <div class="bg-gray-50 rounded-xl p-6">
+       <h3 class="font-semibold text-gray-800 mb-4">Bottone Pulsante</h3>
+       <div class="flex justify-center mb-4"><button class="bg-red-500 text-white px-6 py-3 rounded-lg animate-pulse"> Urgent Action </button>
+       </div><button onclick="loadPreset('button-pulse')" class="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 rounded-lg text-sm transition-colors"> Usa Questo Preset </button>
+      </div><!-- Preset 6: Card Shake -->
+      <div class="bg-gray-50 rounded-xl p-6">
+       <h3 class="font-semibold text-gray-800 mb-4">Card Attenzione</h3>
+       <div class="flex justify-center mb-4">
+        <div class="bg-yellow-100 border-2 border-yellow-400 rounded-lg p-4 shake cursor-pointer">
+         <p class="text-sm text-yellow-800 font-medium">⚠️ Alert</p>
+        </div>
+       </div><button onclick="loadPreset('card-shake')" class="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 rounded-lg text-sm transition-colors"> Usa Questo Preset </button>
+      </div>
+     </div>
+    </div>
+   </section><!-- Tips Section -->
+   <section class="py-12 bg-gradient-to-r from-indigo-50 to-purple-50">
+    <div class="max-w-4xl mx-auto px-6 text-center">
+     <h2 class="text-3xl font-bold text-gray-800 mb-8">💡 Consigli per Animazioni Efficaci</h2>
+     <div class="grid md:grid-cols-2 gap-8">
+      <div class="bg-white rounded-xl p-6 shadow-lg">
+       <h3 class="font-semibold text-indigo-600 mb-3">🎯 Usabilità</h3>
+       <ul class="text-sm text-gray-600 space-y-2 text-left">
+        <li>• Usa animazioni per guidare l'attenzione</li>
+        <li>• Mantieni le animazioni sotto i 500ms per interazioni</li>
+        <li>• Fornisci feedback visivo per le azioni utente</li>
+        <li>• Non esagerare: meno è meglio</li>
+       </ul>
+      </div>
+      <div class="bg-white rounded-xl p-6 shadow-lg">
+       <h3 class="font-semibold text-purple-600 mb-3">⚡ Performance</h3>
+       <ul class="text-sm text-gray-600 space-y-2 text-left">
+        <li>• Usa transform e opacity per animazioni fluide</li>
+        <li>• Evita di animare width, height, top, left</li>
+        <li>• Aggiungi motion-reduce per accessibilità</li>
+        <li>• Testa su dispositivi mobili</li>
+       </ul>
+      </div>
+     </div>
+    </div>
+   </section>
+  </div>
+       
+  <script>
+        // Configuration for Element SDK
+        const defaultConfig = {
+            main_title: "Hub Generatore Animazioni",
+            subtitle: "Crea animazioni personalizzate per bottoni, card, hero, testo e molto altro. Genera il codice pronto da copiare!",
+            cta_text: "Inizia a Creare",
+            primary_color: "#4f46e5",
+            secondary_color: "#ffffff",
+            text_color: "#1f2937",
+            accent_color: "#7c3aed",
+            background_color: "#f8fafc"
+        };
+
+        // Global state
+        let currentElement = null;
+        let currentAnimationType = 'hover';
+        let currentEffects = [];
+        let currentColor = 'blue';
+
+        // Animation effects database
+        const animationEffects = {
+            hover: {
+                button: ['scale', 'shadow', 'color', 'rotate', 'translate'],
+                card: ['scale', 'shadow', 'translate', 'rotate', 'glow'],
+                hero: ['scale', 'glow', 'color'],
+                text: ['color', 'glow', 'scale', 'rotate']
+            },
+            entrance: {
+                button: ['fadeInUp', 'slideInLeft', 'slideInRight', 'zoomIn'],
+                card: ['fadeInUp', 'slideInLeft', 'slideInRight', 'zoomIn'],
+                hero: ['fadeInUp', 'zoomIn', 'slideInLeft'],
+                text: ['fadeInUp', 'slideInLeft', 'slideInRight', 'zoomIn']
+            },
+            continuous: {
+                button: ['pulse', 'bounce', 'glow', 'heartbeat'],
+                card: ['float', 'glow', 'pulse'],
+                hero: ['float', 'glow'],
+                text: ['glow', 'pulse', 'rainbow']
+            },
+            click: {
+                button: ['shake', 'bounce', 'heartbeat', 'wiggle'],
+                card: ['shake', 'wiggle', 'bounce'],
+                hero: ['shake', 'bounce'],
+                text: ['shake', 'wiggle', 'bounce']
+            }
+        };
+
+        // Element templates
+        const elementTemplates = {
+            button: {
+                html: '<button class="bg-{color}-500 text-white px-6 py-3 rounded-lg font-medium">Bottone</button>',
+                baseClasses: 'bg-{color}-500 text-white px-6 py-3 rounded-lg font-medium',
+                instructions: 'Passa il mouse sopra il bottone per vedere l\'animazione'
+            },
+            card: {
+                html: '<div class="bg-white rounded-lg shadow-md p-6 max-w-48"><div class="w-8 h-8 bg-{color}-500 rounded mb-3"></div><h4 class="font-semibold text-gray-800 mb-2">Card Title</h4><p class="text-sm text-gray-600">Card content goes here</p></div>',
+                baseClasses: 'bg-white rounded-lg shadow-md p-6',
+                instructions: 'Passa il mouse sopra la card per vedere l\'animazione'
+            },
+            hero: {
+                html: '<div class="text-center p-8 bg-gradient-to-r from-{color}-500 to-{color}-600 text-white rounded-lg"><h2 class="text-2xl font-bold mb-2">Hero Title</h2><p class="text-{color}-100">Hero subtitle description</p></div>',
+                baseClasses: 'text-center p-8 bg-gradient-to-r from-{color}-500 to-{color}-600 text-white rounded-lg',
+                instructions: 'Sezione hero con animazione'
+            },
+            text: {
+                html: '<h3 class="text-2xl font-bold text-{color}-600">Testo Animato</h3>',
+                baseClasses: 'text-2xl font-bold text-{color}-600',
+                instructions: 'Testo con effetti di animazione'
+            }
+        };
+
+        // Preset configurations
+        const presets = {
+            'button-elegant': {
+                element: 'button',
+                animationType: 'hover',
+                effects: ['scale', 'shadow'],
+                color: 'blue',
+                duration: 'duration-300',
+                easing: 'ease-in-out'
+            },
+            'card-float': {
+                element: 'card',
+                animationType: 'hover',
+                effects: ['translate', 'shadow'],
+                color: 'green',
+                duration: 'duration-300',
+                easing: 'ease-out'
+            },
+            'text-glow': {
+                element: 'text',
+                animationType: 'continuous',
+                effects: ['glow'],
+                color: 'purple',
+                duration: 'duration-1000',
+                easing: 'ease-in-out'
+            },
+            'hero-entrance': {
+                element: 'hero',
+                animationType: 'entrance',
+                effects: ['fadeInUp'],
+                color: 'indigo',
+                duration: 'duration-700',
+                easing: 'ease-out'
+            },
+            'button-pulse': {
+                element: 'button',
+                animationType: 'continuous',
+                effects: ['pulse'],
+                color: 'red',
+                duration: 'duration-1000',
+                easing: 'ease-in-out'
+            },
+            'card-shake': {
+                element: 'card',
+                animationType: 'continuous',
+                effects: ['shake'],
+                color: 'yellow',
+                duration: 'duration-500',
+                easing: 'ease-in-out'
+            }
+        };
+
+        // Utility functions
+        function scrollToGenerator() {
+            document.getElementById('generator').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function selectElementType(elementType) {
+            currentElement = elementType;
+            
+            // Update UI
+            document.getElementById('selected-element-type').textContent = elementType.charAt(0).toUpperCase() + elementType.slice(1);
+            document.getElementById('selected-element-type').className = `inline-block bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-sm font-medium`;
+            
+            // Update effects based on element and animation type
+            updateEffectsContainer();
+            updatePreview();
+            
+            // Scroll to generator
+            scrollToGenerator();
+        }
+
+        function selectAnimation(animationType) {
+            currentAnimationType = animationType;
+            
+            // Update button states
+            document.querySelectorAll('.animation-type-btn').forEach(btn => {
+                btn.classList.remove('bg-indigo-500', 'text-white');
+                btn.classList.add('border-gray-300', 'text-gray-700', 'hover:bg-gray-50');
+            });
+            
+            event.target.classList.remove('border-gray-300', 'text-gray-700', 'hover:bg-gray-50');
+            event.target.classList.add('bg-indigo-500', 'text-white');
+            
+            // Update effects
+            updateEffectsContainer();
+            updatePreview();
+        }
+
+        function updateEffectsContainer() {
+            if (!currentElement) return;
+            
+            const container = document.getElementById('effects-container');
+            const effects = animationEffects[currentAnimationType][currentElement] || [];
+            
+            container.innerHTML = '';
+            
+            effects.forEach(effect => {
+                const button = document.createElement('button');
+                button.className = 'effect-btn px-3 py-2 border rounded-lg text-sm font-medium transition-all duration-200 border-gray-300 text-gray-700 hover:bg-gray-50';
+                button.textContent = effect.charAt(0).toUpperCase() + effect.slice(1);
+                button.onclick = () => toggleEffect(effect, button);
+                container.appendChild(button);
+            });
+        }
+
+        function toggleEffect(effect, button) {
+            const index = currentEffects.indexOf(effect);
+            
+            if (index > -1) {
+                // Remove effect
+                currentEffects.splice(index, 1);
+                button.classList.remove('bg-indigo-500', 'text-white');
+                button.classList.add('border-gray-300', 'text-gray-700', 'hover:bg-gray-50');
+            } else {
+                // Add effect
+                currentEffects.push(effect);
+                button.classList.remove('border-gray-300', 'text-gray-700', 'hover:bg-gray-50');
+                button.classList.add('bg-indigo-500', 'text-white');
+            }
+            
+            updatePreview();
+        }
+
+        function selectColor(color) {
+            currentColor = color;
+            
+            // Update button states
+            document.querySelectorAll('.color-btn').forEach(btn => {
+                btn.classList.remove('ring-4', 'ring-gray-400');
+            });
+            
+            event.target.classList.add('ring-4', 'ring-gray-400');
+            
+            updatePreview();
+        }
+
+        function updatePreview() {
+            if (!currentElement) return;
+            
+            const previewElement = document.getElementById('preview-element');
+            const template = elementTemplates[currentElement];
+            const instructions = document.getElementById('preview-instructions');
+            
+            // Update HTML
+            let html = template.html.replace(/{color}/g, currentColor);
+            previewElement.innerHTML = html;
+            previewElement.className = '';
+            
+            // Update instructions
+            let instructionText = template.instructions;
+            if (currentAnimationType === 'entrance') {
+                instructionText = 'Animazione di entrata (si attiva al caricamento)';
+            } else if (currentAnimationType === 'continuous') {
+                instructionText = 'Animazione continua (sempre attiva)';
+            } else if (currentAnimationType === 'click') {
+                instructionText = 'Clicca sull\'elemento per vedere l\'animazione';
+            }
+            instructions.textContent = instructionText;
+            
+            // Apply animations based on current settings
+            applyAnimationsToPreview();
+        }
+
+        function applyAnimationsToPreview() {
+            const previewElement = document.getElementById('preview-element');
+            const child = previewElement.firstElementChild;
+            if (!child) return;
+            
+            // Reset classes
+            child.className = elementTemplates[currentElement].baseClasses.replace(/{color}/g, currentColor);
+            
+            const duration = document.getElementById('duration-select').value;
+            const easing = document.getElementById('easing-select').value;
+            
+            // Apply effects based on animation type
+            if (currentAnimationType === 'hover') {
+                applyHoverEffects(child, duration, easing);
+            } else if (currentAnimationType === 'entrance') {
+                applyEntranceEffects(child, duration, easing);
+            } else if (currentAnimationType === 'continuous') {
+                applyContinuousEffects(child, duration, easing);
+            } else if (currentAnimationType === 'click') {
+                applyClickEffects(child, duration, easing);
+            }
+        }
+
+        function applyHoverEffects(element, duration, easing) {
+            let hoverClasses = [];
+            let transitionClasses = [`transition-all`, duration, easing];
+            
+            currentEffects.forEach(effect => {
+                switch (effect) {
+                    case 'scale':
+                        hoverClasses.push('hover:scale-105');
+                        break;
+                    case 'shadow':
+                        hoverClasses.push('hover:shadow-lg');
+                        break;
+                    case 'color':
+                        hoverClasses.push(`hover:bg-${currentColor}-600`);
+                        break;
+                    case 'rotate':
+                        hoverClasses.push('hover:rotate-3');
+                        break;
+                    case 'translate':
+                        hoverClasses.push('hover:-translate-y-2');
+                        break;
+                    case 'glow':
+                        element.style.transition = 'all 0.3s ease, box-shadow 0.3s ease';
+                        element.addEventListener('mouseenter', () => {
+                            element.style.boxShadow = `0 0 20px ${getColorValue(currentColor)}`;
+                        });
+                        element.addEventListener('mouseleave', () => {
+                            element.style.boxShadow = '';
+                        });
+                        break;
+                }
+            });
+            
+            element.className += ' ' + [...transitionClasses, ...hoverClasses].join(' ');
+        }
+
+        function applyEntranceEffects(element, duration, easing) {
+            currentEffects.forEach(effect => {
+                switch (effect) {
+                    case 'fadeInUp':
+                        element.classList.add('fade-in-up');
+                        break;
+                    case 'slideInLeft':
+                        element.classList.add('slide-in-left');
+                        break;
+                    case 'slideInRight':
+                        element.classList.add('slide-in-right');
+                        break;
+                    case 'zoomIn':
+                        element.classList.add('zoom-in');
+                        break;
+                }
+            });
+        }
+
+        function applyContinuousEffects(element, duration, easing) {
+            currentEffects.forEach(effect => {
+                switch (effect) {
+                    case 'pulse':
+                        element.classList.add('animate-pulse');
+                        break;
+                    case 'bounce':
+                        element.classList.add('animate-bounce');
+                        break;
+                    case 'glow':
+                        element.classList.add('glow');
+                        break;
+                    case 'float':
+                        element.classList.add('float');
+                        break;
+                    case 'heartbeat':
+                        element.classList.add('heartbeat');
+                        break;
+                    case 'rainbow':
+                        element.classList.add('rainbow');
+                        break;
+                }
+            });
+        }
+
+        function applyClickEffects(element, duration, easing) {
+            element.style.cursor = 'pointer';
+            
+            element.addEventListener('click', () => {
+                // Remove existing animation classes
+                element.classList.remove('shake', 'bounce', 'heartbeat', 'wiggle');
+                
+                // Add new animation class
+                currentEffects.forEach(effect => {
+                    switch (effect) {
+                        case 'shake':
+                            element.classList.add('shake');
+                            break;
+                        case 'bounce':
+                            element.classList.add('animate-bounce');
+                            setTimeout(() => element.classList.remove('animate-bounce'), 1000);
+                            break;
+                        case 'heartbeat':
+                            element.classList.add('heartbeat');
+                            setTimeout(() => element.classList.remove('heartbeat'), 1500);
+                            break;
+                        case 'wiggle':
+                            element.classList.add('wiggle');
+                            setTimeout(() => element.classList.remove('wiggle'), 1000);
+                            break;
+                    }
+                });
+            });
+        }
+
+        function getColorValue(colorName) {
+            const colors = {
+                blue: '#3b82f6',
+                green: '#10b981',
+                purple: '#8b5cf6',
+                red: '#ef4444',
+                yellow: '#f59e0b',
+                pink: '#ec4899',
+                indigo: '#6366f1',
+                gray: '#6b7280'
+            };
+            return colors[colorName] || '#3b82f6';
+        }
+
+        function generateCode() {
+            if (!currentElement || currentEffects.length === 0) {
+                showToast('Seleziona un elemento e almeno un effetto!', 'error');
+                return;
+            }
+            
+            const template = elementTemplates[currentElement];
+            const duration = document.getElementById('duration-select').value;
+            const easing = document.getElementById('easing-select').value;
+            
+            let html = template.html.replace(/{color}/g, currentColor);
+            let classes = template.baseClasses.replace(/{color}/g, currentColor);
+            
+            // Generate classes based on animation type and effects
+            let animationClasses = [];
+            
+            if (currentAnimationType === 'hover') {
+                animationClasses.push('transition-all', duration, easing);
+                
+                currentEffects.forEach(effect => {
+                    switch (effect) {
+                        case 'scale':
+                            animationClasses.push('hover:scale-105');
+                            break;
+                        case 'shadow':
+                            animationClasses.push('hover:shadow-lg');
+                            break;
+                        case 'color':
+                            animationClasses.push(`hover:bg-${currentColor}-600`);
+                            break;
+                        case 'rotate':
+                            animationClasses.push('hover:rotate-3');
+                            break;
+                        case 'translate':
+                            animationClasses.push('hover:-translate-y-2');
+                            break;
+                        case 'glow':
+                            animationClasses.push('hover:shadow-2xl');
+                            break;
+                    }
+                });
+            } else if (currentAnimationType === 'entrance') {
+                currentEffects.forEach(effect => {
+                    switch (effect) {
+                        case 'fadeInUp':
+                            animationClasses.push('fade-in-up');
+                            break;
+                        case 'slideInLeft':
+                            animationClasses.push('slide-in-left');
+                            break;
+                        case 'slideInRight':
+                            animationClasses.push('slide-in-right');
+                            break;
+                        case 'zoomIn':
+                            animationClasses.push('zoom-in');
+                            break;
+                    }
+                });
+            } else if (currentAnimationType === 'continuous') {
+                currentEffects.forEach(effect => {
+                    switch (effect) {
+                        case 'pulse':
+                            animationClasses.push('animate-pulse');
+                            break;
+                        case 'bounce':
+                            animationClasses.push('animate-bounce');
+                            break;
+                        case 'glow':
+                            animationClasses.push('glow');
+                            break;
+                        case 'float':
+                            animationClasses.push('float');
+                            break;
+                        case 'heartbeat':
+                            animationClasses.push('heartbeat');
+                            break;
+                        case 'rainbow':
+                            animationClasses.push('rainbow');
+                            break;
+                    }
+                });
+            }
+            
+            // Combine all classes
+            const allClasses = [classes, ...animationClasses].join(' ');
+            
+            // Generate final HTML
+            const finalHtml = html.replace(/class="[^"]*"/, `class="${allClasses}"`);
+            
+            // Display generated code
+            const codeContainer = document.getElementById('generated-code');
+            codeContainer.innerHTML = `<span class="tag">${escapeHtml(finalHtml)}</span>`;
+            
+            // Show success message
+            showToast('Codice generato con successo!', 'success');
+        }
+
+        function loadPreset(presetName) {
+            const preset = presets[presetName];
+            if (!preset) return;
+            
+            // Set all values from preset
+            currentElement = preset.element;
+            currentAnimationType = preset.animationType;
+            currentEffects = [...preset.effects];
+            currentColor = preset.color;
+            
+            // Update UI
+            document.getElementById('selected-element-type').textContent = preset.element.charAt(0).toUpperCase() + preset.element.slice(1);
+            document.getElementById('duration-select').value = preset.duration;
+            document.getElementById('easing-select').value = preset.easing;
+            
+            // Update animation type buttons
+            document.querySelectorAll('.animation-type-btn').forEach(btn => {
+                btn.classList.remove('bg-indigo-500', 'text-white');
+                btn.classList.add('border-gray-300', 'text-gray-700', 'hover:bg-gray-50');
+            });
+            
+            document.querySelector(`[onclick="selectAnimation('${preset.animationType}')"]`).classList.remove('border-gray-300', 'text-gray-700', 'hover:bg-gray-50');
+            document.querySelector(`[onclick="selectAnimation('${preset.animationType}')"]`).classList.add('bg-indigo-500', 'text-white');
+            
+            // Update color selection
+            document.querySelectorAll('.color-btn').forEach(btn => {
+                btn.classList.remove('ring-4', 'ring-gray-400');
+            });
+            document.querySelector(`[onclick="selectColor('${preset.color}')"]`).classList.add('ring-4', 'ring-gray-400');
+            
+            // Update effects container and preview
+            updateEffectsContainer();
+            
+            // Select preset effects
+            setTimeout(() => {
+                document.querySelectorAll('.effect-btn').forEach(btn => {
+                    const effectName = btn.textContent.toLowerCase();
+                    if (preset.effects.includes(effectName)) {
+                        btn.classList.remove('border-gray-300', 'text-gray-700', 'hover:bg-gray-50');
+                        btn.classList.add('bg-indigo-500', 'text-white');
+                    }
+                });
+                updatePreview();
+            }, 100);
+            
+            // Scroll to generator
+            scrollToGenerator();
+            
+            showToast(`Preset "${presetName}" caricato!`, 'success');
+        }
+
+        function copyGeneratedCode() {
+            const codeElement = document.getElementById('generated-code');
+            const code = codeElement.textContent;
+            
+            if (!code || code.includes('Seleziona un elemento')) {
+                showToast('Nessun codice da copiare!', 'error');
+                return;
+            }
+            
+            navigator.clipboard.writeText(code).then(() => {
+                showToast('Codice copiato negli appunti!', 'success');
+            }).catch(() => {
+                showToast('Errore nella copia del codice', 'error');
+            });
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `fixed top-4 right-4 px-6 py-3 rounded-lg text-white font-medium z-50 transform transition-all duration-300 translate-x-full`;
+            
+            if (type === 'success') {
+                toast.classList.add('bg-green-500');
+            } else if (type === 'error') {
+                toast.classList.add('bg-red-500');
+            } else {
+                toast.classList.add('bg-blue-500');
+            }
+            
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            // Animate in
+            setTimeout(() => {
+                toast.classList.remove('translate-x-full');
+            }, 100);
+            
+            // Animate out and remove
+            setTimeout(() => {
+                toast.classList.add('translate-x-full');
+                setTimeout(() => {
+                    document.body.removeChild(toast);
+                }, 300);
+            }, 3000);
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Element SDK implementation
+        async function onConfigChange(config) {
+            const mainTitle = document.getElementById('main-title');
+            const subtitle = document.getElementById('subtitle');
+            const ctaButton = document.getElementById('cta-button');
+            
+            if (mainTitle) {
+                mainTitle.textContent = config.main_title || defaultConfig.main_title;
+            }
+            
+            if (subtitle) {
+                subtitle.textContent = config.subtitle || defaultConfig.subtitle;
+            }
+            
+            if (ctaButton) {
+                ctaButton.textContent = config.cta_text || defaultConfig.cta_text;
+            }
+            
+            // Update colors
+            document.documentElement.style.setProperty('--primary-color', config.primary_color || defaultConfig.primary_color);
+            document.documentElement.style.setProperty('--text-color', config.text_color || defaultConfig.text_color);
+        }
+
+        function mapToCapabilities(config) {
+            return {
+                recolorables: [
+                    {
+                        get: () => config.primary_color || defaultConfig.primary_color,
+                        set: (value) => {
+                            config.primary_color = value;
+                            window.elementSdk.setConfig({ primary_color: value });
+                        }
+                    },
+                    {
+                        get: () => config.accent_color || defaultConfig.accent_color,
+                        set: (value) => {
+                            config.accent_color = value;
+                            window.elementSdk.setConfig({ accent_color: value });
+                        }
+                    },
+                    {
+                        get: () => config.text_color || defaultConfig.text_color,
+                        set: (value) => {
+                            config.text_color = value;
+                            window.elementSdk.setConfig({ text_color: value });
+                        }
+                    }
+                ],
+                borderables: [],
+                fontEditable: undefined,
+                fontSizeable: undefined
+            };
+        }
+
+        function mapToEditPanelValues(config) {
+            return new Map([
+                ["main_title", config.main_title || defaultConfig.main_title],
+                ["subtitle", config.subtitle || defaultConfig.subtitle],
+                ["cta_text", config.cta_text || defaultConfig.cta_text]
+            ]);
+        }
+
+        // Initialize Element SDK
+        if (window.elementSdk) {
+            window.elementSdk.init({
+                defaultConfig,
+                onConfigChange,
+                mapToCapabilities,
+                mapToEditPanelValues
+            });
+        }
+
+        // Initialize default state
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set default color selection
+            document.querySelector('[onclick="selectColor(\'blue\')"]').classList.add('ring-4', 'ring-gray-400');
+        });
+
+    // breadcrumb
+
+
+(function() {
+  const ol = document.getElementById('breadcrumb');
+  ol.innerHTML = `
+    <li><a href="/index.html" style="padding: 8px 16px; background: #dbeafe; color: #1e40af; text-decoration: none; border-radius: 9999px; font-weight: 500; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 6px;">🏠 Home</a></li>
+    <li style="color: #9ca3af; font-weight: bold; font-size: 18px; margin: 0 12px;">›</li>
+    <li style="position: relative; display: inline-block; margin-right: 12px;">
+      <span id="anim-trigger" style="padding: 8px 16px; background: #f3e8ff; color: #7c3aed; border: 2px solid #e9d5ff; border-radius: 9999px; font-weight: 700; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 6px;">🎬 Animazioni ▼</span>
+      <div id="anim-drop" style="position: absolute; top: 100%; left: 0; margin-top: 8px; width: 280px; background: rgba(255,255,255,0.98); backdrop-filter: blur(20px); border: 1px solid #e5e7eb; border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.3s; z-index: 10000; padding: 8px 0;">
+        <a href="animazioni_home.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">🎬 home</a>
+        <a href="animazioni_esempi.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">✨ Esempi</a>
+        <a href="animazioni-css.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">⚡
+Animazioni css</a>
+        <a href="animazioni1.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">☁️ Animazioni</a>
+        <a href="generatore_animazioni.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500; border-top: 1px solid #f3f4f6;">💓 Generatore</a>
+                <a href="cssanimazioni.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500; border-top: 1px solid #f3f4f6;">🌀 Anime CSS 2</a>
+      </div>
+    </li>
+    <li style="color: #9ca3af; font-weight: bold; font-size: 18px; margin: 0 12px;">›</li>
+    <li><span style="padding: 8px 16px; background: #dcfce7; color: #166534; border: 2px solid #bbf7d0; border-radius: 9999px; font-weight: 800; box-shadow: 0 4px 8px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 6px;">⚡ Generatore 2</span></li>
+  `;
+  
+  // Dropdown events
+  document.getElementById('anim-trigger').onmouseenter = () => {
+    document.getElementById('anim-drop').style.opacity = '1';
+    document.getElementById('anim-drop').style.visibility = 'visible';
+    document.getElementById('anim-drop').style.transform = 'translateY(0)';
+  };
+  document.getElementById('anim-drop').onmouseleave = () => {
+    document.getElementById('anim-drop').style.opacity = '0';
+    document.getElementById('anim-drop').style.visibility = 'hidden';
+    document.getElementById('anim-drop').style.transform = 'translateY(-10px)';
+  };
+})();
+</script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'998f302176e70f35',t:'MTc2MjIwNzY4Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

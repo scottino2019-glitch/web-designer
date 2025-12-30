@@ -1,0 +1,916 @@
+<!doctype html>
+<html lang="it" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tutorial Animazioni Tailwind CSS</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+        body {
+            box-sizing: border-box;
+        }
+        
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(-3deg); }
+            50% { transform: rotate(3deg); }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 5px #3b82f6; }
+            50% { box-shadow: 0 0 20px #3b82f6, 0 0 30px #3b82f6; }
+        }
+        
+        .wiggle { animation: wiggle 1s ease-in-out infinite; }
+        .float { animation: float 3s ease-in-out infinite; }
+        .glow { animation: glow 2s ease-in-out infinite; }
+        
+        /* Syntax highlighting for code blocks */
+        .code-block {
+            background: #1a1a1a;
+            color: #e6e6e6;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+        
+        .code-block .keyword { color: #569cd6; }
+        .code-block .string { color: #ce9178; }
+        .code-block .comment { color: #6a9955; }
+        .code-block .property { color: #9cdcfe; }
+        .code-block .value { color: #ce9178; }
+        .code-block .selector { color: #d7ba7d; }
+        .code-block .tag { color: #569cd6; }
+        .code-block .attribute { color: #92c5f8; }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full bg-gradient-to-br from-blue-50 to-indigo-100 font-sans">
+  <div class="min-h-full p-6"><!-- Header -->
+   <header class="text-center mb-12">
+         <!-- NAVBAR INVULNERABILE (mettila PRIMA di tutto) -->
+<div id="breadcrumb-container" style="position: sticky; top: 0; z-index: 9999; background: rgba(255,255,255,0.98); backdrop-filter: blur(20px); border-bottom: 1px solid #e5e7eb; padding: 16px 24px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin: 0;">
+  <div style="max-width: 1280px; margin: 0 auto;">
+    <div style="font-size: 24px; font-weight: 800; background: linear-gradient(135deg, #4f46e5, #7c3aed); -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 12px;">
+      🎬 Hub Generatore Animazioni
+    </div>
+    <ol id="breadcrumb" style="display: flex; align-items: center; list-style: none; padding: 0; margin: 0; gap: 8px; font-size: 14px;"></ol>
+  </div>
+</div>
+    <h1 id="main-title" class="text-5xl font-bold text-gray-800 mb-4 transform hover:scale-105 transition-transform duration-300">Tutorial Animazioni Tailwind CSS</h1>
+    <p id="intro-text" class="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">Guida pratica step-by-step per creare animazioni con Tailwind CSS. Codice pronto da copiare, spiegazioni dettagliate e esempi reali che funzionano!</p>
+   </header><!-- Navigation -->
+   <nav class="flex justify-center mb-12">
+    <div class="bg-white rounded-full shadow-lg p-2 flex flex-wrap gap-2"><button onclick="showSection('basics')" class="nav-btn px-6 py-3 rounded-full font-medium transition-all duration-300 bg-blue-500 text-white"> Basi </button> <button onclick="showSection('transitions')" class="nav-btn px-6 py-3 rounded-full font-medium transition-all duration-300 text-gray-600 hover:bg-gray-100"> Transizioni </button> <button onclick="showSection('animations')" class="nav-btn px-6 py-3 rounded-full font-medium transition-all duration-300 text-gray-600 hover:bg-gray-100"> Animazioni </button> <button onclick="showSection('custom')" class="nav-btn px-6 py-3 rounded-full font-medium transition-all duration-300 text-gray-600 hover:bg-gray-100"> Personalizzate </button> <button onclick="showSection('demo')" class="nav-btn px-6 py-3 rounded-full font-medium transition-all duration-300 text-gray-600 hover:bg-gray-100"> Demo </button>
+    </div>
+   </nav><!-- Content Sections -->
+   <main class="max-w-6xl mx-auto"><!-- Basics Section -->
+    <section id="basics" class="tutorial-section">
+     <div class="bg-white rounded-2xl shadow-xl p-8 mb-8">
+      <h2 class="text-3xl font-bold text-gray-800 mb-6 flex items-center"><span class="bg-blue-500 text-white rounded-full w-10 h-10 flex items-center justify-center mr-4 text-lg">1</span> Concetti Base</h2>
+      <div class="space-y-8"><!-- Spiegazione Base -->
+       <div class="bg-blue-50 rounded-lg p-6">
+        <h3 class="text-xl font-semibold mb-4 text-blue-800">🎯 Come Funzionano le Transizioni</h3>
+        <p class="text-gray-700 mb-4">Le transizioni creano un passaggio fluido tra due stati di un elemento (normale → hover, nascosto → visibile, ecc.). Tailwind rende tutto semplice con 3 classi principali:</p>
+        <div class="grid md:grid-cols-3 gap-4">
+         <div class="bg-white p-4 rounded-lg">
+          <h4 class="font-bold text-blue-700 mb-2">1. COSA animare</h4>
+          <div class="code-block mb-2"><span class="selector">transition-all</span>
+          </div>
+          <p class="text-xs text-gray-600">Anima tutte le proprietà che cambiano</p>
+         </div>
+         <div class="bg-white p-4 rounded-lg">
+          <h4 class="font-bold text-blue-700 mb-2">2. QUANTO dura</h4>
+          <div class="code-block mb-2"><span class="selector">duration-300</span>
+          </div>
+          <p class="text-xs text-gray-600">300 millisecondi (0.3 secondi)</p>
+         </div>
+         <div class="bg-white p-4 rounded-lg">
+          <h4 class="font-bold text-blue-700 mb-2">3. COME si muove</h4>
+          <div class="code-block mb-2"><span class="selector">ease-in-out</span>
+          </div>
+          <p class="text-xs text-gray-600">Inizia piano, accelera, finisce piano</p>
+         </div>
+        </div>
+       </div><!-- Esempio Step by Step -->
+       <div>
+        <h3 class="text-xl font-semibold mb-4 text-gray-700">📝 Costruiamo un Bottone Animato</h3>
+        <div class="grid md:grid-cols-2 gap-6"><!-- Step 1 -->
+         <div class="bg-gray-50 rounded-lg p-6">
+          <h4 class="font-semibold mb-3 text-green-600">STEP 1: Bottone Base</h4>
+          <div class="code-block mb-3"><span class="tag">&lt;button</span> <span class="attribute">class</span>=<span class="string">"bg-blue-500 text-white px-6 py-3 rounded-lg"</span><span class="tag">&gt;</span> Cliccami <span class="tag">&lt;/button&gt;</span>
+          </div><button class="bg-blue-500 text-white px-6 py-3 rounded-lg"> Cliccami </button>
+          <p class="text-xs text-gray-600 mt-2">Bottone normale, nessuna animazione</p>
+         </div><!-- Step 2 -->
+         <div class="bg-gray-50 rounded-lg p-6">
+          <h4 class="font-semibold mb-3 text-green-600">STEP 2: Aggiungi Hover</h4>
+          <div class="code-block mb-3"><span class="tag">&lt;button</span> <span class="attribute">class</span>=<span class="string">"bg-blue-500 <span class="keyword">hover:bg-blue-600</span> text-white px-6 py-3 rounded-lg"</span><span class="tag">&gt;</span> Cliccami <span class="tag">&lt;/button&gt;</span>
+          </div><button class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg"> Cliccami </button>
+          <p class="text-xs text-gray-600 mt-2">Cambia colore al passaggio del mouse (brusco)</p>
+         </div><!-- Step 3 -->
+         <div class="bg-gray-50 rounded-lg p-6">
+          <h4 class="font-semibold mb-3 text-green-600">STEP 3: Rendi Fluido</h4>
+          <div class="code-block mb-3"><span class="tag">&lt;button</span> <span class="attribute">class</span>=<span class="string">"bg-blue-500 hover:bg-blue-600 <span class="keyword">transition-colors duration-300</span> text-white px-6 py-3 rounded-lg"</span><span class="tag">&gt;</span> Cliccami <span class="tag">&lt;/button&gt;</span>
+          </div><button class="bg-blue-500 hover:bg-blue-600 transition-colors duration-300 text-white px-6 py-3 rounded-lg"> Cliccami </button>
+          <p class="text-xs text-gray-600 mt-2">Transizione fluida del colore in 300ms</p>
+         </div><!-- Step 4 -->
+         <div class="bg-gray-50 rounded-lg p-6">
+          <h4 class="font-semibold mb-3 text-green-600">STEP 4: Aggiungi Scala</h4>
+          <div class="code-block mb-3"><span class="tag">&lt;button</span> <span class="attribute">class</span>=<span class="string">"bg-blue-500 hover:bg-blue-600 <span class="keyword">hover:scale-105</span> transition-all duration-300 text-white px-6 py-3 rounded-lg"</span><span class="tag">&gt;</span> Cliccami <span class="tag">&lt;/button&gt;</span>
+          </div><button class="bg-blue-500 hover:bg-blue-600 hover:scale-105 transition-all duration-300 text-white px-6 py-3 rounded-lg"> Cliccami </button>
+          <p class="text-xs text-gray-600 mt-2">Cambia colore E si ingrandisce del 5%</p>
+         </div>
+        </div>
+       </div><!-- Classi Disponibili -->
+       <div class="bg-yellow-50 rounded-lg p-6">
+        <h3 class="text-xl font-semibold mb-4 text-yellow-800">🔧 Classi di Transizione Disponibili</h3>
+        <div class="grid md:grid-cols-2 gap-6">
+         <div>
+          <h4 class="font-semibold mb-3">Cosa Animare:</h4>
+          <div class="space-y-2">
+           <div class="flex items-center justify-between bg-white p-2 rounded"><code class="text-sm">transition-all</code> <span class="text-xs text-gray-600">Tutto</span>
+           </div>
+           <div class="flex items-center justify-between bg-white p-2 rounded"><code class="text-sm">transition-colors</code> <span class="text-xs text-gray-600">Solo colori</span>
+           </div>
+           <div class="flex items-center justify-between bg-white p-2 rounded"><code class="text-sm">transition-transform</code> <span class="text-xs text-gray-600">Solo trasformazioni</span>
+           </div>
+           <div class="flex items-center justify-between bg-white p-2 rounded"><code class="text-sm">transition-opacity</code> <span class="text-xs text-gray-600">Solo trasparenza</span>
+           </div>
+          </div>
+         </div>
+         <div>
+          <h4 class="font-semibold mb-3">Velocità:</h4>
+          <div class="space-y-2">
+           <div class="flex items-center justify-between bg-white p-2 rounded"><code class="text-sm">duration-75</code> <span class="text-xs text-gray-600">Velocissimo (75ms)</span>
+           </div>
+           <div class="flex items-center justify-between bg-white p-2 rounded"><code class="text-sm">duration-150</code> <span class="text-xs text-gray-600">Veloce (150ms)</span>
+           </div>
+           <div class="flex items-center justify-between bg-white p-2 rounded"><code class="text-sm">duration-300</code> <span class="text-xs text-gray-600">Normale (300ms) ⭐</span>
+           </div>
+           <div class="flex items-center justify-between bg-white p-2 rounded"><code class="text-sm">duration-500</code> <span class="text-xs text-gray-600">Lento (500ms)</span>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div><!-- Esempio Pratico Completo -->
+       <div class="bg-green-50 rounded-lg p-6">
+        <h3 class="text-xl font-semibold mb-4 text-green-800">💡 Esempio Completo: Card Animata</h3>
+        <p class="text-gray-700 mb-4">Ecco una card completa con tutte le animazioni che abbiamo imparato:</p>
+        <div class="grid md:grid-cols-2 gap-6">
+         <div>
+          <h4 class="font-semibold mb-3">Risultato:</h4>
+          <div class="bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 hover:scale-105 p-6 cursor-pointer">
+           <div class="w-12 h-12 bg-blue-500 rounded-full mb-4 hover:bg-blue-600 transition-colors duration-200"></div>
+           <h5 class="text-lg font-semibold text-gray-800 mb-2">Card Animata</h5>
+           <p class="text-gray-600 text-sm">Passa il mouse sopra per vedere tutte le animazioni in azione!</p><button class="mt-4 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded hover:scale-105 transition-all duration-200"> Clicca qui </button>
+          </div>
+         </div>
+         <div>
+          <h4 class="font-semibold mb-3">Codice HTML:</h4>
+          <div class="code-block text-xs"><span class="tag">&lt;div</span> <span class="attribute">class</span>=<span class="string">"bg-white rounded-lg shadow-md <span class="keyword">hover:shadow-xl</span> <span class="keyword">transition-all duration-300</span> <span class="keyword">hover:scale-105</span> p-6 cursor-pointer"</span><span class="tag">&gt;</span> <span class="tag">&lt;div</span> <span class="attribute">class</span>=<span class="string">"w-12 h-12 bg-blue-500 rounded-full mb-4 <span class="keyword">hover:bg-blue-600</span> <span class="keyword">transition-colors duration-200</span>"</span><span class="tag">&gt;&lt;/div&gt;</span> <span class="tag">&lt;h5</span> <span class="attribute">class</span>=<span class="string">"text-lg font-semibold text-gray-800 mb-2"</span><span class="tag">&gt;</span> Card Animata <span class="tag">&lt;/h5&gt;</span> <span class="tag">&lt;p</span> <span class="attribute">class</span>=<span class="string">"text-gray-600 text-sm"</span><span class="tag">&gt;</span> Passa il mouse sopra per vedere le animazioni! <span class="tag">&lt;/p&gt;</span> <span class="tag">&lt;button</span> <span class="attribute">class</span>=<span class="string">"mt-4 bg-blue-500 <span class="keyword">hover:bg-blue-600</span> text-white px-4 py-2 rounded <span class="keyword">hover:scale-105</span> <span class="keyword">transition-all duration-200</span>"</span><span class="tag">&gt;</span> Clicca qui <span class="tag">&lt;/button&gt;</span> <span class="tag">&lt;/div&gt;</span>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </section><!-- Transitions Section -->
+    <section id="transitions" class="tutorial-section hidden">
+     <div class="bg-white rounded-2xl shadow-xl p-8 mb-8">
+      <h2 class="text-3xl font-bold text-gray-800 mb-6 flex items-center"><span class="bg-green-500 text-white rounded-full w-10 h-10 flex items-center justify-center mr-4 text-lg">2</span> Transizioni Avanzate</h2>
+      <div class="space-y-8"><!-- Transform Examples -->
+       <div>
+        <h3 class="text-xl font-semibold mb-4">🔄 Trasformazioni (Transform)</h3>
+        <p class="text-gray-600 mb-4">Le trasformazioni cambiano posizione, dimensione e rotazione senza influenzare il layout.</p>
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+         <div class="bg-gray-50 rounded-lg p-4 text-center">
+          <h4 class="font-semibold mb-3 text-sm">Scala (Scale)</h4>
+          <div class="bg-gradient-to-r from-purple-400 to-pink-400 w-16 h-16 mx-auto rounded-lg hover:scale-110 transition-transform duration-300 cursor-pointer mb-3"></div>
+          <div class="code-block text-xs mb-2"><span class="selector">hover:scale-110</span> <span class="selector">transition-transform</span> <span class="selector">duration-300</span>
+          </div>
+          <p class="text-xs text-gray-600">Si ingrandisce del 10%</p>
+         </div>
+         <div class="bg-gray-50 rounded-lg p-4 text-center">
+          <h4 class="font-semibold mb-3 text-sm">Rotazione</h4>
+          <div class="bg-gradient-to-r from-blue-400 to-cyan-400 w-16 h-16 mx-auto rounded-lg hover:rotate-45 transition-transform duration-300 cursor-pointer mb-3"></div>
+          <div class="code-block text-xs mb-2"><span class="selector">hover:rotate-45</span> <span class="selector">transition-transform</span> <span class="selector">duration-300</span>
+          </div>
+          <p class="text-xs text-gray-600">Ruota di 45 gradi</p>
+         </div>
+         <div class="bg-gray-50 rounded-lg p-4 text-center">
+          <h4 class="font-semibold mb-3 text-sm">Traslazione</h4>
+          <div class="bg-gradient-to-r from-green-400 to-blue-400 w-16 h-16 mx-auto rounded-lg hover:translate-y-2 transition-transform duration-300 cursor-pointer mb-3"></div>
+          <div class="code-block text-xs mb-2"><span class="selector">hover:translate-y-2</span> <span class="selector">transition-transform</span> <span class="selector">duration-300</span>
+          </div>
+          <p class="text-xs text-gray-600">Si sposta in basso</p>
+         </div>
+         <div class="bg-gray-50 rounded-lg p-4 text-center">
+          <h4 class="font-semibold mb-3 text-sm">Combinato</h4>
+          <div class="bg-gradient-to-r from-yellow-400 to-red-400 w-16 h-16 mx-auto rounded-lg hover:scale-110 hover:rotate-12 hover:-translate-y-1 transition-transform duration-300 cursor-pointer mb-3"></div>
+          <div class="code-block text-xs mb-2"><span class="selector">hover:scale-110</span> <span class="selector">hover:rotate-12</span> <span class="selector">hover:-translate-y-1</span>
+          </div>
+          <p class="text-xs text-gray-600">Effetto combinato</p>
+         </div>
+        </div>
+       </div><!-- Tabella Completa Transform -->
+       <div class="bg-blue-50 rounded-lg p-6">
+        <h3 class="text-xl font-semibold mb-4 text-blue-800">📋 Tutte le Classi Transform</h3>
+        <div class="grid md:grid-cols-3 gap-6">
+         <div>
+          <h4 class="font-semibold mb-3">Scale (Scala):</h4>
+          <div class="space-y-1 text-sm">
+           <div class="bg-white p-2 rounded">
+            <code>scale-0</code> - Invisibile
+           </div>
+           <div class="bg-white p-2 rounded">
+            <code>scale-50</code> - 50%
+           </div>
+           <div class="bg-white p-2 rounded">
+            <code>scale-75</code> - 75%
+           </div>
+           <div class="bg-white p-2 rounded">
+            <code>scale-90</code> - 90%
+           </div>
+           <div class="bg-white p-2 rounded">
+            <code>scale-95</code> - 95%
+           </div>
+           <div class="bg-white p-2 rounded">
+            <code>scale-100</code> - Normale
+           </div>
+           <div class="bg-white p-2 rounded">
+            <code>scale-105</code> - 105%
+           </div>
+           <div class="bg-white p-2 rounded">
+            <code>scale-110</code> - 110%
+           </div>
+           <div class="bg-white p-2 rounded">
+            <code>scale-125</code> - 125%
+           </div>
+           <div class="bg-white p-2 rounded">
+            <code>scale-150</code> - 150%
+           </div>
+          </div>
+         </div>
+         <div>
+          <h4 class="font-semibold mb-3">Rotate (Rotazione):</h4>
+          <div class="space-y-1 text-sm">
+           <div class="bg-white p-2 rounded">
+            <code>rotate-0</code> - 0°
+           </div>
+           <div class="bg-white p-2 rounded">
+            <code>rotate-1</code> - 1°
+           </div>
+           <div class="bg-white p-2 rounded">
+            <code>rotate-2</code> - 2°
+           </div>
+           <div class="bg-white p-2 rounded">
+            <code>rotate-3</code> - 3°
+           </div>
+           <div class="bg-white p-2 rounded">
+            <code>rotate-6</code> - 6°
+           </div>
+           <div class="bg-white p-2 rounded">
+            <code>rotate-12</code> - 12°
+           </div>
+           <div class="bg-white p-2 rounded">
+            <code>rotate-45</code> - 45°
+           </div>
+           <div class="bg-white p-2 rounded">
+            <code>rotate-90</code> - 90°
+           </div>
+           <div class="bg-white p-2 rounded">
+            <code>rotate-180</code> - 180°
+           </div>
+           <div class="bg-white p-2 rounded">
+            <code>-rotate-45</code> - -45°
+           </div>
+          </div>
+         </div>
+         <div>
+          <h4 class="font-semibold mb-3">Translate (Movimento):</h4>
+          <div class="space-y-1 text-sm">
+           <div class="bg-white p-2 rounded">
+            <code>translate-x-1</code> - Destra 4px
+           </div>
+           <div class="bg-white p-2 rounded">
+            <code>translate-x-2</code> - Destra 8px
+           </div>
+           <div class="bg-white p-2 rounded">
+            <code>translate-y-1</code> - Giù 4px
+           </div>
+           <div class="bg-white p-2 rounded">
+            <code>translate-y-2</code> - Giù 8px
+           </div>
+           <div class="bg-white p-2 rounded">
+            <code>-translate-x-1</code> - Sinistra 4px
+           </div>
+           <div class="bg-white p-2 rounded">
+            <code>-translate-y-1</code> - Su 4px
+           </div>
+           <div class="bg-white p-2 rounded">
+            <code>translate-x-full</code> - Destra 100%
+           </div>
+           <div class="bg-white p-2 rounded">
+            <code>translate-y-full</code> - Giù 100%
+           </div>
+           <div class="bg-white p-2 rounded">
+            <code>translate-x-1/2</code> - Destra 50%
+           </div>
+           <div class="bg-white p-2 rounded">
+            <code>translate-y-1/2</code> - Giù 50%
+           </div>
+          </div>
+         </div>
+        </div>
+       </div><!-- Opacity Examples -->
+       <div>
+        <h3 class="text-xl font-semibold mb-4">👻 Trasparenza (Opacity)</h3>
+        <p class="text-gray-600 mb-4">Controlla la visibilità degli elementi con transizioni fluide.</p>
+        <div class="grid md:grid-cols-3 gap-4">
+         <div class="bg-gray-50 rounded-lg p-4 text-center">
+          <h4 class="font-semibold mb-3">Fade Out</h4>
+          <div class="bg-gradient-to-r from-blue-400 to-cyan-400 w-20 h-20 mx-auto rounded-lg hover:opacity-30 transition-opacity duration-500 cursor-pointer mb-3"></div>
+          <div class="code-block text-xs mb-2"><span class="selector">hover:opacity-30</span> <span class="selector">transition-opacity</span> <span class="selector">duration-500</span>
+          </div>
+          <p class="text-xs text-gray-600">Diventa semi-trasparente</p>
+         </div>
+         <div class="bg-gray-50 rounded-lg p-4 text-center">
+          <h4 class="font-semibold mb-3">Fade In</h4>
+          <div class="bg-gradient-to-r from-green-400 to-teal-400 w-20 h-20 mx-auto rounded-lg opacity-30 hover:opacity-100 transition-opacity duration-500 cursor-pointer mb-3"></div>
+          <div class="code-block text-xs mb-2"><span class="selector">opacity-30</span> <span class="selector">hover:opacity-100</span> <span class="selector">transition-opacity</span>
+          </div>
+          <p class="text-xs text-gray-600">Diventa completamente visibile</p>
+         </div>
+         <div class="bg-gray-50 rounded-lg p-4 text-center">
+          <h4 class="font-semibold mb-3">Pulse Effect</h4>
+          <div class="bg-gradient-to-r from-purple-400 to-pink-400 w-20 h-20 mx-auto rounded-lg hover:opacity-75 transition-opacity duration-200 cursor-pointer mb-3"></div>
+          <div class="code-block text-xs mb-2"><span class="selector">hover:opacity-75</span> <span class="selector">transition-opacity</span> <span class="selector">duration-200</span>
+          </div>
+          <p class="text-xs text-gray-600">Effetto pulsante veloce</p>
+         </div>
+        </div><!-- Valori Opacity -->
+        <div class="mt-6 bg-gray-50 rounded-lg p-4">
+         <h4 class="font-semibold mb-3">Valori Opacity Disponibili:</h4>
+         <div class="flex flex-wrap gap-2"><span class="bg-white px-3 py-1 rounded text-sm">opacity-0</span> <span class="bg-white px-3 py-1 rounded text-sm">opacity-5</span> <span class="bg-white px-3 py-1 rounded text-sm">opacity-10</span> <span class="bg-white px-3 py-1 rounded text-sm">opacity-20</span> <span class="bg-white px-3 py-1 rounded text-sm">opacity-25</span> <span class="bg-white px-3 py-1 rounded text-sm">opacity-30</span> <span class="bg-white px-3 py-1 rounded text-sm">opacity-40</span> <span class="bg-white px-3 py-1 rounded text-sm">opacity-50</span> <span class="bg-white px-3 py-1 rounded text-sm">opacity-60</span> <span class="bg-white px-3 py-1 rounded text-sm">opacity-70</span> <span class="bg-white px-3 py-1 rounded text-sm">opacity-75</span> <span class="bg-white px-3 py-1 rounded text-sm">opacity-80</span> <span class="bg-white px-3 py-1 rounded text-sm">opacity-90</span> <span class="bg-white px-3 py-1 rounded text-sm">opacity-95</span> <span class="bg-white px-3 py-1 rounded text-sm">opacity-100</span>
+         </div>
+        </div>
+       </div><!-- Color Examples -->
+       <div>
+        <h3 class="text-xl font-semibold mb-4">🎨 Colori</h3>
+        <p class="text-gray-600 mb-4">Cambia colori di sfondo, testo e bordi con transizioni fluide.</p>
+        <div class="grid md:grid-cols-2 gap-6">
+         <div class="bg-gray-50 rounded-lg p-4">
+          <h4 class="font-semibold mb-3">Sfondo (Background)</h4>
+          <div class="space-y-3">
+           <div class="bg-red-400 hover:bg-blue-400 p-4 rounded-lg transition-colors duration-300 cursor-pointer text-white text-center">
+            Rosso → Blu
+           </div>
+           <div class="code-block text-xs"><span class="selector">bg-red-400</span> <span class="selector">hover:bg-blue-400</span> <span class="selector">transition-colors</span> <span class="selector">duration-300</span>
+           </div>
+          </div>
+         </div>
+         <div class="bg-gray-50 rounded-lg p-4">
+          <h4 class="font-semibold mb-3">Testo</h4>
+          <div class="space-y-3">
+           <div class="bg-gray-800 p-4 rounded-lg">
+            <p class="text-gray-400 hover:text-yellow-400 transition-colors duration-300 cursor-pointer text-center">Grigio → Giallo</p>
+           </div>
+           <div class="code-block text-xs"><span class="selector">text-gray-400</span> <span class="selector">hover:text-yellow-400</span> <span class="selector">transition-colors</span>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </section><!-- Animations Section -->
+    <section id="animations" class="tutorial-section hidden">
+     <div class="bg-white rounded-2xl shadow-xl p-8 mb-8">
+      <h2 class="text-3xl font-bold text-gray-800 mb-6 flex items-center"><span class="bg-yellow-500 text-white rounded-full w-10 h-10 flex items-center justify-center mr-4 text-lg">3</span> Animazioni Predefinite</h2>
+      <div class="space-y-8"><!-- Spiegazione Animazioni -->
+       <div class="bg-yellow-50 rounded-lg p-6">
+        <h3 class="text-xl font-semibold mb-4 text-yellow-800">⚡ Animazioni vs Transizioni</h3>
+        <div class="grid md:grid-cols-2 gap-6">
+         <div>
+          <h4 class="font-semibold mb-2 text-yellow-700">🔄 Transizioni</h4>
+          <ul class="text-sm text-gray-700 space-y-1">
+           <li>• Si attivano con eventi (hover, focus, ecc.)</li>
+           <li>• Vanno da stato A a stato B</li>
+           <li>• Si fermano quando l'evento finisce</li>
+           <li>• Esempio: bottone che cambia colore</li>
+          </ul>
+         </div>
+         <div>
+          <h4 class="font-semibold mb-2 text-yellow-700">🎬 Animazioni</h4>
+          <ul class="text-sm text-gray-700 space-y-1">
+           <li>• Partono automaticamente</li>
+           <li>• Si ripetono all'infinito</li>
+           <li>• Non hanno bisogno di eventi</li>
+           <li>• Esempio: spinner che gira sempre</li>
+          </ul>
+         </div>
+        </div>
+       </div><!-- Animazioni Predefinite -->
+       <div class="grid md:grid-cols-2 gap-6"><!-- Spin -->
+        <div class="bg-gray-50 rounded-lg p-6">
+         <div class="text-center mb-4">
+          <h3 class="font-semibold mb-3">🌀 Spin (Rotazione)</h3>
+          <div class="bg-blue-500 w-20 h-20 mx-auto rounded-lg animate-spin mb-4"></div>
+         </div>
+         <div class="code-block text-sm mb-3"><span class="tag">&lt;div</span> <span class="attribute">class</span>=<span class="string">"<span class="keyword">animate-spin</span>"</span><span class="tag">&gt;&lt;/div&gt;</span>
+         </div>
+         <div class="space-y-2 text-sm">
+          <p><strong>Quando usarlo:</strong></p>
+          <ul class="text-gray-600 space-y-1 ml-4">
+           <li>• Indicatori di caricamento</li>
+           <li>• Icone di refresh</li>
+           <li>• Spinner di attesa</li>
+          </ul>
+         </div>
+        </div><!-- Ping -->
+        <div class="bg-gray-50 rounded-lg p-6">
+         <div class="text-center mb-4">
+          <h3 class="font-semibold mb-3">📡 Ping (Impulso)</h3>
+          <div class="relative w-20 h-20 mx-auto mb-4">
+           <div class="bg-green-500 w-20 h-20 rounded-full"></div>
+           <div class="absolute top-0 left-0 bg-green-400 w-20 h-20 rounded-full animate-ping"></div>
+          </div>
+         </div>
+         <div class="code-block text-sm mb-3"><span class="tag">&lt;div</span> <span class="attribute">class</span>=<span class="string">"<span class="keyword">animate-ping</span>"</span><span class="tag">&gt;&lt;/div&gt;</span>
+         </div>
+         <div class="space-y-2 text-sm">
+          <p><strong>Quando usarlo:</strong></p>
+          <ul class="text-gray-600 space-y-1 ml-4">
+           <li>• Notifiche non lette</li>
+           <li>• Indicatori di stato</li>
+           <li>• Segnali di attenzione</li>
+          </ul>
+         </div>
+        </div><!-- Pulse -->
+        <div class="bg-gray-50 rounded-lg p-6">
+         <div class="text-center mb-4">
+          <h3 class="font-semibold mb-3">💓 Pulse (Pulsazione)</h3>
+          <div class="bg-purple-500 w-20 h-20 mx-auto rounded-lg animate-pulse mb-4"></div>
+         </div>
+         <div class="code-block text-sm mb-3"><span class="tag">&lt;div</span> <span class="attribute">class</span>=<span class="string">"<span class="keyword">animate-pulse</span>"</span><span class="tag">&gt;&lt;/div&gt;</span>
+         </div>
+         <div class="space-y-2 text-sm">
+          <p><strong>Quando usarlo:</strong></p>
+          <ul class="text-gray-600 space-y-1 ml-4">
+           <li>• Placeholder durante caricamento</li>
+           <li>• Skeleton screens</li>
+           <li>• Elementi in attesa</li>
+          </ul>
+         </div>
+        </div><!-- Bounce -->
+        <div class="bg-gray-50 rounded-lg p-6">
+         <div class="text-center mb-4">
+          <h3 class="font-semibold mb-3">⚽ Bounce (Rimbalzo)</h3>
+          <div class="bg-red-500 w-20 h-20 mx-auto rounded-full animate-bounce mb-4"></div>
+         </div>
+         <div class="code-block text-sm mb-3"><span class="tag">&lt;div</span> <span class="attribute">class</span>=<span class="string">"<span class="keyword">animate-bounce</span>"</span><span class="tag">&gt;&lt;/div&gt;</span>
+         </div>
+         <div class="space-y-2 text-sm">
+          <p><strong>Quando usarlo:</strong></p>
+          <ul class="text-gray-600 space-y-1 ml-4">
+           <li>• Frecce "scorri giù"</li>
+           <li>• Elementi che attirano attenzione</li>
+           <li>• Effetti giocosi</li>
+          </ul>
+         </div>
+        </div>
+       </div><!-- Esempi Pratici -->
+       <div class="bg-blue-50 rounded-lg p-6">
+        <h3 class="text-xl font-semibold mb-4 text-blue-800">💡 Esempi Pratici</h3>
+        <div class="grid md:grid-cols-2 gap-6">
+         <div>
+          <h4 class="font-semibold mb-3">Bottone di Caricamento</h4><button class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg transition-colors duration-200 flex items-center space-x-2">
+           <div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div><span>Caricamento...</span> </button>
+          <div class="code-block text-xs mt-2"><span class="tag">&lt;button</span> <span class="attribute">class</span>=<span class="string">"bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg transition-colors duration-200 flex items-center space-x-2"</span><span class="tag">&gt;</span> <span class="tag">&lt;div</span> <span class="attribute">class</span>=<span class="string">"w-4 h-4 border-2 border-white border-t-transparent rounded-full <span class="keyword">animate-spin</span>"</span><span class="tag">&gt;&lt;/div&gt;</span> <span class="tag">&lt;span&gt;</span>Caricamento...<span class="tag">&lt;/span&gt;</span> <span class="tag">&lt;/button&gt;</span>
+          </div>
+         </div>
+         <div>
+          <h4 class="font-semibold mb-3">Badge Notifica</h4>
+          <div class="relative inline-block">
+           <div class="bg-gray-600 text-white px-4 py-2 rounded-lg">
+            Messaggi
+           </div>
+           <div class="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-6 h-6 rounded-full flex items-center justify-center"><span class="relative z-10">3</span>
+            <div class="absolute inset-0 bg-red-400 rounded-full animate-ping"></div>
+           </div>
+          </div>
+          <div class="code-block text-xs mt-2"><span class="tag">&lt;div</span> <span class="attribute">class</span>=<span class="string">"relative inline-block"</span><span class="tag">&gt;</span> <span class="tag">&lt;div</span> <span class="attribute">class</span>=<span class="string">"bg-gray-600 text-white px-4 py-2 rounded-lg"</span><span class="tag">&gt;</span>Messaggi<span class="tag">&lt;/div&gt;</span> <span class="tag">&lt;div</span> <span class="attribute">class</span>=<span class="string">"absolute -top-2 -right-2 bg-red-500 text-white text-xs w-6 h-6 rounded-full flex items-center justify-center"</span><span class="tag">&gt;</span> <span class="tag">&lt;span</span> <span class="attribute">class</span>=<span class="string">"relative z-10"</span><span class="tag">&gt;</span>3<span class="tag">&lt;/span&gt;</span> <span class="tag">&lt;div</span> <span class="attribute">class</span>=<span class="string">"absolute inset-0 bg-red-400 rounded-full <span class="keyword">animate-ping</span>"</span><span class="tag">&gt;&lt;/div&gt;</span> <span class="tag">&lt;/div&gt;</span> <span class="tag">&lt;/div&gt;</span>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="mt-8 bg-gray-50 rounded-lg p-6">
+       <h3 class="font-semibold mb-4">Controllo Animazioni</h3>
+       <div class="grid md:grid-cols-2 gap-4">
+        <div>
+         <h4 class="font-medium mb-2">Pausa/Play</h4><button onclick="toggleAnimation()" class="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded transition-colors"> <span id="pause-play-text">Pausa</span> </button>
+         <div id="controllable-animation" class="bg-indigo-500 w-12 h-12 rounded-full animate-bounce mt-2"></div>
+        </div>
+        <div>
+         <h4 class="font-medium mb-2">Classi di Controllo</h4>
+         <ul class="text-sm text-gray-600 space-y-1">
+          <li>• <code>animate-none</code> - Ferma animazione</li>
+          <li>• <code>motion-reduce:animate-none</code> - Rispetta preferenze utente</li>
+         </ul>
+        </div>
+       </div>
+      </div>
+     </div>
+    </section><!-- Custom Section -->
+    <section id="custom" class="tutorial-section hidden">
+     <div class="bg-white rounded-2xl shadow-xl p-8 mb-8">
+      <h2 class="text-3xl font-bold text-gray-800 mb-6 flex items-center"><span class="bg-purple-500 text-white rounded-full w-10 h-10 flex items-center justify-center mr-4 text-lg">4</span> Animazioni Personalizzate</h2>
+      <div class="space-y-8"><!-- Spiegazione -->
+       <div class="bg-purple-50 rounded-lg p-6">
+        <h3 class="text-xl font-semibold mb-4 text-purple-800">🎨 Creare Animazioni Personalizzate</h3>
+        <p class="text-gray-700 mb-4">Quando le animazioni predefinite non bastano, puoi creare le tue usando CSS @keyframes. Ecco come fare passo dopo passo:</p>
+       </div><!-- Step 1: CSS Keyframes -->
+       <div>
+        <h3 class="text-xl font-semibold mb-4">Passo 1: Definire i Keyframes CSS</h3>
+        <p class="text-gray-600 mb-4">Prima definisci l'animazione nel CSS:</p>
+        <div class="code-block mb-4"><span class="comment">/* Nel tag &lt;style&gt; del tuo HTML */</span> <span class="selector">@keyframes</span> <span class="property">wiggle</span> { <span class="value">0%</span>, <span class="value">100%</span> { <span class="property">transform</span>: <span class="value">rotate(-3deg)</span>; } <span class="value">50%</span> { <span class="property">transform</span>: <span class="value">rotate(3deg)</span>; } } <span class="selector">@keyframes</span> <span class="property">float</span> { <span class="value">0%</span>, <span class="value">100%</span> { <span class="property">transform</span>: <span class="value">translateY(0px)</span>; } <span class="value">50%</span> { <span class="property">transform</span>: <span class="value">translateY(-10px)</span>; } } <span class="selector">@keyframes</span> <span class="property">glow</span> { <span class="value">0%</span>, <span class="value">100%</span> { <span class="property">box-shadow</span>: <span class="value">0 0 5px #3b82f6</span>; } <span class="value">50%</span> { <span class="property">box-shadow</span>: <span class="value">0 0 20px #3b82f6, 0 0 30px #3b82f6</span>; } }
+        </div>
+       </div><!-- Step 2: CSS Classes -->
+       <div>
+        <h3 class="text-xl font-semibold mb-4">Passo 2: Creare le Classi CSS</h3>
+        <p class="text-gray-600 mb-4">Poi crea le classi che applicano l'animazione:</p>
+        <div class="code-block mb-4"><span class="comment">/* Classi per applicare le animazioni */</span> <span class="selector">.wiggle</span> { <span class="property">animation</span>: <span class="value">wiggle 1s ease-in-out infinite</span>; } <span class="selector">.float</span> { <span class="property">animation</span>: <span class="value">float 3s ease-in-out infinite</span>; } <span class="selector">.glow</span> { <span class="property">animation</span>: <span class="value">glow 2s ease-in-out infinite</span>; }
+        </div>
+       </div><!-- Step 3: HTML Usage -->
+       <div>
+        <h3 class="text-xl font-semibold mb-4">Passo 3: Usare nell'HTML</h3>
+        <p class="text-gray-600 mb-4">Infine applica le classi agli elementi HTML:</p>
+        <div class="code-block mb-4"><span class="comment">&lt;!-- Esempi di utilizzo --&gt;</span> <span class="tag">&lt;div</span> <span class="attribute">class</span>=<span class="string">"bg-orange-500 w-16 h-16 rounded-lg <span class="keyword">wiggle</span>"</span><span class="tag">&gt;&lt;/div&gt;</span> <span class="tag">&lt;div</span> <span class="attribute">class</span>=<span class="string">"bg-teal-500 w-16 h-16 rounded-lg <span class="keyword">float</span>"</span><span class="tag">&gt;&lt;/div&gt;</span> <span class="tag">&lt;div</span> <span class="attribute">class</span>=<span class="string">"bg-blue-500 w-16 h-16 rounded-lg <span class="keyword">glow</span>"</span><span class="tag">&gt;&lt;/div&gt;</span>
+        </div>
+       </div><!-- Examples -->
+       <div>
+        <h3 class="text-xl font-semibold mb-4">Esempi in Azione</h3>
+        <div class="grid md:grid-cols-3 gap-6">
+         <div class="text-center bg-gray-50 rounded-lg p-6">
+          <h4 class="font-medium mb-4">Wiggle (Oscillazione)</h4>
+          <div class="bg-orange-500 w-16 h-16 mx-auto rounded-lg wiggle cursor-pointer mb-4"></div>
+          <p class="text-sm text-gray-600">Perfetto per attirare l'attenzione</p>
+         </div>
+         <div class="text-center bg-gray-50 rounded-lg p-6">
+          <h4 class="font-medium mb-4">Float (Galleggiamento)</h4>
+          <div class="bg-teal-500 w-16 h-16 mx-auto rounded-lg float cursor-pointer mb-4"></div>
+          <p class="text-sm text-gray-600">Effetto elegante e sottile</p>
+         </div>
+         <div class="text-center bg-gray-50 rounded-lg p-6">
+          <h4 class="font-medium mb-4">Glow (Bagliore)</h4>
+          <div class="bg-blue-500 w-16 h-16 mx-auto rounded-lg glow cursor-pointer mb-4"></div>
+          <p class="text-sm text-gray-600">Crea un effetto luminoso</p>
+         </div>
+        </div>
+       </div><!-- Tailwind Config -->
+       <div class="bg-indigo-50 rounded-lg p-6">
+        <h3 class="text-xl font-semibold mb-4 text-indigo-800">⚙️ Configurazione Tailwind (Opzionale)</h3>
+        <p class="text-gray-700 mb-4">Se usi Tailwind in un progetto, puoi aggiungere le animazioni personalizzate alla configurazione:</p>
+        <div class="code-block"><span class="comment">// tailwind.config.js</span> <span class="keyword">module.exports</span> = { <span class="property">theme</span>: { <span class="property">extend</span>: { <span class="property">animation</span>: { <span class="string">'wiggle'</span>: <span class="string">'wiggle 1s ease-in-out infinite'</span>, <span class="string">'float'</span>: <span class="string">'float 3s ease-in-out infinite'</span>, <span class="string">'glow'</span>: <span class="string">'glow 2s ease-in-out infinite'</span>, }, <span class="property">keyframes</span>: { <span class="property">wiggle</span>: { <span class="string">'0%, 100%'</span>: { <span class="property">transform</span>: <span class="string">'rotate(-3deg)'</span> }, <span class="string">'50%'</span>: { <span class="property">transform</span>: <span class="string">'rotate(3deg)'</span> }, }, <span class="property">float</span>: { <span class="string">'0%, 100%'</span>: { <span class="property">transform</span>: <span class="string">'translateY(0px)'</span> }, <span class="string">'50%'</span>: { <span class="property">transform</span>: <span class="string">'translateY(-10px)'</span> }, }, <span class="property">glow</span>: { <span class="string">'0%, 100%'</span>: { <span class="property">boxShadow</span>: <span class="string">'0 0 5px #3b82f6'</span> }, <span class="string">'50%'</span>: { <span class="property">boxShadow</span>: <span class="string">'0 0 20px #3b82f6, 0 0 30px #3b82f6'</span> }, } } } } }
+        </div>
+        <p class="text-sm text-gray-600 mt-4">Con questa configurazione puoi usare <code>animate-wiggle</code>, <code>animate-float</code>, e <code>animate-glow</code> come classi Tailwind normali!</p>
+       </div><!-- Idee per Animazioni -->
+       <div class="bg-green-50 rounded-lg p-6">
+        <h3 class="text-xl font-semibold mb-4 text-green-800">💡 Idee per Altre Animazioni</h3>
+        <div class="grid md:grid-cols-2 gap-6">
+         <div>
+          <h4 class="font-semibold mb-3">Animazioni di Movimento:</h4>
+          <ul class="text-sm text-gray-700 space-y-2">
+           <li>• <strong>Shake:</strong> Trema orizzontalmente</li>
+           <li>• <strong>Wobble:</strong> Oscillazione complessa</li>
+           <li>• <strong>Slide-in:</strong> Entra da un lato</li>
+           <li>• <strong>Zoom-in:</strong> Appare ingrandendosi</li>
+           <li>• <strong>Flip:</strong> Ruota su se stesso</li>
+          </ul>
+         </div>
+         <div>
+          <h4 class="font-semibold mb-3">Animazioni di Colore/Effetti:</h4>
+          <ul class="text-sm text-gray-700 space-y-2">
+           <li>• <strong>Rainbow:</strong> Cambia colori continuamente</li>
+           <li>• <strong>Breathe:</strong> Cambia opacità dolcemente</li>
+           <li>• <strong>Neon:</strong> Effetto neon pulsante</li>
+           <li>• <strong>Gradient-shift:</strong> Gradiente che si muove</li>
+           <li>• <strong>Border-dance:</strong> Bordo che si muove</li>
+          </ul>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </section><!-- Demo Section -->
+    <section id="demo" class="tutorial-section hidden">
+     <div class="bg-white rounded-2xl shadow-xl p-8 mb-8">
+      <h2 id="demo-title" class="text-3xl font-bold text-gray-800 mb-6 flex items-center"><span class="bg-red-500 text-white rounded-full w-10 h-10 flex items-center justify-center mr-4 text-lg">🎮</span> Prova le Animazioni</h2>
+      <div class="grid md:grid-cols-2 gap-8"><!-- Interactive Controls -->
+       <div>
+        <h3 class="text-xl font-semibold mb-4">Controlli Interattivi</h3>
+        <div class="space-y-4">
+         <div><label class="block text-sm font-medium mb-2">Tipo Animazione:</label> <select id="animation-type" class="w-full p-2 border rounded-lg" onchange="changeAnimation()"> <option value="animate-bounce">Bounce</option> <option value="animate-spin">Spin</option> <option value="animate-pulse">Pulse</option> <option value="animate-ping">Ping</option> <option value="wiggle">Wiggle (Custom)</option> <option value="float">Float (Custom)</option> <option value="glow">Glow (Custom)</option> </select>
+         </div>
+         <div><label class="block text-sm font-medium mb-2">Colore:</label>
+          <div class="flex flex-wrap gap-2"><button onclick="changeColor('bg-red-500')" class="w-8 h-8 bg-red-500 rounded-full border-2 border-gray-300 hover:border-gray-500 transition-colors"></button> <button onclick="changeColor('bg-blue-500')" class="w-8 h-8 bg-blue-500 rounded-full border-2 border-gray-300 hover:border-gray-500 transition-colors"></button> <button onclick="changeColor('bg-green-500')" class="w-8 h-8 bg-green-500 rounded-full border-2 border-gray-300 hover:border-gray-500 transition-colors"></button> <button onclick="changeColor('bg-purple-500')" class="w-8 h-8 bg-purple-500 rounded-full border-2 border-gray-300 hover:border-gray-500 transition-colors"></button> <button onclick="changeColor('bg-yellow-500')" class="w-8 h-8 bg-yellow-500 rounded-full border-2 border-gray-300 hover:border-gray-500 transition-colors"></button> <button onclick="changeColor('bg-pink-500')" class="w-8 h-8 bg-pink-500 rounded-full border-2 border-gray-300 hover:border-gray-500 transition-colors"></button> <button onclick="changeColor('bg-indigo-500')" class="w-8 h-8 bg-indigo-500 rounded-full border-2 border-gray-300 hover:border-gray-500 transition-colors"></button> <button onclick="changeColor('bg-teal-500')" class="w-8 h-8 bg-teal-500 rounded-full border-2 border-gray-300 hover:border-gray-500 transition-colors"></button>
+          </div>
+         </div>
+         <div><label class="block text-sm font-medium mb-2">Forma:</label>
+          <div class="flex gap-2"><button onclick="changeShape('rounded-lg')" class="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm transition-colors">Quadrato</button> <button onclick="changeShape('rounded-full')" class="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm transition-colors">Cerchio</button> <button onclick="changeShape('rounded-none')" class="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm transition-colors">Rettangolo</button>
+          </div>
+         </div><button onclick="resetDemo()" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors"> Reset Demo </button> <button onclick="copyCurrentCode()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition-colors"> 📋 Copia Codice </button>
+        </div>
+       </div><!-- Demo Area -->
+       <div>
+        <h3 class="text-xl font-semibold mb-4">Area Demo</h3>
+        <div class="bg-gray-100 rounded-lg p-8 flex items-center justify-center min-h-48">
+         <div id="demo-element" class="bg-blue-500 w-20 h-20 rounded-lg animate-bounce"></div>
+        </div>
+        <p class="text-sm text-gray-500 mt-2 text-center">Usa i controlli per modificare l'animazione</p><!-- Current Code Display -->
+        <div class="mt-4">
+         <h4 class="font-semibold mb-2">Codice Corrente:</h4>
+         <div id="current-code" class="code-block text-xs"><span class="tag">&lt;div</span> <span class="attribute">class</span>=<span class="string">"bg-blue-500 w-20 h-20 rounded-lg animate-bounce"</span><span class="tag">&gt;&lt;/div&gt;</span>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div><!-- Tips -->
+     <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-8">
+      <h3 class="text-2xl font-bold text-gray-800 mb-4">💡 Consigli Pro</h3>
+      <div class="grid md:grid-cols-2 gap-6">
+       <div>
+        <h4 class="font-semibold mb-2 text-blue-700">Performance</h4>
+        <ul class="text-sm text-gray-600 space-y-1">
+         <li>• Usa <code>transform</code> e <code>opacity</code> per animazioni fluide</li>
+         <li>• Evita di animare <code>width</code>, <code>height</code>, <code>top</code>, <code>left</code></li>
+         <li>• Usa <code>will-change</code> per animazioni complesse</li>
+         <li>• Limita il numero di animazioni simultanee</li>
+        </ul>
+       </div>
+       <div>
+        <h4 class="font-semibold mb-2 text-blue-700">Accessibilità</h4>
+        <ul class="text-sm text-gray-600 space-y-1">
+         <li>• Usa <code>motion-reduce:animate-none</code></li>
+         <li>• Non fare affidamento solo sulle animazioni per comunicare</li>
+         <li>• Mantieni le animazioni sotto i 5 secondi</li>
+         <li>• Fornisci sempre alternative testuali</li>
+        </ul>
+       </div>
+      </div>
+      <div class="mt-6 bg-white rounded-lg p-4">
+       <h4 class="font-semibold mb-2">Esempio di Codice Accessibile:</h4>
+       <div class="code-block text-sm"><span class="tag">&lt;div</span> <span class="attribute">class</span>=<span class="string">"animate-spin <span class="keyword">motion-reduce:animate-none</span>"</span><span class="tag">&gt;</span> <span class="comment">&lt;!-- Icona spinner --&gt;</span> <span class="tag">&lt;/div&gt;</span> <span class="tag">&lt;span</span> <span class="attribute">class</span>=<span class="string">"sr-only"</span><span class="tag">&gt;</span>Caricamento in corso...<span class="tag">&lt;/span&gt;</span>
+       </div>
+      </div>
+     </div>
+    </section>
+   </main>
+  </div>
+        
+  <script>
+        // Configuration for Element SDK
+        const defaultConfig = {
+            main_title: "Tutorial Animazioni Tailwind CSS",
+            intro_text: "Guida pratica step-by-step per creare animazioni con Tailwind CSS. Codice pronto da copiare, spiegazioni dettagliate e esempi reali che funzionano!",
+            demo_title: "Prova le Animazioni",
+            primary_color: "#3b82f6",
+            secondary_color: "#ffffff",
+            text_color: "#1f2937",
+            accent_color: "#10b981",
+            background_color: "#f0f9ff"
+        };
+
+        // Navigation functionality
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.tutorial-section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.remove('hidden');
+            
+            // Update navigation buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-500', 'text-white');
+                btn.classList.add('text-gray-600', 'hover:bg-gray-100');
+            });
+            
+            event.target.classList.remove('text-gray-600', 'hover:bg-gray-100');
+            event.target.classList.add('bg-blue-500', 'text-white');
+        }
+
+        // Animation control
+        let isAnimationPaused = false;
+        function toggleAnimation() {
+            const element = document.getElementById('controllable-animation');
+            const text = document.getElementById('pause-play-text');
+            
+            if (isAnimationPaused) {
+                element.classList.add('animate-bounce');
+                text.textContent = 'Pausa';
+                isAnimationPaused = false;
+            } else {
+                element.classList.remove('animate-bounce');
+                text.textContent = 'Play';
+                isAnimationPaused = true;
+            }
+        }
+
+        // Demo functionality
+        function changeAnimation() {
+            const element = document.getElementById('demo-element');
+            const animationType = document.getElementById('animation-type').value;
+            
+            // Remove all animation classes
+            element.className = element.className.replace(/animate-\w+|wiggle|float|glow/g, '');
+            
+            // Add new animation
+            element.classList.add(animationType);
+            
+            updateCurrentCode();
+        }
+
+        function changeColor(colorClass) {
+            const element = document.getElementById('demo-element');
+            
+            // Remove all background color classes
+            element.className = element.className.replace(/bg-\w+-\d+/g, '');
+            
+            // Add new color
+            element.classList.add(colorClass);
+            
+            updateCurrentCode();
+        }
+
+        function changeShape(shapeClass) {
+            const element = document.getElementById('demo-element');
+            
+            // Remove all rounded classes
+            element.className = element.className.replace(/rounded-\w+/g, '');
+            
+            // Add new shape
+            element.classList.add(shapeClass);
+            
+            updateCurrentCode();
+        }
+
+        function resetDemo() {
+            const element = document.getElementById('demo-element');
+            element.className = 'bg-blue-500 w-20 h-20 rounded-lg animate-bounce';
+            document.getElementById('animation-type').value = 'animate-bounce';
+            updateCurrentCode();
+        }
+
+        function updateCurrentCode() {
+            const element = document.getElementById('demo-element');
+            const codeDisplay = document.getElementById('current-code');
+            const classes = element.className;
+            
+            codeDisplay.innerHTML = `<span class="tag">&lt;div</span> <span class="attribute">class</span>=<span class="string">"${classes}"</span><span class="tag">&gt;&lt;/div&gt;</span>`;
+        }
+
+        function copyCurrentCode() {
+            const element = document.getElementById('demo-element');
+            const code = `<div class="${element.className}"></div>`;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                // Show temporary success message
+                const button = event.target;
+                const originalText = button.textContent;
+                button.textContent = '✅ Copiato!';
+                button.classList.remove('bg-green-500', 'hover:bg-green-600');
+                button.classList.add('bg-green-600');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('bg-green-600');
+                    button.classList.add('bg-green-500', 'hover:bg-green-600');
+                }, 2000);
+            });
+        }
+
+        // Element SDK implementation
+        async function onConfigChange(config) {
+            const mainTitle = document.getElementById('main-title');
+            const introText = document.getElementById('intro-text');
+            const demoTitle = document.getElementById('demo-title');
+            
+            if (mainTitle) {
+                mainTitle.textContent = config.main_title || defaultConfig.main_title;
+                mainTitle.style.color = config.text_color || defaultConfig.text_color;
+            }
+            
+            if (introText) {
+                introText.textContent = config.intro_text || defaultConfig.intro_text;
+                introText.style.color = config.text_color || defaultConfig.text_color;
+            }
+            
+            if (demoTitle) {
+                demoTitle.innerHTML = `<span class="bg-red-500 text-white rounded-full w-10 h-10 flex items-center justify-center mr-4 text-lg">🎮</span>${config.demo_title || defaultConfig.demo_title}`;
+                demoTitle.style.color = config.text_color || defaultConfig.text_color;
+            }
+            
+            // Update background
+            document.body.style.background = `linear-gradient(to bottom right, ${config.background_color || defaultConfig.background_color}, ${config.primary_color || defaultConfig.primary_color}20)`;
+        }
+
+        function mapToCapabilities(config) {
+            return {
+                recolorables: [
+                    {
+                        get: () => config.background_color || defaultConfig.background_color,
+                        set: (value) => {
+                            config.background_color = value;
+                            window.elementSdk.setConfig({ background_color: value });
+                        }
+                    },
+                    {
+                        get: () => config.primary_color || defaultConfig.primary_color,
+                        set: (value) => {
+                            config.primary_color = value;
+                            window.elementSdk.setConfig({ primary_color: value });
+                        }
+                    },
+                    {
+                        get: () => config.text_color || defaultConfig.text_color,
+                        set: (value) => {
+                            config.text_color = value;
+                            window.elementSdk.setConfig({ text_color: value });
+                        }
+                    }
+                ],
+                borderables: [],
+                fontEditable: undefined,
+                fontSizeable: undefined
+            };
+        }
+
+        function mapToEditPanelValues(config) {
+            return new Map([
+                ["main_title", config.main_title || defaultConfig.main_title],
+                ["intro_text", config.intro_text || defaultConfig.intro_text],
+                ["demo_title", config.demo_title || defaultConfig.demo_title]
+            ]);
+        }
+
+        // Initialize Element SDK
+        if (window.elementSdk) {
+            window.elementSdk.init({
+                defaultConfig,
+                onConfigChange,
+                mapToCapabilities,
+                mapToEditPanelValues
+            });
+        }
+      // breadcrumb
+
+
+(function() {
+  const ol = document.getElementById('breadcrumb');
+  ol.innerHTML = `
+    <li><a href="/index.html" style="padding: 8px 16px; background: #dbeafe; color: #1e40af; text-decoration: none; border-radius: 9999px; font-weight: 500; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 6px;">🏠 Home</a></li>
+    <li style="color: #9ca3af; font-weight: bold; font-size: 18px; margin: 0 12px;">›</li>
+    <li style="position: relative; display: inline-block; margin-right: 12px;">
+      <span id="anim-trigger" style="padding: 8px 16px; background: #f3e8ff; color: #7c3aed; border: 2px solid #e9d5ff; border-radius: 9999px; font-weight: 700; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 6px;">🎬 Animazioni ▼</span>
+      <div id="anim-drop" style="position: absolute; top: 100%; left: 0; margin-top: 8px; width: 280px; background: rgba(255,255,255,0.98); backdrop-filter: blur(20px); border: 1px solid #e5e7eb; border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.3s; z-index: 10000; padding: 8px 0;">
+        <a href="animazioni_home.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">🎬 home</a>
+        <a href="animazioni_esempi.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">✨ Esempi</a>
+        <a href="animazioni-css.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">⚡
+Animazioni css</a>
+        <a href="cssanimazioni.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">🌀 Anime CSS 2
+        </a>
+        <a href="generatore_animazioni.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500; border-top: 1px solid #f3f4f6;">💓 Generatore</a>
+                <a href="generatore_anime.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500; border-top: 1px solid #f3f4f6;">⚡ Generaotre 2</a>
+      </div>
+    </li>
+    <li style="color: #9ca3af; font-weight: bold; font-size: 18px; margin: 0 12px;">›</li>
+    <li><span style="padding: 8px 16px; background: #dcfce7; color: #166534; border: 2px solid #bbf7d0; border-radius: 9999px; font-weight: 800; box-shadow: 0 4px 8px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 6px;">☁️ Animazioni </span></li>
+  `;
+  
+  // Dropdown events
+  document.getElementById('anim-trigger').onmouseenter = () => {
+    document.getElementById('anim-drop').style.opacity = '1';
+    document.getElementById('anim-drop').style.visibility = 'visible';
+    document.getElementById('anim-drop').style.transform = 'translateY(0)';
+  };
+  document.getElementById('anim-drop').onmouseleave = () => {
+    document.getElementById('anim-drop').style.opacity = '0';
+    document.getElementById('anim-drop').style.visibility = 'hidden';
+    document.getElementById('anim-drop').style.transform = 'translateY(-10px)';
+  };
+})();
+    </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'998f0ee405f5ed15',t:'MTc2MjIwNjMyMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

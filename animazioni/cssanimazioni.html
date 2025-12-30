@@ -1,0 +1,674 @@
+<!doctype html>
+<html lang="it">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS Animation Builder</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    
+    html {
+      height: 100%;
+    }
+    
+    .animation-app {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
+      gap: 24px;
+      overflow-y: auto;
+    }
+    
+    .app-header {
+      text-align: center;
+    }
+    
+    .app-title {
+      font-size: 36px;
+      font-weight: 800;
+      margin: 0;
+      padding-bottom: 8px;
+    }
+    
+    .main-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      flex: 1;
+    }
+    
+    @media (max-width: 968px) {
+      .main-content {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .controls-panel {
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin: 0 0 12px 0;
+    }
+    
+    .animation-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    
+    .animation-btn {
+      padding: 12px;
+      border: 2px solid transparent;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+    
+    .animation-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .animation-btn.active {
+      border-color: #3b82f6;
+    }
+    
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .control-label {
+      font-weight: 600;
+      font-size: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .control-value {
+      font-weight: 700;
+    }
+    
+    .slider {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    
+    .select-input {
+      padding: 10px;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    
+    .select-input:focus {
+      outline: none;
+      border-color: #3b82f6;
+    }
+    
+    .preview-panel {
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    
+    .preview-stage {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      min-height: 300px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .preview-element {
+      padding: 24px 48px;
+      font-size: 32px;
+      font-weight: 800;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .action-button {
+      padding: 14px 24px;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      color: white;
+    }
+    
+    .action-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+    }
+    
+    .action-button:active {
+      transform: translateY(0);
+    }
+    
+    .code-section {
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    }
+    
+    .code-block {
+      padding: 16px;
+      border-radius: 8px;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      overflow-x: auto;
+      white-space: pre;
+      line-height: 1.6;
+    }
+    
+    .button-group {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    
+    /* Animazioni */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    @keyframes slideInLeft {
+      from { transform: translateX(-100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    @keyframes slideInRight {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    @keyframes slideInUp {
+      from { transform: translateY(100%); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    
+    @keyframes slideInDown {
+      from { transform: translateY(-100%); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-30px); }
+      60% { transform: translateY(-15px); }
+    }
+    
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    
+    @keyframes scale {
+      from { transform: scale(0); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+    
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+      20%, 40%, 60%, 80% { transform: translateX(10px); }
+    }
+    
+    @keyframes flip {
+      from { transform: perspective(400px) rotateY(0); }
+      to { transform: perspective(400px) rotateY(360deg); }
+    }
+    
+    @keyframes swing {
+      20% { transform: rotate(15deg); }
+      40% { transform: rotate(-10deg); }
+      60% { transform: rotate(5deg); }
+      80% { transform: rotate(-5deg); }
+      100% { transform: rotate(0deg); }
+    }
+    
+    .animate {
+      animation-fill-mode: both;
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  <main class="animation-app">
+   <header class="app-header">
+        
+    <h1 class="app-title" id="appTitle">CSS Animation Builder</h1>
+       <!-- NAVBAR INVULNERABILE (mettila PRIMA di tutto) -->
+<div id="breadcrumb-container" style="position: sticky; top: 0; z-index: 9999; background: rgba(255,255,255,0.98); backdrop-filter: blur(20px); border-bottom: 1px solid #e5e7eb; padding: 16px 24px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin: 0;">
+  <div style="max-width: 1280px; margin: 0 auto;">
+    <div style="font-size: 24px; font-weight: 800; background: linear-gradient(135deg, #4f46e5, #7c3aed); -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 12px;">
+      🎬 Hub Generatore Animazioni
+    </div>
+    <ol id="breadcrumb" style="display: flex; align-items: center; list-style: none; padding: 0; margin: 0; gap: 8px; font-size: 14px;"></ol>
+  </div>
+</div>
+   </header>
+   <div class="main-content">
+    <section class="controls-panel" id="controlsPanel">
+     <div>
+      <h2 class="section-title" id="sectionTitle">Scegli Animazione</h2>
+      <div class="animation-grid"><button class="animation-btn active" data-animation="fadeIn">✨ Fade In</button> <button class="animation-btn" data-animation="slideInLeft">← Slide Left</button> <button class="animation-btn" data-animation="slideInRight">Slide Right →</button> <button class="animation-btn" data-animation="slideInUp">↑ Slide Up</button> <button class="animation-btn" data-animation="slideInDown">↓ Slide Down</button> <button class="animation-btn" data-animation="bounce">⚡ Bounce</button> <button class="animation-btn" data-animation="rotate">🔄 Rotate</button> <button class="animation-btn" data-animation="scale">📐 Scale</button> <button class="animation-btn" data-animation="pulse">💓 Pulse</button> <button class="animation-btn" data-animation="shake">📳 Shake</button> <button class="animation-btn" data-animation="flip">🎴 Flip</button> <button class="animation-btn" data-animation="swing">🎯 Swing</button>
+      </div>
+     </div>
+     <div class="control-group"><label class="control-label"> <span>Durata</span> <span class="control-value" id="durationValue">1.0s</span> </label> <input type="range" class="slider" id="duration" min="0.1" max="5" step="0.1" value="1">
+     </div>
+     <div class="control-group"><label class="control-label"> <span>Ritardo</span> <span class="control-value" id="delayValue">0.0s</span> </label> <input type="range" class="slider" id="delay" min="0" max="3" step="0.1" value="0">
+     </div>
+     <div class="control-group"><label class="control-label"> <span>Ripetizioni</span> <span class="control-value" id="iterationValue">1</span> </label> <input type="range" class="slider" id="iteration" min="1" max="10" step="1" value="1">
+     </div>
+     <div class="control-group"><label class="control-label" for="direction">Direzione</label> <select class="select-input" id="direction"> <option value="normal">Normal</option> <option value="reverse">Reverse</option> <option value="alternate">Alternate</option> <option value="alternate-reverse">Alternate Reverse</option> </select>
+     </div>
+     <div class="control-group"><label class="control-label" for="timing">Timing Function</label> <select class="select-input" id="timing"> <option value="ease">Ease</option> <option value="linear">Linear</option> <option value="ease-in">Ease In</option> <option value="ease-out">Ease Out</option> <option value="ease-in-out">Ease In Out</option> </select>
+     </div>
+    </section>
+    <section class="preview-panel" id="previewPanel">
+     <h2 class="section-title" id="previewTitle">Preview</h2>
+     <div class="preview-stage" id="previewStage">
+      <div class="preview-element" id="previewElement">
+       Anima Questo!
+      </div>
+     </div><button class="action-button" id="playButton">▶ Riproduci Animazione</button>
+    </section>
+   </div>
+   <section class="code-section" id="codeSection">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+     <h2 class="section-title" style="margin: 0;">Codice CSS</h2><button class="action-button" id="copyButton">📋 Copia Codice CSS</button>
+    </div>
+    <div class="code-block" id="codeBlock"></div>
+   </section>
+  </main>
+
+
+
+  <script>
+    const defaultConfig = {
+      background_color: "#f0f4f8",
+      panel_background: "#ffffff",
+      preview_background: "#1a202c",
+      text_color: "#2d3748",
+      element_color: "#ffffff",
+      element_background: "#3b82f6",
+      button_color: "#10b981",
+      code_background: "#2d3748",
+      code_text: "#a0aec0",
+      font_family: "Inter",
+      font_size: 16,
+      app_title: "CSS Animation Builder",
+      preview_text: "Anima Questo!",
+      play_button_text: "▶ Riproduci Animazione",
+      copy_button_text: "📋 Copia Codice CSS"
+    };
+
+    let currentAnimation = 'fadeIn';
+    let animationSettings = {
+      duration: 1,
+      delay: 0,
+      iteration: 1,
+      direction: 'normal',
+      timing: 'ease'
+    };
+
+    const animationButtons = document.querySelectorAll('.animation-btn');
+    const durationSlider = document.getElementById('duration');
+    const delaySlider = document.getElementById('delay');
+    const iterationSlider = document.getElementById('iteration');
+    const directionSelect = document.getElementById('direction');
+    const timingSelect = document.getElementById('timing');
+    const playButton = document.getElementById('playButton');
+    const copyButton = document.getElementById('copyButton');
+    const previewElement = document.getElementById('previewElement');
+    const codeBlock = document.getElementById('codeBlock');
+
+    // Animation selection
+    animationButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        animationButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentAnimation = btn.dataset.animation;
+        updateCode();
+      });
+    });
+
+    // Duration slider
+    durationSlider.addEventListener('input', (e) => {
+      animationSettings.duration = parseFloat(e.target.value);
+      document.getElementById('durationValue').textContent = `${animationSettings.duration.toFixed(1)}s`;
+      updateCode();
+    });
+
+    // Delay slider
+    delaySlider.addEventListener('input', (e) => {
+      animationSettings.delay = parseFloat(e.target.value);
+      document.getElementById('delayValue').textContent = `${animationSettings.delay.toFixed(1)}s`;
+      updateCode();
+    });
+
+    // Iteration slider
+    iterationSlider.addEventListener('input', (e) => {
+      animationSettings.iteration = parseInt(e.target.value);
+      document.getElementById('iterationValue').textContent = animationSettings.iteration;
+      updateCode();
+    });
+
+    // Direction select
+    directionSelect.addEventListener('change', (e) => {
+      animationSettings.direction = e.target.value;
+      updateCode();
+    });
+
+    // Timing select
+    timingSelect.addEventListener('change', (e) => {
+      animationSettings.timing = e.target.value;
+      updateCode();
+    });
+
+    // Play animation
+    playButton.addEventListener('click', () => {
+      previewElement.classList.remove('animate');
+      previewElement.style.animation = 'none';
+      
+      setTimeout(() => {
+        previewElement.classList.add('animate');
+        previewElement.style.animationName = currentAnimation;
+        previewElement.style.animationDuration = `${animationSettings.duration}s`;
+        previewElement.style.animationDelay = `${animationSettings.delay}s`;
+        previewElement.style.animationIterationCount = animationSettings.iteration;
+        previewElement.style.animationDirection = animationSettings.direction;
+        previewElement.style.animationTimingFunction = animationSettings.timing;
+      }, 10);
+    });
+
+    // Copy code
+    copyButton.addEventListener('click', () => {
+      const code = codeBlock.textContent;
+      navigator.clipboard.writeText(code).then(() => {
+        const originalText = copyButton.textContent;
+        copyButton.textContent = '✅ Copiato!';
+        setTimeout(() => {
+          copyButton.textContent = originalText;
+        }, 2000);
+      });
+    });
+
+    function updateCode() {
+      const code = `.element {
+  animation-name: ${currentAnimation};
+  animation-duration: ${animationSettings.duration}s;
+  animation-delay: ${animationSettings.delay}s;
+  animation-iteration-count: ${animationSettings.iteration};
+  animation-direction: ${animationSettings.direction};
+  animation-timing-function: ${animationSettings.timing};
+  animation-fill-mode: both;
+}
+
+/* Oppure versione breve: */
+.element {
+  animation: ${currentAnimation} ${animationSettings.duration}s ${animationSettings.timing} ${animationSettings.delay}s ${animationSettings.iteration} ${animationSettings.direction} both;
+}`;
+      
+      codeBlock.textContent = code;
+    }
+
+    async function onConfigChange(config) {
+      const appConfig = { ...defaultConfig, ...config };
+      
+      // Backgrounds
+      document.querySelector('.animation-app').style.background = appConfig.background_color;
+      document.querySelector('.controls-panel').style.background = appConfig.panel_background;
+      document.querySelector('.preview-panel').style.background = appConfig.panel_background;
+      document.querySelector('.code-section').style.background = appConfig.panel_background;
+      document.querySelector('.preview-stage').style.background = appConfig.preview_background;
+      document.querySelector('.code-block').style.background = appConfig.code_background;
+      
+      // Text colors
+      document.querySelector('.app-title').style.color = appConfig.text_color;
+      document.querySelectorAll('.section-title').forEach(title => {
+        title.style.color = appConfig.text_color;
+      });
+      document.querySelectorAll('.control-label').forEach(label => {
+        label.style.color = appConfig.text_color;
+      });
+      document.querySelector('.code-block').style.color = appConfig.code_text;
+      
+      // Preview element
+      document.querySelector('.preview-element').style.color = appConfig.element_color;
+      document.querySelector('.preview-element').style.background = appConfig.element_background;
+      
+      // Buttons
+      document.querySelectorAll('.animation-btn').forEach(btn => {
+        btn.style.background = appConfig.panel_background;
+        btn.style.color = appConfig.text_color;
+      });
+      
+      document.querySelector('#playButton').style.background = appConfig.button_color;
+      document.querySelector('#copyButton').style.background = appConfig.button_color;
+      
+      // Selects
+      document.querySelectorAll('.select-input').forEach(select => {
+        select.style.background = appConfig.panel_background;
+        select.style.color = appConfig.text_color;
+      });
+      
+      // Font
+      const fontFamily = appConfig.font_family;
+      const baseFontStack = '-apple-system, BlinkMacSystemFont, sans-serif';
+      document.querySelector('.app-title').style.fontFamily = `${fontFamily}, ${baseFontStack}`;
+      document.querySelectorAll('.section-title').forEach(title => {
+        title.style.fontFamily = `${fontFamily}, ${baseFontStack}`;
+      });
+      document.querySelectorAll('.control-label').forEach(label => {
+        label.style.fontFamily = `${fontFamily}, ${baseFontStack}`;
+      });
+      document.querySelectorAll('.animation-btn').forEach(btn => {
+        btn.style.fontFamily = `${fontFamily}, ${baseFontStack}`;
+      });
+      document.querySelectorAll('.action-button').forEach(btn => {
+        btn.style.fontFamily = `${fontFamily}, ${baseFontStack}`;
+      });
+      document.querySelector('.preview-element').style.fontFamily = `${fontFamily}, ${baseFontStack}`;
+      
+      // Font sizes
+      const baseSize = appConfig.font_size;
+      document.querySelector('.app-title').style.fontSize = `${baseSize * 2.25}px`;
+      document.querySelectorAll('.section-title').forEach(title => {
+        title.style.fontSize = `${baseSize * 1.125}px`;
+      });
+      document.querySelectorAll('.control-label').forEach(label => {
+        label.style.fontSize = `${baseSize * 0.875}px`;
+      });
+      document.querySelectorAll('.animation-btn').forEach(btn => {
+        btn.style.fontSize = `${baseSize * 0.8125}px`;
+      });
+      document.querySelectorAll('.action-button').forEach(btn => {
+        btn.style.fontSize = `${baseSize * 0.9375}px`;
+      });
+      document.querySelector('.preview-element').style.fontSize = `${baseSize * 2}px`;
+      document.querySelector('.code-block').style.fontSize = `${baseSize * 0.8125}px`;
+      
+      // Editable text
+      document.getElementById('appTitle').textContent = appConfig.app_title;
+      document.getElementById('previewElement').textContent = appConfig.preview_text;
+      document.getElementById('playButton').textContent = appConfig.play_button_text;
+      document.getElementById('copyButton').textContent = appConfig.copy_button_text;
+    }
+
+    function mapToCapabilities(config) {
+      const appConfig = { ...defaultConfig, ...config };
+      
+      return {
+        recolorables: [
+          {
+            get: () => appConfig.background_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.setConfig({ background_color: value });
+              }
+            }
+          },
+          {
+            get: () => appConfig.panel_background,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.setConfig({ panel_background: value });
+              }
+            }
+          },
+          {
+            get: () => appConfig.text_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.setConfig({ text_color: value });
+              }
+            }
+          },
+          {
+            get: () => appConfig.element_background,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.setConfig({ element_background: value });
+              }
+            }
+          },
+          {
+            get: () => appConfig.button_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.setConfig({ button_color: value });
+              }
+            }
+          }
+        ],
+        borderables: [],
+        fontEditable: {
+          get: () => appConfig.font_family,
+          set: (value) => {
+            if (window.elementSdk) {
+              window.elementSdk.setConfig({ font_family: value });
+            }
+          }
+        },
+        fontSizeable: {
+          get: () => appConfig.font_size,
+          set: (value) => {
+            if (window.elementSdk) {
+              window.elementSdk.setConfig({ font_size: value });
+            }
+          }
+        }
+      };
+    }
+
+    function mapToEditPanelValues(config) {
+      const appConfig = { ...defaultConfig, ...config };
+      return new Map([
+        ["app_title", appConfig.app_title],
+        ["preview_text", appConfig.preview_text],
+        ["play_button_text", appConfig.play_button_text],
+        ["copy_button_text", appConfig.copy_button_text]
+      ]);
+    }
+
+    // Initialize
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities,
+        mapToEditPanelValues
+      });
+    } else {
+      onConfigChange(defaultConfig);
+    }
+
+    // Initial code generation
+    updateCode();
+
+       // breadcrumb
+
+
+(function() {
+  const ol = document.getElementById('breadcrumb');
+  ol.innerHTML = `
+    <li><a href="index.html" style="padding: 8px 16px; background: #dbeafe; color: #1e40af; text-decoration: none; border-radius: 9999px; font-weight: 500; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 6px;">🏠 Home</a></li>
+    <li style="color: #9ca3af; font-weight: bold; font-size: 18px; margin: 0 12px;">›</li>
+    <li style="position: relative; display: inline-block; margin-right: 12px;">
+      <span id="anim-trigger" style="padding: 8px 16px; background: #f3e8ff; color: #7c3aed; border: 2px solid #e9d5ff; border-radius: 9999px; font-weight: 700; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 6px;">🎬 Animazioni ▼</span>
+      <div id="anim-drop" style="position: absolute; top: 100%; left: 0; margin-top: 8px; width: 280px; background: rgba(255,255,255,0.98); backdrop-filter: blur(20px); border: 1px solid #e5e7eb; border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.3s; z-index: 10000; padding: 8px 0;">
+        <a href="animazioni_home.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">🎬 home</a>
+        <a href="animazioni_esempi.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">✨ Esempi</a>
+        <a href="animazioni-css.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">⚡
+Animazioni css</a>
+        <a href="animazioni1.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500;">☁️ Animazioni</a>
+        <a href="generatore_animazioni.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500; border-top: 1px solid #f3f4f6;">💓 Generatore</a>
+                <a href="generatore_anime.html" style="display: block; padding: 12px 20px; color: #374151; text-decoration: none; font-weight: 500; border-top: 1px solid #f3f4f6;">⚡ Generaotre 2</a>
+      </div>
+    </li>
+    <li style="color: #9ca3af; font-weight: bold; font-size: 18px; margin: 0 12px;">›</li>
+    <li><span style="padding: 8px 16px; background: #dcfce7; color: #166534; border: 2px solid #bbf7d0; border-radius: 9999px; font-weight: 800; box-shadow: 0 4px 8px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 6px;"> 🌀 Anime CSS 2</span></li>
+  `;
+  
+  // Dropdown events
+  document.getElementById('anim-trigger').onmouseenter = () => {
+    document.getElementById('anim-drop').style.opacity = '1';
+    document.getElementById('anim-drop').style.visibility = 'visible';
+    document.getElementById('anim-drop').style.transform = 'translateY(0)';
+  };
+  document.getElementById('anim-drop').onmouseleave = () => {
+    document.getElementById('anim-drop').style.opacity = '0';
+    document.getElementById('anim-drop').style.visibility = 'hidden';
+    document.getElementById('anim-drop').style.transform = 'translateY(-10px)';
+  };
+})();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a44a65ba7e0ba80',t:'MTc2NDExMDQ0OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
