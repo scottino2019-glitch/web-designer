@@ -1,0 +1,1219 @@
+<!doctype html>
+<html lang="it">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generatore Toggle</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100%;
+      width: 100%;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    .app-wrapper {
+      width: 100%;
+      min-height: 100%;
+      padding: 2rem 1rem;
+    }
+
+    h1 {
+      color: white;
+      text-align: center;
+      margin: 0 0 2rem 0;
+      font-size: 2.5rem;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+
+    .controls {
+      max-width: 900px;
+      margin: 0 auto 2rem auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: #333;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: border-color 0.3s;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .btn {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 0.875rem 2rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: all 0.3s;
+      box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);
+      width: 100%;
+    }
+
+    .btn:hover {
+      background: #5568d3;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .code-output {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      overflow: hidden;
+    }
+
+    .code-header {
+      background: #2d3748;
+      color: white;
+      padding: 1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .code-header h2 {
+      margin: 0;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .copy-button {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .copy-button:hover {
+      background: #5568d3;
+    }
+
+    .copy-button.copied {
+      background: #10b981;
+    }
+
+    .code-box {
+      background: #1a202c;
+      color: #e2e8f0;
+      padding: 1.5rem;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      overflow-x: auto;
+      max-height: 500px;
+      overflow-y: auto;
+      user-select: all;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    .code-box::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+
+    .code-box::-webkit-scrollbar-track {
+      background: #2d3748;
+    }
+
+    .code-box::-webkit-scrollbar-thumb {
+      background: #4a5568;
+      border-radius: 5px;
+    }
+
+    @media (max-width: 768px) {
+      .app-wrapper {
+        padding: 1rem 0.5rem;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+      }
+
+      .controls {
+        padding: 1.5rem;
+      }
+
+      .code-box {
+        font-size: 0.8rem;
+        padding: 1rem;
+      }
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  <main class="app-wrapper">
+   <h1 id="pageTitle">Generatore di Toggle</h1>
+   <div class="controls">
+    <form id="toggleForm" onsubmit="generateToggle(event)">
+     <div class="form-group"><label for="toggleType">Tipo di Toggle</label> <select id="toggleType" required> <option value="accordion">Accordion</option> <option value="dropdown">Dropdown</option> <option value="tabs">Tabs</option> <option value="modal">Modale / Popup</option> <option value="sidemenu">Menu Laterale</option> <option value="calendar">Calendario</option> <option value="tooltip">Tooltip</option> <option value="collapse">Pannello Collassabile</option> </select>
+     </div>
+     <div class="form-group"><label for="toggleTitle">Titolo</label> <input type="text" id="toggleTitle" placeholder="Es: Domande Frequenti" required>
+     </div>
+     <div class="form-group"><label for="toggleContent">Contenuto</label> <textarea id="toggleContent" placeholder="Es: Qui puoi inserire la risposta o il contenuto che vuoi mostrare" required></textarea>
+     </div><button type="submit" class="btn">✨ Genera Codice</button>
+    </form>
+   </div>
+   <div class="code-output" id="codeOutput" style="display: none;">
+    <div class="code-header">
+     <h2>📋 Codice Generato - Seleziona e Copia</h2><button class="copy-button" id="copyBtn" onclick="copyCode()">Copia Tutto</button>
+    </div>
+    <pre class="code-box" id="codeBox"></pre>
+   </div>
+  </main>
+  <script>
+    const defaultConfig = {
+      page_title: "Generatore di Toggle"
+    };
+
+    async function onConfigChange(config) {
+      document.getElementById('pageTitle').textContent = config.page_title || defaultConfig.page_title;
+    }
+
+    function generateToggle(event) {
+      event.preventDefault();
+      
+      const type = document.getElementById('toggleType').value;
+      const title = document.getElementById('toggleTitle').value;
+      const content = document.getElementById('toggleContent').value;
+      
+      let code = '';
+      
+      if (type === 'accordion') {
+        code = generateAccordionCode(title, content);
+      } else if (type === 'dropdown') {
+        code = generateDropdownCode(title, content);
+      } else if (type === 'tabs') {
+        code = generateTabsCode(title, content);
+      } else if (type === 'modal') {
+        code = generateModalCode(title, content);
+      } else if (type === 'sidemenu') {
+        code = generateSideMenuCode(title, content);
+      } else if (type === 'calendar') {
+        code = generateCalendarCode(title, content);
+      } else if (type === 'tooltip') {
+        code = generateTooltipCode(title, content);
+      } else if (type === 'collapse') {
+        code = generateCollapseCode(title, content);
+      }
+      
+      document.getElementById('codeBox').textContent = code;
+      document.getElementById('codeOutput').style.display = 'block';
+      document.getElementById('codeOutput').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function generateAccordionCode(title, content) {
+      return `<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${title}</title>
+  <style>
+    .accordion {
+      max-width: 600px;
+      margin: 2rem auto;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+
+    .accordion-header {
+      padding: 1.25rem;
+      background: white;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.3s;
+    }
+
+    .accordion-header:hover {
+      background: #f8f9fa;
+    }
+
+    .accordion-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #333;
+      margin: 0;
+    }
+
+    .accordion-icon {
+      font-size: 1.5rem;
+      color: #667eea;
+      transition: transform 0.3s;
+    }
+
+    .accordion-icon.open {
+      transform: rotate(180deg);
+    }
+
+    .accordion-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out;
+      background: #f9fafb;
+    }
+
+    .accordion-content.open {
+      max-height: 500px;
+    }
+
+    .accordion-body {
+      padding: 1.25rem;
+      color: #666;
+      line-height: 1.6;
+      border-top: 1px solid #e5e7eb;
+    }
+  </style>
+</head>
+<body>
+  <div class="accordion">
+    <div class="accordion-header" onclick="toggleAccordion()">
+      <h3 class="accordion-title">${title}</h3>
+      <span class="accordion-icon" id="icon">▼</span>
+    </div>
+    <div class="accordion-content" id="content">
+      <div class="accordion-body">
+        ${content}
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggleAccordion() {
+      const content = document.getElementById('content');
+      const icon = document.getElementById('icon');
+      content.classList.toggle('open');
+      icon.classList.toggle('open');
+    }
+  <\/script>
+</body>
+</html>`;
+    }
+
+    function generateDropdownCode(title, content) {
+      return `<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${title}</title>
+  <style>
+    .dropdown-wrapper {
+      max-width: 300px;
+      margin: 2rem auto;
+      position: relative;
+    }
+
+    .dropdown-button {
+      width: 100%;
+      padding: 1rem;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.3s;
+    }
+
+    .dropdown-button:hover {
+      background: #5568d3;
+    }
+
+    .dropdown-arrow {
+      transition: transform 0.3s;
+    }
+
+    .dropdown-arrow.open {
+      transform: rotate(180deg);
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      margin-top: 0.5rem;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out;
+    }
+
+    .dropdown-menu.open {
+      max-height: 400px;
+    }
+
+    .dropdown-content {
+      padding: 1rem;
+      color: #333;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <div class="dropdown-wrapper">
+    <button class="dropdown-button" onclick="toggleDropdown()">
+      <span>${title}</span>
+      <span class="dropdown-arrow" id="arrow">▼</span>
+    </button>
+    <div class="dropdown-menu" id="menu">
+      <div class="dropdown-content">
+        ${content}
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggleDropdown() {
+      const menu = document.getElementById('menu');
+      const arrow = document.getElementById('arrow');
+      menu.classList.toggle('open');
+      arrow.classList.toggle('open');
+    }
+
+    document.addEventListener('click', function(event) {
+      const wrapper = document.querySelector('.dropdown-wrapper');
+      if (!wrapper.contains(event.target)) {
+        document.getElementById('menu').classList.remove('open');
+        document.getElementById('arrow').classList.remove('open');
+      }
+    });
+  <\/script>
+</body>
+</html>`;
+    }
+
+    function generateTabsCode(title, content) {
+      return `<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${title}</title>
+  <style>
+    .tabs-container {
+      max-width: 700px;
+      margin: 2rem auto;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+
+    .tabs-header {
+      display: flex;
+      background: #f8f9fa;
+      border-bottom: 2px solid #e5e7eb;
+    }
+
+    .tab-button {
+      flex: 1;
+      padding: 1rem;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #666;
+      transition: all 0.3s;
+      border-bottom: 3px solid transparent;
+    }
+
+    .tab-button:hover {
+      background: #f1f3f5;
+    }
+
+    .tab-button.active {
+      color: #667eea;
+      border-bottom-color: #667eea;
+      background: white;
+    }
+
+    .tab-content {
+      display: none;
+      padding: 1.5rem;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="tabs-container">
+    <div class="tabs-header">
+      <button class="tab-button active" onclick="showTab(1)">Tab 1</button>
+      <button class="tab-button" onclick="showTab(2)">Tab 2</button>
+      <button class="tab-button" onclick="showTab(3)">Tab 3</button>
+    </div>
+    <div class="tab-content active" id="tab1">
+      <h3>${title}</h3>
+      <p>${content}</p>
+    </div>
+    <div class="tab-content" id="tab2">
+      <h3>Secondo Tab</h3>
+      <p>Contenuto del secondo tab</p>
+    </div>
+    <div class="tab-content" id="tab3">
+      <h3>Terzo Tab</h3>
+      <p>Contenuto del terzo tab</p>
+    </div>
+  </div>
+
+  <script>
+    function showTab(num) {
+      const buttons = document.querySelectorAll('.tab-button');
+      const contents = document.querySelectorAll('.tab-content');
+      
+      buttons.forEach((btn, index) => {
+        btn.classList.toggle('active', index === num - 1);
+      });
+      
+      contents.forEach((content, index) => {
+        content.classList.toggle('active', index === num - 1);
+      });
+    }
+  <\/script>
+</body>
+</html>`;
+    }
+
+    function generateModalCode(title, content) {
+      return `<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${title}</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+    }
+
+    .open-modal-btn {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .open-modal-btn:hover {
+      background: #5568d3;
+    }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      max-width: 500px;
+      width: 90%;
+      position: relative;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .modal-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #333;
+      margin: 0;
+    }
+
+    .close-modal {
+      background: none;
+      border: none;
+      font-size: 2rem;
+      color: #999;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0;
+      width: 30px;
+      height: 30px;
+    }
+
+    .close-modal:hover {
+      color: #333;
+    }
+
+    .modal-body {
+      color: #666;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <button class="open-modal-btn" onclick="openModal()">Apri Modale</button>
+
+  <div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h2 class="modal-title">${title}</h2>
+        <button class="close-modal" onclick="closeModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        ${content}
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function openModal() {
+      document.getElementById('modalOverlay').classList.add('open');
+    }
+
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.remove('open');
+    }
+  <\/script>
+</body>
+</html>`;
+    }
+
+    function generateSideMenuCode(title, content) {
+      return `<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${title}</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 2rem;
+    }
+
+    .menu-toggle-btn {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .menu-toggle-btn:hover {
+      background: #5568d3;
+    }
+
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 999;
+    }
+
+    .overlay.open {
+      display: block;
+    }
+
+    .side-menu {
+      position: fixed;
+      top: 0;
+      right: -350px;
+      width: 350px;
+      height: 100%;
+      background: white;
+      box-shadow: -5px 0 20px rgba(0,0,0,0.2);
+      transition: right 0.3s;
+      z-index: 1000;
+      padding: 2rem;
+      overflow-y: auto;
+    }
+
+    .side-menu.open {
+      right: 0;
+    }
+
+    .menu-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid #e5e7eb;
+    }
+
+    .menu-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #333;
+      margin: 0;
+    }
+
+    .close-menu {
+      background: none;
+      border: none;
+      font-size: 2rem;
+      color: #999;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .close-menu:hover {
+      color: #333;
+    }
+
+    .menu-content {
+      color: #666;
+      line-height: 1.6;
+    }
+
+    .menu-item {
+      padding: 1rem;
+      margin-bottom: 0.5rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .menu-item:hover {
+      background: #f5f5f5;
+    }
+  </style>
+</head>
+<body>
+  <button class="menu-toggle-btn" onclick="openMenu()">☰ Apri Menu</button>
+
+  <div class="overlay" id="overlay" onclick="closeMenu()"></div>
+  
+  <div class="side-menu" id="sideMenu">
+    <div class="menu-header">
+      <h2 class="menu-title">${title}</h2>
+      <button class="close-menu" onclick="closeMenu()">&times;</button>
+    </div>
+    <div class="menu-content">
+      ${content}
+      <div class="menu-item">🏠 Home</div>
+      <div class="menu-item">👤 Profilo</div>
+      <div class="menu-item">⚙️ Impostazioni</div>
+      <div class="menu-item">📧 Contatti</div>
+    </div>
+  </div>
+
+  <script>
+    function openMenu() {
+      document.getElementById('sideMenu').classList.add('open');
+      document.getElementById('overlay').classList.add('open');
+    }
+
+    function closeMenu() {
+      document.getElementById('sideMenu').classList.remove('open');
+      document.getElementById('overlay').classList.remove('open');
+    }
+  <\/script>
+</body>
+</html>`;
+    }
+
+    function generateCalendarCode(title, content) {
+      return `<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${title}</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+    }
+
+    .calendar-toggle-btn {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .calendar-toggle-btn:hover {
+      background: #5568d3;
+    }
+
+    .calendar-container {
+      display: none;
+      max-width: 400px;
+      margin: 2rem auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      padding: 1.5rem;
+    }
+
+    .calendar-container.open {
+      display: block;
+    }
+
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .calendar-nav {
+      background: #667eea;
+      color: white;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.2rem;
+      transition: background 0.3s;
+    }
+
+    .calendar-nav:hover {
+      background: #5568d3;
+    }
+
+    .calendar-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 0.5rem;
+    }
+
+    .calendar-day-name {
+      text-align: center;
+      font-weight: 600;
+      color: #667eea;
+      padding: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .calendar-day {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 0.9rem;
+    }
+
+    .calendar-day:hover {
+      background: #f0f0f0;
+    }
+
+    .calendar-day.today {
+      background: #667eea;
+      color: white;
+      font-weight: 600;
+    }
+
+    .calendar-day.selected {
+      background: #10b981;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <button class="calendar-toggle-btn" onclick="toggleCalendar()">📅 Mostra Calendario</button>
+
+  <div class="calendar-container" id="calendar">
+    <div class="calendar-header">
+      <button class="calendar-nav" onclick="changeMonth(-1)">←</button>
+      <div class="calendar-title" id="calendarTitle"></div>
+      <button class="calendar-nav" onclick="changeMonth(1)">→</button>
+    </div>
+    <div class="calendar-grid" id="calendarGrid"></div>
+  </div>
+
+  <script>
+    let currentMonth = new Date().getMonth();
+    let currentYear = new Date().getFullYear();
+    let selectedDate = null;
+
+    function toggleCalendar() {
+      const cal = document.getElementById('calendar');
+      cal.classList.toggle('open');
+      if (cal.classList.contains('open')) {
+        renderCalendar();
+      }
+    }
+
+    function changeMonth(delta) {
+      currentMonth += delta;
+      if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear++;
+      } else if (currentMonth < 0) {
+        currentMonth = 11;
+        currentYear--;
+      }
+      renderCalendar();
+    }
+
+    function renderCalendar() {
+      const monthNames = ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno',
+                         'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'];
+      const dayNames = ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab'];
+      
+      document.getElementById('calendarTitle').textContent = 
+        monthNames[currentMonth] + ' ' + currentYear;
+      
+      const grid = document.getElementById('calendarGrid');
+      grid.innerHTML = '';
+      
+      dayNames.forEach(day => {
+        const dayName = document.createElement('div');
+        dayName.className = 'calendar-day-name';
+        dayName.textContent = day;
+        grid.appendChild(dayName);
+      });
+      
+      const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+      const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+      const today = new Date();
+      
+      for (let i = 0; i < firstDay; i++) {
+        grid.appendChild(document.createElement('div'));
+      }
+      
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dayEl = document.createElement('div');
+        dayEl.className = 'calendar-day';
+        dayEl.textContent = day;
+        
+        if (day === today.getDate() && 
+            currentMonth === today.getMonth() && 
+            currentYear === today.getFullYear()) {
+          dayEl.classList.add('today');
+        }
+        
+        dayEl.onclick = function() {
+          document.querySelectorAll('.calendar-day').forEach(el => {
+            el.classList.remove('selected');
+          });
+          this.classList.add('selected');
+          selectedDate = new Date(currentYear, currentMonth, day);
+        };
+        
+        grid.appendChild(dayEl);
+      }
+    }
+  <\/script>
+</body>
+</html>`;
+    }
+
+    function generateTooltipCode(title, content) {
+      return `<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${title}</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 4rem;
+      text-align: center;
+    }
+
+    .tooltip-wrapper {
+      display: inline-block;
+      position: relative;
+    }
+
+    .tooltip-trigger {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .tooltip-trigger:hover {
+      background: #5568d3;
+    }
+
+    .tooltip-content {
+      display: none;
+      position: absolute;
+      bottom: 120%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #333;
+      color: white;
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      white-space: nowrap;
+      z-index: 1000;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+
+    .tooltip-content::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 8px solid transparent;
+      border-top-color: #333;
+    }
+
+    .tooltip-wrapper:hover .tooltip-content {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="tooltip-wrapper">
+    <button class="tooltip-trigger">${title}</button>
+    <div class="tooltip-content">
+      ${content}
+    </div>
+  </div>
+</body>
+</html>`;
+    }
+
+    function generateCollapseCode(title, content) {
+      return `<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${title}</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+    }
+
+    .collapse-container {
+      max-width: 600px;
+      margin: 2rem auto;
+    }
+
+    .collapse-button {
+      width: 100%;
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 1.25rem;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.3s;
+    }
+
+    .collapse-button:hover {
+      background: #5568d3;
+    }
+
+    .collapse-icon {
+      font-size: 1.5rem;
+      transition: transform 0.3s;
+    }
+
+    .collapse-icon.open {
+      transform: rotate(180deg);
+    }
+
+    .collapse-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease-out;
+      background: #f9fafb;
+      border-radius: 0 0 8px 8px;
+    }
+
+    .collapse-content.open {
+      max-height: 800px;
+      margin-top: 0.5rem;
+    }
+
+    .collapse-body {
+      padding: 1.5rem;
+      color: #666;
+      line-height: 1.7;
+    }
+  </style>
+</head>
+<body>
+  <div class="collapse-container">
+    <button class="collapse-button" onclick="toggleCollapse()">
+      <span>${title}</span>
+      <span class="collapse-icon" id="collapseIcon">▼</span>
+    </button>
+    <div class="collapse-content" id="collapseContent">
+      <div class="collapse-body">
+        ${content}
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggleCollapse() {
+      const content = document.getElementById('collapseContent');
+      const icon = document.getElementById('collapseIcon');
+      content.classList.toggle('open');
+      icon.classList.toggle('open');
+    }
+  <\/script>
+</body>
+</html>`;
+    }
+
+    function copyCode() {
+      const codeBox = document.getElementById('codeBox');
+      const copyBtn = document.getElementById('copyBtn');
+      const code = codeBox.textContent;
+      
+      const textarea = document.createElement('textarea');
+      textarea.value = code;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+      
+      copyBtn.textContent = '✓ Copiato!';
+      copyBtn.classList.add('copied');
+      
+      setTimeout(() => {
+        copyBtn.textContent = 'Copia Tutto';
+        copyBtn.classList.remove('copied');
+      }, 2000);
+    }
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities: (config) => ({
+          recolorables: [],
+          borderables: [],
+          fontEditable: undefined,
+          fontSizeable: undefined
+        }),
+        mapToEditPanelValues: (config) => new Map([
+          ['page_title', config.page_title || defaultConfig.page_title]
+        ])
+      });
+    }
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a84e19481a4ba9f',t:'MTc2NDc4Mzk2Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

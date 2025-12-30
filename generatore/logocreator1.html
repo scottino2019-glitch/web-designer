@@ -1,0 +1,945 @@
+<!doctype html>
+<html lang="it">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Logo Creator Studio</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    
+    html {
+      height: 100%;
+    }
+    
+    .studio-container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
+      gap: 24px;
+      overflow-y: auto;
+    }
+    
+    .header-section {
+      text-align: center;
+    }
+    
+    .main-title {
+      font-size: 36px;
+      font-weight: 800;
+      margin: 0;
+      padding-bottom: 8px;
+    }
+    
+    .content-grid {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 24px;
+      flex: 1;
+    }
+    
+    @media (max-width: 968px) {
+      .content-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .controls-area {
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      max-height: 800px;
+      overflow-y: auto;
+    }
+    
+    .preview-area {
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin: 0 0 12px 0;
+    }
+    
+    .input-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .input-label {
+      font-weight: 600;
+      font-size: 13px;
+    }
+    
+    .input-field {
+      padding: 10px;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: border-color 0.2s;
+    }
+    
+    .input-field:focus {
+      outline: none;
+      border-color: #3b82f6;
+    }
+    
+    .style-options {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+    
+    .style-option-btn {
+      padding: 10px;
+      border: 2px solid transparent;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+    
+    .style-option-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .style-option-btn.selected {
+      border-color: #3b82f6;
+    }
+    
+    .layout-options {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+    
+    .layout-option-btn {
+      padding: 10px;
+      border: 2px solid transparent;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+    
+    .layout-option-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .layout-option-btn.selected {
+      border-color: #3b82f6;
+    }
+    
+    .color-control {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    
+    .color-picker {
+      width: 60px;
+      height: 40px;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    
+    .color-text {
+      flex: 1;
+      padding: 10px;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: monospace;
+    }
+    
+    .slider-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 600;
+      font-size: 13px;
+    }
+    
+    .slider-input {
+      width: 100%;
+      cursor: pointer;
+    }
+    
+    .size-options {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+    
+    .size-option-btn {
+      padding: 10px;
+      border: 2px solid transparent;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+    
+    .size-option-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .size-option-btn.selected {
+      border-color: #10b981;
+    }
+    
+    .preview-display {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      min-height: 400px;
+      padding: 40px;
+    }
+    
+    .logo-preview {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+    
+    .logo-preview.vertical {
+      flex-direction: column;
+    }
+    
+    .logo-preview.horizontal {
+      flex-direction: row;
+    }
+    
+    .logo-preview.icon-only .logo-text-wrapper,
+    .logo-preview.text-only .logo-icon-wrapper {
+      display: none;
+    }
+    
+    .logo-icon-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .logo-icon {
+      line-height: 1;
+      user-select: none;
+    }
+    
+    .logo-text-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    
+    .logo-main-text {
+      font-weight: 800;
+      line-height: 1;
+      margin: 0;
+    }
+    
+    .logo-tagline-text {
+      font-weight: 400;
+      opacity: 0.7;
+      line-height: 1.2;
+      margin: 0;
+    }
+    
+    /* Logo Styles */
+    .logo-modern .logo-main-text {
+      font-family: 'Arial Black', sans-serif;
+      letter-spacing: -1px;
+    }
+    
+    .logo-minimal .logo-main-text {
+      font-family: 'Helvetica Neue', sans-serif;
+      font-weight: 300;
+      letter-spacing: 3px;
+    }
+    
+    .logo-bold .logo-main-text {
+      font-family: 'Impact', sans-serif;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+    
+    .logo-elegant .logo-main-text {
+      font-family: 'Georgia', serif;
+      font-style: italic;
+      letter-spacing: 1px;
+    }
+    
+    .logo-tech .logo-main-text {
+      font-family: 'Courier New', monospace;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    
+    .logo-creative .logo-main-text {
+      font-family: 'Comic Sans MS', cursive;
+      letter-spacing: 0;
+      transform: rotate(-2deg);
+    }
+    
+    .button-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    
+    .export-button {
+      flex: 1;
+      padding: 14px 24px;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      color: white;
+      min-width: 150px;
+    }
+    
+    .export-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+    }
+    
+    .export-button:active {
+      transform: translateY(0);
+    }
+
+    .toast-message {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      padding: 16px 24px;
+      background: #10b981;
+      color: white;
+      border-radius: 12px;
+      font-weight: 700;
+      box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
+      z-index: 1000;
+      animation: slideInUp 0.3s ease-out;
+    }
+
+    @keyframes slideInUp {
+      from {
+        transform: translateY(100px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  <main class="studio-container">
+   <header class="header-section">
+    <h1 class="main-title" id="mainTitle">Logo Creator Studio</h1>
+   </header>
+   <div class="content-grid">
+    <aside class="controls-area" id="controlsArea">
+     <div class="input-wrapper"><label class="input-label" for="logoTextInput">Testo Logo</label> <input type="text" class="input-field" id="logoTextInput" value="IL MIO BRAND">
+     </div>
+     <div class="input-wrapper"><label class="input-label" for="taglineInput">Tagline (opzionale)</label> <input type="text" class="input-field" id="taglineInput" placeholder="Il tuo slogan">
+     </div>
+     <div class="input-wrapper"><label class="input-label" for="iconInput">Icona Emoji</label> <input type="text" class="input-field" id="iconInput" placeholder="🚀" maxlength="2" value="⚡">
+     </div>
+     <div>
+      <h2 class="section-title">Stile Logo</h2>
+      <div class="style-options"><button class="style-option-btn selected" data-style="modern">🎯 Moderno</button> <button class="style-option-btn" data-style="minimal">✨ Minimal</button> <button class="style-option-btn" data-style="bold">💪 Bold</button> <button class="style-option-btn" data-style="elegant">👑 Elegante</button> <button class="style-option-btn" data-style="tech">🤖 Tech</button> <button class="style-option-btn" data-style="creative">🎨 Creativo</button>
+      </div>
+     </div>
+     <div>
+      <h2 class="section-title">Layout</h2>
+      <div class="layout-options"><button class="layout-option-btn selected" data-layout="horizontal">↔️ Orizzontale</button> <button class="layout-option-btn" data-layout="vertical">↕️ Verticale</button> <button class="layout-option-btn" data-layout="icon-only">⭕ Solo Icona</button> <button class="layout-option-btn" data-layout="text-only">📝 Solo Testo</button>
+      </div>
+     </div>
+     <div>
+      <h2 class="section-title">Dimensione Export PNG</h2>
+      <div class="size-options"><button class="size-option-btn" data-width="800" data-height="400">800x400</button> <button class="size-option-btn selected" data-width="1200" data-height="400">1200x400</button> <button class="size-option-btn" data-width="1600" data-height="600">1600x600</button> <button class="size-option-btn" data-width="2400" data-height="800">2400x800</button>
+      </div>
+     </div>
+     <div class="input-wrapper"><label class="input-label">Colore Testo</label>
+      <div class="color-control"><input type="color" class="color-picker" id="textColorPicker" value="#1a202c"> <input type="text" class="color-text" id="textColorCode" value="#1a202c">
+      </div>
+     </div>
+     <div class="input-wrapper"><label class="input-label">Colore Accento</label>
+      <div class="color-control"><input type="color" class="color-picker" id="accentColorPicker" value="#3b82f6"> <input type="text" class="color-text" id="accentColorCode" value="#3b82f6">
+      </div>
+     </div>
+     <div class="slider-container">
+      <div class="slider-header"><span>Dimensione Testo</span> <span id="textSizeDisplay">48px</span>
+      </div><input type="range" class="slider-input" id="textSizeSlider" min="24" max="96" value="48">
+     </div>
+     <div class="slider-container">
+      <div class="slider-header"><span>Dimensione Icona</span> <span id="iconSizeDisplay">64px</span>
+      </div><input type="range" class="slider-input" id="iconSizeSlider" min="32" max="128" value="64">
+     </div>
+    </aside>
+    <section class="preview-area" id="previewArea">
+     <h2 class="section-title">Anteprima Logo</h2>
+     <div class="preview-display" id="previewDisplay">
+      <div class="logo-preview logo-modern horizontal" id="logoPreview">
+       <div class="logo-icon-wrapper"><span class="logo-icon" id="logoIcon">⚡</span>
+       </div>
+       <div class="logo-text-wrapper">
+        <h2 class="logo-main-text" id="logoMainText">IL MIO BRAND</h2>
+        <p class="logo-tagline-text" id="logoTaglineText"></p>
+       </div>
+      </div>
+     </div>
+     <div class="button-row"><button class="export-button" id="savePngBtn">💾 Salva PNG</button> <button class="export-button" id="copySvgBtn">📋 Copia SVG</button>
+     </div>
+    </section>
+   </div>
+  </main>
+  <script>
+    const defaultConfig = {
+      background_color: "#f0f4f8",
+      panel_background: "#ffffff",
+      preview_background: "#e2e8f0",
+      text_color: "#2d3748",
+      button_color: "#3b82f6",
+      font_family: "Inter",
+      font_size: 16,
+      app_title: "Logo Creator Studio",
+      logo_text: "IL MIO BRAND",
+      logo_tagline: ""
+    };
+
+    let logoConfig = {
+      text: 'IL MIO BRAND',
+      tagline: '',
+      icon: '⚡',
+      style: 'modern',
+      layout: 'horizontal',
+      textColor: '#1a202c',
+      accentColor: '#3b82f6',
+      textSize: 48,
+      iconSize: 64,
+      exportWidth: 1200,
+      exportHeight: 400
+    };
+
+    const styleButtons = document.querySelectorAll('.style-option-btn');
+    const layoutButtons = document.querySelectorAll('.layout-option-btn');
+    const sizeButtons = document.querySelectorAll('.size-option-btn');
+    const logoTextInput = document.getElementById('logoTextInput');
+    const taglineInput = document.getElementById('taglineInput');
+    const iconInput = document.getElementById('iconInput');
+    const textColorPicker = document.getElementById('textColorPicker');
+    const textColorCode = document.getElementById('textColorCode');
+    const accentColorPicker = document.getElementById('accentColorPicker');
+    const accentColorCode = document.getElementById('accentColorCode');
+    const textSizeSlider = document.getElementById('textSizeSlider');
+    const iconSizeSlider = document.getElementById('iconSizeSlider');
+    const logoPreview = document.getElementById('logoPreview');
+    const logoIcon = document.getElementById('logoIcon');
+    const logoMainText = document.getElementById('logoMainText');
+    const logoTaglineText = document.getElementById('logoTaglineText');
+    const savePngBtn = document.getElementById('savePngBtn');
+    const copySvgBtn = document.getElementById('copySvgBtn');
+
+    // Style selection
+    styleButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        styleButtons.forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        logoConfig.style = btn.dataset.style;
+        updateLogoStyle();
+      });
+    });
+
+    // Layout selection
+    layoutButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        layoutButtons.forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        logoConfig.layout = btn.dataset.layout;
+        updateLogoLayout();
+      });
+    });
+
+    // Size selection
+    sizeButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        sizeButtons.forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        logoConfig.exportWidth = parseInt(btn.dataset.width);
+        logoConfig.exportHeight = parseInt(btn.dataset.height);
+      });
+    });
+
+    // Text inputs
+    logoTextInput.addEventListener('input', (e) => {
+      logoConfig.text = e.target.value || 'IL MIO BRAND';
+      logoMainText.textContent = logoConfig.text;
+    });
+
+    taglineInput.addEventListener('input', (e) => {
+      logoConfig.tagline = e.target.value;
+      logoTaglineText.textContent = e.target.value;
+      logoTaglineText.style.display = e.target.value ? 'block' : 'none';
+    });
+
+    iconInput.addEventListener('input', (e) => {
+      logoConfig.icon = e.target.value || '⚡';
+      logoIcon.textContent = logoConfig.icon;
+    });
+
+    // Text color
+    textColorPicker.addEventListener('input', (e) => {
+      logoConfig.textColor = e.target.value;
+      textColorCode.value = e.target.value;
+      updateColors();
+    });
+
+    textColorCode.addEventListener('input', (e) => {
+      const color = e.target.value;
+      if (/^#[0-9A-F]{6}$/i.test(color)) {
+        logoConfig.textColor = color;
+        textColorPicker.value = color;
+        updateColors();
+      }
+    });
+
+    // Accent color
+    accentColorPicker.addEventListener('input', (e) => {
+      logoConfig.accentColor = e.target.value;
+      accentColorCode.value = e.target.value;
+      updateColors();
+    });
+
+    accentColorCode.addEventListener('input', (e) => {
+      const color = e.target.value;
+      if (/^#[0-9A-F]{6}$/i.test(color)) {
+        logoConfig.accentColor = color;
+        accentColorPicker.value = color;
+        updateColors();
+      }
+    });
+
+    // Text size
+    textSizeSlider.addEventListener('input', (e) => {
+      logoConfig.textSize = parseInt(e.target.value);
+      document.getElementById('textSizeDisplay').textContent = `${e.target.value}px`;
+      logoMainText.style.fontSize = `${e.target.value}px`;
+      logoTaglineText.style.fontSize = `${parseInt(e.target.value) * 0.4}px`;
+    });
+
+    // Icon size
+    iconSizeSlider.addEventListener('input', (e) => {
+      logoConfig.iconSize = parseInt(e.target.value);
+      document.getElementById('iconSizeDisplay').textContent = `${e.target.value}px`;
+      logoIcon.style.fontSize = `${e.target.value}px`;
+    });
+
+    function updateLogoStyle() {
+      logoPreview.className = `logo-preview logo-${logoConfig.style} ${logoConfig.layout}`;
+    }
+
+    function updateLogoLayout() {
+      logoPreview.className = `logo-preview logo-${logoConfig.style} ${logoConfig.layout}`;
+    }
+
+    function updateColors() {
+      logoMainText.style.color = logoConfig.textColor;
+      logoTaglineText.style.color = logoConfig.textColor;
+      logoIcon.style.color = logoConfig.accentColor;
+    }
+
+    function displayToast(message, success = true) {
+      const toast = document.createElement('div');
+      toast.className = 'toast-message';
+      toast.textContent = message;
+      toast.style.background = success ? '#10b981' : '#ef4444';
+      document.body.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.style.animation = 'slideInUp 0.3s ease-out reverse';
+        setTimeout(() => {
+          document.body.removeChild(toast);
+        }, 300);
+      }, 2000);
+    }
+
+    // Save PNG
+    savePngBtn.addEventListener('click', () => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      
+      canvas.width = logoConfig.exportWidth;
+      canvas.height = logoConfig.exportHeight;
+      
+      // Background
+      ctx.fillStyle = window.elementSdk ? window.elementSdk.config.preview_background : defaultConfig.preview_background;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+      
+      // Calcola le dimensioni proporzionali
+      const scaleFactor = canvas.width / 1200; // Scala basata su dimensione default
+      const textSizeScaled = logoConfig.textSize * scaleFactor * 1.2;
+      const iconSizeScaled = logoConfig.iconSize * scaleFactor * 1.5;
+      
+      if (logoConfig.layout === 'horizontal') {
+        // Icon
+        if (logoConfig.layout !== 'text-only') {
+          ctx.font = `${iconSizeScaled}px Arial`;
+          ctx.fillStyle = logoConfig.accentColor;
+          ctx.textAlign = 'right';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(logoConfig.icon, centerX - (30 * scaleFactor), centerY);
+        }
+        
+        // Text
+        if (logoConfig.layout !== 'icon-only') {
+          ctx.font = `bold ${textSizeScaled}px Arial`;
+          ctx.fillStyle = logoConfig.textColor;
+          ctx.textAlign = 'left';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(logoConfig.text, centerX + (30 * scaleFactor), logoConfig.tagline ? centerY - (20 * scaleFactor) : centerY);
+          
+          if (logoConfig.tagline) {
+            ctx.font = `${textSizeScaled * 0.42}px Arial`;
+            ctx.fillStyle = logoConfig.textColor;
+            ctx.globalAlpha = 0.7;
+            ctx.fillText(logoConfig.tagline, centerX + (30 * scaleFactor), centerY + (25 * scaleFactor));
+            ctx.globalAlpha = 1;
+          }
+        }
+      } else if (logoConfig.layout === 'vertical') {
+        // Icon
+        if (logoConfig.layout !== 'text-only') {
+          ctx.font = `${iconSizeScaled}px Arial`;
+          ctx.fillStyle = logoConfig.accentColor;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(logoConfig.icon, centerX, centerY - (80 * scaleFactor));
+        }
+        
+        // Text
+        if (logoConfig.layout !== 'icon-only') {
+          ctx.font = `bold ${textSizeScaled}px Arial`;
+          ctx.fillStyle = logoConfig.textColor;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(logoConfig.text, centerX, centerY + (20 * scaleFactor));
+          
+          if (logoConfig.tagline) {
+            ctx.font = `${textSizeScaled * 0.42}px Arial`;
+            ctx.fillStyle = logoConfig.textColor;
+            ctx.globalAlpha = 0.7;
+            ctx.fillText(logoConfig.tagline, centerX, centerY + (60 * scaleFactor));
+            ctx.globalAlpha = 1;
+          }
+        }
+      } else if (logoConfig.layout === 'icon-only') {
+        ctx.font = `${iconSizeScaled * 1.33}px Arial`;
+        ctx.fillStyle = logoConfig.accentColor;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(logoConfig.icon, centerX, centerY);
+      } else if (logoConfig.layout === 'text-only') {
+        ctx.font = `bold ${textSizeScaled * 1.25}px Arial`;
+        ctx.fillStyle = logoConfig.textColor;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(logoConfig.text, centerX, logoConfig.tagline ? centerY - (20 * scaleFactor) : centerY);
+        
+        if (logoConfig.tagline) {
+          ctx.font = `${textSizeScaled * 0.5}px Arial`;
+          ctx.fillStyle = logoConfig.textColor;
+          ctx.globalAlpha = 0.7;
+          ctx.fillText(logoConfig.tagline, centerX, centerY + (35 * scaleFactor));
+          ctx.globalAlpha = 1;
+        }
+      }
+      
+      const link = document.createElement('a');
+      link.download = `logo-${logoConfig.exportWidth}x${logoConfig.exportHeight}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+      
+      displayToast(`✅ Logo ${logoConfig.exportWidth}x${logoConfig.exportHeight}px salvato!`);
+    });
+
+    // Copy SVG
+    copySvgBtn.addEventListener('click', () => {
+      let svgContent = '';
+      const width = logoConfig.exportWidth;
+      const height = logoConfig.exportHeight;
+      const centerX = width / 2;
+      const centerY = height / 2;
+      const scaleFactor = width / 1200;
+      const textSizeScaled = logoConfig.textSize * scaleFactor * 1.2;
+      const iconSizeScaled = logoConfig.iconSize * scaleFactor * 1.5;
+      
+      if (logoConfig.layout === 'horizontal') {
+        if (logoConfig.layout !== 'text-only') {
+          svgContent += `<text x="${centerX - (30 * scaleFactor)}" y="${centerY}" font-size="${iconSizeScaled}" text-anchor="end" dominant-baseline="middle" fill="${logoConfig.accentColor}">${logoConfig.icon}</text>`;
+        }
+        if (logoConfig.layout !== 'icon-only') {
+          svgContent += `<text x="${centerX + (30 * scaleFactor)}" y="${logoConfig.tagline ? centerY - (20 * scaleFactor) : centerY}" font-size="${textSizeScaled}" font-weight="bold" text-anchor="start" dominant-baseline="middle" fill="${logoConfig.textColor}">${logoConfig.text}</text>`;
+          if (logoConfig.tagline) {
+            svgContent += `<text x="${centerX + (30 * scaleFactor)}" y="${centerY + (25 * scaleFactor)}" font-size="${textSizeScaled * 0.42}" text-anchor="start" dominant-baseline="middle" fill="${logoConfig.textColor}" opacity="0.7">${logoConfig.tagline}</text>`;
+          }
+        }
+      } else if (logoConfig.layout === 'vertical') {
+        if (logoConfig.layout !== 'text-only') {
+          svgContent += `<text x="${centerX}" y="${centerY - (80 * scaleFactor)}" font-size="${iconSizeScaled}" text-anchor="middle" dominant-baseline="middle" fill="${logoConfig.accentColor}">${logoConfig.icon}</text>`;
+        }
+        if (logoConfig.layout !== 'icon-only') {
+          svgContent += `<text x="${centerX}" y="${centerY + (20 * scaleFactor)}" font-size="${textSizeScaled}" font-weight="bold" text-anchor="middle" dominant-baseline="middle" fill="${logoConfig.textColor}">${logoConfig.text}</text>`;
+          if (logoConfig.tagline) {
+            svgContent += `<text x="${centerX}" y="${centerY + (60 * scaleFactor)}" font-size="${textSizeScaled * 0.42}" text-anchor="middle" dominant-baseline="middle" fill="${logoConfig.textColor}" opacity="0.7">${logoConfig.tagline}</text>`;
+          }
+        }
+      } else if (logoConfig.layout === 'icon-only') {
+        svgContent += `<text x="${centerX}" y="${centerY}" font-size="${iconSizeScaled * 1.33}" text-anchor="middle" dominant-baseline="middle" fill="${logoConfig.accentColor}">${logoConfig.icon}</text>`;
+      } else if (logoConfig.layout === 'text-only') {
+        svgContent += `<text x="${centerX}" y="${logoConfig.tagline ? centerY - (20 * scaleFactor) : centerY}" font-size="${textSizeScaled * 1.25}" font-weight="bold" text-anchor="middle" dominant-baseline="middle" fill="${logoConfig.textColor}">${logoConfig.text}</text>`;
+        if (logoConfig.tagline) {
+          svgContent += `<text x="${centerX}" y="${centerY + (35 * scaleFactor)}" font-size="${textSizeScaled * 0.5}" text-anchor="middle" dominant-baseline="middle" fill="${logoConfig.textColor}" opacity="0.7">${logoConfig.tagline}</text>`;
+        }
+      }
+      
+      const svg = `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
+  ${svgContent}
+</svg>`;
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(svg)
+          .then(() => {
+            displayToast('✅ Codice SVG copiato!');
+          })
+          .catch(() => {
+            fallbackCopy(svg);
+          });
+      } else {
+        fallbackCopy(svg);
+      }
+    });
+
+    function fallbackCopy(text) {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.left = '-9999px';
+      document.body.appendChild(textarea);
+      textarea.select();
+      
+      try {
+        document.execCommand('copy');
+        displayToast('✅ Codice SVG copiato!');
+      } catch (err) {
+        displayToast('❌ Errore durante la copia', false);
+      }
+      
+      document.body.removeChild(textarea);
+    }
+
+    async function onConfigChange(config) {
+      const appConfig = { ...defaultConfig, ...config };
+      
+      document.querySelector('.studio-container').style.background = appConfig.background_color;
+      document.querySelector('.controls-area').style.background = appConfig.panel_background;
+      document.querySelector('.preview-area').style.background = appConfig.panel_background;
+      document.querySelector('.preview-display').style.background = appConfig.preview_background;
+      
+      document.querySelector('.main-title').style.color = appConfig.text_color;
+      document.querySelectorAll('.section-title').forEach(title => {
+        title.style.color = appConfig.text_color;
+      });
+      document.querySelectorAll('.input-label').forEach(label => {
+        label.style.color = appConfig.text_color;
+      });
+      document.querySelectorAll('.slider-header').forEach(header => {
+        header.style.color = appConfig.text_color;
+      });
+      
+      document.querySelectorAll('.style-option-btn, .layout-option-btn, .size-option-btn').forEach(btn => {
+        btn.style.background = appConfig.panel_background;
+        btn.style.color = appConfig.text_color;
+      });
+      
+      document.querySelectorAll('.export-button').forEach(btn => {
+        btn.style.background = appConfig.button_color;
+      });
+      
+      document.querySelectorAll('.input-field, .color-text').forEach(input => {
+        input.style.background = appConfig.panel_background;
+        input.style.color = appConfig.text_color;
+      });
+      
+      const fontFamily = appConfig.font_family;
+      const baseFontStack = '-apple-system, BlinkMacSystemFont, sans-serif';
+      document.querySelector('.main-title').style.fontFamily = `${fontFamily}, ${baseFontStack}`;
+      document.querySelectorAll('.section-title').forEach(title => {
+        title.style.fontFamily = `${fontFamily}, ${baseFontStack}`;
+      });
+      document.querySelectorAll('.input-label').forEach(label => {
+        label.style.fontFamily = `${fontFamily}, ${baseFontStack}`;
+      });
+      
+      const baseSize = appConfig.font_size;
+      document.querySelector('.main-title').style.fontSize = `${baseSize * 2.25}px`;
+      document.querySelectorAll('.section-title').forEach(title => {
+        title.style.fontSize = `${baseSize}px`;
+      });
+      document.querySelectorAll('.input-label').forEach(label => {
+        label.style.fontSize = `${baseSize * 0.8125}px`;
+      });
+      
+      document.getElementById('mainTitle').textContent = appConfig.app_title;
+      document.getElementById('logoTextInput').value = appConfig.logo_text;
+      document.getElementById('logoMainText').textContent = appConfig.logo_text;
+      document.getElementById('taglineInput').value = appConfig.logo_tagline;
+      document.getElementById('logoTaglineText').textContent = appConfig.logo_tagline;
+      document.getElementById('logoTaglineText').style.display = appConfig.logo_tagline ? 'block' : 'none';
+      
+      logoConfig.text = appConfig.logo_text;
+      logoConfig.tagline = appConfig.logo_tagline;
+    }
+
+    function mapToCapabilities(config) {
+      const appConfig = { ...defaultConfig, ...config };
+      
+      return {
+        recolorables: [
+          {
+            get: () => appConfig.background_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.setConfig({ background_color: value });
+              }
+            }
+          },
+          {
+            get: () => appConfig.panel_background,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.setConfig({ panel_background: value });
+              }
+            }
+          },
+          {
+            get: () => appConfig.preview_background,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.setConfig({ preview_background: value });
+              }
+            }
+          },
+          {
+            get: () => appConfig.text_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.setConfig({ text_color: value });
+              }
+            }
+          },
+          {
+            get: () => appConfig.button_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.setConfig({ button_color: value });
+              }
+            }
+          }
+        ],
+        borderables: [],
+        fontEditable: {
+          get: () => appConfig.font_family,
+          set: (value) => {
+            if (window.elementSdk) {
+              window.elementSdk.setConfig({ font_family: value });
+            }
+          }
+        },
+        fontSizeable: {
+          get: () => appConfig.font_size,
+          set: (value) => {
+            if (window.elementSdk) {
+              window.elementSdk.setConfig({ font_size: value });
+            }
+          }
+        }
+      };
+    }
+
+    function mapToEditPanelValues(config) {
+      const appConfig = { ...defaultConfig, ...config };
+      return new Map([
+        ["app_title", appConfig.app_title],
+        ["logo_text", appConfig.logo_text],
+        ["logo_tagline", appConfig.logo_tagline]
+      ]);
+    }
+
+    // Initialize
+    updateLogoStyle();
+    updateLogoLayout();
+    updateColors();
+    logoMainText.style.fontSize = `${logoConfig.textSize}px`;
+    logoTaglineText.style.fontSize = `${logoConfig.textSize * 0.4}px`;
+    logoIcon.style.fontSize = `${logoConfig.iconSize}px`;
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities,
+        mapToEditPanelValues
+      });
+    } else {
+      onConfigChange(defaultConfig);
+    }
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a44e77cb02b5e95',t:'MTc2NDExMzExNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navigation Hub Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body class="min-h-full bg-gradient-to-br from-blue-50 to-indigo-50 font-sans">
+    <div class="container mx-auto px-4 py-8">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">Navigation Hub Generator</h1>
+            <p class="text-gray-600">Crea navbar e menu responsive personalizzati</p>
+        </header>
+
+        <main class="max-w-7xl mx-auto">
+            <div class="grid lg:grid-cols-2 gap-8">
+                <!-- Generator Panel -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h2 class="text-2xl font-semibold mb-6 text-gray-800">Generatore Navigation</h2>
+                    
+                    <!-- Navigation Type Selection -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-3">Tipo di Navigation</label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <button onclick="generateNav('horizontal')" class="p-3 border-2 border-blue-200 rounded-lg hover:border-blue-400 hover:bg-blue-50 transition-all text-left">
+                                <div class="font-semibold text-blue-800">Horizontal</div>
+                                <div class="text-sm text-gray-600">Navbar classica</div>
+                            </button>
+                            <button onclick="generateNav('sidebar')" class="p-3 border-2 border-green-200 rounded-lg hover:border-green-400 hover:bg-green-50 transition-all text-left">
+                                <div class="font-semibold text-green-800">Sidebar</div>
+                                <div class="text-sm text-gray-600">Menu laterale</div>
+                            </button>
+                            <button onclick="generateNav('dropdown')" class="p-3 border-2 border-purple-200 rounded-lg hover:border-purple-400 hover:bg-purple-50 transition-all text-left">
+                                <div class="font-semibold text-purple-800">Dropdown</div>
+                                <div class="text-sm text-gray-600">Menu a tendina</div>
+                            </button>
+                            <button onclick="generateNav('mobile')" class="p-3 border-2 border-orange-200 rounded-lg hover:border-orange-400 hover:bg-orange-50 transition-all text-left">
+                                <div class="font-semibold text-orange-800">Mobile</div>
+                                <div class="text-sm text-gray-600">Menu hamburger</div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Customization Controls -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-3">Personalizzazione</label>
+                        
+                        <!-- Color Scheme -->
+                        <div class="mb-4">
+                            <label class="block text-xs font-medium text-gray-600 mb-2">Schema Colori</label>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button onclick="setColorScheme('blue')" class="p-2 border-2 border-blue-400 bg-blue-50 rounded-md hover:border-gray-400 transition-all text-xs" id="color-blue">Blu</button>
+                                <button onclick="setColorScheme('dark')" class="p-2 border-2 border-gray-200 rounded-md hover:border-gray-400 transition-all text-xs" id="color-dark">Scuro</button>
+                                <button onclick="setColorScheme('white')" class="p-2 border-2 border-gray-200 rounded-md hover:border-gray-400 transition-all text-xs" id="color-white">Bianco</button>
+                                <button onclick="setColorScheme('green')" class="p-2 border-2 border-gray-200 rounded-md hover:border-gray-400 transition-all text-xs" id="color-green">Verde</button>
+                                <button onclick="setColorScheme('purple')" class="p-2 border-2 border-gray-200 rounded-md hover:border-gray-400 transition-all text-xs" id="color-purple">Viola</button>
+                                <button onclick="setColorScheme('gradient')" class="p-2 border-2 border-gray-200 rounded-md hover:border-gray-400 transition-all text-xs" id="color-gradient">Gradiente</button>
+                            </div>
+                        </div>
+
+                        <!-- Style Options -->
+                        <div class="mb-4">
+                            <label class="block text-xs font-medium text-gray-600 mb-2">Stile</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <button onclick="setStyle('rounded')" class="p-2 border-2 border-blue-400 bg-blue-50 rounded-md hover:border-gray-400 transition-all text-xs" id="style-rounded">Arrotondato</button>
+                                <button onclick="setStyle('square')" class="p-2 border-2 border-gray-200 rounded-md hover:border-gray-400 transition-all text-xs" id="style-square">Squadrato</button>
+                                <button onclick="setStyle('shadow')" class="p-2 border-2 border-gray-200 rounded-md hover:border-gray-400 transition-all text-xs" id="style-shadow">Con Ombra</button>
+                                <button onclick="setStyle('border')" class="p-2 border-2 border-gray-200 rounded-md hover:border-gray-400 transition-all text-xs" id="style-border">Con Bordo</button>
+                            </div>
+                        </div>
+
+                        <!-- Size Options -->
+                        <div class="mb-4">
+                            <label class="block text-xs font-medium text-gray-600 mb-2">Dimensione</label>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button onclick="setSize('small')" class="p-2 border-2 border-gray-200 rounded-md hover:border-gray-400 transition-all text-xs" id="size-small">Piccola</button>
+                                <button onclick="setSize('medium')" class="p-2 border-2 border-blue-400 bg-blue-50 rounded-md hover:border-gray-400 transition-all text-xs" id="size-medium">Media</button>
+                                <button onclick="setSize('large')" class="p-2 border-2 border-gray-200 rounded-md hover:border-gray-400 transition-all text-xs" id="size-large">Grande</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Menu Items -->
+                    <div class="space-y-4">
+                        <div>
+                            <label for="brandName" class="block text-sm font-medium text-gray-700 mb-1">Nome Brand</label>
+                            <input type="text" id="brandName" value="MioBrand" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                        <div>
+                            <label for="menuItems" class="block text-sm font-medium text-gray-700 mb-1">Voci Menu (separate da virgola)</label>
+                            <input type="text" id="menuItems" value="Home, Prodotti, Servizi, Chi Siamo, Contatti" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Code & Preview Panel -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-semibold text-gray-800">Codice & Anteprima</h2>
+                        <button onclick="copyCode()" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md transition-colors text-sm">
+                            📋 Copia Codice
+                        </button>
+                    </div>
+                    
+                    <!-- HTML Code Editor -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Codice HTML (Modificabile)</label>
+                        <textarea id="htmlCode" rows="12" class="w-full p-3 bg-gray-50 border border-gray-300 rounded-md text-sm font-mono focus:ring-2 focus:ring-blue-500 focus:border-transparent" oninput="updatePreview()"></textarea>
+                        <div id="copyMessage" class="mt-2 text-green-600 text-sm hidden">✅ Codice copiato!</div>
+                    </div>
+
+                    <!-- Live Preview -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Anteprima Live</label>
+                        <div id="navPreview" class="p-4 bg-gray-50 border border-gray-200 rounded-md min-h-32">
+                            <!-- Preview will appear here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        let currentColorScheme = 'blue';
+        let currentStyle = 'rounded';
+        let currentSize = 'medium';
+        let currentNavType = 'horizontal';
+
+        const colorSchemes = {
+            blue: { bg: 'bg-blue-600', text: 'text-white', hover: 'hover:bg-blue-700', accent: 'text-blue-100' },
+            dark: { bg: 'bg-gray-900', text: 'text-white', hover: 'hover:bg-gray-800', accent: 'text-gray-300' },
+            white: { bg: 'bg-white', text: 'text-gray-800', hover: 'hover:bg-gray-100', accent: 'text-gray-600' },
+            green: { bg: 'bg-green-600', text: 'text-white', hover: 'hover:bg-green-700', accent: 'text-green-100' },
+            purple: { bg: 'bg-purple-600', text: 'text-white', hover: 'hover:bg-purple-700', accent: 'text-purple-100' },
+            gradient: { bg: 'bg-gradient-to-r from-blue-500 to-purple-600', text: 'text-white', hover: 'hover:from-blue-600 hover:to-purple-700', accent: 'text-blue-100' }
+        };
+
+        function updateSelectionUI() {
+            // Reset and update color buttons
+            Object.keys(colorSchemes).forEach(color => {
+                const btn = document.getElementById(`color-${color}`);
+                btn.className = btn.className.replace('border-blue-400 bg-blue-50', 'border-gray-200');
+            });
+            document.getElementById(`color-${currentColorScheme}`).className = 
+                document.getElementById(`color-${currentColorScheme}`).className.replace('border-gray-200', 'border-blue-400 bg-blue-50');
+
+            // Reset and update style buttons
+            ['rounded', 'square', 'shadow', 'border'].forEach(style => {
+                const btn = document.getElementById(`style-${style}`);
+                btn.className = btn.className.replace('border-blue-400 bg-blue-50', 'border-gray-200');
+            });
+            document.getElementById(`style-${currentStyle}`).className = 
+                document.getElementById(`style-${currentStyle}`).className.replace('border-gray-200', 'border-blue-400 bg-blue-50');
+
+            // Reset and update size buttons
+            ['small', 'medium', 'large'].forEach(size => {
+                const btn = document.getElementById(`size-${size}`);
+                btn.className = btn.className.replace('border-blue-400 bg-blue-50', 'border-gray-200');
+            });
+            document.getElementById(`size-${currentSize}`).className = 
+                document.getElementById(`size-${currentSize}`).className.replace('border-gray-200', 'border-blue-400 bg-blue-50');
+        }
+
+        function setColorScheme(scheme) {
+            currentColorScheme = scheme;
+            updateSelectionUI();
+            regenerateCurrentNav();
+        }
+
+        function setStyle(style) {
+            currentStyle = style;
+            updateSelectionUI();
+            regenerateCurrentNav();
+        }
+
+        function setSize(size) {
+            currentSize = size;
+            updateSelectionUI();
+            regenerateCurrentNav();
+        }
+
+        function regenerateCurrentNav() {
+            if (currentNavType) {
+                generateNav(currentNavType);
+            }
+        }
+
+        function generateNav(type) {
+            currentNavType = type;
+            const brandName = document.getElementById('brandName').value;
+            const menuItems = document.getElementById('menuItems').value.split(',').map(item => item.trim());
+            const colors = colorSchemes[currentColorScheme];
+            
+            let styleClasses = '';
+            let sizeClasses = '';
+            
+            // Style classes
+            switch(currentStyle) {
+                case 'rounded': styleClasses = 'rounded-lg'; break;
+                case 'square': styleClasses = ''; break;
+                case 'shadow': styleClasses = 'shadow-lg'; break;
+                case 'border': styleClasses = 'border border-gray-300'; break;
+            }
+            
+            // Size classes
+            switch(currentSize) {
+                case 'small': sizeClasses = 'px-3 py-2 text-sm'; break;
+                case 'medium': sizeClasses = 'px-4 py-3'; break;
+                case 'large': sizeClasses = 'px-6 py-4 text-lg'; break;
+            }
+
+            let navHTML = '';
+            
+            switch(type) {
+                case 'horizontal':
+                    navHTML = `<nav class="${colors.bg} ${styleClasses} ${sizeClasses}">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+        <div class="flex items-center">
+            <h1 class="text-xl font-bold ${colors.text}">${brandName}</h1>
+        </div>
+        <div class="flex space-x-6">
+            ${menuItems.map(item => `<a href="#" class="${colors.text} ${colors.hover} px-3 py-2 rounded-md transition-colors">${item}</a>`).join('\n            ')}
+        </div>
+    </div>
+</nav>`;
+                    break;
+                    
+                case 'sidebar':
+                    navHTML = `<div class="flex h-64">
+    <nav class="${colors.bg} w-48 ${styleClasses} ${sizeClasses}">
+        <div class="p-4">
+            <h1 class="text-lg font-bold ${colors.text} mb-6">${brandName}</h1>
+            <ul class="space-y-2">
+                ${menuItems.map(item => `<li><a href="#" class="${colors.text} ${colors.hover} block px-3 py-2 rounded-md transition-colors text-sm">${item}</a></li>`).join('\n                ')}
+            </ul>
+        </div>
+    </nav>
+    <main class="flex-1 p-6 bg-gray-100">
+        <h2 class="text-xl font-bold text-gray-800">Contenuto Principale</h2>
+        <p class="text-gray-600 mt-2">Questo è il contenuto della pagina accanto alla sidebar.</p>
+    </main>
+</div>`;
+                    break;
+                    
+                case 'dropdown':
+                    navHTML = `<nav class="${colors.bg} ${styleClasses} ${sizeClasses}">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+        <h1 class="text-xl font-bold ${colors.text}">${brandName}</h1>
+        <div class="flex space-x-6">
+            ${menuItems.slice(0, 3).map(item => `<a href="#" class="${colors.text} ${colors.hover} px-3 py-2 rounded-md transition-colors">${item}</a>`).join('\n            ')}
+            <div class="relative group">
+                <button class="${colors.text} ${colors.hover} px-3 py-2 rounded-md transition-colors flex items-center">
+                    Altri
+                    <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
+                <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                    ${menuItems.slice(3).map(item => `<a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-100 transition-colors">${item}</a>`).join('\n                    ')}
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>`;
+                    break;
+                    
+                case 'mobile':
+                    navHTML = `<nav class="${colors.bg} ${styleClasses} ${sizeClasses}">
+    <div class="max-w-7xl mx-auto">
+        <div class="flex items-center justify-between">
+            <h1 class="text-xl font-bold ${colors.text}">${brandName}</h1>
+            <button class="${colors.text}" onclick="toggleMobileMenu()" id="mobileMenuBtn">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+        </div>
+        <div class="hidden mt-4" id="mobileMenu">
+            ${menuItems.map(item => `<a href="#" class="${colors.text} ${colors.hover} block px-3 py-2 rounded-md transition-colors">${item}</a>`).join('\n            ')}
+        </div>
+    </div>
+</nav>`;
+                    break;
+            }
+            
+            document.getElementById('htmlCode').value = navHTML;
+            updatePreview();
+        }
+
+        function updatePreview() {
+            const code = document.getElementById('htmlCode').value;
+            document.getElementById('navPreview').innerHTML = code;
+        }
+
+        function copyCode() {
+            const htmlCode = document.getElementById('htmlCode');
+            htmlCode.select();
+            document.execCommand('copy');
+            
+            const message = document.getElementById('copyMessage');
+            message.classList.remove('hidden');
+            setTimeout(() => {
+                message.classList.add('hidden');
+            }, 2000);
+        }
+
+        // Mobile menu toggle function for preview
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            const btn = document.getElementById('mobileMenuBtn');
+            
+            if (menu && menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+                if (btn) btn.innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>';
+            } else if (menu) {
+                menu.classList.add('hidden');
+                if (btn) btn.innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>';
+            }
+        }
+
+        // Generate initial navigation
+        generateNav('horizontal');
+        updateSelectionUI();
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'992fdb13a256ed66',t:'MTc2MTIwODA1Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tailwind Card Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body class="min-h-full bg-gradient-to-br from-slate-50 to-gray-100 font-sans">
+    <div class="container mx-auto px-4 py-8">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">Tailwind Card Generator</h1>
+            <p class="text-gray-600">Genera card Tailwind con stili automatici</p>
+        </header>
+
+        <main class="max-w-7xl mx-auto">
+            <div class="grid lg:grid-cols-2 gap-8">
+                <!-- Generator Panel -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h2 class="text-2xl font-semibold mb-6 text-gray-800">Generatore Card</h2>
+                    
+                    <!-- Card Type Selection -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-3">Tipo di Card</label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <button onclick="generateCard('basic')" class="p-3 border-2 border-blue-200 rounded-lg hover:border-blue-400 hover:bg-blue-50 transition-all text-left">
+                                <div class="font-semibold text-blue-800">Basic</div>
+                                <div class="text-sm text-gray-600">Card semplice</div>
+                            </button>
+                            <button onclick="generateCard('profile')" class="p-3 border-2 border-green-200 rounded-lg hover:border-green-400 hover:bg-green-50 transition-all text-left">
+                                <div class="font-semibold text-green-800">Profile</div>
+                                <div class="text-sm text-gray-600">Card profilo</div>
+                            </button>
+                            <button onclick="generateCard('product')" class="p-3 border-2 border-purple-200 rounded-lg hover:border-purple-400 hover:bg-purple-50 transition-all text-left">
+                                <div class="font-semibold text-purple-800">Product</div>
+                                <div class="text-sm text-gray-600">Card prodotto</div>
+                            </button>
+                            <button onclick="generateCard('article')" class="p-3 border-2 border-orange-200 rounded-lg hover:border-orange-400 hover:bg-orange-50 transition-all text-left">
+                                <div class="font-semibold text-orange-800">Article</div>
+                                <div class="text-sm text-gray-600">Card articolo</div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Customization Controls -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-3">Personalizzazione</label>
+                        
+                        <!-- Color Selection -->
+                        <div class="mb-4">
+                            <label class="block text-xs font-medium text-gray-600 mb-2">Schema Colori</label>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button onclick="setColorScheme(0)" class="p-2 border-2 border-gray-200 rounded-md hover:border-gray-400 transition-all" id="color-0">
+                                    <div class="flex space-x-1">
+                                        <div class="w-4 h-4 bg-white border border-gray-300 rounded"></div>
+                                        <div class="w-4 h-4 bg-gray-800 rounded"></div>
+                                        <div class="w-4 h-4 bg-blue-600 rounded"></div>
+                                    </div>
+                                    <div class="text-xs mt-1">Classico</div>
+                                </button>
+                                <button onclick="setColorScheme(1)" class="p-2 border-2 border-gray-200 rounded-md hover:border-gray-400 transition-all" id="color-1">
+                                    <div class="flex space-x-1">
+                                        <div class="w-4 h-4 bg-blue-50 border border-blue-200 rounded"></div>
+                                        <div class="w-4 h-4 bg-blue-900 rounded"></div>
+                                        <div class="w-4 h-4 bg-blue-700 rounded"></div>
+                                    </div>
+                                    <div class="text-xs mt-1">Blu</div>
+                                </button>
+                                <button onclick="setColorScheme(2)" class="p-2 border-2 border-gray-200 rounded-md hover:border-gray-400 transition-all" id="color-2">
+                                    <div class="flex space-x-1">
+                                        <div class="w-4 h-4 bg-green-50 border border-green-200 rounded"></div>
+                                        <div class="w-4 h-4 bg-green-900 rounded"></div>
+                                        <div class="w-4 h-4 bg-green-700 rounded"></div>
+                                    </div>
+                                    <div class="text-xs mt-1">Verde</div>
+                                </button>
+                                <button onclick="setColorScheme(3)" class="p-2 border-2 border-gray-200 rounded-md hover:border-gray-400 transition-all" id="color-3">
+                                    <div class="flex space-x-1">
+                                        <div class="w-4 h-4 bg-purple-50 border border-purple-200 rounded"></div>
+                                        <div class="w-4 h-4 bg-purple-900 rounded"></div>
+                                        <div class="w-4 h-4 bg-purple-700 rounded"></div>
+                                    </div>
+                                    <div class="text-xs mt-1">Viola</div>
+                                </button>
+                                <button onclick="setColorScheme(4)" class="p-2 border-2 border-gray-200 rounded-md hover:border-gray-400 transition-all" id="color-4">
+                                    <div class="flex space-x-1">
+                                        <div class="w-4 h-4 bg-orange-50 border border-orange-200 rounded"></div>
+                                        <div class="w-4 h-4 bg-orange-900 rounded"></div>
+                                        <div class="w-4 h-4 bg-orange-700 rounded"></div>
+                                    </div>
+                                    <div class="text-xs mt-1">Arancio</div>
+                                </button>
+                                <button onclick="setColorScheme(5)" class="p-2 border-2 border-gray-200 rounded-md hover:border-gray-400 transition-all" id="color-5">
+                                    <div class="flex space-x-1">
+                                        <div class="w-4 h-4 bg-pink-50 border border-pink-200 rounded"></div>
+                                        <div class="w-4 h-4 bg-pink-900 rounded"></div>
+                                        <div class="w-4 h-4 bg-pink-700 rounded"></div>
+                                    </div>
+                                    <div class="text-xs mt-1">Rosa</div>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Size Selection -->
+                        <div class="mb-4">
+                            <label class="block text-xs font-medium text-gray-600 mb-2">Dimensione</label>
+                            <div class="grid grid-cols-4 gap-2">
+                                <button onclick="setSize('max-w-xs')" class="p-2 border-2 border-gray-200 rounded-md hover:border-gray-400 transition-all text-xs" id="size-xs">XS</button>
+                                <button onclick="setSize('max-w-sm')" class="p-2 border-2 border-blue-400 bg-blue-50 rounded-md hover:border-gray-400 transition-all text-xs" id="size-sm">SM</button>
+                                <button onclick="setSize('max-w-md')" class="p-2 border-2 border-gray-200 rounded-md hover:border-gray-400 transition-all text-xs" id="size-md">MD</button>
+                                <button onclick="setSize('max-w-lg')" class="p-2 border-2 border-gray-200 rounded-md hover:border-gray-400 transition-all text-xs" id="size-lg">LG</button>
+                            </div>
+                        </div>
+
+                        <!-- Shadow Selection -->
+                        <div class="mb-4">
+                            <label class="block text-xs font-medium text-gray-600 mb-2">Ombra</label>
+                            <div class="grid grid-cols-4 gap-2">
+                                <button onclick="setShadow('shadow-sm')" class="p-2 border-2 border-gray-200 rounded-md hover:border-gray-400 transition-all text-xs" id="shadow-sm">Leggera</button>
+                                <button onclick="setShadow('shadow-md')" class="p-2 border-2 border-blue-400 bg-blue-50 rounded-md hover:border-gray-400 transition-all text-xs" id="shadow-md">Media</button>
+                                <button onclick="setShadow('shadow-lg')" class="p-2 border-2 border-gray-200 rounded-md hover:border-gray-400 transition-all text-xs" id="shadow-lg">Grande</button>
+                                <button onclick="setShadow('shadow-xl')" class="p-2 border-2 border-gray-200 rounded-md hover:border-gray-400 transition-all text-xs" id="shadow-xl">Molto</button>
+                            </div>
+                        </div>
+
+                        <!-- Animation Selection -->
+                        <div class="mb-4">
+                            <label class="block text-xs font-medium text-gray-600 mb-2">Animazioni</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <button onclick="setAnimation('hover:scale-105')" class="p-2 border-2 border-gray-200 rounded-md hover:border-gray-400 transition-all text-xs" id="anim-scale">Zoom Hover</button>
+                                <button onclick="setAnimation('hover:-translate-y-1')" class="p-2 border-2 border-gray-200 rounded-md hover:border-gray-400 transition-all text-xs" id="anim-lift">Solleva Hover</button>
+                                <button onclick="setAnimation('hover:rotate-1')" class="p-2 border-2 border-gray-200 rounded-md hover:border-gray-400 transition-all text-xs" id="anim-rotate">Ruota Hover</button>
+                                <button onclick="setAnimation('')" class="p-2 border-2 border-blue-400 bg-blue-50 rounded-md hover:border-gray-400 transition-all text-xs" id="anim-none">Nessuna</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Content Inputs -->
+                    <div class="space-y-4">
+                        <div>
+                            <label for="cardTitle" class="block text-sm font-medium text-gray-700 mb-1">Titolo</label>
+                            <input type="text" id="cardTitle" value="Titolo Card" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                        <div>
+                            <label for="cardContent" class="block text-sm font-medium text-gray-700 mb-1">Contenuto</label>
+                            <textarea id="cardContent" rows="3" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent">Questo è il contenuto della card. Puoi modificarlo come preferisci.</textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Code & Preview Panel -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-semibold text-gray-800">Codice & Anteprima</h2>
+                        <button onclick="copyCode()" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md transition-colors text-sm">
+                            📋 Copia Codice
+                        </button>
+                    </div>
+                    
+                    <!-- HTML Code Editor -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Codice HTML (Modificabile)</label>
+                        <textarea id="htmlCode" rows="12" class="w-full p-3 bg-gray-50 border border-gray-300 rounded-md text-sm font-mono focus:ring-2 focus:ring-blue-500 focus:border-transparent" oninput="updatePreview()"></textarea>
+                        <div id="copyMessage" class="mt-2 text-green-600 text-sm hidden">✅ Codice copiato!</div>
+                    </div>
+
+                    <!-- Live Preview -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Anteprima Live</label>
+                        <div id="cardPreview" class="p-4 bg-gray-50 border border-gray-200 rounded-md min-h-32">
+                            <!-- Preview will appear here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const colorSchemes = [
+            { bg: 'bg-white', border: 'border-gray-200', text: 'text-gray-800', accent: 'text-blue-600' },
+            { bg: 'bg-blue-50', border: 'border-blue-200', text: 'text-blue-900', accent: 'text-blue-700' },
+            { bg: 'bg-green-50', border: 'border-green-200', text: 'text-green-900', accent: 'text-green-700' },
+            { bg: 'bg-purple-50', border: 'border-purple-200', text: 'text-purple-900', accent: 'text-purple-700' },
+            { bg: 'bg-orange-50', border: 'border-orange-200', text: 'text-orange-900', accent: 'text-orange-700' },
+            { bg: 'bg-pink-50', border: 'border-pink-200', text: 'text-pink-900', accent: 'text-pink-700' }
+        ];
+
+        const sizes = ['max-w-xs', 'max-w-sm', 'max-w-md', 'max-w-lg'];
+        const shadows = ['shadow-sm', 'shadow-md', 'shadow-lg', 'shadow-xl'];
+
+        let currentScheme = colorSchemes[0];
+        let currentSize = 'max-w-sm';
+        let currentShadow = 'shadow-md';
+        let currentAnimation = '';
+        let currentSchemeIndex = 0;
+
+        function updateSelectionUI() {
+            // Reset all color buttons
+            for (let i = 0; i < 6; i++) {
+                const btn = document.getElementById(`color-${i}`);
+                btn.className = btn.className.replace('border-blue-400 bg-blue-50', 'border-gray-200');
+            }
+            // Highlight selected color
+            const selectedColor = document.getElementById(`color-${currentSchemeIndex}`);
+            selectedColor.className = selectedColor.className.replace('border-gray-200', 'border-blue-400 bg-blue-50');
+
+            // Reset all size buttons
+            ['xs', 'sm', 'md', 'lg'].forEach(size => {
+                const btn = document.getElementById(`size-${size}`);
+                btn.className = btn.className.replace('border-blue-400 bg-blue-50', 'border-gray-200');
+            });
+            // Highlight selected size
+            const sizeMap = { 'max-w-xs': 'xs', 'max-w-sm': 'sm', 'max-w-md': 'md', 'max-w-lg': 'lg' };
+            const selectedSize = document.getElementById(`size-${sizeMap[currentSize]}`);
+            selectedSize.className = selectedSize.className.replace('border-gray-200', 'border-blue-400 bg-blue-50');
+
+            // Reset all shadow buttons
+            ['sm', 'md', 'lg', 'xl'].forEach(shadow => {
+                const btn = document.getElementById(`shadow-${shadow}`);
+                btn.className = btn.className.replace('border-blue-400 bg-blue-50', 'border-gray-200');
+            });
+            // Highlight selected shadow
+            const shadowMap = { 'shadow-sm': 'sm', 'shadow-md': 'md', 'shadow-lg': 'lg', 'shadow-xl': 'xl' };
+            const selectedShadow = document.getElementById(`shadow-${shadowMap[currentShadow]}`);
+            selectedShadow.className = selectedShadow.className.replace('border-gray-200', 'border-blue-400 bg-blue-50');
+
+            // Reset all animation buttons
+            ['scale', 'lift', 'rotate', 'none'].forEach(anim => {
+                const btn = document.getElementById(`anim-${anim}`);
+                btn.className = btn.className.replace('border-blue-400 bg-blue-50', 'border-gray-200');
+            });
+            // Highlight selected animation
+            const animMap = { 'hover:scale-105': 'scale', 'hover:-translate-y-1': 'lift', 'hover:rotate-1': 'rotate', '': 'none' };
+            const selectedAnim = document.getElementById(`anim-${animMap[currentAnimation]}`);
+            selectedAnim.className = selectedAnim.className.replace('border-gray-200', 'border-blue-400 bg-blue-50');
+        }
+
+        function setColorScheme(index) {
+            currentScheme = colorSchemes[index];
+            currentSchemeIndex = index;
+            updateSelectionUI();
+            regenerateCurrentCard();
+        }
+
+        function setSize(size) {
+            currentSize = size;
+            updateSelectionUI();
+            regenerateCurrentCard();
+        }
+
+        function setShadow(shadow) {
+            currentShadow = shadow;
+            updateSelectionUI();
+            regenerateCurrentCard();
+        }
+
+        function setAnimation(animation) {
+            currentAnimation = animation;
+            updateSelectionUI();
+            regenerateCurrentCard();
+        }
+
+        function regenerateCurrentCard() {
+            const currentCode = document.getElementById('htmlCode').value;
+            if (currentCode.trim()) {
+                // Detect card type from current code
+                if (currentCode.includes('text-center') && currentCode.includes('rounded-full')) {
+                    generateCard('profile');
+                } else if (currentCode.includes('€29.99') || currentCode.includes('Acquista')) {
+                    generateCard('product');
+                } else if (currentCode.includes('ARTICOLO') || currentCode.includes('min lettura')) {
+                    generateCard('article');
+                } else {
+                    generateCard('basic');
+                }
+            }
+        }
+
+        function generateCard(type) {
+            const title = document.getElementById('cardTitle').value;
+            const content = document.getElementById('cardContent').value;
+            
+            let cardHTML = '';
+            
+            const animationClass = currentAnimation ? `${currentAnimation} transition-all duration-300` : '';
+            
+            switch(type) {
+                case 'basic':
+                    cardHTML = `<div class="${currentSize} ${currentScheme.bg} ${currentScheme.border} border rounded-lg ${currentShadow} ${animationClass} p-6">
+    <h3 class="text-xl font-bold ${currentScheme.text} mb-3">${title}</h3>
+    <p class="${currentScheme.text} opacity-80">${content}</p>
+</div>`;
+                    break;
+                    
+                case 'profile':
+                    cardHTML = `<div class="${currentSize} ${currentScheme.bg} ${currentScheme.border} border rounded-lg ${currentShadow} ${animationClass} p-6 text-center">
+    <div class="w-16 h-16 ${currentScheme.accent.replace('text-', 'bg-')} rounded-full mx-auto mb-4 flex items-center justify-center text-white text-2xl font-bold">
+        ${title.charAt(0).toUpperCase()}
+    </div>
+    <h3 class="text-xl font-bold ${currentScheme.text} mb-2">${title}</h3>
+    <p class="${currentScheme.text} opacity-70 text-sm">${content}</p>
+    <button class="mt-4 px-4 py-2 ${currentScheme.accent.replace('text-', 'bg-')} text-white rounded-md hover:opacity-90 transition-opacity">
+        Contatta
+    </button>
+</div>`;
+                    break;
+                    
+                case 'product':
+                    cardHTML = `<div class="${currentSize} ${currentScheme.bg} ${currentScheme.border} border rounded-lg ${currentShadow} ${animationClass} overflow-hidden">
+    <div class="h-32 ${currentScheme.accent.replace('text-', 'bg-')} opacity-20"></div>
+    <div class="p-6">
+        <h3 class="text-xl font-bold ${currentScheme.text} mb-2">${title}</h3>
+        <p class="${currentScheme.text} opacity-70 text-sm mb-4">${content}</p>
+        <div class="flex justify-between items-center">
+            <span class="text-2xl font-bold ${currentScheme.accent}">€29.99</span>
+            <button class="px-4 py-2 ${currentScheme.accent.replace('text-', 'bg-')} text-white rounded-md hover:opacity-90 transition-opacity">
+                Acquista
+            </button>
+        </div>
+    </div>
+</div>`;
+                    break;
+                    
+                case 'article':
+                    cardHTML = `<div class="${currentSize} ${currentScheme.bg} ${currentScheme.border} border rounded-lg ${currentShadow} ${animationClass} overflow-hidden">
+    <div class="h-24 ${currentScheme.accent.replace('text-', 'bg-')} opacity-10"></div>
+    <div class="p-6">
+        <div class="flex items-center mb-3">
+            <span class="px-2 py-1 ${currentScheme.accent.replace('text-', 'bg-')} text-white text-xs rounded-full">ARTICOLO</span>
+            <span class="${currentScheme.text} opacity-50 text-xs ml-2">5 min lettura</span>
+        </div>
+        <h3 class="text-lg font-bold ${currentScheme.text} mb-2">${title}</h3>
+        <p class="${currentScheme.text} opacity-70 text-sm">${content}</p>
+    </div>
+</div>`;
+                    break;
+            }
+            
+            document.getElementById('htmlCode').value = cardHTML;
+            updatePreview();
+        }
+
+        function updatePreview() {
+            const code = document.getElementById('htmlCode').value;
+            document.getElementById('cardPreview').innerHTML = code;
+        }
+
+
+
+        function copyCode() {
+            const htmlCode = document.getElementById('htmlCode');
+            htmlCode.select();
+            document.execCommand('copy');
+            
+            const message = document.getElementById('copyMessage');
+            message.classList.remove('hidden');
+            setTimeout(() => {
+                message.classList.add('hidden');
+            }, 2000);
+        }
+
+        // Generate initial basic card
+        generateCard('basic');
+        updateSelectionUI();
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'992fc5b49452ee9d',t:'MTc2MTIwNzE3Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

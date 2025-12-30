@@ -1,0 +1,680 @@
+<!doctype html>
+<html lang="it">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Font Creator Studio</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100%;
+      width: 100%;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      width: 100%;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+      color: white;
+    }
+
+    .header h1 {
+      font-size: 48px;
+      font-weight: 800;
+      margin: 0 0 10px 0;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .header p {
+      font-size: 18px;
+      opacity: 0.9;
+      margin: 0;
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 350px 1fr;
+      gap: 30px;
+      margin-bottom: 30px;
+    }
+
+    .controls-panel {
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+      height: fit-content;
+    }
+
+    .control-section {
+      margin-bottom: 30px;
+    }
+
+    .control-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .control-section h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #2d3748;
+      margin: 0 0 15px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .control-group {
+      margin-bottom: 20px;
+    }
+
+    .control-group:last-child {
+      margin-bottom: 0;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #4a5568;
+      margin-bottom: 8px;
+    }
+
+    input[type="text"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 14px;
+      font-family: inherit;
+      transition: all 0.2s;
+      box-sizing: border-box;
+    }
+
+    input[type="text"]:focus,
+    textarea:focus,
+    select:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: #e2e8f0;
+      outline: none;
+      -webkit-appearance: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #667eea;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover {
+      background: #5568d3;
+      transform: scale(1.2);
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #667eea;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+
+    input[type="range"]::-moz-range-thumb:hover {
+      background: #5568d3;
+      transform: scale(1.2);
+    }
+
+    .range-value {
+      display: inline-block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #667eea;
+      margin-left: 8px;
+    }
+
+    .color-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+    }
+
+    .color-option {
+      width: 100%;
+      aspect-ratio: 1;
+      border-radius: 8px;
+      border: 3px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .color-option:hover {
+      transform: scale(1.1);
+    }
+
+    .color-option.active {
+      border-color: #2d3748;
+      box-shadow: 0 0 0 2px white, 0 0 0 4px #2d3748;
+    }
+
+    .effect-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .effect-btn {
+      padding: 12px;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      background: white;
+      font-size: 13px;
+      font-weight: 600;
+      color: #4a5568;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .effect-btn:hover {
+      border-color: #667eea;
+      color: #667eea;
+      transform: translateY(-2px);
+    }
+
+    .effect-btn.active {
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
+    }
+
+    .emoji-btn {
+      padding: 10px;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      background: white;
+      font-size: 24px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .emoji-btn:hover {
+      background: #f7fafc;
+      transform: scale(1.15);
+      border-color: #667eea;
+    }
+
+    .emoji-btn:active {
+      transform: scale(1.05);
+    }
+
+    .preview-area {
+      background: white;
+      border-radius: 20px;
+      padding: 60px 40px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+      min-height: 500px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .preview-text {
+      text-align: center;
+      max-width: 100%;
+      word-wrap: break-word;
+      transition: all 0.3s ease;
+    }
+
+    .export-section {
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+      text-align: center;
+    }
+
+    .export-buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .export-btn {
+      padding: 14px 28px;
+      border: none;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .export-btn.primary {
+      background: #667eea;
+      color: white;
+    }
+
+    .export-btn.primary:hover {
+      background: #5568d3;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .export-btn.secondary {
+      background: #f7fafc;
+      color: #4a5568;
+      border: 2px solid #e2e8f0;
+    }
+
+    .export-btn.secondary:hover {
+      background: #edf2f7;
+      border-color: #cbd5e0;
+    }
+
+    @media (max-width: 1024px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .controls-panel {
+        order: 2;
+      }
+      
+      .preview-area {
+        order: 1;
+      }
+    }
+
+    /* Text effects */
+    .effect-shadow {
+      text-shadow: 4px 4px 8px rgba(0,0,0,0.3);
+    }
+
+    .effect-glow {
+      text-shadow: 0 0 20px currentColor, 0 0 40px currentColor;
+    }
+
+    .effect-outline {
+      -webkit-text-stroke: 2px currentColor;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .effect-gradient {
+      background: linear-gradient(135deg, currentColor, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .effect-3d {
+      text-shadow: 
+        1px 1px 0 rgba(0,0,0,0.1),
+        2px 2px 0 rgba(0,0,0,0.1),
+        3px 3px 0 rgba(0,0,0,0.1),
+        4px 4px 0 rgba(0,0,0,0.1),
+        5px 5px 0 rgba(0,0,0,0.1);
+    }
+
+    .effect-neon {
+      text-shadow: 
+        0 0 10px currentColor,
+        0 0 20px currentColor,
+        0 0 30px currentColor,
+        0 0 40px currentColor;
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  <div class="container">
+   <header class="header">
+    <h1>✨ Font Creator Studio</h1>
+    <p>Crea testi unici e personalizzati con stile</p>
+   </header>
+   <div class="main-grid">
+    <aside class="controls-panel">
+     <div class="control-section">
+      <h3>📝 Testo</h3>
+      <div class="control-group"><label for="text-input">Il tuo testo</label> <textarea id="text-input" placeholder="Scrivi qualcosa di fantastico...">FONT CREATOR</textarea>
+      </div>
+     </div>
+     <div class="control-section">
+      <h3>🎨 Stile Font</h3>
+      <div class="control-group"><label for="font-family">Famiglia Font</label> <select id="font-family"> <option value="'Inter', sans-serif">Inter (Moderno)</option> <option value="'Georgia', serif">Georgia (Elegante)</option> <option value="'Courier New', monospace">Courier (Tech)</option> <option value="'Arial Black', sans-serif">Arial Black (Bold)</option> <option value="'Impact', sans-serif">Impact (Potente)</option> <option value="'Times New Roman', serif">Times (Classico)</option> <option value="'Comic Sans MS', cursive">Comic Sans (Fun)</option> <option value="'Verdana', sans-serif">Verdana (Pulito)</option> <option value="'Trebuchet MS', sans-serif">Trebuchet (Dinamico)</option> <option value="'Palatino', serif">Palatino (Raffinato)</option> <option value="'Garamond', serif">Garamond (Storico)</option> <option value="'Bookman', serif">Bookman (Letterario)</option> <option value="'Avant Garde', sans-serif">Avant Garde (Artistico)</option> <option value="'Brush Script MT', cursive">Brush Script (Calligrafico)</option> <option value="'Lucida Console', monospace">Lucida Console (Codice)</option> <option value="'Copperplate', fantasy">Copperplate (Formale)</option> </select>
+      </div>
+      <div class="control-group"><label for="font-size"> Dimensione <span class="range-value" id="size-value">72px</span> </label> <input type="range" id="font-size" min="20" max="150" value="72">
+      </div>
+      <div class="control-group"><label for="font-weight">Peso</label> <select id="font-weight"> <option value="300">Leggero</option> <option value="400">Normale</option> <option value="600">Semi-Bold</option> <option value="700">Bold</option> <option value="900" selected>Extra Bold</option> </select>
+      </div>
+      <div class="control-group"><label for="letter-spacing"> Spaziatura Lettere <span class="range-value" id="spacing-value">0px</span> </label> <input type="range" id="letter-spacing" min="-5" max="20" value="0">
+      </div>
+     </div>
+     <div class="control-section">
+      <h3>🎨 Colore</h3>
+      <div class="color-grid"><button class="color-option active" data-color="#667eea" style="background: #667eea;"></button> <button class="color-option" data-color="#f56565" style="background: #f56565;"></button> <button class="color-option" data-color="#48bb78" style="background: #48bb78;"></button> <button class="color-option" data-color="#ed8936" style="background: #ed8936;"></button> <button class="color-option" data-color="#9f7aea" style="background: #9f7aea;"></button> <button class="color-option" data-color="#38b2ac" style="background: #38b2ac;"></button> <button class="color-option" data-color="#ed64a6" style="background: #ed64a6;"></button> <button class="color-option" data-color="#ecc94b" style="background: #ecc94b;"></button> <button class="color-option" data-color="#4299e1" style="background: #4299e1;"></button> <button class="color-option" data-color="#2d3748" style="background: #2d3748;"></button>
+      </div>
+     </div>
+     <div class="control-section">
+      <h3>😊 Emoji</h3>
+      <div style="display: grid; grid-template-columns: repeat(8, 1fr); gap: 8px; margin-bottom: 10px;"><button class="emoji-btn" data-emoji="😊">😊</button> <button class="emoji-btn" data-emoji="❤️">❤️</button> <button class="emoji-btn" data-emoji="🔥">🔥</button> <button class="emoji-btn" data-emoji="⭐">⭐</button> <button class="emoji-btn" data-emoji="🎉">🎉</button> <button class="emoji-btn" data-emoji="💎">💎</button> <button class="emoji-btn" data-emoji="🚀">🚀</button> <button class="emoji-btn" data-emoji="✨">✨</button> <button class="emoji-btn" data-emoji="🎨">🎨</button> <button class="emoji-btn" data-emoji="🌟">🌟</button> <button class="emoji-btn" data-emoji="💫">💫</button> <button class="emoji-btn" data-emoji="🌈">🌈</button> <button class="emoji-btn" data-emoji="🎵">🎵</button> <button class="emoji-btn" data-emoji="🏆">🏆</button> <button class="emoji-btn" data-emoji="👑">👑</button> <button class="emoji-btn" data-emoji="💪">💪</button>
+      </div>
+      <p style="font-size: 11px; color: #718096; margin: 0;">Clicca per aggiungere emoji al testo</p>
+     </div>
+     <div class="control-section">
+      <h3>✨ Effetti</h3>
+      <div class="effect-grid"><button class="effect-btn" data-effect="none">Nessuno</button> <button class="effect-btn" data-effect="shadow">Ombra</button> <button class="effect-btn" data-effect="glow">Bagliore</button> <button class="effect-btn" data-effect="outline">Contorno</button> <button class="effect-btn" data-effect="gradient">Gradiente</button> <button class="effect-btn" data-effect="3d">3D</button> <button class="effect-btn" data-effect="neon">Neon</button>
+      </div>
+     </div>
+    </aside>
+    <main class="preview-area" id="preview">
+     <div class="preview-text" id="preview-text">
+      FONT CREATOR
+     </div>
+    </main>
+   </div>
+   <section class="export-section">
+    <h3 style="margin: 0 0 20px 0; color: #2d3748;">Esporta il tuo Design</h3>
+    <div class="export-buttons"><button class="export-btn primary" id="copy-text"> 📋 Copia Testo </button> <button class="export-btn secondary" id="copy-style"> 🎨 Copia Stile CSS </button> <button class="export-btn secondary" id="download-image"> 💾 Scarica come Immagine </button>
+    </div>
+   </section>
+  </div>
+  <script>
+    const defaultConfig = {
+      main_title: "FONT CREATOR",
+      subtitle: ""
+    };
+
+    const state = {
+      text: "FONT CREATOR",
+      fontFamily: "'Inter', sans-serif",
+      fontSize: 72,
+      fontWeight: 900,
+      letterSpacing: 0,
+      color: "#667eea",
+      effect: "none"
+    };
+
+    const previewText = document.getElementById('preview-text');
+    const textInput = document.getElementById('text-input');
+    const fontFamily = document.getElementById('font-family');
+    const fontSize = document.getElementById('font-size');
+    const fontWeight = document.getElementById('font-weight');
+    const letterSpacing = document.getElementById('letter-spacing');
+    const sizeValue = document.getElementById('size-value');
+    const spacingValue = document.getElementById('spacing-value');
+    const colorOptions = document.querySelectorAll('.color-option');
+    const effectBtns = document.querySelectorAll('.effect-btn');
+
+    function updatePreview() {
+      previewText.textContent = state.text;
+      previewText.style.fontFamily = state.fontFamily;
+      previewText.style.fontSize = state.fontSize + 'px';
+      previewText.style.fontWeight = state.fontWeight;
+      previewText.style.letterSpacing = state.letterSpacing + 'px';
+      previewText.style.color = state.color;
+      
+      previewText.className = 'preview-text';
+      if (state.effect !== 'none') {
+        previewText.classList.add('effect-' + state.effect);
+      }
+    }
+
+    textInput.addEventListener('input', (e) => {
+      state.text = e.target.value || 'Scrivi qualcosa...';
+      updatePreview();
+    });
+
+    fontFamily.addEventListener('change', (e) => {
+      state.fontFamily = e.target.value;
+      updatePreview();
+    });
+
+    fontSize.addEventListener('input', (e) => {
+      state.fontSize = e.target.value;
+      sizeValue.textContent = e.target.value + 'px';
+      updatePreview();
+    });
+
+    fontWeight.addEventListener('change', (e) => {
+      state.fontWeight = e.target.value;
+      updatePreview();
+    });
+
+    letterSpacing.addEventListener('input', (e) => {
+      state.letterSpacing = e.target.value;
+      spacingValue.textContent = e.target.value + 'px';
+      updatePreview();
+    });
+
+    colorOptions.forEach(btn => {
+      btn.addEventListener('click', () => {
+        colorOptions.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        state.color = btn.dataset.color;
+        updatePreview();
+      });
+    });
+
+    effectBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        effectBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        state.effect = btn.dataset.effect;
+        updatePreview();
+      });
+    });
+
+    const emojiBtns = document.querySelectorAll('.emoji-btn');
+    emojiBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const emoji = btn.dataset.emoji;
+        const cursorPos = textInput.selectionStart;
+        const textBefore = state.text.substring(0, cursorPos);
+        const textAfter = state.text.substring(cursorPos);
+        
+        state.text = textBefore + emoji + textAfter;
+        textInput.value = state.text;
+        updatePreview();
+        
+        textInput.focus();
+        const newCursorPos = cursorPos + emoji.length;
+        textInput.setSelectionRange(newCursorPos, newCursorPos);
+      });
+    });
+
+    document.getElementById('copy-text').addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(state.text);
+        const btn = document.getElementById('copy-text');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '✓ Copiato!';
+        btn.style.background = '#48bb78';
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+          btn.style.background = '#667eea';
+        }, 2000);
+      } catch (err) {
+        const textarea = document.createElement('textarea');
+        textarea.value = state.text;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        
+        const btn = document.getElementById('copy-text');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '✓ Copiato!';
+        btn.style.background = '#48bb78';
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+          btn.style.background = '#667eea';
+        }, 2000);
+      }
+    });
+
+    document.getElementById('copy-style').addEventListener('click', async () => {
+      const css = `font-family: ${state.fontFamily};
+font-size: ${state.fontSize}px;
+font-weight: ${state.fontWeight};
+letter-spacing: ${state.letterSpacing}px;
+color: ${state.color};`;
+      
+      try {
+        await navigator.clipboard.writeText(css);
+        const btn = document.getElementById('copy-style');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '✓ Stile Copiato!';
+        btn.style.background = '#48bb78';
+        btn.style.color = 'white';
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+          btn.style.background = '#f7fafc';
+          btn.style.color = '#4a5568';
+        }, 2000);
+      } catch (err) {
+        const textarea = document.createElement('textarea');
+        textarea.value = css;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        
+        const btn = document.getElementById('copy-style');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '✓ Stile Copiato!';
+        btn.style.background = '#48bb78';
+        btn.style.color = 'white';
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+          btn.style.background = '#f7fafc';
+          btn.style.color = '#4a5568';
+        }, 2000);
+      }
+    });
+
+    document.getElementById('download-image').addEventListener('click', () => {
+      const preview = document.getElementById('preview');
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const scale = 2;
+      
+      canvas.width = preview.offsetWidth * scale;
+      canvas.height = preview.offsetHeight * scale;
+      ctx.scale(scale, scale);
+      
+      ctx.fillStyle = 'white';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      ctx.font = `${state.fontWeight} ${state.fontSize}px ${state.fontFamily}`;
+      ctx.fillStyle = state.color;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      
+      const lines = state.text.split('\n');
+      const lineHeight = state.fontSize * 1.2;
+      const startY = (preview.offsetHeight - (lines.length * lineHeight)) / 2;
+      
+      lines.forEach((line, i) => {
+        ctx.fillText(line, preview.offsetWidth / 2, startY + (i * lineHeight) + state.fontSize / 2);
+      });
+      
+      canvas.toBlob((blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'font-creator-design.png';
+        a.click();
+        URL.revokeObjectURL(url);
+        
+        const btn = document.getElementById('download-image');
+        const originalText = btn.textContent;
+        btn.textContent = '✓ Scaricato!';
+        btn.style.background = '#48bb78';
+        btn.style.color = 'white';
+        setTimeout(() => {
+          btn.textContent = originalText;
+          btn.style.background = '#f7fafc';
+          btn.style.color = '#4a5568';
+        }, 2000);
+      });
+    });
+
+    async function onConfigChange(config) {
+      const mainTitle = config.main_title || defaultConfig.main_title;
+      const subtitle = config.subtitle || defaultConfig.subtitle;
+      
+      const fullText = subtitle ? `${mainTitle}\n${subtitle}` : mainTitle;
+      state.text = fullText;
+      textInput.value = fullText;
+      updatePreview();
+    }
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities: (config) => ({
+          recolorables: [],
+          borderables: [],
+          fontEditable: undefined,
+          fontSizeable: undefined
+        }),
+        mapToEditPanelValues: (config) => new Map([
+          ["main_title", config.main_title || defaultConfig.main_title],
+          ["subtitle", config.subtitle || defaultConfig.subtitle]
+        ])
+      });
+    }
+
+    updatePreview();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a86057933abee59',t:'MTc2NDc5NTkxOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

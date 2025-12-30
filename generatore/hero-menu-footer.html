@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 Tailwind CSS - Hero, Menu & Footer Playground</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            box-sizing: border-box;
+        }
+        .tab-active {
+            background: #3b82f6;
+            color: white;
+        }
+        .tab-inactive {
+            background: #e5e7eb;
+            color: #6b7280;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes bounceIn {
+            0% { opacity: 0; transform: scale(0.3); }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        
+        .animate-fade-in { animation: fadeIn 0.3s ease-out; }
+        .animate-slide-up { animation: slideUp 0.3s ease-out; }
+        .animate-bounce-in { animation: bounceIn 0.5s ease-out; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-purple-50 to-pink-50 min-h-screen">
+    <header class="bg-white shadow-xl border-b-4 border-purple-500">
+        <div class="max-w-7xl mx-auto px-6 py-6">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">🚀 Hero, Menu & Footer Playground</h1>
+            <p class="text-gray-600 text-lg">Crea sezioni Hero accattivanti, menu mobile funzionali e footer professionali con Tailwind CSS</p>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-8">
+        <!-- Tabs per Componenti -->
+        <div class="bg-white rounded-2xl shadow-2xl mb-8 border border-gray-100 overflow-hidden">
+            <div class="flex border-b border-gray-200">
+                <button onclick="switchTab('hero')" id="tab-hero" class="tab-active px-8 py-4 font-semibold transition-colors">
+                    🦸 Hero Section
+                </button>
+                <button onclick="switchTab('menu')" id="tab-menu" class="tab-inactive px-8 py-4 font-semibold transition-colors">
+                    🍔 Menu Mobile
+                </button>
+                <button onclick="switchTab('footer')" id="tab-footer" class="tab-inactive px-8 py-4 font-semibold transition-colors">
+                    🦶 Footer
+                </button>
+            </div>
+            
+            <!-- Controlli per Hero -->
+            <div id="controls-hero" class="p-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">🎛️ Controlli Hero Section</h2>
+                <div class="grid md:grid-cols-4 gap-6">
+                    <div>
+                        <h3 class="text-lg font-semibold text-blue-700 mb-4">🎨 Sfondo</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label for="hero-bgColor" class="block text-sm font-medium text-gray-700 mb-2">Colore/Gradiente</label>
+                                <select id="hero-bgColor" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="bg-blue-600" selected>Blu</option>
+                                    <option value="bg-purple-600">Viola</option>
+                                    <option value="bg-green-600">Verde</option>
+                                    <option value="bg-red-600">Rosso</option>
+                                    <option value="bg-gray-800">Grigio Scuro</option>
+                                    <option value="bg-gradient-to-r from-blue-600 to-purple-600">Blu-Viola</option>
+                                    <option value="bg-gradient-to-r from-green-400 to-blue-500">Verde-Blu</option>
+                                    <option value="bg-gradient-to-r from-purple-500 to-pink-500">Viola-Rosa</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-lg font-semibold text-green-700 mb-4">📏 Layout</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label for="hero-height" class="block text-sm font-medium text-gray-700 mb-2">Altezza</label>
+                                <select id="hero-height" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="h-64">Piccola</option>
+                                    <option value="h-96" selected>Media</option>
+                                    <option value="h-screen">Schermo Intero</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="hero-alignment" class="block text-sm font-medium text-gray-700 mb-2">Allineamento</label>
+                                <select id="hero-alignment" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="items-center justify-center text-center" selected>Centro</option>
+                                    <option value="items-center justify-start text-left">Sinistra</option>
+                                    <option value="items-start justify-center text-center pt-20">Alto Centro</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-lg font-semibold text-purple-700 mb-4">✨ Testo</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label for="hero-titleSize" class="block text-sm font-medium text-gray-700 mb-2">Dimensione Titolo</label>
+                                <select id="hero-titleSize" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="text-4xl">Grande</option>
+                                    <option value="text-5xl" selected>Extra</option>
+                                    <option value="text-6xl">Enorme</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="hero-textColor" class="block text-sm font-medium text-gray-700 mb-2">Colore Testo</label>
+                                <select id="hero-textColor" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="text-white" selected>Bianco</option>
+                                    <option value="text-gray-800">Grigio Scuro</option>
+                                    <option value="text-blue-900">Blu Scuro</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-lg font-semibold text-orange-700 mb-4">🎭 Effetti</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label for="hero-overlay" class="block text-sm font-medium text-gray-700 mb-2">Overlay</label>
+                                <select id="hero-overlay" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="">Nessuno</option>
+                                    <option value="bg-black bg-opacity-30">Scuro 30%</option>
+                                    <option value="bg-black bg-opacity-50" selected>Scuro 50%</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="hero-animation" class="block text-sm font-medium text-gray-700 mb-2">Animazione</label>
+                                <select id="hero-animation" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="">Nessuna</option>
+                                    <option value="animate-fade-in" selected>Fade In</option>
+                                    <option value="animate-slide-up">Slide Up</option>
+                                    <option value="animate-bounce-in">Bounce In</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Controlli per Menu -->
+            <div id="controls-menu" class="p-8 hidden">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">🎛️ Controlli Menu Mobile</h2>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div>
+                        <h3 class="text-lg font-semibold text-blue-700 mb-4">🎨 Aspetto</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label for="menu-style" class="block text-sm font-medium text-gray-700 mb-2">Stile Menu</label>
+                                <select id="menu-style" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="hamburger" selected>Hamburger</option>
+                                    <option value="dots">Tre Punti</option>
+                                    <option value="cross">Croce</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-lg font-semibold text-green-700 mb-4">🎨 Colori</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label for="menu-bg" class="block text-sm font-medium text-gray-700 mb-2">Sfondo Menu</label>
+                                <select id="menu-bg" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="bg-white" selected>Bianco</option>
+                                    <option value="bg-gray-800">Grigio Scuro</option>
+                                    <option value="bg-blue-600">Blu</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="menu-linkColor" class="block text-sm font-medium text-gray-700 mb-2">Colore Link</label>
+                                <select id="menu-linkColor" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="text-gray-800" selected>Grigio Scuro</option>
+                                    <option value="text-white">Bianco</option>
+                                    <option value="text-blue-600">Blu</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-lg font-semibold text-purple-700 mb-4">✨ Effetti</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label for="menu-shadow" class="block text-sm font-medium text-gray-700 mb-2">Ombra</label>
+                                <select id="menu-shadow" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="">Nessuna</option>
+                                    <option value="shadow-lg" selected>Grande</option>
+                                    <option value="shadow-xl">Extra</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Controlli per Footer -->
+            <div id="controls-footer" class="p-8 hidden">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">🎛️ Controlli Footer</h2>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div>
+                        <h3 class="text-lg font-semibold text-blue-700 mb-4">🎨 Aspetto</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label for="footer-bg" class="block text-sm font-medium text-gray-700 mb-2">Sfondo</label>
+                                <select id="footer-bg" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="bg-gray-800" selected>Grigio Scuro</option>
+                                    <option value="bg-gray-900">Grigio Molto Scuro</option>
+                                    <option value="bg-blue-800">Blu Scuro</option>
+                                    <option value="bg-green-800">Verde Scuro</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="footer-textColor" class="block text-sm font-medium text-gray-700 mb-2">Colore Testo</label>
+                                <select id="footer-textColor" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="text-white" selected>Bianco</option>
+                                    <option value="text-gray-300">Grigio Chiaro</option>
+                                    <option value="text-blue-100">Blu Chiaro</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-lg font-semibold text-green-700 mb-4">📏 Layout</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label for="footer-columns" class="block text-sm font-medium text-gray-700 mb-2">Colonne</label>
+                                <select id="footer-columns" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="1">1 Colonna</option>
+                                    <option value="2">2 Colonne</option>
+                                    <option value="3" selected>3 Colonne</option>
+                                    <option value="4">4 Colonne</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-lg font-semibold text-purple-700 mb-4">🔗 Link</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label for="footer-linkColor" class="block text-sm font-medium text-gray-700 mb-2">Colore Link</label>
+                                <select id="footer-linkColor" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="text-blue-400" selected>Blu Chiaro</option>
+                                    <option value="text-green-400">Verde Chiaro</option>
+                                    <option value="text-purple-400">Viola Chiaro</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Anteprima e Codice -->
+        <div class="grid lg:grid-cols-2 gap-8">
+            <!-- Anteprima -->
+            <div class="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100">
+                <h3 class="text-xl font-bold text-gray-800 mb-6">👁️ Anteprima Live</h3>
+                <div class="bg-gray-100 p-4 rounded-xl min-h-64 overflow-hidden">
+                    <div id="preview" class="w-full h-full">
+                        <!-- Il contenuto verrà generato dinamicamente -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Codice Generato -->
+            <div class="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100">
+                <h3 class="text-xl font-bold text-gray-800 mb-6">📝 Codice Generato</h3>
+                <div class="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm overflow-auto max-h-64">
+                    <pre id="generatedCode"><!-- Il codice apparirà qui --></pre>
+                </div>
+                <div class="flex space-x-3 mt-4">
+                    <button onclick="copyCode()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors">
+                        📋 Copia Codice
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Template Rapidi -->
+        <div class="mt-8 bg-white rounded-2xl shadow-2xl p-8 border border-gray-100">
+            <h3 class="text-xl font-bold text-gray-800 mb-6">🚀 Template Rapidi</h3>
+            <div id="quickTemplates" class="grid md:grid-cols-4 gap-4">
+                <!-- I template verranno generati dinamicamente -->
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let currentTab = 'hero';
+        
+        // Template predefiniti
+        const templates = {
+            hero: {
+                modern: { bgColor: 'bg-gradient-to-r from-blue-600 to-purple-600', height: 'h-96', alignment: 'items-center justify-center text-center', titleSize: 'text-5xl', textColor: 'text-white', overlay: 'bg-black bg-opacity-50', animation: 'animate-fade-in' },
+                minimal: { bgColor: 'bg-gray-800', height: 'h-64', alignment: 'items-center justify-center text-center', titleSize: 'text-4xl', textColor: 'text-white', overlay: '', animation: 'animate-slide-up' },
+                colorful: { bgColor: 'bg-gradient-to-r from-green-400 to-blue-500', height: 'h-screen', alignment: 'items-center justify-center text-center', titleSize: 'text-6xl', textColor: 'text-white', overlay: 'bg-black bg-opacity-30', animation: 'animate-bounce-in' }
+            },
+            menu: {
+                classic: { style: 'hamburger', bg: 'bg-white', linkColor: 'text-gray-800', shadow: 'shadow-lg' },
+                dark: { style: 'hamburger', bg: 'bg-gray-800', linkColor: 'text-white', shadow: 'shadow-xl' },
+                colorful: { style: 'dots', bg: 'bg-blue-600', linkColor: 'text-white', shadow: 'shadow-lg' }
+            },
+            footer: {
+                corporate: { bg: 'bg-gray-800', textColor: 'text-white', columns: '3', linkColor: 'text-blue-400' },
+                dark: { bg: 'bg-gray-900', textColor: 'text-gray-300', columns: '4', linkColor: 'text-green-400' },
+                minimal: { bg: 'bg-gray-800', textColor: 'text-white', columns: '2', linkColor: 'text-blue-400' }
+            }
+        };
+
+        // Cambia tab
+        function switchTab(tabName) {
+            document.querySelectorAll('[id^="controls-"]').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`controls-${tabName}`).classList.remove('hidden');
+            
+            document.querySelectorAll('[id^="tab-"]').forEach(el => {
+                el.className = 'tab-inactive px-8 py-4 font-semibold transition-colors';
+            });
+            document.getElementById(`tab-${tabName}`).className = 'tab-active px-8 py-4 font-semibold transition-colors';
+            
+            currentTab = tabName;
+            updateComponent();
+            updateQuickTemplates();
+        }
+
+        // Aggiorna il componente
+        function updateComponent() {
+            const preview = document.getElementById('preview');
+            const codeElement = document.getElementById('generatedCode');
+            
+            if (currentTab === 'hero') {
+                const bgColor = document.getElementById('hero-bgColor').value;
+                const height = document.getElementById('hero-height').value;
+                const alignment = document.getElementById('hero-alignment').value;
+                const titleSize = document.getElementById('hero-titleSize').value;
+                const textColor = document.getElementById('hero-textColor').value;
+                const overlay = document.getElementById('hero-overlay').value;
+                const animation = document.getElementById('hero-animation').value;
+                
+                const heroClasses = `${bgColor} ${height} flex ${alignment} relative ${animation}`;
+                const overlayClasses = overlay ? `absolute inset-0 ${overlay}` : '';
+                
+                preview.innerHTML = `
+                    <div class="${heroClasses}" style="min-height: 200px;">
+                        ${overlay ? `<div class="${overlayClasses}"></div>` : ''}
+                        <div class="relative z-10 max-w-4xl mx-auto px-6">
+                            <h1 class="${titleSize} font-bold ${textColor} mb-4">
+                                Benvenuto nel Futuro 🚀
+                            </h1>
+                            <p class="text-lg ${textColor} mb-6 opacity-90">
+                                Scopri soluzioni innovative
+                            </p>
+                            <div class="space-x-4">
+                                <button class="bg-white text-gray-800 px-6 py-2 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                                    Inizia Ora
+                                </button>
+                                <button class="border-2 border-white ${textColor} px-6 py-2 rounded-lg font-semibold hover:bg-white hover:text-gray-800 transition-colors">
+                                    Scopri di Più
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                codeElement.textContent = `<div class="${heroClasses}">
+  ${overlay ? `<div class="${overlayClasses}"></div>` : ''}
+  <div class="relative z-10 max-w-4xl mx-auto px-6">
+    <h1 class="${titleSize} font-bold ${textColor} mb-6">
+      Benvenuto nel Futuro 🚀
+    </h1>
+    <p class="text-xl ${textColor} mb-8 opacity-90">
+      Scopri soluzioni innovative
+    </p>
+    <div class="space-x-4">
+      <button class="bg-white text-gray-800 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+        Inizia Ora
+      </button>
+      <button class="border-2 border-white ${textColor} px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-gray-800 transition-colors">
+        Scopri di Più
+      </button>
+    </div>
+  </div>
+</div>`;
+                
+            } else if (currentTab === 'menu') {
+                const style = document.getElementById('menu-style').value;
+                const bg = document.getElementById('menu-bg').value;
+                const linkColor = document.getElementById('menu-linkColor').value;
+                const shadow = document.getElementById('menu-shadow').value;
+                
+                const menuIcon = getMenuIcon(style);
+                const menuClasses = `${bg} ${shadow} rounded-lg p-4 ${linkColor}`;
+                const buttonColor = bg.includes('gray-800') || bg.includes('blue-600') ? 'text-white' : 'text-gray-800';
+                
+                preview.innerHTML = `
+                    <div class="relative">
+                        <div class="bg-white border border-gray-200 rounded-lg p-4 mb-4">
+                            <div class="flex justify-between items-center">
+                                <h3 class="text-lg font-semibold text-gray-800">Brand</h3>
+                                <button onclick="toggleMobileMenu()" class="${buttonColor} hover:text-gray-600 transition-colors">
+                                    ${menuIcon}
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div id="mobileMenu" class="hidden ${menuClasses} space-y-3">
+                            <a href="#" class="${linkColor} hover:text-blue-600 transition-colors block py-2">🏠 Home</a>
+                            <a href="#" class="${linkColor} hover:text-blue-600 transition-colors block py-2">📦 Prodotti</a>
+                            <a href="#" class="${linkColor} hover:text-blue-600 transition-colors block py-2">🛠️ Servizi</a>
+                            <a href="#" class="${linkColor} hover:text-blue-600 transition-colors block py-2">📞 Contatti</a>
+                        </div>
+                        
+                        <div class="mt-4 text-center">
+                            <button onclick="toggleMobileMenu()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors">
+                                Prova Menu 🍔
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                codeElement.textContent = `<div class="relative">
+  <div class="bg-white border border-gray-200 rounded-lg p-4">
+    <div class="flex justify-between items-center">
+      <h3 class="text-lg font-semibold text-gray-800">Brand</h3>
+      <button onclick="toggleMobileMenu()" class="${buttonColor}">
+        ${menuIcon}
+      </button>
+    </div>
+  </div>
+  
+  <div id="mobileMenu" class="hidden ${menuClasses} space-y-3">
+    <a href="#" class="${linkColor} hover:text-blue-600 transition-colors block py-2">Home</a>
+    <a href="#" class="${linkColor} hover:text-blue-600 transition-colors block py-2">Prodotti</a>
+    <a href="#" class="${linkColor} hover:text-blue-600 transition-colors block py-2">Servizi</a>
+    <a href="#" class="${linkColor} hover:text-blue-600 transition-colors block py-2">Contatti</a>
+  </div>
+</div>`;
+                
+            } else if (currentTab === 'footer') {
+                const bg = document.getElementById('footer-bg').value;
+                const textColor = document.getElementById('footer-textColor').value;
+                const columns = document.getElementById('footer-columns').value;
+                const linkColor = document.getElementById('footer-linkColor').value;
+                
+                const footerClasses = `${bg} ${textColor} py-8 px-6`;
+                const gridCols = `grid-cols-${columns}`;
+                
+                preview.innerHTML = `
+                    <footer class="${footerClasses}">
+                        <div class="max-w-6xl mx-auto">
+                            <div class="grid ${gridCols} gap-6 mb-6">
+                                <div>
+                                    <h3 class="text-lg font-semibold mb-3">Azienda</h3>
+                                    <ul class="space-y-2">
+                                        <li><a href="#" class="${linkColor} hover:text-blue-300 transition-colors">Chi Siamo</a></li>
+                                        <li><a href="#" class="${linkColor} hover:text-blue-300 transition-colors">Carriere</a></li>
+                                        <li><a href="#" class="${linkColor} hover:text-blue-300 transition-colors">News</a></li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold mb-3">Prodotti</h3>
+                                    <ul class="space-y-2">
+                                        <li><a href="#" class="${linkColor} hover:text-blue-300 transition-colors">Soluzioni Web</a></li>
+                                        <li><a href="#" class="${linkColor} hover:text-blue-300 transition-colors">App Mobile</a></li>
+                                        <li><a href="#" class="${linkColor} hover:text-blue-300 transition-colors">Consulenza</a></li>
+                                    </ul>
+                                </div>
+                                ${columns >= 3 ? `<div>
+                                    <h3 class="text-lg font-semibold mb-3">Contatti</h3>
+                                    <ul class="space-y-2">
+                                        <li class="${textColor}">📧 info@esempio.com</li>
+                                        <li class="${textColor}">📞 +39 123 456 789</li>
+                                        <li class="${textColor}">📍 Via Roma 123, Milano</li>
+                                    </ul>
+                                </div>` : ''}
+                                ${columns >= 4 ? `<div>
+                                    <h3 class="text-lg font-semibold mb-3">Risorse</h3>
+                                    <ul class="space-y-2">
+                                        <li><a href="#" class="${linkColor} hover:text-blue-300 transition-colors">Blog</a></li>
+                                        <li><a href="#" class="${linkColor} hover:text-blue-300 transition-colors">Guide</a></li>
+                                        <li><a href="#" class="${linkColor} hover:text-blue-300 transition-colors">FAQ</a></li>
+                                    </ul>
+                                </div>` : ''}
+                            </div>
+                            
+                            <div class="border-t border-gray-600 pt-6">
+                                <div class="flex flex-col md:flex-row justify-between items-center">
+                                    <p class="${textColor} text-sm mb-4 md:mb-0">
+                                        © 2024 La Tua Azienda. Tutti i diritti riservati.
+                                    </p>
+                                    <div class="flex space-x-4">
+                                        <a href="#" class="${linkColor} hover:text-blue-300 transition-colors">Facebook</a>
+                                        <a href="#" class="${linkColor} hover:text-blue-300 transition-colors">Twitter</a>
+                                        <a href="#" class="${linkColor} hover:text-blue-300 transition-colors">LinkedIn</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </footer>
+                `;
+                
+                codeElement.textContent = `<footer class="${footerClasses}">
+  <div class="max-w-6xl mx-auto">
+    <div class="grid ${gridCols} gap-8 mb-8">
+      <div>
+        <h3 class="text-lg font-semibold mb-4">Azienda</h3>
+        <ul class="space-y-2">
+          <li><a href="#" class="${linkColor} hover:text-blue-300 transition-colors">Chi Siamo</a></li>
+          <li><a href="#" class="${linkColor} hover:text-blue-300 transition-colors">Carriere</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="text-lg font-semibold mb-4">Prodotti</h3>
+        <ul class="space-y-2">
+          <li><a href="#" class="${linkColor} hover:text-blue-300 transition-colors">Soluzioni Web</a></li>
+          <li><a href="#" class="${linkColor} hover:text-blue-300 transition-colors">App Mobile</a></li>
+        </ul>
+      </div>
+      ${columns >= 3 ? `<div>
+        <h3 class="text-lg font-semibold mb-4">Contatti</h3>
+        <ul class="space-y-2">
+          <li class="${textColor}">📧 info@esempio.com</li>
+          <li class="${textColor}">📞 +39 123 456 789</li>
+        </ul>
+      </div>` : ''}
+    </div>
+    
+    <div class="border-t border-gray-600 pt-8">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <p class="${textColor} text-sm">© 2024 La Tua Azienda. Tutti i diritti riservati.</p>
+        <div class="flex space-x-4">
+          <a href="#" class="${linkColor} hover:text-blue-300 transition-colors">Facebook</a>
+          <a href="#" class="${linkColor} hover:text-blue-300 transition-colors">Twitter</a>
+          <a href="#" class="${linkColor} hover:text-blue-300 transition-colors">LinkedIn</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>`;
+            }
+        }
+
+        // Aggiorna i template rapidi
+        function updateQuickTemplates() {
+            const container = document.getElementById('quickTemplates');
+            const currentTemplates = templates[currentTab];
+            
+            container.innerHTML = '';
+            Object.keys(currentTemplates).forEach(templateName => {
+                const templateCard = document.createElement('div');
+                templateCard.className = 'bg-white border-2 border-gray-200 hover:border-blue-400 rounded-xl p-4 transition-all cursor-pointer hover:shadow-lg';
+                templateCard.onclick = () => loadTemplate(templateName);
+                
+                templateCard.innerHTML = `
+                    <div class="text-center mb-3">
+                        <div class="text-2xl mb-2">${getTemplateIcon(currentTab, templateName)}</div>
+                        <div class="font-semibold capitalize text-gray-800">${templateName}</div>
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded-lg min-h-20 flex items-center justify-center text-xs">
+                        Template ${templateName}
+                    </div>
+                    <div class="mt-3 text-center">
+                        <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">
+                            Clicca per applicare
+                        </span>
+                    </div>
+                `;
+                
+                container.appendChild(templateCard);
+            });
+        }
+
+        // Icone per i template
+        function getTemplateIcon(tab, templateName) {
+            const icons = {
+                hero: { modern: '🚀', minimal: '⚡', colorful: '🌈' },
+                menu: { classic: '🍔', dark: '🌙', colorful: '🎨' },
+                footer: { corporate: '🏢', dark: '🌙', minimal: '📄' }
+            };
+            return icons[tab]?.[templateName] || '⭐';
+        }
+
+        // Carica un template
+        function loadTemplate(templateName) {
+            const template = templates[currentTab]?.[templateName];
+            if (!template) return;
+            
+            if (currentTab === 'hero') {
+                document.getElementById('hero-bgColor').value = template.bgColor;
+                document.getElementById('hero-height').value = template.height;
+                document.getElementById('hero-alignment').value = template.alignment;
+                document.getElementById('hero-titleSize').value = template.titleSize;
+                document.getElementById('hero-textColor').value = template.textColor;
+                document.getElementById('hero-overlay').value = template.overlay;
+                document.getElementById('hero-animation').value = template.animation;
+            } else if (currentTab === 'menu') {
+                document.getElementById('menu-style').value = template.style;
+                document.getElementById('menu-bg').value = template.bg;
+                document.getElementById('menu-linkColor').value = template.linkColor;
+                document.getElementById('menu-shadow').value = template.shadow;
+            } else if (currentTab === 'footer') {
+                document.getElementById('footer-bg').value = template.bg;
+                document.getElementById('footer-textColor').value = template.textColor;
+                document.getElementById('footer-columns').value = template.columns;
+                document.getElementById('footer-linkColor').value = template.linkColor;
+            }
+            
+            updateComponent();
+        }
+
+        // Copia il codice
+        function copyCode() {
+            const code = document.getElementById('generatedCode').textContent;
+            const btn = document.querySelector('button[onclick="copyCode()"]');
+            
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(code).then(() => {
+                    showCopyFeedback(btn);
+                }).catch(() => {
+                    fallbackCopyTextToClipboard(code, btn);
+                });
+            } else {
+                fallbackCopyTextToClipboard(code, btn);
+            }
+        }
+
+        function fallbackCopyTextToClipboard(text, btn) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showCopyFeedback(btn);
+                }
+            } catch (err) {
+                console.log('Errore copia');
+            }
+            
+            document.body.removeChild(textArea);
+        }
+
+        function showCopyFeedback(btn) {
+            const originalText = btn.textContent;
+            const originalClasses = btn.className;
+            
+            btn.textContent = '✅ Copiato!';
+            btn.className = originalClasses.replace('bg-blue-500', 'bg-green-500').replace('hover:bg-blue-600', 'hover:bg-green-600');
+            
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.className = originalClasses;
+            }, 2000);
+        }
+
+        function getMenuIcon(style) {
+            const icons = {
+                hamburger: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>`,
+                dots: `<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                    <circle cx="5" cy="12" r="2"></circle>
+                    <circle cx="12" cy="12" r="2"></circle>
+                    <circle cx="19" cy="12" r="2"></circle>
+                </svg>`,
+                cross: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>`
+            };
+            return icons[style] || icons.hamburger;
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            if (menu) {
+                menu.classList.toggle('hidden');
+            }
+        }
+
+        // Inizializzazione
+        document.addEventListener('DOMContentLoaded', function() {
+            updateComponent();
+            updateQuickTemplates();
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98f322112654ed53',t:'MTc2MDU3MTMyOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

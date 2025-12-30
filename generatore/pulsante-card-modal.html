@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tailwind CSS Playground Completo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            box-sizing: border-box;
+        }
+        .tab-active {
+            background: #3b82f6;
+            color: white;
+        }
+        .tab-inactive {
+            background: #e5e7eb;
+            color: #6b7280;
+        }
+        
+        /* Animazioni personalizzate per modali */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes scaleUp {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes bounceIn {
+            0% { opacity: 0; transform: scale(0.3); }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        
+        .animate-fade-in { animation: fadeIn 0.3s ease-out; }
+        .animate-slide-up { animation: slideUp 0.3s ease-out; }
+        .animate-scale-up { animation: scaleUp 0.3s ease-out; }
+        .animate-bounce-in { animation: bounceIn 0.5s ease-out; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+    <header class="bg-white shadow-xl border-b-4 border-blue-500">
+        <div class="max-w-7xl mx-auto px-6 py-6">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">🎨 Tailwind CSS Playground Completo</h1>
+            <p class="text-gray-600 text-lg">Sperimenta con tutte le proprietà Tailwind e vedi il codice generato automaticamente</p>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-8">
+        <!-- Tabs per Componenti -->
+        <div class="bg-white rounded-2xl shadow-2xl mb-8 border border-gray-100 overflow-hidden">
+            <div class="flex border-b border-gray-200">
+                <button onclick="switchTab('button')" id="tab-button" class="tab-active px-6 py-4 font-semibold transition-colors">
+                    🔘 Pulsante
+                </button>
+                <button onclick="switchTab('card')" id="tab-card" class="tab-inactive px-6 py-4 font-semibold transition-colors">
+                    🃏 Card
+                </button>
+                <button onclick="switchTab('modal')" id="tab-modal" class="tab-inactive px-6 py-4 font-semibold transition-colors">
+                    📱 Modale
+                </button>
+                <button onclick="switchTab('form')" id="tab-form" class="tab-inactive px-6 py-4 font-semibold transition-colors">
+                    📝 Form
+                </button>
+                <button onclick="switchTab('navbar')" id="tab-navbar" class="tab-inactive px-6 py-4 font-semibold transition-colors">
+                    🧭 Navbar
+                </button>
+                <button onclick="switchTab('grid')" id="tab-grid" class="tab-inactive px-6 py-4 font-semibold transition-colors">
+                    📐 Grid
+                </button>
+            </div>
+            
+            <!-- Controlli per Pulsante -->
+            <div id="controls-button" class="p-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">🎛️ Controlli Pulsante</h2>
+                <div class="grid md:grid-cols-4 gap-6">
+                    <div>
+                        <h3 class="text-lg font-semibold text-blue-700 mb-4">🎨 Colori</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Colore Sfondo</label>
+                                <select id="btn-bgColor" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="bg-blue-500" selected>Blu</option>
+                                    <option value="bg-green-500">Verde</option>
+                                    <option value="bg-red-500">Rosso</option>
+                                    <option value="bg-purple-500">Viola</option>
+                                    <option value="bg-yellow-500">Giallo</option>
+                                    <option value="bg-pink-500">Rosa</option>
+                                    <option value="bg-gray-500">Grigio</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Hover</label>
+                                <select id="btn-hoverColor" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="hover:bg-blue-700" selected>Blu Scuro</option>
+                                    <option value="hover:bg-green-700">Verde Scuro</option>
+                                    <option value="hover:bg-red-700">Rosso Scuro</option>
+                                    <option value="hover:bg-purple-700">Viola Scuro</option>
+                                    <option value="hover:bg-yellow-600">Giallo Scuro</option>
+                                    <option value="hover:bg-pink-700">Rosa Scuro</option>
+                                    <option value="hover:bg-gray-700">Grigio Scuro</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-lg font-semibold text-green-700 mb-4">📏 Dimensioni</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Padding</label>
+                                <select id="btn-padding" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="px-3 py-1">Piccolo</option>
+                                    <option value="px-4 py-2" selected>Medio</option>
+                                    <option value="px-6 py-3">Grande</option>
+                                    <option value="px-8 py-4">Extra</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Testo</label>
+                                <select id="btn-textSize" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="text-sm">Piccolo</option>
+                                    <option value="text-base" selected>Normale</option>
+                                    <option value="text-lg">Grande</option>
+                                    <option value="text-xl">Extra</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-lg font-semibold text-purple-700 mb-4">✨ Stile</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Bordi</label>
+                                <select id="btn-rounded" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="">Nessuno</option>
+                                    <option value="rounded">Piccoli</option>
+                                    <option value="rounded-lg" selected>Medi</option>
+                                    <option value="rounded-xl">Grandi</option>
+                                    <option value="rounded-full">Completi</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Ombra</label>
+                                <select id="btn-shadow" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="">Nessuna</option>
+                                    <option value="shadow-sm">Piccola</option>
+                                    <option value="shadow-md" selected>Media</option>
+                                    <option value="shadow-lg">Grande</option>
+                                    <option value="shadow-xl">Extra</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-lg font-semibold text-orange-700 mb-4">🎭 Effetti</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Transizione</label>
+                                <select id="btn-transition" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="">Nessuna</option>
+                                    <option value="transition-colors" selected>Colori</option>
+                                    <option value="transition-all">Tutto</option>
+                                    <option value="transition-transform">Transform</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Transform</label>
+                                <select id="btn-transform" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="">Nessuno</option>
+                                    <option value="hover:scale-105">Scale Hover</option>
+                                    <option value="hover:-translate-y-1">Lift Hover</option>
+                                    <option value="active:scale-95">Scale Click</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Controlli per Card (nascosti inizialmente) -->
+            <div id="controls-card" class="p-8 hidden">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">🎛️ Controlli Card</h2>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div>
+                        <h3 class="text-lg font-semibold text-blue-700 mb-4">🎨 Aspetto</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Sfondo</label>
+                                <select id="card-bg" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="bg-white" selected>Bianco</option>
+                                    <option value="bg-gray-50">Grigio Chiaro</option>
+                                    <option value="bg-blue-50">Blu Chiaro</option>
+                                    <option value="bg-green-50">Verde Chiaro</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Bordi</label>
+                                <select id="card-rounded" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="rounded-lg" selected>Medi</option>
+                                    <option value="rounded-xl">Grandi</option>
+                                    <option value="rounded-2xl">Extra</option>
+                                    <option value="rounded-none">Nessuno</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-green-700 mb-4">📏 Layout</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Padding</label>
+                                <select id="card-padding" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="p-4">Piccolo</option>
+                                    <option value="p-6" selected>Medio</option>
+                                    <option value="p-8">Grande</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Larghezza</label>
+                                <select id="card-width" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="max-w-sm">Piccola</option>
+                                    <option value="max-w-md" selected>Media</option>
+                                    <option value="max-w-lg">Grande</option>
+                                    <option value="max-w-xl">Extra</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-purple-700 mb-4">✨ Effetti</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Ombra</label>
+                                <select id="card-shadow" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="shadow-sm">Piccola</option>
+                                    <option value="shadow-md" selected>Media</option>
+                                    <option value="shadow-lg">Grande</option>
+                                    <option value="shadow-xl">Extra</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Hover</label>
+                                <select id="card-hover" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="">Nessuno</option>
+                                    <option value="hover:shadow-lg" selected>Ombra</option>
+                                    <option value="hover:scale-105 transition-transform">Scale</option>
+                                    <option value="hover:-translate-y-1 transition-transform">Lift</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Controlli per Modale -->
+            <div id="controls-modal" class="p-8 hidden">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">🎛️ Controlli Modale</h2>
+                <div class="grid md:grid-cols-4 gap-6">
+                    <div>
+                        <h3 class="text-lg font-semibold text-blue-700 mb-4">🎨 Aspetto</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Sfondo Overlay</label>
+                                <select id="modal-overlay" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="bg-black bg-opacity-50" selected>Nero 50%</option>
+                                    <option value="bg-black bg-opacity-75">Nero 75%</option>
+                                    <option value="bg-gray-900 bg-opacity-50">Grigio 50%</option>
+                                    <option value="bg-blue-900 bg-opacity-50">Blu 50%</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Sfondo Modale</label>
+                                <select id="modal-bg" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="bg-white" selected>Bianco</option>
+                                    <option value="bg-gray-50">Grigio Chiaro</option>
+                                    <option value="bg-blue-50">Blu Chiaro</option>
+                                    <option value="bg-gray-800">Grigio Scuro</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-lg font-semibold text-green-700 mb-4">📏 Dimensioni</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Larghezza</label>
+                                <select id="modal-width" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="max-w-sm">Piccola</option>
+                                    <option value="max-w-md" selected>Media</option>
+                                    <option value="max-w-lg">Grande</option>
+                                    <option value="max-w-2xl">Extra</option>
+                                    <option value="max-w-4xl">Molto Grande</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Padding</label>
+                                <select id="modal-padding" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="p-4">Piccolo</option>
+                                    <option value="p-6">Medio</option>
+                                    <option value="p-8" selected>Grande</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-lg font-semibold text-purple-700 mb-4">✨ Stile</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Bordi</label>
+                                <select id="modal-rounded" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="rounded-lg">Medi</option>
+                                    <option value="rounded-xl" selected>Grandi</option>
+                                    <option value="rounded-2xl">Extra</option>
+                                    <option value="rounded-none">Nessuno</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Ombra</label>
+                                <select id="modal-shadow" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="shadow-lg">Grande</option>
+                                    <option value="shadow-xl" selected>Extra</option>
+                                    <option value="shadow-2xl">Massima</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-lg font-semibold text-orange-700 mb-4">🎭 Animazioni</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Entrata</label>
+                                <select id="modal-animation" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="animate-fade-in" selected>Fade In</option>
+                                    <option value="animate-slide-up">Slide Up</option>
+                                    <option value="animate-scale-up">Scale Up</option>
+                                    <option value="animate-bounce-in">Bounce In</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Posizione</label>
+                                <select id="modal-position" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="items-center justify-center" selected>Centro</option>
+                                    <option value="items-start justify-center pt-20">Alto</option>
+                                    <option value="items-end justify-center pb-20">Basso</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="controls-form" class="p-8 hidden">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">🎛️ Controlli Form</h2>
+                <div class="grid md:grid-cols-4 gap-6">
+                    <div>
+                        <h3 class="text-lg font-semibold text-blue-700 mb-4">🎨 Aspetto</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Stile Input</label>
+                                <select id="form-inputStyle" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="border border-gray-300" selected>Bordo Standard</option>
+                                    <option value="border-2 border-blue-500">Bordo Blu</option>
+                                    <option value="border-0 bg-gray-100">Senza Bordo</option>
+                                    <option value="border-b-2 border-gray-300 bg-transparent">Solo Bordo Inferiore</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Focus</label>
+                                <select id="form-focus" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="focus:ring-2 focus:ring-blue-500 focus:border-blue-500" selected>Blu</option>
+                                    <option value="focus:ring-2 focus:ring-green-500 focus:border-green-500">Verde</option>
+                                    <option value="focus:ring-2 focus:ring-purple-500 focus:border-purple-500">Viola</option>
+                                    <option value="focus:ring-2 focus:ring-red-500 focus:border-red-500">Rosso</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-lg font-semibold text-green-700 mb-4">📏 Dimensioni</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Padding</label>
+                                <select id="form-padding" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="px-3 py-2">Piccolo</option>
+                                    <option value="px-4 py-3" selected>Medio</option>
+                                    <option value="px-6 py-4">Grande</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Testo</label>
+                                <select id="form-textSize" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="text-sm">Piccolo</option>
+                                    <option value="text-base" selected>Normale</option>
+                                    <option value="text-lg">Grande</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-lg font-semibold text-purple-700 mb-4">✨ Stile</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Bordi</label>
+                                <select id="form-rounded" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="">Nessuno</option>
+                                    <option value="rounded" selected>Piccoli</option>
+                                    <option value="rounded-lg">Medi</option>
+                                    <option value="rounded-xl">Grandi</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Ombra</label>
+                                <select id="form-shadow" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="">Nessuna</option>
+                                    <option value="shadow-sm" selected>Piccola</option>
+                                    <option value="shadow-md">Media</option>
+                                    <option value="shadow-lg">Grande</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-lg font-semibold text-orange-700 mb-4">🎭 Layout</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Spaziatura</label>
+                                <select id="form-spacing" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="space-y-4" selected>Normale</option>
+                                    <option value="space-y-6">Grande</option>
+                                    <option value="space-y-8">Extra</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Larghezza</label>
+                                <select id="form-width" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="max-w-sm">Piccola</option>
+                                    <option value="max-w-md" selected>Media</option>
+                                    <option value="max-w-lg">Grande</option>
+                                    <option value="w-full">Completa</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="controls-navbar" class="p-8 hidden">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">🎛️ Controlli Navbar</h2>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div>
+                        <h3 class="text-lg font-semibold text-blue-700 mb-4">🎨 Aspetto</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Sfondo</label>
+                                <select id="navbar-bg" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="bg-white" selected>Bianco</option>
+                                    <option value="bg-gray-800">Grigio Scuro</option>
+                                    <option value="bg-blue-600">Blu</option>
+                                    <option value="bg-green-600">Verde</option>
+                                    <option value="bg-purple-600">Viola</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Ombra</label>
+                                <select id="navbar-shadow" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="">Nessuna</option>
+                                    <option value="shadow-sm">Piccola</option>
+                                    <option value="shadow-md" selected>Media</option>
+                                    <option value="shadow-lg">Grande</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-lg font-semibold text-green-700 mb-4">📏 Layout</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Padding</label>
+                                <select id="navbar-padding" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="px-4 py-2">Piccolo</option>
+                                    <option value="px-6 py-4" selected>Medio</option>
+                                    <option value="px-8 py-6">Grande</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Posizione</label>
+                                <select id="navbar-position" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="relative" selected>Normale</option>
+                                    <option value="sticky top-0">Sticky</option>
+                                    <option value="fixed top-0 w-full">Fixed</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-lg font-semibold text-purple-700 mb-4">✨ Stile</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Bordi</label>
+                                <select id="navbar-border" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="">Nessuno</option>
+                                    <option value="border-b border-gray-200" selected>Bordo Inferiore</option>
+                                    <option value="border-b-2 border-blue-500">Bordo Blu</option>
+                                    <option value="border-b-4 border-green-500">Bordo Verde Spesso</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Z-Index</label>
+                                <select id="navbar-zindex" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="z-10" selected>10</option>
+                                    <option value="z-20">20</option>
+                                    <option value="z-50">50</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="controls-grid" class="p-8 hidden">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">🎛️ Controlli Grid</h2>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div>
+                        <h3 class="text-lg font-semibold text-blue-700 mb-4">📐 Layout</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Colonne</label>
+                                <select id="grid-cols" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="grid-cols-1">1 Colonna</option>
+                                    <option value="grid-cols-2">2 Colonne</option>
+                                    <option value="grid-cols-3" selected>3 Colonne</option>
+                                    <option value="grid-cols-4">4 Colonne</option>
+                                    <option value="grid-cols-6">6 Colonne</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Gap</label>
+                                <select id="grid-gap" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="gap-2">Piccolo</option>
+                                    <option value="gap-4" selected>Medio</option>
+                                    <option value="gap-6">Grande</option>
+                                    <option value="gap-8">Extra</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-lg font-semibold text-green-700 mb-4">📱 Responsive</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Mobile</label>
+                                <select id="grid-mobile" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="grid-cols-1" selected>1 Colonna</option>
+                                    <option value="grid-cols-2">2 Colonne</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Tablet</label>
+                                <select id="grid-tablet" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="md:grid-cols-2" selected>2 Colonne</option>
+                                    <option value="md:grid-cols-3">3 Colonne</option>
+                                    <option value="md:grid-cols-4">4 Colonne</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-lg font-semibold text-purple-700 mb-4">🎨 Stile Items</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Sfondo Items</label>
+                                <select id="grid-itemBg" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="bg-white" selected>Bianco</option>
+                                    <option value="bg-gray-50">Grigio Chiaro</option>
+                                    <option value="bg-blue-50">Blu Chiaro</option>
+                                    <option value="bg-gradient-to-br from-blue-50 to-purple-50">Gradiente</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Padding Items</label>
+                                <select id="grid-itemPadding" onchange="updateComponent()" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="p-4">Piccolo</option>
+                                    <option value="p-6" selected>Medio</option>
+                                    <option value="p-8">Grande</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Anteprima e Codice -->
+        <div class="grid lg:grid-cols-2 gap-8">
+            <!-- Anteprima -->
+            <div class="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100">
+                <h3 class="text-xl font-bold text-gray-800 mb-6">👁️ Anteprima Live</h3>
+                <div class="bg-gray-100 p-8 rounded-xl min-h-64 flex items-center justify-center">
+                    <div id="preview">
+                        <!-- Il contenuto verrà generato dinamicamente -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Codice Generato -->
+            <div class="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100">
+                <h3 class="text-xl font-bold text-gray-800 mb-6">📝 Codice Generato</h3>
+                <div class="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm overflow-auto max-h-64">
+                    <pre id="generatedCode"><!-- Il codice apparirà qui --></pre>
+                </div>
+                <div class="flex space-x-3 mt-4">
+                    <button onclick="copyCode()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors">
+                        📋 Copia Codice
+                    </button>
+                    <button onclick="showModal()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition-colors" id="modalBtn" style="display: none;">
+                        👁️ Mostra Modale
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Esempi Predefiniti -->
+        <div class="mt-8 bg-white rounded-2xl shadow-2xl p-8 border border-gray-100">
+            <h3 class="text-xl font-bold text-gray-800 mb-6">🚀 Template Rapidi</h3>
+            <div id="quickTemplates" class="grid md:grid-cols-4 gap-4">
+                <!-- I template verranno generati dinamicamente -->
+            </div>
+        </div>
+
+        <!-- Guida Colori -->
+        <div class="mt-8 bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-8 border border-blue-200">
+            <h3 class="text-xl font-bold text-blue-800 mb-6">🎨 Guida Colori Tailwind</h3>
+            <div class="grid md:grid-cols-5 gap-4">
+                <div class="space-y-2">
+                    <h4 class="font-semibold text-blue-700">Blu</h4>
+                    <div class="space-y-1">
+                        <div class="w-full h-6 bg-blue-100 rounded text-xs flex items-center justify-center">100</div>
+                        <div class="w-full h-6 bg-blue-300 rounded text-xs flex items-center justify-center">300</div>
+                        <div class="w-full h-6 bg-blue-500 rounded text-xs flex items-center justify-center text-white">500</div>
+                        <div class="w-full h-6 bg-blue-700 rounded text-xs flex items-center justify-center text-white">700</div>
+                        <div class="w-full h-6 bg-blue-900 rounded text-xs flex items-center justify-center text-white">900</div>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <h4 class="font-semibold text-green-700">Verde</h4>
+                    <div class="space-y-1">
+                        <div class="w-full h-6 bg-green-100 rounded text-xs flex items-center justify-center">100</div>
+                        <div class="w-full h-6 bg-green-300 rounded text-xs flex items-center justify-center">300</div>
+                        <div class="w-full h-6 bg-green-500 rounded text-xs flex items-center justify-center text-white">500</div>
+                        <div class="w-full h-6 bg-green-700 rounded text-xs flex items-center justify-center text-white">700</div>
+                        <div class="w-full h-6 bg-green-900 rounded text-xs flex items-center justify-center text-white">900</div>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <h4 class="font-semibold text-red-700">Rosso</h4>
+                    <div class="space-y-1">
+                        <div class="w-full h-6 bg-red-100 rounded text-xs flex items-center justify-center">100</div>
+                        <div class="w-full h-6 bg-red-300 rounded text-xs flex items-center justify-center">300</div>
+                        <div class="w-full h-6 bg-red-500 rounded text-xs flex items-center justify-center text-white">500</div>
+                        <div class="w-full h-6 bg-red-700 rounded text-xs flex items-center justify-center text-white">700</div>
+                        <div class="w-full h-6 bg-red-900 rounded text-xs flex items-center justify-center text-white">900</div>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <h4 class="font-semibold text-purple-700">Viola</h4>
+                    <div class="space-y-1">
+                        <div class="w-full h-6 bg-purple-100 rounded text-xs flex items-center justify-center">100</div>
+                        <div class="w-full h-6 bg-purple-300 rounded text-xs flex items-center justify-center">300</div>
+                        <div class="w-full h-6 bg-purple-500 rounded text-xs flex items-center justify-center text-white">500</div>
+                        <div class="w-full h-6 bg-purple-700 rounded text-xs flex items-center justify-center text-white">700</div>
+                        <div class="w-full h-6 bg-purple-900 rounded text-xs flex items-center justify-center text-white">900</div>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <h4 class="font-semibold text-gray-700">Grigio</h4>
+                    <div class="space-y-1">
+                        <div class="w-full h-6 bg-gray-100 rounded text-xs flex items-center justify-center">100</div>
+                        <div class="w-full h-6 bg-gray-300 rounded text-xs flex items-center justify-center">300</div>
+                        <div class="w-full h-6 bg-gray-500 rounded text-xs flex items-center justify-center text-white">500</div>
+                        <div class="w-full h-6 bg-gray-700 rounded text-xs flex items-center justify-center text-white">700</div>
+                        <div class="w-full h-6 bg-gray-900 rounded text-xs flex items-center justify-center text-white">900</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modale per anteprima -->
+    <div id="modalOverlay" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
+        <div class="modal-container bg-white rounded-2xl p-8 max-w-md w-full mx-4">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-gray-800">Anteprima Modale</h3>
+                <button onclick="hideModal()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+            </div>
+            <div id="modalContent" class="mb-6">
+                <!-- Contenuto modale -->
+            </div>
+            <div class="flex justify-end space-x-3">
+                <button onclick="hideModal()" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg">
+                    Chiudi
+                </button>
+                <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">
+                    Conferma
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentTab = 'button';
+        
+        // Template per ogni componente
+        const templates = {
+            button: {
+                primary: { bgColor: 'bg-blue-500', hoverColor: 'hover:bg-blue-700', padding: 'px-4 py-2', textSize: 'text-base', rounded: 'rounded-lg', shadow: 'shadow-md', transition: 'transition-colors', transform: '' },
+                success: { bgColor: 'bg-green-500', hoverColor: 'hover:bg-green-700', padding: 'px-4 py-2', textSize: 'text-base', rounded: 'rounded-lg', shadow: 'shadow-md', transition: 'transition-colors', transform: '' },
+                danger: { bgColor: 'bg-red-500', hoverColor: 'hover:bg-red-700', padding: 'px-4 py-2', textSize: 'text-base', rounded: 'rounded-lg', shadow: 'shadow-md', transition: 'transition-colors', transform: '' },
+                outline: { bgColor: 'bg-transparent', hoverColor: 'hover:bg-blue-500', padding: 'px-4 py-2', textSize: 'text-base', rounded: 'rounded-lg', shadow: '', transition: 'transition-colors', transform: '', border: 'border-2 border-blue-500' }
+            },
+            card: {
+                simple: { bg: 'bg-white', rounded: 'rounded-lg', padding: 'p-6', shadow: 'shadow-md', hover: 'hover:shadow-lg', width: 'max-w-md' },
+                elevated: { bg: 'bg-white', rounded: 'rounded-xl', padding: 'p-8', shadow: 'shadow-xl', hover: 'hover:shadow-2xl', width: 'max-w-lg' },
+                colored: { bg: 'bg-blue-50', rounded: 'rounded-lg', padding: 'p-6', shadow: 'shadow-md', hover: 'hover:shadow-lg', width: 'max-w-md' },
+                minimal: { bg: 'bg-white', rounded: 'rounded-none', padding: 'p-4', shadow: '', hover: '', width: 'max-w-sm' }
+            },
+            modal: {
+                standard: { overlay: 'bg-black bg-opacity-50', bg: 'bg-white', width: 'max-w-md', padding: 'p-8', rounded: 'rounded-xl', shadow: 'shadow-xl', animation: 'animate-fade-in', position: 'items-center justify-center' },
+                large: { overlay: 'bg-black bg-opacity-50', bg: 'bg-white', width: 'max-w-2xl', padding: 'p-8', rounded: 'rounded-2xl', shadow: 'shadow-2xl', animation: 'animate-scale-up', position: 'items-center justify-center' },
+                dark: { overlay: 'bg-black bg-opacity-75', bg: 'bg-gray-800', width: 'max-w-md', padding: 'p-8', rounded: 'rounded-xl', shadow: 'shadow-xl', animation: 'animate-slide-up', position: 'items-center justify-center' },
+                notification: { overlay: 'bg-black bg-opacity-50', bg: 'bg-white', width: 'max-w-sm', padding: 'p-6', rounded: 'rounded-lg', shadow: 'shadow-lg', animation: 'animate-bounce-in', position: 'items-start justify-center pt-20' }
+            },
+            form: {
+                modern: { inputStyle: 'border border-gray-300', focus: 'focus:ring-2 focus:ring-blue-500 focus:border-blue-500', padding: 'px-4 py-3', textSize: 'text-base', rounded: 'rounded-lg', shadow: 'shadow-sm', spacing: 'space-y-4', width: 'max-w-md' },
+                minimal: { inputStyle: 'border-b-2 border-gray-300 bg-transparent', focus: 'focus:ring-0 focus:border-blue-500', padding: 'px-0 py-2', textSize: 'text-base', rounded: '', shadow: '', spacing: 'space-y-6', width: 'max-w-md' },
+                colorful: { inputStyle: 'border-2 border-blue-500', focus: 'focus:ring-2 focus:ring-purple-500 focus:border-purple-500', padding: 'px-4 py-3', textSize: 'text-base', rounded: 'rounded-xl', shadow: 'shadow-md', spacing: 'space-y-4', width: 'max-w-lg' },
+                compact: { inputStyle: 'border-0 bg-gray-100', focus: 'focus:ring-2 focus:ring-blue-500', padding: 'px-3 py-2', textSize: 'text-sm', rounded: 'rounded', shadow: '', spacing: 'space-y-4', width: 'max-w-sm' }
+            },
+            navbar: {
+                light: { bg: 'bg-white', shadow: 'shadow-md', padding: 'px-6 py-4', position: 'relative', border: 'border-b border-gray-200', zindex: 'z-10' },
+                dark: { bg: 'bg-gray-800', shadow: 'shadow-lg', padding: 'px-6 py-4', position: 'relative', border: '', zindex: 'z-10' },
+                colored: { bg: 'bg-blue-600', shadow: 'shadow-md', padding: 'px-6 py-4', position: 'sticky top-0', border: '', zindex: 'z-20' },
+                minimal: { bg: 'bg-white', shadow: '', padding: 'px-4 py-2', position: 'relative', border: 'border-b border-gray-200', zindex: 'z-10' }
+            },
+            grid: {
+                cards: { cols: 'grid-cols-3', gap: 'gap-4', mobile: 'grid-cols-1', tablet: 'md:grid-cols-2', itemBg: 'bg-white', itemPadding: 'p-6' },
+                gallery: { cols: 'grid-cols-4', gap: 'gap-2', mobile: 'grid-cols-2', tablet: 'md:grid-cols-3', itemBg: 'bg-gray-50', itemPadding: 'p-4' },
+                dashboard: { cols: 'grid-cols-2', gap: 'gap-6', mobile: 'grid-cols-1', tablet: 'md:grid-cols-2', itemBg: 'bg-gradient-to-br from-blue-50 to-purple-50', itemPadding: 'p-8' },
+                list: { cols: 'grid-cols-1', gap: 'gap-4', mobile: 'grid-cols-1', tablet: 'md:grid-cols-1', itemBg: 'bg-white', itemPadding: 'p-4' }
+            }
+        };
+
+        // Cambia tab
+        function switchTab(tabName) {
+            // Nascondi tutti i controlli
+            document.querySelectorAll('[id^="controls-"]').forEach(el => el.classList.add('hidden'));
+            // Mostra i controlli del tab selezionato
+            document.getElementById(`controls-${tabName}`).classList.remove('hidden');
+            
+            // Aggiorna i tab
+            document.querySelectorAll('[id^="tab-"]').forEach(el => {
+                el.className = 'tab-inactive px-6 py-4 font-semibold transition-colors';
+            });
+            document.getElementById(`tab-${tabName}`).className = 'tab-active px-6 py-4 font-semibold transition-colors';
+            
+            currentTab = tabName;
+            updateComponent();
+            updateQuickTemplates();
+        }
+
+        // Aggiorna il componente
+        function updateComponent() {
+            const preview = document.getElementById('preview');
+            const codeElement = document.getElementById('generatedCode');
+            const modalBtn = document.getElementById('modalBtn');
+            
+            if (currentTab === 'button') {
+                const bgColor = document.getElementById('btn-bgColor')?.value || 'bg-blue-500';
+                const hoverColor = document.getElementById('btn-hoverColor')?.value || 'hover:bg-blue-700';
+                const padding = document.getElementById('btn-padding')?.value || 'px-4 py-2';
+                const textSize = document.getElementById('btn-textSize')?.value || 'text-base';
+                const rounded = document.getElementById('btn-rounded')?.value || 'rounded-lg';
+                const shadow = document.getElementById('btn-shadow')?.value || 'shadow-md';
+                const transition = document.getElementById('btn-transition')?.value || 'transition-colors';
+                const transform = document.getElementById('btn-transform')?.value || '';
+                
+                const classes = [bgColor, hoverColor, 'text-white', padding, textSize, rounded, shadow, transition, transform, 'font-semibold'].filter(c => c).join(' ');
+                
+                preview.innerHTML = `<button class="${classes}">Pulsante Personalizzato 🔘</button>`;
+                codeElement.textContent = `<button class="${classes}">
+  Pulsante Personalizzato 🔘
+</button>`;
+                modalBtn.style.display = 'none';
+                
+            } else if (currentTab === 'card') {
+                const bg = document.getElementById('card-bg')?.value || 'bg-white';
+                const rounded = document.getElementById('card-rounded')?.value || 'rounded-lg';
+                const padding = document.getElementById('card-padding')?.value || 'p-6';
+                const shadow = document.getElementById('card-shadow')?.value || 'shadow-md';
+                const hover = document.getElementById('card-hover')?.value || 'hover:shadow-lg';
+                const width = document.getElementById('card-width')?.value || 'max-w-md';
+                
+                const classes = [bg, rounded, padding, shadow, hover, width].filter(c => c).join(' ');
+                
+                preview.innerHTML = `
+                    <div class="${classes}">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Titolo Card</h3>
+                        <p class="text-gray-600 mb-4">Questa è una card personalizzata con Tailwind CSS. Puoi modificare tutti gli aspetti usando i controlli.</p>
+                        <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition-colors">
+                            Azione
+                        </button>
+                    </div>
+                `;
+                
+                codeElement.textContent = `<div class="${classes}">
+  <h3 class="text-xl font-semibold text-gray-800 mb-2">Titolo Card</h3>
+  <p class="text-gray-600 mb-4">Questa è una card personalizzata con Tailwind CSS.</p>
+  <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition-colors">
+    Azione
+  </button>
+</div>`;
+                modalBtn.style.display = 'none';
+                
+            } else if (currentTab === 'modal') {
+                const overlay = document.getElementById('modal-overlay')?.value || 'bg-black bg-opacity-50';
+                const bg = document.getElementById('modal-bg')?.value || 'bg-white';
+                const width = document.getElementById('modal-width')?.value || 'max-w-md';
+                const padding = document.getElementById('modal-padding')?.value || 'p-8';
+                const rounded = document.getElementById('modal-rounded')?.value || 'rounded-xl';
+                const shadow = document.getElementById('modal-shadow')?.value || 'shadow-xl';
+                const animation = document.getElementById('modal-animation')?.value || 'animate-fade-in';
+                const position = document.getElementById('modal-position')?.value || 'items-center justify-center';
+                
+                const overlayClasses = `fixed inset-0 ${overlay} flex ${position} z-50`;
+                const modalClasses = `${bg} ${rounded} ${padding} ${width} ${shadow} w-full mx-4 ${animation}`;
+                const textColor = bg.includes('gray-800') ? 'text-white' : 'text-gray-800';
+                const textColorSecondary = bg.includes('gray-800') ? 'text-gray-300' : 'text-gray-600';
+                const closeColor = bg.includes('gray-800') ? 'text-gray-400 hover:text-gray-200' : 'text-gray-500 hover:text-gray-700';
+                
+                preview.innerHTML = `
+                    <div class="text-center">
+                        <p class="text-gray-600 mb-4">Clicca il pulsante per vedere la modale personalizzata</p>
+                        <button onclick="showModal()" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg transition-colors">
+                            Apri Modale 📱
+                        </button>
+                    </div>
+                `;
+                
+                codeElement.textContent = `<!-- Modale Overlay -->
+<div class="${overlayClasses}">
+  <div class="${modalClasses}">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-xl font-bold ${textColor}">Titolo Modale</h3>
+      <button class="${closeColor} text-2xl">&times;</button>
+    </div>
+    <div class="mb-6">
+      <p class="${textColorSecondary}">Contenuto della modale personalizzata...</p>
+    </div>
+    <div class="flex justify-end space-x-3">
+      <button class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg">
+        Chiudi
+      </button>
+      <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">
+        Conferma
+      </button>
+    </div>
+  </div>
+</div>`;
+                modalBtn.style.display = 'inline-block';
+                
+            } else if (currentTab === 'form') {
+                const inputStyle = document.getElementById('form-inputStyle')?.value || 'border border-gray-300';
+                const focus = document.getElementById('form-focus')?.value || 'focus:ring-2 focus:ring-blue-500 focus:border-blue-500';
+                const padding = document.getElementById('form-padding')?.value || 'px-4 py-3';
+                const textSize = document.getElementById('form-textSize')?.value || 'text-base';
+                const rounded = document.getElementById('form-rounded')?.value || 'rounded';
+                const shadow = document.getElementById('form-shadow')?.value || 'shadow-sm';
+                const spacing = document.getElementById('form-spacing')?.value || 'space-y-4';
+                const width = document.getElementById('form-width')?.value || 'max-w-md';
+                
+                const inputClasses = [inputStyle, focus, padding, textSize, rounded, shadow, 'w-full'].filter(c => c).join(' ');
+                
+                preview.innerHTML = `
+                    <form class="${width} ${spacing}">
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Nome</label>
+                            <input type="text" id="name" class="${inputClasses}" placeholder="Il tuo nome">
+                        </div>
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                            <input type="email" id="email" class="${inputClasses}" placeholder="tua@email.com">
+                        </div>
+                        <div>
+                            <label for="message" class="block text-sm font-medium text-gray-700 mb-2">Messaggio</label>
+                            <textarea id="message" rows="3" class="${inputClasses}" placeholder="Il tuo messaggio..."></textarea>
+                        </div>
+                        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg transition-colors w-full">
+                            Invia Form 📝
+                        </button>
+                    </form>
+                `;
+                
+                codeElement.textContent = `<form class="${width} ${spacing}">
+  <div>
+    <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Nome</label>
+    <input type="text" id="name" class="${inputClasses}" placeholder="Il tuo nome">
+  </div>
+  <div>
+    <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+    <input type="email" id="email" class="${inputClasses}" placeholder="tua@email.com">
+  </div>
+  <div>
+    <label for="message" class="block text-sm font-medium text-gray-700 mb-2">Messaggio</label>
+    <textarea id="message" rows="3" class="${inputClasses}" placeholder="Il tuo messaggio..."></textarea>
+  </div>
+  <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg transition-colors w-full">
+    Invia Form 📝
+  </button>
+</form>`;
+                modalBtn.style.display = 'none';
+                
+            } else if (currentTab === 'navbar') {
+                const bg = document.getElementById('navbar-bg')?.value || 'bg-white';
+                const shadow = document.getElementById('navbar-shadow')?.value || 'shadow-md';
+                const padding = document.getElementById('navbar-padding')?.value || 'px-6 py-4';
+                const position = document.getElementById('navbar-position')?.value || 'relative';
+                const border = document.getElementById('navbar-border')?.value || 'border-b border-gray-200';
+                const zindex = document.getElementById('navbar-zindex')?.value || 'z-10';
+                
+                const navClasses = [bg, shadow, padding, position, border, zindex, 'w-full'].filter(c => c).join(' ');
+                const textColor = bg.includes('gray-800') || bg.includes('blue-600') || bg.includes('green-600') || bg.includes('purple-600') ? 'text-white' : 'text-gray-800';
+                const linkHover = bg.includes('gray-800') || bg.includes('blue-600') || bg.includes('green-600') || bg.includes('purple-600') ? 'hover:text-gray-300' : 'hover:text-blue-600';
+                
+                preview.innerHTML = `
+                    <nav class="${navClasses}">
+                        <div class="max-w-7xl mx-auto flex justify-between items-center">
+                            <div class="flex items-center space-x-4">
+                                <h1 class="text-xl font-bold ${textColor}">Brand 🚀</h1>
+                            </div>
+                            <div class="hidden md:flex space-x-6">
+                                <a href="#" class="${textColor} ${linkHover} transition-colors">Home</a>
+                                <a href="#" class="${textColor} ${linkHover} transition-colors">Prodotti</a>
+                                <a href="#" class="${textColor} ${linkHover} transition-colors">Servizi</a>
+                                <a href="#" class="${textColor} ${linkHover} transition-colors">Contatti</a>
+                            </div>
+                            <button class="md:hidden ${textColor}">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </nav>
+                `;
+                
+                codeElement.textContent = `<nav class="${navClasses}">
+  <div class="max-w-7xl mx-auto flex justify-between items-center">
+    <div class="flex items-center space-x-4">
+      <h1 class="text-xl font-bold ${textColor}">Brand 🚀</h1>
+    </div>
+    <div class="hidden md:flex space-x-6">
+      <a href="#" class="${textColor} ${linkHover} transition-colors">Home</a>
+      <a href="#" class="${textColor} ${linkHover} transition-colors">Prodotti</a>
+      <a href="#" class="${textColor} ${linkHover} transition-colors">Servizi</a>
+      <a href="#" class="${textColor} ${linkHover} transition-colors">Contatti</a>
+    </div>
+    <button class="md:hidden ${textColor}">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+      </svg>
+    </button>
+  </div>
+</nav>`;
+                modalBtn.style.display = 'none';
+                
+            } else if (currentTab === 'grid') {
+                const cols = document.getElementById('grid-cols')?.value || 'grid-cols-3';
+                const gap = document.getElementById('grid-gap')?.value || 'gap-4';
+                const mobile = document.getElementById('grid-mobile')?.value || 'grid-cols-1';
+                const tablet = document.getElementById('grid-tablet')?.value || 'md:grid-cols-2';
+                const itemBg = document.getElementById('grid-itemBg')?.value || 'bg-white';
+                const itemPadding = document.getElementById('grid-itemPadding')?.value || 'p-6';
+                
+                const gridClasses = `grid ${mobile} ${tablet} lg:${cols} ${gap}`;
+                const itemClasses = `${itemBg} ${itemPadding} rounded-lg shadow-md`;
+                
+                preview.innerHTML = `
+                    <div class="${gridClasses}">
+                        <div class="${itemClasses}">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2">Item 1</h3>
+                            <p class="text-gray-600">Contenuto del primo elemento della griglia.</p>
+                        </div>
+                        <div class="${itemClasses}">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2">Item 2</h3>
+                            <p class="text-gray-600">Contenuto del secondo elemento della griglia.</p>
+                        </div>
+                        <div class="${itemClasses}">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2">Item 3</h3>
+                            <p class="text-gray-600">Contenuto del terzo elemento della griglia.</p>
+                        </div>
+                        <div class="${itemClasses}">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2">Item 4</h3>
+                            <p class="text-gray-600">Contenuto del quarto elemento della griglia.</p>
+                        </div>
+                        <div class="${itemClasses}">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2">Item 5</h3>
+                            <p class="text-gray-600">Contenuto del quinto elemento della griglia.</p>
+                        </div>
+                        <div class="${itemClasses}">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2">Item 6</h3>
+                            <p class="text-gray-600">Contenuto del sesto elemento della griglia.</p>
+                        </div>
+                    </div>
+                `;
+                
+                codeElement.textContent = `<div class="${gridClasses}">
+  <div class="${itemClasses}">
+    <h3 class="text-lg font-semibold text-gray-800 mb-2">Item 1</h3>
+    <p class="text-gray-600">Contenuto del primo elemento della griglia.</p>
+  </div>
+  <div class="${itemClasses}">
+    <h3 class="text-lg font-semibold text-gray-800 mb-2">Item 2</h3>
+    <p class="text-gray-600">Contenuto del secondo elemento della griglia.</p>
+  </div>
+  <!-- Altri elementi... -->
+</div>`;
+                modalBtn.style.display = 'none';
+                
+            } else {
+                preview.innerHTML = `<div class="text-center text-gray-500 p-8">
+                    <div class="text-4xl mb-4">🚧</div>
+                    <p>Controlli per ${currentTab} in arrivo...</p>
+                </div>`;
+                codeElement.textContent = `<!-- Controlli per ${currentTab} in sviluppo -->`;
+                modalBtn.style.display = 'none';
+            }
+        }
+
+        // Aggiorna i template rapidi
+        function updateQuickTemplates() {
+            const container = document.getElementById('quickTemplates');
+            const currentTemplates = templates[currentTab];
+            
+            if (!currentTemplates) {
+                container.innerHTML = '<p class="text-gray-500 col-span-4 text-center">Template in arrivo...</p>';
+                return;
+            }
+            
+            container.innerHTML = '';
+            Object.keys(currentTemplates).forEach(templateName => {
+                const template = currentTemplates[templateName];
+                const templateCard = document.createElement('div');
+                templateCard.className = 'bg-white border-2 border-gray-200 hover:border-blue-400 rounded-xl p-4 transition-all cursor-pointer hover:shadow-lg';
+                templateCard.onclick = () => loadTemplate(templateName);
+                
+                // Genera anteprima del template
+                const preview = generateTemplatePreview(currentTab, templateName, template);
+                
+                templateCard.innerHTML = `
+                    <div class="text-center mb-3">
+                        <div class="text-2xl mb-2">${getTemplateIcon(currentTab, templateName)}</div>
+                        <div class="font-semibold capitalize text-gray-800">${templateName}</div>
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded-lg min-h-20 flex items-center justify-center text-xs">
+                        ${preview}
+                    </div>
+                    <div class="mt-3 text-center">
+                        <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">
+                            Clicca per applicare
+                        </span>
+                    </div>
+                `;
+                
+                container.appendChild(templateCard);
+            });
+        }
+
+        // Genera anteprima del template
+        function generateTemplatePreview(tab, templateName, template) {
+            if (tab === 'button') {
+                const classes = [template.bgColor, template.hoverColor, 'text-white', template.padding, template.textSize, template.rounded, template.shadow, template.transition, template.transform, 'font-semibold'].filter(c => c).join(' ');
+                return `<button class="${classes} scale-75">Esempio</button>`;
+                
+            } else if (tab === 'card') {
+                const classes = [template.bg, template.rounded, template.padding, template.shadow, template.hover, 'max-w-full'].filter(c => c).join(' ');
+                return `<div class="${classes} scale-75">
+                    <div class="text-sm font-semibold text-gray-800 mb-1">Card</div>
+                    <div class="text-xs text-gray-600">Esempio contenuto</div>
+                </div>`;
+                
+            } else if (tab === 'modal') {
+                const bg = template.bg;
+                const textColor = bg.includes('gray-800') ? 'text-white' : 'text-gray-800';
+                const textColorSecondary = bg.includes('gray-800') ? 'text-gray-300' : 'text-gray-600';
+                return `<div class="${template.bg} ${template.rounded} p-2 ${template.shadow} scale-75 border">
+                    <div class="text-xs font-semibold ${textColor} mb-1">Modale ${templateName}</div>
+                    <div class="text-xs ${textColorSecondary}">Contenuto esempio</div>
+                    <div class="flex justify-end mt-2 space-x-1">
+                        <div class="bg-gray-400 w-4 h-2 rounded text-xs"></div>
+                        <div class="bg-blue-400 w-4 h-2 rounded text-xs"></div>
+                    </div>
+                </div>`;
+                
+            } else if (tab === 'form') {
+                const inputClasses = [template.inputStyle, template.padding, template.textSize, template.rounded, template.shadow, 'w-full'].filter(c => c).join(' ');
+                return `<div class="${template.width} scale-75">
+                    <div class="text-xs text-gray-700 mb-1">Nome</div>
+                    <input class="${inputClasses} text-xs" placeholder="Esempio input">
+                </div>`;
+                
+            } else if (tab === 'navbar') {
+                const navClasses = [template.bg, template.shadow, template.padding, template.border, 'w-full'].filter(c => c).join(' ');
+                const textColor = template.bg.includes('gray-800') || template.bg.includes('blue-600') || template.bg.includes('green-600') || template.bg.includes('purple-600') ? 'text-white' : 'text-gray-800';
+                return `<nav class="${navClasses} scale-75">
+                    <div class="flex justify-between items-center">
+                        <div class="text-xs font-bold ${textColor}">Brand</div>
+                        <div class="flex space-x-2">
+                            <div class="w-8 h-1 ${textColor.replace('text-', 'bg-')} rounded"></div>
+                            <div class="w-8 h-1 ${textColor.replace('text-', 'bg-')} rounded"></div>
+                        </div>
+                    </div>
+                </nav>`;
+                
+            } else if (tab === 'grid') {
+                const itemClasses = `${template.itemBg} ${template.itemPadding} rounded shadow-sm`;
+                return `<div class="grid grid-cols-2 gap-1 scale-75">
+                    <div class="${itemClasses}"><div class="w-full h-2 bg-gray-300 rounded"></div></div>
+                    <div class="${itemClasses}"><div class="w-full h-2 bg-gray-300 rounded"></div></div>
+                    <div class="${itemClasses}"><div class="w-full h-2 bg-gray-300 rounded"></div></div>
+                    <div class="${itemClasses}"><div class="w-full h-2 bg-gray-300 rounded"></div></div>
+                </div>`;
+            }
+            
+            return '<div class="text-gray-400">Anteprima</div>';
+        }
+
+        // Icone per i template
+        function getTemplateIcon(tab, templateName) {
+            const icons = {
+                button: { primary: '🔵', success: '✅', danger: '❌', outline: '⭕' },
+                card: { simple: '📄', elevated: '📋', colored: '🎨', minimal: '📝' },
+                modal: { standard: '📱', large: '🖥️', dark: '🌙', notification: '🔔' },
+                form: { modern: '📝', minimal: '✏️', colorful: '🎨', compact: '📋' },
+                navbar: { light: '☀️', dark: '🌙', colored: '🎨', minimal: '📄' },
+                grid: { cards: '🃏', gallery: '🖼️', dashboard: '📊', list: '📋' }
+            };
+            return icons[tab]?.[templateName] || '⭐';
+        }
+
+        // Carica un template
+        function loadTemplate(templateName) {
+            const template = templates[currentTab]?.[templateName];
+            if (!template) return;
+            
+            if (currentTab === 'button') {
+                document.getElementById('btn-bgColor').value = template.bgColor;
+                document.getElementById('btn-hoverColor').value = template.hoverColor;
+                document.getElementById('btn-padding').value = template.padding;
+                document.getElementById('btn-textSize').value = template.textSize;
+                document.getElementById('btn-rounded').value = template.rounded;
+                document.getElementById('btn-shadow').value = template.shadow;
+                document.getElementById('btn-transition').value = template.transition;
+                document.getElementById('btn-transform').value = template.transform;
+            } else if (currentTab === 'card') {
+                document.getElementById('card-bg').value = template.bg;
+                document.getElementById('card-rounded').value = template.rounded;
+                document.getElementById('card-padding').value = template.padding;
+                document.getElementById('card-shadow').value = template.shadow;
+                document.getElementById('card-hover').value = template.hover;
+                document.getElementById('card-width').value = template.width;
+            } else if (currentTab === 'modal') {
+                document.getElementById('modal-overlay').value = template.overlay;
+                document.getElementById('modal-bg').value = template.bg;
+                document.getElementById('modal-width').value = template.width;
+                document.getElementById('modal-padding').value = template.padding;
+                document.getElementById('modal-rounded').value = template.rounded;
+                document.getElementById('modal-shadow').value = template.shadow;
+                document.getElementById('modal-animation').value = template.animation;
+                document.getElementById('modal-position').value = template.position;
+            } else if (currentTab === 'form') {
+                document.getElementById('form-inputStyle').value = template.inputStyle;
+                document.getElementById('form-focus').value = template.focus;
+                document.getElementById('form-padding').value = template.padding;
+                document.getElementById('form-textSize').value = template.textSize;
+                document.getElementById('form-rounded').value = template.rounded;
+                document.getElementById('form-shadow').value = template.shadow;
+                document.getElementById('form-spacing').value = template.spacing;
+                document.getElementById('form-width').value = template.width;
+            } else if (currentTab === 'navbar') {
+                document.getElementById('navbar-bg').value = template.bg;
+                document.getElementById('navbar-shadow').value = template.shadow;
+                document.getElementById('navbar-padding').value = template.padding;
+                document.getElementById('navbar-position').value = template.position;
+                document.getElementById('navbar-border').value = template.border;
+                document.getElementById('navbar-zindex').value = template.zindex;
+            } else if (currentTab === 'grid') {
+                document.getElementById('grid-cols').value = template.cols;
+                document.getElementById('grid-gap').value = template.gap;
+                document.getElementById('grid-mobile').value = template.mobile;
+                document.getElementById('grid-tablet').value = template.tablet;
+                document.getElementById('grid-itemBg').value = template.itemBg;
+                document.getElementById('grid-itemPadding').value = template.itemPadding;
+            }
+            
+            updateComponent();
+        }
+
+        // Mostra/nascondi modale
+        function showModal() {
+            const overlay = document.getElementById('modal-overlay')?.value || 'bg-black bg-opacity-50';
+            const bg = document.getElementById('modal-bg')?.value || 'bg-white';
+            const width = document.getElementById('modal-width')?.value || 'max-w-md';
+            const padding = document.getElementById('modal-padding')?.value || 'p-8';
+            const rounded = document.getElementById('modal-rounded')?.value || 'rounded-xl';
+            const shadow = document.getElementById('modal-shadow')?.value || 'shadow-xl';
+            const animation = document.getElementById('modal-animation')?.value || 'animate-fade-in';
+            const position = document.getElementById('modal-position')?.value || 'items-center justify-center';
+            
+            const textColor = bg.includes('gray-800') ? 'text-white' : 'text-gray-800';
+            const textColorSecondary = bg.includes('gray-800') ? 'text-gray-300' : 'text-gray-600';
+            const closeColor = bg.includes('gray-800') ? 'text-gray-400 hover:text-gray-200' : 'text-gray-500 hover:text-gray-700';
+            
+            const modalOverlay = document.getElementById('modalOverlay');
+            modalOverlay.className = `fixed inset-0 ${overlay} flex ${position} z-50`;
+            modalOverlay.classList.remove('hidden');
+            
+            const modalContent = modalOverlay.querySelector('.modal-container');
+            modalContent.className = `modal-container ${bg} ${rounded} ${padding} ${width} ${shadow} w-full mx-4 ${animation}`;
+            
+            const title = modalOverlay.querySelector('h3');
+            title.className = `text-xl font-bold ${textColor}`;
+            
+            const closeBtn = modalOverlay.querySelector('button[onclick="hideModal()"]');
+            closeBtn.className = `${closeColor} text-2xl`;
+            
+            // Aggiorna anche i pulsanti in fondo
+            const buttons = modalOverlay.querySelectorAll('.flex.justify-end button');
+            if (buttons.length > 0) {
+                buttons[0].className = `${bg.includes('gray-800') ? 'bg-gray-600 hover:bg-gray-700' : 'bg-gray-500 hover:bg-gray-600'} text-white px-4 py-2 rounded-lg`;
+                if (buttons[1]) {
+                    buttons[1].className = `${bg.includes('gray-800') ? 'bg-blue-600 hover:bg-blue-700' : 'bg-blue-500 hover:bg-blue-600'} text-white px-4 py-2 rounded-lg`;
+                }
+            }
+            
+            document.getElementById('modalContent').innerHTML = `
+                <p class="${textColorSecondary}">Questa è una modale personalizzata con Tailwind CSS!</p>
+                <p class="text-sm ${textColorSecondary} mt-2">Puoi personalizzare colori, dimensioni e animazioni usando i controlli.</p>
+            `;
+        }
+
+        function hideModal() {
+            document.getElementById('modalOverlay').classList.add('hidden');
+        }
+
+        // Copia il codice
+        function copyCode() {
+            const code = document.getElementById('generatedCode').textContent;
+            const btn = document.querySelector('button[onclick="copyCode()"]');
+            
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(code).then(() => {
+                    showCopyFeedback(btn);
+                }).catch(() => {
+                    fallbackCopyTextToClipboard(code, btn);
+                });
+            } else {
+                fallbackCopyTextToClipboard(code, btn);
+            }
+        }
+
+        // Fallback per browser che non supportano clipboard API
+        function fallbackCopyTextToClipboard(text, btn) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showCopyFeedback(btn);
+                } else {
+                    showCopyError(btn);
+                }
+            } catch (err) {
+                showCopyError(btn);
+            }
+            
+            document.body.removeChild(textArea);
+        }
+
+        // Feedback copia successo
+        function showCopyFeedback(btn) {
+            const originalText = btn.textContent;
+            const originalClasses = btn.className;
+            
+            btn.textContent = '✅ Copiato!';
+            btn.className = originalClasses.replace('bg-blue-500', 'bg-green-500').replace('hover:bg-blue-600', 'hover:bg-green-600');
+            
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.className = originalClasses;
+            }, 2000);
+        }
+
+        // Feedback errore copia
+        function showCopyError(btn) {
+            const originalText = btn.textContent;
+            const originalClasses = btn.className;
+            
+            btn.textContent = '❌ Errore';
+            btn.className = originalClasses.replace('bg-blue-500', 'bg-red-500').replace('hover:bg-blue-600', 'hover:bg-red-600');
+            
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.className = originalClasses;
+            }, 2000);
+        }
+
+        // Inizializzazione
+        document.addEventListener('DOMContentLoaded', function() {
+            switchTab('button');
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98f30bfe3612b56d',t:'MTc2MDU3MDQyNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

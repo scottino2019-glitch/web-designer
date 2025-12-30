@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Icon Library Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            box-sizing: border-box;
+        }
+        .icon-item {
+            transition: all 0.2s ease;
+        }
+        .icon-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="min-h-full bg-gradient-to-br from-purple-50 to-pink-50 font-sans">
+    <div class="container mx-auto px-4 py-8">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">Icon Library Hub</h1>
+            <p class="text-gray-600">Libreria di icone SVG personalizzabili e pronte all'uso</p>
+        </header>
+
+        <main class="max-w-7xl mx-auto">
+            <div class="grid lg:grid-cols-2 gap-8">
+                <!-- Generator Panel -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h2 class="text-2xl font-semibold mb-6 text-gray-800">Libreria Icone</h2>
+                    
+                    <!-- Search -->
+                    <div class="mb-6">
+                        <label for="iconSearch" class="block text-sm font-medium text-gray-700 mb-2">Cerca Icone</label>
+                        <input type="text" id="iconSearch" placeholder="Cerca per nome..." class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent" oninput="filterIcons()">
+                    </div>
+
+                    <!-- Categories -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-3">Categorie</label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <button onclick="filterByCategory('all')" class="p-2 border-2 border-purple-400 bg-purple-50 rounded-md hover:border-gray-400 transition-all text-xs" id="cat-all">Tutte</button>
+                            <button onclick="filterByCategory('ui')" class="p-2 border-2 border-gray-200 rounded-md hover:border-gray-400 transition-all text-xs" id="cat-ui">UI</button>
+                            <button onclick="filterByCategory('business')" class="p-2 border-2 border-gray-200 rounded-md hover:border-gray-400 transition-all text-xs" id="cat-business">Business</button>
+                            <button onclick="filterByCategory('social')" class="p-2 border-2 border-gray-200 rounded-md hover:border-gray-400 transition-all text-xs" id="cat-social">Social</button>
+                            <button onclick="filterByCategory('tech')" class="p-2 border-2 border-gray-200 rounded-md hover:border-gray-400 transition-all text-xs" id="cat-tech">Tech</button>
+                            <button onclick="filterByCategory('shopping')" class="p-2 border-2 border-gray-200 rounded-md hover:border-gray-400 transition-all text-xs" id="cat-shopping">Shopping</button>
+                        </div>
+                    </div>
+
+                    <!-- Customization -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-3">Personalizzazione</label>
+                        
+                        <!-- Size Selection -->
+                        <div class="mb-4">
+                            <label class="block text-xs font-medium text-gray-600 mb-2">Dimensione</label>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button onclick="setIconSize('16')" class="p-2 border-2 border-gray-200 rounded-md hover:border-gray-400 transition-all text-xs" id="size-16">Small (16px)</button>
+                                <button onclick="setIconSize('24')" class="p-2 border-2 border-purple-400 bg-purple-50 rounded-md hover:border-gray-400 transition-all text-xs" id="size-24">Medium (24px)</button>
+                                <button onclick="setIconSize('32')" class="p-2 border-2 border-gray-200 rounded-md hover:border-gray-400 transition-all text-xs" id="size-32">Large (32px)</button>
+                            </div>
+                        </div>
+
+                        <!-- Color Selection -->
+                        <div class="mb-4">
+                            <label class="block text-xs font-medium text-gray-600 mb-2">Colore</label>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button onclick="setIconColor('currentColor')" class="p-2 border-2 border-purple-400 bg-purple-50 rounded-md hover:border-gray-400 transition-all text-xs" id="color-current">Nero</button>
+                                <button onclick="setIconColor('#3B82F6')" class="p-2 border-2 border-gray-200 rounded-md hover:border-gray-400 transition-all text-xs" id="color-blue">Blu</button>
+                                <button onclick="setIconColor('#10B981')" class="p-2 border-2 border-gray-200 rounded-md hover:border-gray-400 transition-all text-xs" id="color-green">Verde</button>
+                                <button onclick="setIconColor('#EF4444')" class="p-2 border-2 border-gray-200 rounded-md hover:border-gray-400 transition-all text-xs" id="color-red">Rosso</button>
+                                <button onclick="setIconColor('#8B5CF6')" class="p-2 border-2 border-gray-200 rounded-md hover:border-gray-400 transition-all text-xs" id="color-purple">Viola</button>
+                                <button onclick="setIconColor('#F59E0B')" class="p-2 border-2 border-gray-200 rounded-md hover:border-gray-400 transition-all text-xs" id="color-orange">Arancio</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Icon Grid -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-3">Icone Disponibili</label>
+                        <div id="iconGrid" class="grid grid-cols-4 gap-3 max-h-96 overflow-y-auto p-2 border border-gray-200 rounded-md">
+                            <!-- Icons will be populated here -->
+                        </div>
+                    </div>
+
+                    <div class="text-sm text-gray-600 bg-purple-50 border border-purple-200 rounded-md p-3">
+                        💡 <strong>Suggerimento:</strong> Clicca su un'icona per copiare il codice SVG negli appunti!
+                    </div>
+                </div>
+
+                <!-- Code & Preview Panel -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-semibold text-gray-800">Codice & Anteprima</h2>
+                        <button onclick="copyCode()" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-md transition-colors text-sm">
+                            📋 Copia Codice
+                        </button>
+                    </div>
+                    
+                    <!-- Selected Icon Preview -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Icona Selezionata</label>
+                        <div id="selectedIconPreview" class="p-8 bg-gray-50 border border-gray-200 rounded-md text-center min-h-32 flex items-center justify-center">
+                            <span class="text-gray-400">Seleziona un'icona dalla libreria</span>
+                        </div>
+                    </div>
+
+                    <!-- SVG Code Editor -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Codice SVG (Modificabile)</label>
+                        <textarea id="svgCode" rows="8" class="w-full p-3 bg-gray-50 border border-gray-300 rounded-md text-sm font-mono focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="Il codice SVG apparirà qui quando selezioni un'icona..."></textarea>
+                        <div id="copyMessage" class="mt-2 text-green-600 text-sm hidden">✅ Codice copiato!</div>
+                    </div>
+
+                    <!-- Usage Examples -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Esempi di Utilizzo</label>
+                        <div class="bg-gray-50 border border-gray-200 rounded-md p-4">
+                            <div class="space-y-3">
+                                <div>
+                                    <div class="text-xs font-medium text-gray-600 mb-1">HTML Inline:</div>
+                                    <code class="text-xs bg-white px-2 py-1 rounded border">Incolla il codice SVG direttamente nel tuo HTML</code>
+                                </div>
+                                <div>
+                                    <div class="text-xs font-medium text-gray-600 mb-1">Con CSS:</div>
+                                    <code class="text-xs bg-white px-2 py-1 rounded border">Aggiungi classi CSS per styling personalizzato</code>
+                                </div>
+                                <div>
+                                    <div class="text-xs font-medium text-gray-600 mb-1">Responsive:</div>
+                                    <code class="text-xs bg-white px-2 py-1 rounded border">Usa w-4 h-4, w-6 h-6, w-8 h-8 per dimensioni Tailwind</code>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Instructions -->
+                    <div class="bg-purple-50 border border-purple-200 rounded-md p-4">
+                        <h3 class="font-semibold text-purple-800 mb-2">Come usare:</h3>
+                        <ul class="text-sm text-purple-700 space-y-1">
+                            <li>• Cerca o filtra le icone per categoria</li>
+                            <li>• Personalizza dimensione e colore</li>
+                            <li>• Clicca su un'icona per selezionarla</li>
+                            <li>• Copia il codice SVG per i tuoi progetti</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        let currentIconSize = '24';
+        let currentIconColor = 'currentColor';
+        let currentCategory = 'all';
+        let selectedIcon = null;
+
+        const icons = {
+            // UI Icons
+            home: { category: 'ui', name: 'Home', svg: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>' },
+            search: { category: 'ui', name: 'Search', svg: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>' },
+            menu: { category: 'ui', name: 'Menu', svg: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>' },
+            close: { category: 'ui', name: 'Close', svg: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>' },
+            settings: { category: 'ui', name: 'Settings', svg: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>' },
+            bell: { category: 'ui', name: 'Bell', svg: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>' },
+forward: {
+  category: 'ui',
+  name: 'Avanti',
+  svg: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>'
+},
+back: {
+  category: 'ui',
+  name: 'Indietro',
+  svg: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>'
+},
+
+            // Business Icons
+            briefcase: { category: 'business', name: 'Briefcase', svg: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0H8m8 0v2a2 2 0 01-2 2H10a2 2 0 01-2-2V6m8 0H8"></path>' },
+            chart: { category: 'business', name: 'Chart', svg: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>' },
+            users: { category: 'business', name: 'Users', svg: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a4 4 0 11-8 0 4 4 0 018 0z"></path>' },
+            calendar: { category: 'business', name: 'Calendar', svg: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>' },
+            mail: { category: 'business', name: 'Mail', svg: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>' },
+            phone: { category: 'business', name: 'Phone', svg: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>' },
+
+            // Social Icons
+            heart: { category: 'social', name: 'Heart', svg: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>' },
+            share: { category: 'social', name: 'Share', svg: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path>' },
+            thumbsup: { category: 'social', name: 'Thumbs Up', svg: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"></path>' },
+            chat: { category: 'social', name: 'Chat', svg: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>' },
+            star: { category: 'social', name: 'Star', svg: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>' },
+            bookmark: { category: 'social', name: 'Bookmark', svg: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>' },
+
+            // Tech Icons
+            code: { category: 'tech', name: 'Code', svg: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>' },
+            database: { category: 'tech', name: 'Database', svg: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path>' },
+            server: { category: 'tech', name: 'Server', svg: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"></path>' },
+            cloud: { category: 'tech', name: 'Cloud', svg: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>' },
+            wifi: { category: 'tech', name: 'WiFi', svg: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"></path>' },
+            monitor: { category: 'tech', name: 'Monitor', svg: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>' },
+
+            // Shopping Icons
+            cart: { category: 'shopping', name: 'Shopping Cart', svg: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17M17 13v4a2 2 0 01-2 2H9a2 2 0 01-2-2v-4m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"></path>' },
+            bag: { category: 'shopping', name: 'Shopping Bag', svg: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>' },
+            creditcard: { category: 'shopping', name: 'Credit Card', svg: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H5a3 3 0 00-3 3v8a3 3 0 003 3z"></path>' },
+            gift: { category: 'shopping', name: 'Gift', svg: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"></path>' },
+            tag: { category: 'shopping', name: 'Tag', svg: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>' },
+            truck: { category: 'shopping', name: 'Delivery', svg: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>' }
+        };
+
+        function updateSelectionUI() {
+            // Update category buttons
+            ['all', 'ui', 'business', 'social', 'tech', 'shopping'].forEach(cat => {
+                const btn = document.getElementById(`cat-${cat}`);
+                btn.className = btn.className.replace('border-purple-400 bg-purple-50', 'border-gray-200');
+            });
+            document.getElementById(`cat-${currentCategory}`).className = 
+                document.getElementById(`cat-${currentCategory}`).className.replace('border-gray-200', 'border-purple-400 bg-purple-50');
+
+            // Update size buttons
+            ['16', '24', '32'].forEach(size => {
+                const btn = document.getElementById(`size-${size}`);
+                btn.className = btn.className.replace('border-purple-400 bg-purple-50', 'border-gray-200');
+            });
+            document.getElementById(`size-${currentIconSize}`).className = 
+                document.getElementById(`size-${currentIconSize}`).className.replace('border-gray-200', 'border-purple-400 bg-purple-50');
+
+            // Update color buttons
+            const colorMap = { 'currentColor': 'current', '#3B82F6': 'blue', '#10B981': 'green', '#EF4444': 'red', '#8B5CF6': 'purple', '#F59E0B': 'orange' };
+            Object.values(colorMap).forEach(color => {
+                const btn = document.getElementById(`color-${color}`);
+                btn.className = btn.className.replace('border-purple-400 bg-purple-50', 'border-gray-200');
+            });
+            document.getElementById(`color-${colorMap[currentIconColor]}`).className = 
+                document.getElementById(`color-${colorMap[currentIconColor]}`).className.replace('border-gray-200', 'border-purple-400 bg-purple-50');
+        }
+
+        function setIconSize(size) {
+            currentIconSize = size;
+            updateSelectionUI();
+            renderIcons();
+            if (selectedIcon) {
+                updateSelectedIcon();
+            }
+        }
+
+        function setIconColor(color) {
+            currentIconColor = color;
+            updateSelectionUI();
+            renderIcons();
+            if (selectedIcon) {
+                updateSelectedIcon();
+            }
+        }
+
+        function filterByCategory(category) {
+            currentCategory = category;
+            updateSelectionUI();
+            renderIcons();
+        }
+
+        function filterIcons() {
+            renderIcons();
+        }
+
+        function renderIcons() {
+            const searchTerm = document.getElementById('iconSearch').value.toLowerCase();
+            const iconGrid = document.getElementById('iconGrid');
+            iconGrid.innerHTML = '';
+
+            Object.entries(icons).forEach(([key, icon]) => {
+                // Filter by category
+                if (currentCategory !== 'all' && icon.category !== currentCategory) return;
+                
+                // Filter by search term
+                if (searchTerm && !icon.name.toLowerCase().includes(searchTerm) && !key.toLowerCase().includes(searchTerm)) return;
+
+                const iconElement = document.createElement('div');
+                iconElement.className = 'icon-item p-3 border border-gray-200 rounded-lg cursor-pointer hover:border-purple-400 hover:bg-purple-50 transition-all text-center';
+                iconElement.onclick = () => selectIcon(key, icon);
+                
+                iconElement.innerHTML = `
+                    <svg class="w-${currentIconSize === '16' ? '4' : currentIconSize === '24' ? '6' : '8'} h-${currentIconSize === '16' ? '4' : currentIconSize === '24' ? '6' : '8'} mx-auto mb-2" fill="none" stroke="${currentIconColor}" viewBox="0 0 24 24">
+                        ${icon.svg}
+                    </svg>
+                    <div class="text-xs text-gray-600 truncate">${icon.name}</div>
+                `;
+                
+                iconGrid.appendChild(iconElement);
+            });
+        }
+
+        function selectIcon(key, icon) {
+            selectedIcon = { key, ...icon };
+            updateSelectedIcon();
+            
+            // Copy to clipboard
+            const svgCode = generateSVGCode(icon.svg);
+            navigator.clipboard.writeText(svgCode).then(() => {
+                showCopyMessage();
+            });
+        }
+
+        function updateSelectedIcon() {
+            if (!selectedIcon) return;
+            
+            const preview = document.getElementById('selectedIconPreview');
+            const svgCode = generateSVGCode(selectedIcon.svg);
+            
+            preview.innerHTML = `
+                <div class="text-center">
+                    <svg class="w-16 h-16 mx-auto mb-2" fill="none" stroke="${currentIconColor}" viewBox="0 0 24 24">
+                        ${selectedIcon.svg}
+                    </svg>
+                    <div class="text-sm font-medium text-gray-700">${selectedIcon.name}</div>
+                    <div class="text-xs text-gray-500">${currentIconSize}px • ${currentIconColor === 'currentColor' ? 'Nero' : currentIconColor}</div>
+                </div>
+            `;
+            
+            document.getElementById('svgCode').value = svgCode;
+        }
+
+        function generateSVGCode(pathData) {
+            return `<svg class="w-${currentIconSize === '16' ? '4' : currentIconSize === '24' ? '6' : '8'} h-${currentIconSize === '16' ? '4' : currentIconSize === '24' ? '6' : '8'}" fill="none" stroke="${currentIconColor}" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    ${pathData}
+</svg>`;
+        }
+
+        function copyCode() {
+            const svgCode = document.getElementById('svgCode');
+            if (svgCode.value.trim()) {
+                svgCode.select();
+                document.execCommand('copy');
+                showCopyMessage();
+            }
+        }
+
+        function showCopyMessage() {
+            const message = document.getElementById('copyMessage');
+            message.classList.remove('hidden');
+            setTimeout(() => {
+                message.classList.add('hidden');
+            }, 2000);
+        }
+
+        // Initialize
+        renderIcons();
+        updateSelectionUI();
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9930055287e20e9d',t:'MTc2MTIwOTc4Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

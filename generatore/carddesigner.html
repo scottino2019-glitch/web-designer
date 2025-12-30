@@ -1,0 +1,1156 @@
+<!doctype html>
+<html lang="it">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Card Design Studio</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    
+    html {
+      height: 100%;
+    }
+    
+    .studio-app {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
+      gap: 24px;
+      overflow-y: auto;
+    }
+    
+    .app-header {
+      text-align: center;
+    }
+    
+    .app-title {
+      font-size: 36px;
+      font-weight: 800;
+      margin: 0;
+      padding-bottom: 8px;
+    }
+    
+    .main-content {
+      display: grid;
+      grid-template-columns: 350px 1fr;
+      gap: 24px;
+      flex: 1;
+    }
+    
+    @media (max-width: 968px) {
+      .main-content {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .controls-panel {
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      max-height: 800px;
+      overflow-y: auto;
+    }
+    
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin: 0 0 12px 0;
+    }
+    
+    .style-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+    
+    .style-btn {
+      padding: 10px;
+      border: 2px solid transparent;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+    
+    .style-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .style-btn.active {
+      border-color: #3b82f6;
+    }
+    
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .input-label {
+      font-weight: 600;
+      font-size: 13px;
+    }
+    
+    .text-input {
+      padding: 10px;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: border-color 0.2s;
+    }
+    
+    .text-input:focus {
+      outline: none;
+      border-color: #3b82f6;
+    }
+    
+    .textarea-input {
+      padding: 10px;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 14px;
+      resize: vertical;
+      min-height: 60px;
+      font-family: inherit;
+      transition: border-color 0.2s;
+    }
+    
+    .textarea-input:focus {
+      outline: none;
+      border-color: #3b82f6;
+    }
+    
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .checkbox-input {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+    
+    .slider-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .slider-label {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 600;
+      font-size: 13px;
+    }
+    
+    .slider-input {
+      width: 100%;
+      cursor: pointer;
+    }
+    
+    .preview-panel {
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    
+    .preview-stage {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      min-height: 400px;
+      padding: 40px;
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    
+    .action-button {
+      flex: 1;
+      padding: 14px 24px;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      color: white;
+      min-width: 150px;
+    }
+    
+    .action-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+    }
+    
+    .action-button:active {
+      transform: translateY(0);
+    }
+    
+    /* Card Styles */
+    .card {
+      border-radius: 16px;
+      padding: 32px;
+      max-width: 400px;
+      width: 100%;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .card-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+    
+    .card-image {
+      width: 100%;
+      height: 200px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 64px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .card-badge {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      background: #10b981;
+      color: white;
+    }
+    
+    .card-title {
+      font-size: 28px;
+      font-weight: 800;
+      margin: 0 0 12px 0;
+      line-height: 1.2;
+    }
+    
+    .card-description {
+      font-size: 16px;
+      line-height: 1.6;
+      margin: 0 0 24px 0;
+      opacity: 0.9;
+    }
+    
+    .card-button {
+      padding: 12px 32px;
+      border: none;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.3s;
+      width: 100%;
+    }
+    
+    .card-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    }
+    
+    /* Classic Style */
+    .card-classic {
+      background: white;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      border: 1px solid #e2e8f0;
+    }
+    
+    .card-classic:hover {
+      box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+      transform: translateY(-4px);
+    }
+    
+    .card-classic .card-title {
+      color: #2d3748;
+    }
+    
+    .card-classic .card-description {
+      color: #4a5568;
+    }
+    
+    .card-classic .card-button {
+      background: #3b82f6;
+      color: white;
+    }
+    
+    /* Modern Style */
+    .card-modern {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      box-shadow: 0 10px 40px rgba(102, 126, 234, 0.4);
+    }
+    
+    .card-modern:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 15px 50px rgba(102, 126, 234, 0.5);
+    }
+    
+    .card-modern .card-button {
+      background: white;
+      color: #667eea;
+    }
+    
+    /* Minimal Style */
+    .card-minimal {
+      background: #f8fafc;
+      border-left: 4px solid #3b82f6;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    
+    .card-minimal .card-title {
+      color: #1a202c;
+    }
+    
+    .card-minimal .card-description {
+      color: #4a5568;
+    }
+    
+    .card-minimal .card-button {
+      background: transparent;
+      color: #3b82f6;
+      border: 2px solid #3b82f6;
+    }
+    
+    /* Neon Style */
+    .card-neon {
+      background: #1a1a2e;
+      border: 2px solid #00f3ff;
+      box-shadow: 0 0 30px rgba(0, 243, 255, 0.5), inset 0 0 30px rgba(0, 243, 255, 0.1);
+      color: white;
+    }
+    
+    .card-neon .card-title {
+      color: #00f3ff;
+      text-shadow: 0 0 10px #00f3ff;
+    }
+    
+    .card-neon .card-button {
+      background: #00f3ff;
+      color: #1a1a2e;
+      box-shadow: 0 0 20px rgba(0, 243, 255, 0.5);
+    }
+    
+    /* Gradient Style */
+    .card-gradient {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+      box-shadow: 0 10px 40px rgba(245, 87, 108, 0.4);
+    }
+    
+    .card-gradient:hover {
+      box-shadow: 0 15px 50px rgba(245, 87, 108, 0.5);
+    }
+    
+    .card-gradient .card-button {
+      background: rgba(255, 255, 255, 0.3);
+      color: white;
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 255, 255, 0.5);
+    }
+    
+    /* Glass Style */
+    .card-glass {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(20px);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      color: white;
+    }
+    
+    .card-glass .card-button {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    /* 3D Style */
+    .card-3d {
+      background: white;
+      box-shadow: 
+        0 1px 0 #e2e8f0,
+        0 2px 0 #cbd5e0,
+        0 3px 0 #a0aec0,
+        0 4px 0 #718096,
+        0 5px 0 #4a5568,
+        0 10px 30px rgba(0,0,0,0.2);
+      transform: translateY(-5px);
+    }
+    
+    .card-3d:hover {
+      transform: translateY(-10px);
+    }
+    
+    .card-3d .card-title {
+      color: #2d3748;
+    }
+    
+    .card-3d .card-description {
+      color: #4a5568;
+    }
+    
+    .card-3d .card-button {
+      background: #3b82f6;
+      color: white;
+    }
+    
+    /* Neumorphic Style */
+    .card-neumorphic {
+      background: #e0e5ec;
+      box-shadow: 
+        9px 9px 16px rgba(163, 177, 198, 0.6),
+        -9px -9px 16px rgba(255, 255, 255, 0.5);
+    }
+    
+    .card-neumorphic .card-title {
+      color: #2d3748;
+    }
+    
+    .card-neumorphic .card-description {
+      color: #4a5568;
+    }
+    
+    .card-neumorphic .card-button {
+      background: #e0e5ec;
+      color: #2d3748;
+      box-shadow: 
+        5px 5px 10px rgba(163, 177, 198, 0.6),
+        -5px -5px 10px rgba(255, 255, 255, 0.5);
+    }
+
+    .copy-notification {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      padding: 16px 24px;
+      background: #10b981;
+      color: white;
+      border-radius: 12px;
+      font-weight: 700;
+      box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
+      z-index: 1000;
+      animation: slideInUp 0.3s ease-out;
+    }
+
+    @keyframes slideInUp {
+      from {
+        transform: translateY(100px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  <main class="studio-app">
+   <header class="app-header">
+    <h1 class="app-title" id="appTitle">Card Design Studio</h1>
+   </header>
+   <div class="main-content">
+    <aside class="controls-panel" id="controlsPanel">
+     <div>
+      <h2 class="section-title" id="styleTitle">Stile Card</h2>
+      <div class="style-grid"><button class="style-btn active" data-style="classic">🎴 Classica</button> <button class="style-btn" data-style="modern">✨ Moderna</button> <button class="style-btn" data-style="minimal">📋 Minimal</button> <button class="style-btn" data-style="neon">💎 Neon</button> <button class="style-btn" data-style="gradient">🌈 Gradient</button> <button class="style-btn" data-style="glass">��� Glass</button> <button class="style-btn" data-style="3d">📦 3D</button> <button class="style-btn" data-style="neumorphic">🎯 Neomorfico</button>
+      </div>
+     </div>
+     <div class="input-group"><label class="input-label" for="cardTitleInput">Titolo</label> <input type="text" class="text-input" id="cardTitleInput" value="Titolo della Card">
+     </div>
+     <div class="input-group"><label class="input-label" for="cardDescInput">Descrizione</label> <textarea class="textarea-input" id="cardDescInput">Questa è una bellissima card personalizzabile per i tuoi progetti web e UI design.</textarea>
+     </div>
+     <div class="input-group"><label class="input-label" for="buttonTextInput">Testo Bottone</label> <input type="text" class="text-input" id="buttonTextInput" value="Scopri di più">
+     </div>
+     <div class="input-group"><label class="input-label" for="iconInput">Icona Emoji (opzionale)</label> <input type="text" class="text-input" id="iconInput" placeholder="🚀" maxlength="2">
+     </div>
+     <div class="checkbox-group"><input type="checkbox" class="checkbox-input" id="showImage"> <label class="input-label" for="showImage">Mostra Immagine Placeholder</label>
+     </div>
+     <div class="checkbox-group"><input type="checkbox" class="checkbox-input" id="showBadge"> <label class="input-label" for="showBadge">Mostra Badge "Nuovo"</label>
+     </div>
+     <div class="slider-group">
+      <div class="slider-label"><span>Larghezza Card</span> <span id="widthValue">400px</span>
+      </div><input type="range" class="slider-input" id="cardWidth" min="280" max="600" value="400">
+     </div>
+    </aside>
+    <section class="preview-panel" id="previewPanel">
+     <h2 class="section-title" id="previewTitle">Preview</h2>
+     <div class="preview-stage" id="previewStage">
+      <div class="card card-classic" id="previewCard">
+       <div class="card-badge" id="cardBadge" style="display: none;">
+        Nuovo
+       </div>
+       <div class="card-icon" id="cardIcon" style="display: none;"></div>
+       <div class="card-image" id="cardImage" style="display: none;">
+        🖼️
+       </div>
+       <h3 class="card-title" id="cardTitle">Titolo della Card</h3>
+       <p class="card-description" id="cardDescription">Questa è una bellissima card personalizzabile per i tuoi progetti web e UI design.</p><button class="card-button" id="cardButton">Scopri di più</button>
+      </div>
+     </div>
+     <div class="action-buttons"><button class="action-button" id="exportButton">📥 Esporta Immagine</button> <button class="action-button" id="copyCodeButton">📋 Copia Codice HTML</button>
+     </div>
+    </section>
+   </div>
+  </main>
+  <script>
+    const defaultConfig = {
+      background_color: "#f0f4f8",
+      panel_background: "#ffffff",
+      preview_background: "#e2e8f0",
+      text_color: "#2d3748",
+      button_color: "#3b82f6",
+      font_family: "Inter",
+      font_size: 16,
+      app_title: "Card Design Studio",
+      card_title: "Titolo della Card",
+      card_description: "Questa è una bellissima card personalizzabile per i tuoi progetti web e UI design.",
+      button_text: "Scopri di più",
+      export_button: "📥 Esporta Immagine",
+      copy_code_button: "📋 Copia Codice HTML"
+    };
+
+    let currentStyle = 'classic';
+    let cardSettings = {
+      title: 'Titolo della Card',
+      description: 'Questa è una bellissima card personalizzabile per i tuoi progetti web e UI design.',
+      buttonText: 'Scopri di più',
+      icon: '',
+      showImage: false,
+      showBadge: false,
+      width: 400
+    };
+
+    const styleButtons = document.querySelectorAll('.style-btn');
+    const previewCard = document.getElementById('previewCard');
+    const cardTitleInput = document.getElementById('cardTitleInput');
+    const cardDescInput = document.getElementById('cardDescInput');
+    const buttonTextInput = document.getElementById('buttonTextInput');
+    const iconInput = document.getElementById('iconInput');
+    const showImageCheck = document.getElementById('showImage');
+    const showBadgeCheck = document.getElementById('showBadge');
+    const cardWidthSlider = document.getElementById('cardWidth');
+    const exportButton = document.getElementById('exportButton');
+    const copyCodeButton = document.getElementById('copyCodeButton');
+
+    // Style selection
+    styleButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        styleButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentStyle = btn.dataset.style;
+        updateCard();
+      });
+    });
+
+    // Input handlers
+    cardTitleInput.addEventListener('input', (e) => {
+      cardSettings.title = e.target.value;
+      document.getElementById('cardTitle').textContent = e.target.value;
+    });
+
+    cardDescInput.addEventListener('input', (e) => {
+      cardSettings.description = e.target.value;
+      document.getElementById('cardDescription').textContent = e.target.value;
+    });
+
+    buttonTextInput.addEventListener('input', (e) => {
+      cardSettings.buttonText = e.target.value;
+      document.getElementById('cardButton').textContent = e.target.value;
+    });
+
+    iconInput.addEventListener('input', (e) => {
+      cardSettings.icon = e.target.value;
+      const iconEl = document.getElementById('cardIcon');
+      if (e.target.value) {
+        iconEl.textContent = e.target.value;
+        iconEl.style.display = 'block';
+      } else {
+        iconEl.style.display = 'none';
+      }
+    });
+
+    showImageCheck.addEventListener('change', (e) => {
+      cardSettings.showImage = e.target.checked;
+      document.getElementById('cardImage').style.display = e.target.checked ? 'flex' : 'none';
+    });
+
+    showBadgeCheck.addEventListener('change', (e) => {
+      cardSettings.showBadge = e.target.checked;
+      document.getElementById('cardBadge').style.display = e.target.checked ? 'block' : 'none';
+    });
+
+    cardWidthSlider.addEventListener('input', (e) => {
+      cardSettings.width = parseInt(e.target.value);
+      document.getElementById('widthValue').textContent = `${e.target.value}px`;
+      previewCard.style.maxWidth = `${e.target.value}px`;
+    });
+
+    function updateCard() {
+      previewCard.className = `card card-${currentStyle}`;
+    }
+
+    // Export as image
+    exportButton.addEventListener('click', async () => {
+      const stage = document.getElementById('previewStage');
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      
+      canvas.width = stage.offsetWidth * 2;
+      canvas.height = stage.offsetHeight * 2;
+      ctx.scale(2, 2);
+      
+      const bgColor = window.elementSdk ? window.elementSdk.config.preview_background : defaultConfig.preview_background;
+      ctx.fillStyle = bgColor;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      ctx.fillStyle = 'white';
+      ctx.fillRect(
+        (stage.offsetWidth - cardSettings.width) / 2,
+        50,
+        cardSettings.width,
+        stage.offsetHeight - 100
+      );
+      
+      ctx.fillStyle = '#2d3748';
+      ctx.font = 'bold 24px Inter';
+      ctx.textAlign = 'center';
+      ctx.fillText(cardSettings.title, stage.offsetWidth / 2, 150);
+      
+      const link = document.createElement('a');
+      link.download = 'card-design.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    });
+
+    function showNotification(message, isSuccess = true) {
+      const notification = document.createElement('div');
+      notification.className = 'copy-notification';
+      notification.textContent = message;
+      notification.style.background = isSuccess ? '#10b981' : '#ef4444';
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.style.animation = 'slideInUp 0.3s ease-out reverse';
+        setTimeout(() => {
+          document.body.removeChild(notification);
+        }, 300);
+      }, 2000);
+    }
+
+    function copyTextFallback(text) {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.left = '-9999px';
+      textarea.style.top = '0';
+      document.body.appendChild(textarea);
+      textarea.focus();
+      textarea.select();
+      
+      try {
+        const successful = document.execCommand('copy');
+        if (successful) {
+          showNotification('✅ Codice HTML copiato!');
+        } else {
+          showNotification('❌ Errore durante la copia', false);
+        }
+      } catch (err) {
+        showNotification('❌ Errore durante la copia', false);
+      }
+      
+      document.body.removeChild(textarea);
+    }
+
+    copyCodeButton.addEventListener('click', () => {
+      const styleCSS = getCardStyles(currentStyle);
+      const htmlCode = `<div class="card card-${currentStyle}">
+  ${cardSettings.showBadge ? '<div class="card-badge">Nuovo</div>\n  ' : ''}${cardSettings.icon ? `<div class="card-icon">${cardSettings.icon}</div>\n  ` : ''}${cardSettings.showImage ? '<div class="card-image">🖼️</div>\n  ' : ''}<h3 class="card-title">${cardSettings.title}</h3>
+  <p class="card-description">${cardSettings.description}</p>
+  <button class="card-button">${cardSettings.buttonText}</button>
+</div>
+
+<style>
+${styleCSS}
+</style>`;
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(htmlCode)
+          .then(() => {
+            showNotification('✅ Codice HTML copiato con stili CSS!');
+          })
+          .catch(() => {
+            copyTextFallback(htmlCode);
+          });
+      } else {
+        copyTextFallback(htmlCode);
+      }
+    });
+
+    function getCardStyles(style) {
+      const baseStyles = `  /* Stili Base Card */
+  .card {
+    border-radius: 16px;
+    padding: 32px;
+    max-width: ${cardSettings.width}px;
+    width: 100%;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .card-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+  }
+  
+  .card-image {
+    width: 100%;
+    height: 200px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 64px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+  
+  .card-badge {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    background: #10b981;
+    color: white;
+  }
+  
+  .card-title {
+    font-size: 28px;
+    font-weight: 800;
+    margin: 0 0 12px 0;
+    line-height: 1.2;
+  }
+  
+  .card-description {
+    font-size: 16px;
+    line-height: 1.6;
+    margin: 0 0 24px 0;
+    opacity: 0.9;
+  }
+  
+  .card-button {
+    padding: 12px 32px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.3s;
+    width: 100%;
+  }
+  
+  .card-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  }`;
+
+      const styleVariants = {
+        classic: `
+  
+  /* Stile Classico */
+  .card-classic {
+    background: white;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    border: 1px solid #e2e8f0;
+  }
+  
+  .card-classic:hover {
+    box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+    transform: translateY(-4px);
+  }
+  
+  .card-classic .card-title {
+    color: #2d3748;
+  }
+  
+  .card-classic .card-description {
+    color: #4a5568;
+  }
+  
+  .card-classic .card-button {
+    background: #3b82f6;
+    color: white;
+  }`,
+        modern: `
+  
+  /* Stile Moderno */
+  .card-modern {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 0 10px 40px rgba(102, 126, 234, 0.4);
+  }
+  
+  .card-modern:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 15px 50px rgba(102, 126, 234, 0.5);
+  }
+  
+  .card-modern .card-button {
+    background: white;
+    color: #667eea;
+  }`,
+        minimal: `
+  
+  /* Stile Minimal */
+  .card-minimal {
+    background: #f8fafc;
+    border-left: 4px solid #3b82f6;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  }
+  
+  .card-minimal .card-title {
+    color: #1a202c;
+  }
+  
+  .card-minimal .card-description {
+    color: #4a5568;
+  }
+  
+  .card-minimal .card-button {
+    background: transparent;
+    color: #3b82f6;
+    border: 2px solid #3b82f6;
+  }`,
+        neon: `
+  
+  /* Stile Neon */
+  .card-neon {
+    background: #1a1a2e;
+    border: 2px solid #00f3ff;
+    box-shadow: 0 0 30px rgba(0, 243, 255, 0.5), inset 0 0 30px rgba(0, 243, 255, 0.1);
+    color: white;
+  }
+  
+  .card-neon .card-title {
+    color: #00f3ff;
+    text-shadow: 0 0 10px #00f3ff;
+  }
+  
+  .card-neon .card-button {
+    background: #00f3ff;
+    color: #1a1a2e;
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.5);
+  }`,
+        gradient: `
+  
+  /* Stile Gradient */
+  .card-gradient {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    box-shadow: 0 10px 40px rgba(245, 87, 108, 0.4);
+  }
+  
+  .card-gradient:hover {
+    box-shadow: 0 15px 50px rgba(245, 87, 108, 0.5);
+  }
+  
+  .card-gradient .card-button {
+    background: rgba(255, 255, 255, 0.3);
+    color: white;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+  }`,
+        glass: `
+  
+  /* Stile Glass */
+  .card-glass {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    color: white;
+  }
+  
+  .card-glass .card-button {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+  }`,
+        '3d': `
+  
+  /* Stile 3D */
+  .card-3d {
+    background: white;
+    box-shadow: 
+      0 1px 0 #e2e8f0,
+      0 2px 0 #cbd5e0,
+      0 3px 0 #a0aec0,
+      0 4px 0 #718096,
+      0 5px 0 #4a5568,
+      0 10px 30px rgba(0,0,0,0.2);
+    transform: translateY(-5px);
+  }
+  
+  .card-3d:hover {
+    transform: translateY(-10px);
+  }
+  
+  .card-3d .card-title {
+    color: #2d3748;
+  }
+  
+  .card-3d .card-description {
+    color: #4a5568;
+  }
+  
+  .card-3d .card-button {
+    background: #3b82f6;
+    color: white;
+  }`,
+        neumorphic: `
+  
+  /* Stile Neumorphic */
+  .card-neumorphic {
+    background: #e0e5ec;
+    box-shadow: 
+      9px 9px 16px rgba(163, 177, 198, 0.6),
+      -9px -9px 16px rgba(255, 255, 255, 0.5);
+  }
+  
+  .card-neumorphic .card-title {
+    color: #2d3748;
+  }
+  
+  .card-neumorphic .card-description {
+    color: #4a5568;
+  }
+  
+  .card-neumorphic .card-button {
+    background: #e0e5ec;
+    color: #2d3748;
+    box-shadow: 
+      5px 5px 10px rgba(163, 177, 198, 0.6),
+      -5px -5px 10px rgba(255, 255, 255, 0.5);
+  }`
+      };
+
+      return baseStyles + (styleVariants[style] || styleVariants.classic);
+    }
+
+    async function onConfigChange(config) {
+      const appConfig = { ...defaultConfig, ...config };
+      
+      document.querySelector('.studio-app').style.background = appConfig.background_color;
+      document.querySelector('.controls-panel').style.background = appConfig.panel_background;
+      document.querySelector('.preview-panel').style.background = appConfig.panel_background;
+      document.querySelector('.preview-stage').style.background = appConfig.preview_background;
+      
+      document.querySelector('.app-title').style.color = appConfig.text_color;
+      document.querySelectorAll('.section-title').forEach(title => {
+        title.style.color = appConfig.text_color;
+      });
+      document.querySelectorAll('.input-label').forEach(label => {
+        label.style.color = appConfig.text_color;
+      });
+      document.querySelectorAll('.slider-label').forEach(label => {
+        label.style.color = appConfig.text_color;
+      });
+      
+      document.querySelectorAll('.style-btn').forEach(btn => {
+        btn.style.background = appConfig.panel_background;
+        btn.style.color = appConfig.text_color;
+      });
+      
+      document.querySelectorAll('.action-button').forEach(btn => {
+        btn.style.background = appConfig.button_color;
+      });
+      
+      document.querySelectorAll('.text-input, .textarea-input').forEach(input => {
+        input.style.background = appConfig.panel_background;
+        input.style.color = appConfig.text_color;
+      });
+      
+      const fontFamily = appConfig.font_family;
+      const baseFontStack = '-apple-system, BlinkMacSystemFont, sans-serif';
+      document.querySelector('.app-title').style.fontFamily = `${fontFamily}, ${baseFontStack}`;
+      document.querySelectorAll('.section-title').forEach(title => {
+        title.style.fontFamily = `${fontFamily}, ${baseFontStack}`;
+      });
+      document.querySelectorAll('.input-label').forEach(label => {
+        label.style.fontFamily = `${fontFamily}, ${baseFontStack}`;
+      });
+      document.querySelectorAll('.style-btn').forEach(btn => {
+        btn.style.fontFamily = `${fontFamily}, ${baseFontStack}`;
+      });
+      document.querySelectorAll('.action-button').forEach(btn => {
+        btn.style.fontFamily = `${fontFamily}, ${baseFontStack}`;
+      });
+      document.querySelector('.card-title').style.fontFamily = `${fontFamily}, ${baseFontStack}`;
+      document.querySelector('.card-description').style.fontFamily = `${fontFamily}, ${baseFontStack}`;
+      document.querySelector('.card-button').style.fontFamily = `${fontFamily}, ${baseFontStack}`;
+      
+      const baseSize = appConfig.font_size;
+      document.querySelector('.app-title').style.fontSize = `${baseSize * 2.25}px`;
+      document.querySelectorAll('.section-title').forEach(title => {
+        title.style.fontSize = `${baseSize}px`;
+      });
+      document.querySelectorAll('.input-label').forEach(label => {
+        label.style.fontSize = `${baseSize * 0.8125}px`;
+      });
+      document.querySelectorAll('.style-btn').forEach(btn => {
+        btn.style.fontSize = `${baseSize * 0.75}px`;
+      });
+      document.querySelectorAll('.action-button').forEach(btn => {
+        btn.style.fontSize = `${baseSize * 0.875}px`;
+      });
+      document.querySelector('.card-title').style.fontSize = `${baseSize * 1.75}px`;
+      document.querySelector('.card-description').style.fontSize = `${baseSize}px`;
+      document.querySelector('.card-button').style.fontSize = `${baseSize * 0.9375}px`;
+      
+      document.getElementById('appTitle').textContent = appConfig.app_title;
+      document.getElementById('cardTitle').textContent = appConfig.card_title;
+      document.getElementById('cardDescription').textContent = appConfig.card_description;
+      document.getElementById('cardButton').textContent = appConfig.button_text;
+      document.getElementById('cardTitleInput').value = appConfig.card_title;
+      document.getElementById('cardDescInput').value = appConfig.card_description;
+      document.getElementById('buttonTextInput').value = appConfig.button_text;
+      document.getElementById('exportButton').textContent = appConfig.export_button;
+      document.getElementById('copyCodeButton').textContent = appConfig.copy_code_button;
+      
+      cardSettings.title = appConfig.card_title;
+      cardSettings.description = appConfig.card_description;
+      cardSettings.buttonText = appConfig.button_text;
+    }
+
+    function mapToCapabilities(config) {
+      const appConfig = { ...defaultConfig, ...config };
+      
+      return {
+        recolorables: [
+          {
+            get: () => appConfig.background_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.setConfig({ background_color: value });
+              }
+            }
+          },
+          {
+            get: () => appConfig.panel_background,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.setConfig({ panel_background: value });
+              }
+            }
+          },
+          {
+            get: () => appConfig.preview_background,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.setConfig({ preview_background: value });
+              }
+            }
+          },
+          {
+            get: () => appConfig.text_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.setConfig({ text_color: value });
+              }
+            }
+          },
+          {
+            get: () => appConfig.button_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.setConfig({ button_color: value });
+              }
+            }
+          }
+        ],
+        borderables: [],
+        fontEditable: {
+          get: () => appConfig.font_family,
+          set: (value) => {
+            if (window.elementSdk) {
+              window.elementSdk.setConfig({ font_family: value });
+            }
+          }
+        },
+        fontSizeable: {
+          get: () => appConfig.font_size,
+          set: (value) => {
+            if (window.elementSdk) {
+              window.elementSdk.setConfig({ font_size: value });
+            }
+          }
+        }
+      };
+    }
+
+    function mapToEditPanelValues(config) {
+      const appConfig = { ...defaultConfig, ...config };
+      return new Map([
+        ["app_title", appConfig.app_title],
+        ["card_title", appConfig.card_title],
+        ["card_description", appConfig.card_description],
+        ["button_text", appConfig.button_text],
+        ["export_button", appConfig.export_button],
+        ["copy_code_button", appConfig.copy_code_button]
+      ]);
+    }
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities,
+        mapToEditPanelValues
+      });
+    } else {
+      onConfigChange(defaultConfig);
+    }
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a44bba27378ed4a',t:'MTc2NDExMTMxOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

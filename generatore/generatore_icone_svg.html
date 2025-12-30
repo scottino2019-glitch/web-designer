@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generatore Icone SVG</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            box-sizing: border-box;
+        }
+        .icon-transition {
+            transition: all 0.3s ease;
+        }
+        .icon-preview {
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .shape-button {
+            transition: all 0.2s ease;
+        }
+        .shape-button:hover {
+            transform: scale(1.05);
+        }
+        .shape-button.active {
+            background: #8b5cf6;
+            color: white;
+        }
+        .grid-bg {
+            background-image: 
+                linear-gradient(rgba(0,0,0,.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,0,0,.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+    </style>
+</head>
+<body class="min-h-full bg-gradient-to-br from-blue-50 to-indigo-50 font-sans">
+    <main class="container mx-auto px-4 py-8">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">🎯 Generatore Icone SVG</h1>
+            <p class="text-gray-600">Crea icone SVG personalizzate in pochi click</p>
+        </header>
+
+        <div class="max-w-6xl mx-auto">
+            <!-- Anteprima Icona -->
+            <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">👁️ Anteprima</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2">
+                        <div id="iconPreview" class="icon-preview w-full bg-gray-50 grid-bg rounded-lg border-2 border-gray-200">
+                            <svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="50" cy="50" r="40" fill="#8b5cf6" stroke="#6366f1" stroke-width="2"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-semibold text-gray-700 mb-2">Dimensioni Anteprima</h4>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button onclick="setPreviewSize(64)" class="px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded text-sm icon-transition">64px</button>
+                                <button onclick="setPreviewSize(100)" class="px-3 py-2 bg-purple-100 hover:bg-purple-200 rounded text-sm icon-transition">100px</button>
+                                <button onclick="setPreviewSize(128)" class="px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded text-sm icon-transition">128px</button>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-700 mb-2">Sfondo Anteprima</h4>
+                            <div class="grid grid-cols-2 gap-2">
+                                <button onclick="setPreviewBg('light')" class="px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded text-sm icon-transition">Chiaro</button>
+                                <button onclick="setPreviewBg('dark')" class="px-3 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded text-sm icon-transition">Scuro</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Controlli Icona -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <!-- Forme Base -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">🔷 Forme Base</h3>
+                    
+                    <div class="grid grid-cols-3 gap-3 mb-6">
+                        <button onclick="selectShape('circle')" class="shape-button active p-4 border-2 border-gray-200 rounded-lg text-center">
+                            <svg width="40" height="40" viewBox="0 0 40 40" class="mx-auto mb-2">
+                                <circle cx="20" cy="20" r="15" fill="currentColor"/>
+                            </svg>
+                            <span class="text-xs">Cerchio</span>
+                        </button>
+                        <button onclick="selectShape('square')" class="shape-button p-4 border-2 border-gray-200 rounded-lg text-center">
+                            <svg width="40" height="40" viewBox="0 0 40 40" class="mx-auto mb-2">
+                                <rect x="5" y="5" width="30" height="30" fill="currentColor"/>
+                            </svg>
+                            <span class="text-xs">Quadrato</span>
+                        </button>
+                        <button onclick="selectShape('triangle')" class="shape-button p-4 border-2 border-gray-200 rounded-lg text-center">
+                            <svg width="40" height="40" viewBox="0 0 40 40" class="mx-auto mb-2">
+                                <polygon points="20,5 35,35 5,35" fill="currentColor"/>
+                            </svg>
+                            <span class="text-xs">Triangolo</span>
+                        </button>
+                        <button onclick="selectShape('star')" class="shape-button p-4 border-2 border-gray-200 rounded-lg text-center">
+                            <svg width="40" height="40" viewBox="0 0 40 40" class="mx-auto mb-2">
+                                <polygon points="20,2 25,15 38,15 28,24 32,37 20,30 8,37 12,24 2,15 15,15" fill="currentColor"/>
+                            </svg>
+                            <span class="text-xs">Stella</span>
+                        </button>
+                        <button onclick="selectShape('heart')" class="shape-button p-4 border-2 border-gray-200 rounded-lg text-center">
+                            <svg width="40" height="40" viewBox="0 0 40 40" class="mx-auto mb-2">
+                                <path d="M20,35 C20,35 5,25 5,15 C5,10 10,5 15,5 C17,5 20,7 20,7 C20,7 23,5 25,5 C30,5 35,10 35,15 C35,25 20,35 20,35 Z" fill="currentColor"/>
+                            </svg>
+                            <span class="text-xs">Cuore</span>
+                        </button>
+                        <button onclick="selectShape('diamond')" class="shape-button p-4 border-2 border-gray-200 rounded-lg text-center">
+                            <svg width="40" height="40" viewBox="0 0 40 40" class="mx-auto mb-2">
+                                <polygon points="20,5 35,20 20,35 5,20" fill="currentColor"/>
+                            </svg>
+                            <span class="text-xs">Diamante</span>
+                        </button>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Dimensione: <span id="sizeValue">100px</span></label>
+                            <input type="range" id="iconSize" min="50" max="200" value="100" onchange="updateIcon()" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stili e Colori -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">🎨 Stili e Colori</h3>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Colore Riempimento</label>
+                            <div class="flex gap-2">
+                                <input type="color" id="fillColor" value="#8b5cf6" onchange="updateIcon()" class="w-16 h-12 rounded-lg border-2 border-gray-300 cursor-pointer">
+                                <input type="text" id="fillColorText" value="#8b5cf6" onchange="updateFillFromText()" class="flex-1 p-3 border border-gray-300 rounded-lg font-mono text-sm">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Bordo</label>
+                            <div class="flex gap-2 mb-2">
+                                <input type="color" id="strokeColor" value="#6366f1" onchange="updateIcon()" class="w-16 h-12 rounded-lg border-2 border-gray-300 cursor-pointer">
+                                <input type="text" id="strokeColorText" value="#6366f1" onchange="updateStrokeFromText()" class="flex-1 p-3 border border-gray-300 rounded-lg font-mono text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-600 mb-1">Spessore: <span id="strokeWidthValue">2px</span></label>
+                                <input type="range" id="strokeWidth" min="0" max="10" value="2" onchange="updateIcon()" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Opacità: <span id="opacityValue">100%</span></label>
+                            <input type="range" id="opacity" min="10" max="100" value="100" onchange="updateIcon()" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Rotazione: <span id="rotationValue">0°</span></label>
+                            <input type="range" id="rotation" min="0" max="360" value="0" onchange="updateIcon()" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Icone Predefinite -->
+            <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">📦 Icone Predefinite</h3>
+                <div class="grid grid-cols-4 md:grid-cols-8 lg:grid-cols-12 gap-4" id="presetIcons">
+                    <!-- Le icone predefinite verranno generate qui -->
+                </div>
+            </div>
+
+            <!-- Codice SVG -->
+            <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">💻 Codice SVG</h3>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-700 mb-3">SVG Inline</h4>
+                        <div class="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm overflow-x-auto max-h-40">
+                            <pre id="svgCode"></pre>
+                        </div>
+                        <div class="flex gap-2 mt-2">
+                            <button onclick="copyCode('svg')" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm icon-transition">
+                                📋 Copia SVG
+                            </button>
+                            <button onclick="downloadSVG()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm icon-transition">
+                                💾 Scarica SVG
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-700 mb-3">HTML con SVG</h4>
+                        <div class="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm overflow-x-auto max-h-40">
+                            <pre id="htmlCode"></pre>
+                        </div>
+                        <button onclick="copyCode('html')" class="mt-2 bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg text-sm icon-transition">
+                            📋 Copia HTML
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <h4 class="text-lg font-semibold text-gray-700 mb-3">Utilizzo CSS</h4>
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <code class="text-sm text-gray-700">
+                            .my-icon {<br>
+                            &nbsp;&nbsp;width: 24px;<br>
+                            &nbsp;&nbsp;height: 24px;<br>
+                            &nbsp;&nbsp;fill: currentColor; /* Eredita il colore del testo */<br>
+                            }
+                        </code>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Suggerimenti -->
+            <div class="bg-gradient-to-r from-purple-50 to-blue-50 rounded-xl p-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">💡 Suggerimenti</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700">
+                    <div>
+                        <h4 class="font-semibold mb-2">🎨 Design Tips:</h4>
+                        <ul class="space-y-1">
+                            <li>• Mantieni le icone semplici e riconoscibili</li>
+                            <li>• Usa colori con buon contrasto</li>
+                            <li>• Testa le icone a diverse dimensioni</li>
+                            <li>• Considera l'accessibilità</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold mb-2">⚡ Utilizzo:</h4>
+                        <ul class="space-y-1">
+                            <li>• SVG si ridimensiona senza perdita qualità</li>
+                            <li>• Usa `fill="currentColor"` per ereditare colori</li>
+                            <li>• Ottimizza il codice per file più piccoli</li>
+                            <li>• Considera sprite SVG per molte icone</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast per copia -->
+        <div id="copyToast" class="fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg transform translate-y-full opacity-0 icon-transition">
+            Codice copiato! 📋
+        </div>
+    </main>
+
+    <script>
+        let currentShape = 'circle';
+        let currentSize = 100;
+
+        const presetIcons = [
+            { name: 'Home', shape: 'square', fill: '#3b82f6', stroke: '#1d4ed8' },
+            { name: 'Star', shape: 'star', fill: '#fbbf24', stroke: '#f59e0b' },
+            { name: 'Heart', shape: 'heart', fill: '#ef4444', stroke: '#dc2626' },
+            { name: 'Diamond', shape: 'diamond', fill: '#8b5cf6', stroke: '#7c3aed' },
+            { name: 'Circle', shape: 'circle', fill: '#10b981', stroke: '#059669' },
+            { name: 'Triangle', shape: 'triangle', fill: '#f97316', stroke: '#ea580c' },
+            { name: 'Purple', shape: 'circle', fill: '#a855f7', stroke: '#9333ea' },
+            { name: 'Cyan', shape: 'square', fill: '#06b6d4', stroke: '#0891b2' }
+        ];
+
+        function initializeApp() {
+            renderPresetIcons();
+            updateIcon();
+        }
+
+        function selectShape(shape) {
+            currentShape = shape;
+            
+            // Aggiorna i pulsanti attivi
+            document.querySelectorAll('.shape-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.closest('.shape-button').classList.add('active');
+            
+            updateIcon();
+        }
+
+        function generateShapeSVG(shape, size, fill, stroke, strokeWidth, opacity, rotation) {
+            const center = size / 2;
+            const radius = (size - strokeWidth * 2) / 2.5;
+            
+            let shapeElement = '';
+            
+            switch(shape) {
+                case 'circle':
+                    shapeElement = `<circle cx="${center}" cy="${center}" r="${radius}" fill="${fill}" stroke="${stroke}" stroke-width="${strokeWidth}" opacity="${opacity/100}"/>`;
+                    break;
+                case 'square':
+                    const squareSize = radius * 1.4;
+                    const squarePos = center - squareSize / 2;
+                    shapeElement = `<rect x="${squarePos}" y="${squarePos}" width="${squareSize}" height="${squareSize}" fill="${fill}" stroke="${stroke}" stroke-width="${strokeWidth}" opacity="${opacity/100}"/>`;
+                    break;
+                case 'triangle':
+                    const trianglePoints = `${center},${center - radius} ${center + radius * 0.866},${center + radius * 0.5} ${center - radius * 0.866},${center + radius * 0.5}`;
+                    shapeElement = `<polygon points="${trianglePoints}" fill="${fill}" stroke="${stroke}" stroke-width="${strokeWidth}" opacity="${opacity/100}"/>`;
+                    break;
+                case 'star':
+                    const starPoints = generateStarPoints(center, center, radius, radius * 0.5, 5);
+                    shapeElement = `<polygon points="${starPoints}" fill="${fill}" stroke="${stroke}" stroke-width="${strokeWidth}" opacity="${opacity/100}"/>`;
+                    break;
+                case 'heart':
+                    const heartPath = generateHeartPath(center, center, radius);
+                    shapeElement = `<path d="${heartPath}" fill="${fill}" stroke="${stroke}" stroke-width="${strokeWidth}" opacity="${opacity/100}"/>`;
+                    break;
+                case 'diamond':
+                    const diamondPoints = `${center},${center - radius} ${center + radius},${center} ${center},${center + radius} ${center - radius},${center}`;
+                    shapeElement = `<polygon points="${diamondPoints}" fill="${fill}" stroke="${stroke}" stroke-width="${strokeWidth}" opacity="${opacity/100}"/>`;
+                    break;
+            }
+            
+            const transform = rotation > 0 ? ` transform="rotate(${rotation} ${center} ${center})"` : '';
+            
+            return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">
+  <g${transform}>
+    ${shapeElement}
+  </g>
+</svg>`;
+        }
+
+        function generateStarPoints(cx, cy, outerRadius, innerRadius, points) {
+            let result = '';
+            const angle = Math.PI / points;
+            
+            for (let i = 0; i < 2 * points; i++) {
+                const radius = i % 2 === 0 ? outerRadius : innerRadius;
+                const x = cx + Math.cos(i * angle - Math.PI / 2) * radius;
+                const y = cy + Math.sin(i * angle - Math.PI / 2) * radius;
+                result += `${x},${y} `;
+            }
+            
+            return result.trim();
+        }
+
+        function generateHeartPath(cx, cy, size) {
+            const s = size / 2;
+            return `M${cx},${cy + s * 0.3} 
+                    C${cx},${cy - s * 0.2} ${cx - s},${cy - s * 0.8} ${cx - s * 0.5},${cy - s * 0.8} 
+                    C${cx - s * 0.2},${cy - s * 0.8} ${cx},${cy - s * 0.3} ${cx},${cy - s * 0.3}
+                    C${cx},${cy - s * 0.3} ${cx + s * 0.2},${cy - s * 0.8} ${cx + s * 0.5},${cy - s * 0.8}
+                    C${cx + s},${cy - s * 0.8} ${cx},${cy - s * 0.2} ${cx},${cy + s * 0.3} Z`;
+        }
+
+        function updateIcon() {
+            const size = parseInt(document.getElementById('iconSize').value);
+            const fill = document.getElementById('fillColor').value;
+            const stroke = document.getElementById('strokeColor').value;
+            const strokeWidth = parseInt(document.getElementById('strokeWidth').value);
+            const opacity = parseInt(document.getElementById('opacity').value);
+            const rotation = parseInt(document.getElementById('rotation').value);
+            
+            // Aggiorna i valori mostrati
+            document.getElementById('sizeValue').textContent = size + 'px';
+            document.getElementById('strokeWidthValue').textContent = strokeWidth + 'px';
+            document.getElementById('opacityValue').textContent = opacity + '%';
+            document.getElementById('rotationValue').textContent = rotation + '°';
+            
+            // Sincronizza i campi di testo dei colori
+            document.getElementById('fillColorText').value = fill;
+            document.getElementById('strokeColorText').value = stroke;
+            
+            currentSize = size;
+            
+            // Genera SVG
+            const svgCode = generateShapeSVG(currentShape, size, fill, stroke, strokeWidth, opacity, rotation);
+            
+            // Aggiorna anteprima
+            document.getElementById('iconPreview').innerHTML = svgCode;
+            
+            // Aggiorna codice
+            updateCode(svgCode);
+        }
+
+        function updateFillFromText() {
+            const color = document.getElementById('fillColorText').value;
+            if (/^#[0-9A-F]{6}$/i.test(color)) {
+                document.getElementById('fillColor').value = color;
+                updateIcon();
+            }
+        }
+
+        function updateStrokeFromText() {
+            const color = document.getElementById('strokeColorText').value;
+            if (/^#[0-9A-F]{6}$/i.test(color)) {
+                document.getElementById('strokeColor').value = color;
+                updateIcon();
+            }
+        }
+
+        function updateCode(svgCode) {
+            const svgCodeElement = document.getElementById('svgCode');
+            const htmlCodeElement = document.getElementById('htmlCode');
+            
+            svgCodeElement.textContent = svgCode;
+            
+            const htmlCode = `<div class="icon">
+  ${svgCode}
+</div>`;
+            
+            htmlCodeElement.textContent = htmlCode;
+        }
+
+        function renderPresetIcons() {
+            const container = document.getElementById('presetIcons');
+            container.innerHTML = '';
+            
+            presetIcons.forEach((preset, index) => {
+                const iconDiv = document.createElement('div');
+                iconDiv.className = 'cursor-pointer p-3 bg-gray-50 hover:bg-gray-100 rounded-lg text-center icon-transition';
+                
+                const svg = generateShapeSVG(preset.shape, 40, preset.fill, preset.stroke, 2, 100, 0);
+                iconDiv.innerHTML = `
+                    ${svg}
+                    <p class="text-xs text-gray-600 mt-2">${preset.name}</p>
+                `;
+                
+                iconDiv.onclick = () => applyPreset(preset);
+                container.appendChild(iconDiv);
+            });
+        }
+
+        function applyPreset(preset) {
+            // Aggiorna i controlli
+            document.getElementById('fillColor').value = preset.fill;
+            document.getElementById('strokeColor').value = preset.stroke;
+            
+            // Seleziona la forma
+            currentShape = preset.shape;
+            document.querySelectorAll('.shape-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Trova e attiva il pulsante della forma
+            const shapeButtons = document.querySelectorAll('.shape-button');
+            shapeButtons.forEach(btn => {
+                if (btn.onclick.toString().includes(preset.shape)) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            updateIcon();
+        }
+
+        function setPreviewSize(size) {
+            const preview = document.getElementById('iconPreview').querySelector('svg');
+            if (preview) {
+                preview.setAttribute('width', size);
+                preview.setAttribute('height', size);
+            }
+        }
+
+        function setPreviewBg(type) {
+            const preview = document.getElementById('iconPreview');
+            if (type === 'dark') {
+                preview.className = 'icon-preview w-full bg-gray-800 grid-bg rounded-lg border-2 border-gray-200';
+            } else {
+                preview.className = 'icon-preview w-full bg-gray-50 grid-bg rounded-lg border-2 border-gray-200';
+            }
+        }
+
+        function copyCode(type) {
+            let textToCopy = '';
+            if (type === 'svg') {
+                textToCopy = document.getElementById('svgCode').textContent;
+            } else if (type === 'html') {
+                textToCopy = document.getElementById('htmlCode').textContent;
+            }
+            
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                showToast();
+            });
+        }
+
+        function downloadSVG() {
+            const svgCode = document.getElementById('svgCode').textContent;
+            const blob = new Blob([svgCode], { type: 'image/svg+xml' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `icon-${currentShape}-${currentSize}px.svg`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showToast();
+        }
+
+        function showToast() {
+            const toast = document.getElementById('copyToast');
+            toast.classList.remove('translate-y-full', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-full', 'opacity-0');
+            }, 2000);
+        }
+
+        // Inizializza l'app
+        initializeApp();
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9918dbd856ec5091',t:'MTc2MDk2NjkxMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

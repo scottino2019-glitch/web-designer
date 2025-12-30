@@ -1,0 +1,580 @@
+<!doctype html>
+<html lang="it">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editor di Testo Stilizzato</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Noto Sans', 'Noto Sans JP', 'Noto Sans KR', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    
+    html {
+      height: 100%;
+    }
+    
+    .editor-app {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
+      gap: 20px;
+      overflow-y: auto;
+    }
+    
+    .app-header {
+      text-align: center;
+    }
+    
+    .app-title {
+      font-size: 36px;
+      font-weight: 800;
+      margin: 0;
+      padding-bottom: 8px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .input-section {
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    }
+    
+    .text-input {
+      width: 100%;
+      min-height: 80px;
+      padding: 16px;
+      font-size: 18px;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      resize: vertical;
+      font-family: 'Noto Sans', 'Noto Sans JP', 'Noto Sans KR', 'Noto Sans SC', sans-serif;
+      transition: border-color 0.3s;
+    }
+    
+    .text-input:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+    
+    .styles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+    
+    .style-button {
+      padding: 12px 16px;
+      border: 2px solid transparent;
+      border-radius: 12px;
+      background: white;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-weight: 600;
+      font-size: 13px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    
+    .style-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .style-button.active {
+      border-color: #667eea;
+      background: #f0f4ff;
+    }
+    
+    .preview-section {
+      padding: 40px;
+      border-radius: 16px;
+      min-height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      position: relative;
+    }
+    
+    .preview-text {
+      font-size: 48px;
+      font-weight: 800;
+      text-align: center;
+      word-wrap: break-word;
+      max-width: 100%;
+      line-height: 1.3;
+    }
+    
+    /* Stili di testo */
+    .gradient-rainbow {
+      background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      background-size: 200% auto;
+      animation: rainbow 3s linear infinite;
+    }
+    
+    .neon-blue {
+      color: #00f3ff;
+      text-shadow: 0 0 10px #00f3ff, 0 0 20px #00f3ff, 0 0 30px #00f3ff, 0 0 40px #00f3ff;
+    }
+    
+    .neon-pink {
+      color: #ff006e;
+      text-shadow: 0 0 10px #ff006e, 0 0 20px #ff006e, 0 0 30px #ff006e, 0 0 40px #ff006e;
+    }
+    
+    .gold-luxury {
+      background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffd700 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 4px 8px rgba(255, 215, 0, 0.5));
+    }
+    
+    .shadow-3d {
+      color: #2d3748;
+      text-shadow: 3px 3px 0px #cbd5e0, 6px 6px 0px #a0aec0, 9px 9px 0px #718096;
+    }
+    
+    .outlined {
+      color: transparent;
+      -webkit-text-stroke: 3px #2d3748;
+      text-stroke: 3px #2d3748;
+    }
+    
+    .retro-wave {
+      background: linear-gradient(180deg, #ff71ce 0%, #01cdfe 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 0 30px rgba(255, 113, 206, 0.5);
+    }
+    
+    .fire-effect {
+      background: linear-gradient(180deg, #ff0000 0%, #ff7f00 50%, #ffff00 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 0 20px rgba(255, 100, 0, 0.8));
+    }
+    
+    .ice-effect {
+      background: linear-gradient(180deg, #e0f7ff 0%, #00d4ff 50%, #0066ff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 0 15px rgba(0, 212, 255, 0.6));
+    }
+    
+    .glitch {
+      color: #00ff41;
+      animation: glitch 1s infinite;
+    }
+    
+    .elegant-serif {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      color: #2c3e50;
+      letter-spacing: 2px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    .comic-pop {
+      color: #ff4757;
+      text-shadow: 
+        3px 3px 0 #000,
+        -3px -3px 0 #000,
+        3px -3px 0 #000,
+        -3px 3px 0 #000;
+      font-weight: 900;
+    }
+    
+    @keyframes rainbow {
+      to { background-position: 200% center; }
+    }
+    
+    @keyframes glitch {
+      0%, 100% { text-shadow: 2px 2px #ff00ff, -2px -2px #00ffff; }
+      50% { text-shadow: -2px -2px #ff00ff, 2px 2px #00ffff; }
+    }
+    
+    .controls-section {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    }
+    
+    .control-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .control-label {
+      font-weight: 600;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+    
+    .size-slider {
+      width: 150px;
+    }
+    
+    .color-input {
+      width: 60px;
+      height: 40px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    
+    .download-button {
+      padding: 14px 28px;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      color: white;
+      margin-left: auto;
+    }
+    
+    .download-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+    }
+    
+    .download-button:active {
+      transform: translateY(0);
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  <main class="editor-app">
+   <header class="app-header">
+    <h1 class="app-title" id="appTitle">Editor di Testo Stilizzato</h1>
+   </header>
+   <section class="input-section" id="inputSection"><textarea class="text-input" id="textInput" placeholder="Scrivi il tuo testo qui... (funziona con tutte le lingue! 你好 こんにちは 안녕하세요)"></textarea>
+    <div class="styles-grid" id="stylesGrid"><button class="style-button active" data-style="gradient-rainbow">🌈 Arcobaleno</button> <button class="style-button" data-style="neon-blue">💙 Neon Blu</button> <button class="style-button" data-style="neon-pink">💗 Neon Rosa</button> <button class="style-button" data-style="gold-luxury">✨ Oro Lusso</button> <button class="style-button" data-style="shadow-3d">📦 3D Ombra</button> <button class="style-button" data-style="outlined">⭕ Contorno</button> <button class="style-button" data-style="retro-wave">🌊 Retro Wave</button> <button class="style-button" data-style="fire-effect">🔥 Fuoco</button> <button class="style-button" data-style="ice-effect">❄️ Ghiaccio</button> <button class="style-button" data-style="glitch">⚡ Glitch</button> <button class="style-button" data-style="elegant-serif">🎩 Elegante</button> <button class="style-button" data-style="comic-pop">💥 Fumetto</button>
+    </div>
+   </section>
+   <section class="preview-section" id="previewSection">
+    <div class="preview-text gradient-rainbow" id="previewText">
+     Il Tuo Testo Qui
+    </div>
+   </section>
+   <section class="controls-section" id="controlsSection">
+    <div class="control-group"><label class="control-label" for="textSize">Dimensione:</label> <input type="range" id="textSize" class="size-slider" min="24" max="120" value="48"> <span class="control-label" id="sizeValue">48</span>
+    </div><button class="download-button" id="downloadButton">📥 Scarica Immagine</button>
+   </section>
+  </main>
+  <script>
+    const defaultConfig = {
+      background_color: "#f8fafc",
+      input_background: "#ffffff",
+      preview_background: "#1a202c",
+      text_color: "#2d3748",
+      button_color: "#667eea",
+      font_family: "Noto Sans",
+      font_size: 16,
+      app_title: "Editor di Testo Stilizzato",
+      placeholder_text: "Scrivi il tuo testo qui... (funziona con tutte le lingue! 你好 こんにちは 안녕하세요)",
+      download_button_text: "📥 Scarica Immagine"
+    };
+
+    const textInput = document.getElementById('textInput');
+    const previewText = document.getElementById('previewText');
+    const styleButtons = document.querySelectorAll('.style-button');
+    const textSize = document.getElementById('textSize');
+    const sizeValue = document.getElementById('sizeValue');
+    const downloadButton = document.getElementById('downloadButton');
+    
+    let currentStyle = 'gradient-rainbow';
+
+    textInput.addEventListener('input', (e) => {
+      const text = e.target.value || 'Il Tuo Testo Qui';
+      previewText.textContent = text;
+    });
+
+    styleButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        styleButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+        
+        currentStyle = button.dataset.style;
+        previewText.className = `preview-text ${currentStyle}`;
+      });
+    });
+
+    textSize.addEventListener('input', (e) => {
+      const size = e.target.value;
+      sizeValue.textContent = size;
+      previewText.style.fontSize = `${size}px`;
+    });
+
+    downloadButton.addEventListener('click', async () => {
+      const preview = document.getElementById('previewSection');
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      
+      // Dimensioni canvas
+      canvas.width = preview.offsetWidth * 2;
+      canvas.height = preview.offsetHeight * 2;
+      ctx.scale(2, 2);
+      
+      // Background
+      const bgColor = window.elementSdk ? window.elementSdk.config.preview_background : defaultConfig.preview_background;
+      ctx.fillStyle = bgColor;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      // Testo
+      const fontSize = textSize.value;
+      ctx.font = `800 ${fontSize}px "Noto Sans", "Noto Sans JP", "Noto Sans KR", "Noto Sans SC", sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      
+      const text = textInput.value || 'Il Tuo Testo Qui';
+      const x = preview.offsetWidth / 2;
+      const y = preview.offsetHeight / 2;
+      
+      // Applica stile
+      if (currentStyle === 'gradient-rainbow') {
+        const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
+        gradient.addColorStop(0, '#ff0000');
+        gradient.addColorStop(0.17, '#ff7f00');
+        gradient.addColorStop(0.33, '#ffff00');
+        gradient.addColorStop(0.5, '#00ff00');
+        gradient.addColorStop(0.67, '#0000ff');
+        gradient.addColorStop(0.83, '#4b0082');
+        gradient.addColorStop(1, '#9400d3');
+        ctx.fillStyle = gradient;
+        ctx.fillText(text, x, y);
+      } else if (currentStyle === 'neon-blue') {
+        ctx.shadowColor = '#00f3ff';
+        ctx.shadowBlur = 40;
+        ctx.fillStyle = '#00f3ff';
+        ctx.fillText(text, x, y);
+      } else if (currentStyle === 'neon-pink') {
+        ctx.shadowColor = '#ff006e';
+        ctx.shadowBlur = 40;
+        ctx.fillStyle = '#ff006e';
+        ctx.fillText(text, x, y);
+      } else if (currentStyle === 'gold-luxury') {
+        const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+        gradient.addColorStop(0, '#ffd700');
+        gradient.addColorStop(0.5, '#ffed4e');
+        gradient.addColorStop(1, '#ffd700');
+        ctx.shadowColor = 'rgba(255, 215, 0, 0.5)';
+        ctx.shadowBlur = 20;
+        ctx.fillStyle = gradient;
+        ctx.fillText(text, x, y);
+      } else if (currentStyle === 'shadow-3d') {
+        ctx.fillStyle = '#cbd5e0';
+        ctx.fillText(text, x + 3, y + 3);
+        ctx.fillStyle = '#a0aec0';
+        ctx.fillText(text, x + 6, y + 6);
+        ctx.fillStyle = '#718096';
+        ctx.fillText(text, x + 9, y + 9);
+        ctx.fillStyle = '#2d3748';
+        ctx.fillText(text, x, y);
+      } else if (currentStyle === 'outlined') {
+        ctx.strokeStyle = '#2d3748';
+        ctx.lineWidth = 6;
+        ctx.strokeText(text, x, y);
+      } else if (currentStyle === 'fire-effect') {
+        const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+        gradient.addColorStop(0, '#ff0000');
+        gradient.addColorStop(0.5, '#ff7f00');
+        gradient.addColorStop(1, '#ffff00');
+        ctx.shadowColor = 'rgba(255, 100, 0, 0.8)';
+        ctx.shadowBlur = 30;
+        ctx.fillStyle = gradient;
+        ctx.fillText(text, x, y);
+      } else if (currentStyle === 'ice-effect') {
+        const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+        gradient.addColorStop(0, '#e0f7ff');
+        gradient.addColorStop(0.5, '#00d4ff');
+        gradient.addColorStop(1, '#0066ff');
+        ctx.shadowColor = 'rgba(0, 212, 255, 0.6)';
+        ctx.shadowBlur = 25;
+        ctx.fillStyle = gradient;
+        ctx.fillText(text, x, y);
+      } else if (currentStyle === 'comic-pop') {
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = 6;
+        ctx.strokeText(text, x + 3, y + 3);
+        ctx.strokeText(text, x - 3, y - 3);
+        ctx.strokeText(text, x + 3, y - 3);
+        ctx.strokeText(text, x - 3, y + 3);
+        ctx.fillStyle = '#ff4757';
+        ctx.fillText(text, x, y);
+      } else {
+        ctx.fillStyle = '#ffffff';
+        ctx.fillText(text, x, y);
+      }
+      
+      // Download
+      const link = document.createElement('a');
+      link.download = 'testo-stilizzato.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    });
+
+    async function onConfigChange(config) {
+      const appConfig = { ...defaultConfig, ...config };
+      
+      // Backgrounds
+      document.querySelector('.editor-app').style.background = appConfig.background_color;
+      document.querySelector('.input-section').style.background = appConfig.input_background;
+      document.querySelector('.preview-section').style.background = appConfig.preview_background;
+      document.querySelector('.controls-section').style.background = appConfig.input_background;
+      
+      // Text colors
+      document.querySelector('.text-input').style.color = appConfig.text_color;
+      document.querySelectorAll('.control-label').forEach(label => {
+        label.style.color = appConfig.text_color;
+      });
+      
+      // Button
+      document.querySelector('.download-button').style.background = appConfig.button_color;
+      
+      // Font
+      const fontFamily = appConfig.font_family;
+      const baseFontStack = '"Noto Sans JP", "Noto Sans KR", "Noto Sans SC", -apple-system, BlinkMacSystemFont, sans-serif';
+      document.querySelector('.app-title').style.fontFamily = `${fontFamily}, ${baseFontStack}`;
+      document.querySelector('.text-input').style.fontFamily = `${fontFamily}, ${baseFontStack}`;
+      document.querySelectorAll('.control-label').forEach(label => {
+        label.style.fontFamily = `${fontFamily}, ${baseFontStack}`;
+      });
+      document.querySelectorAll('.style-button').forEach(button => {
+        button.style.fontFamily = `${fontFamily}, ${baseFontStack}`;
+      });
+      document.querySelector('.download-button').style.fontFamily = `${fontFamily}, ${baseFontStack}`;
+      
+      // Font sizes
+      const baseSize = appConfig.font_size;
+      document.querySelector('.app-title').style.fontSize = `${baseSize * 2.25}px`;
+      document.querySelector('.text-input').style.fontSize = `${baseSize * 1.125}px`;
+      document.querySelectorAll('.control-label').forEach(label => {
+        label.style.fontSize = `${baseSize * 0.875}px`;
+      });
+      document.querySelectorAll('.style-button').forEach(button => {
+        button.style.fontSize = `${baseSize * 0.8125}px`;
+      });
+      document.querySelector('.download-button').style.fontSize = `${baseSize * 0.9375}px`;
+      
+      // Editable text
+      document.getElementById('appTitle').textContent = appConfig.app_title;
+      document.getElementById('textInput').placeholder = appConfig.placeholder_text;
+      document.getElementById('downloadButton').textContent = appConfig.download_button_text;
+    }
+
+    function mapToCapabilities(config) {
+      const appConfig = { ...defaultConfig, ...config };
+      
+      return {
+        recolorables: [
+          {
+            get: () => appConfig.background_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.setConfig({ background_color: value });
+              }
+            }
+          },
+          {
+            get: () => appConfig.input_background,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.setConfig({ input_background: value });
+              }
+            }
+          },
+          {
+            get: () => appConfig.preview_background,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.setConfig({ preview_background: value });
+              }
+            }
+          },
+          {
+            get: () => appConfig.text_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.setConfig({ text_color: value });
+              }
+            }
+          },
+          {
+            get: () => appConfig.button_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.setConfig({ button_color: value });
+              }
+            }
+          }
+        ],
+        borderables: [],
+        fontEditable: {
+          get: () => appConfig.font_family,
+          set: (value) => {
+            if (window.elementSdk) {
+              window.elementSdk.setConfig({ font_family: value });
+            }
+          }
+        },
+        fontSizeable: {
+          get: () => appConfig.font_size,
+          set: (value) => {
+            if (window.elementSdk) {
+              window.elementSdk.setConfig({ font_size: value });
+            }
+          }
+        }
+      };
+    }
+
+    function mapToEditPanelValues(config) {
+      const appConfig = { ...defaultConfig, ...config };
+      return new Map([
+        ["app_title", appConfig.app_title],
+        ["placeholder_text", appConfig.placeholder_text],
+        ["download_button_text", appConfig.download_button_text]
+      ]);
+    }
+
+    // Initialize
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities,
+        mapToEditPanelValues
+      });
+    } else {
+      onConfigChange(defaultConfig);
+    }
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a449af877b759dd',t:'MTc2NDEwOTk4MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

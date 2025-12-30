@@ -1,0 +1,716 @@
+<!doctype html>
+<html lang="it">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Icon Creator Studio</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    
+    html {
+      height: 100%;
+    }
+    
+    .studio-wrapper {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
+      gap: 24px;
+      overflow-y: auto;
+    }
+    
+    .app-header {
+      text-align: center;
+    }
+    
+    .app-title {
+      font-size: 36px;
+      font-weight: 800;
+      margin: 0;
+      padding-bottom: 8px;
+    }
+    
+    .main-grid {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 24px;
+      flex: 1;
+    }
+    
+    @media (max-width: 968px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .controls-section {
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      max-height: 800px;
+      overflow-y: auto;
+    }
+    
+    .preview-section {
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    
+    .section-heading {
+      font-size: 16px;
+      font-weight: 700;
+      margin: 0 0 12px 0;
+    }
+    
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .control-label {
+      font-weight: 600;
+      font-size: 13px;
+    }
+    
+    .text-field {
+      padding: 10px;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: border-color 0.2s;
+    }
+    
+    .text-field:focus {
+      outline: none;
+      border-color: #3b82f6;
+    }
+    
+    .shape-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+    
+    .shape-button {
+      padding: 12px;
+      border: 2px solid transparent;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+    
+    .shape-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .shape-button.active {
+      border-color: #3b82f6;
+    }
+    
+    .color-picker-wrapper {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    
+    .color-input {
+      width: 60px;
+      height: 40px;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    
+    .color-code {
+      flex: 1;
+      padding: 10px;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: monospace;
+    }
+    
+    .slider-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .slider-label-row {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 600;
+      font-size: 13px;
+    }
+    
+    .slider-control {
+      width: 100%;
+      cursor: pointer;
+    }
+    
+    .preview-canvas {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      min-height: 400px;
+      padding: 40px;
+      position: relative;
+    }
+    
+    .icon-display {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    
+    .icon-shape {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+    }
+    
+    .icon-emoji {
+      user-select: none;
+      line-height: 1;
+    }
+    
+    .action-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    
+    .action-btn {
+      flex: 1;
+      padding: 14px 24px;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      color: white;
+      min-width: 150px;
+    }
+    
+    .action-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+    }
+    
+    .action-btn:active {
+      transform: translateY(0);
+    }
+
+    .save-notification {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      padding: 16px 24px;
+      background: #10b981;
+      color: white;
+      border-radius: 12px;
+      font-weight: 700;
+      box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
+      z-index: 1000;
+      animation: slideInUp 0.3s ease-out;
+    }
+
+    @keyframes slideInUp {
+      from {
+        transform: translateY(100px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  <main class="studio-wrapper">
+   <header class="app-header">
+    <h1 class="app-title" id="appTitle">Icon Creator Studio</h1>
+   </header>
+   <div class="main-grid">
+    <aside class="controls-section" id="controlsSection">
+     <div>
+      <h2 class="section-heading">Emoji / Simbolo</h2>
+      <div class="control-group"><label class="control-label" for="emojiInput">Icona Emoji</label> <input type="text" class="text-field" id="emojiInput" placeholder="🚀" maxlength="2" value="🎨">
+      </div>
+     </div>
+     <div>
+      <h2 class="section-heading">Forma Sfondo</h2>
+      <div class="shape-grid"><button class="shape-button active" data-shape="circle">⭕ Cerchio</button> <button class="shape-button" data-shape="square">⬜ Quadrato</button> <button class="shape-button" data-shape="rounded">▢ Arrotondato</button> <button class="shape-button" data-shape="hexagon">⬡ Esagono</button>
+      </div>
+     </div>
+     <div class="control-group"><label class="control-label">Colore Sfondo</label>
+      <div class="color-picker-wrapper"><input type="color" class="color-input" id="bgColorPicker" value="#3b82f6"> <input type="text" class="color-code" id="bgColorCode" value="#3b82f6">
+      </div>
+     </div>
+     <div class="slider-wrapper">
+      <div class="slider-label-row"><span>Dimensione Icona (anteprima)</span> <span id="sizeValue">80px</span>
+      </div><input type="range" class="slider-control" id="iconSizeSlider" min="40" max="200" value="80">
+     </div>
+     <div class="slider-wrapper">
+      <div class="slider-label-row"><span>Dimensione Emoji</span> <span id="emojiSizeValue">48px</span>
+      </div><input type="range" class="slider-control" id="emojiSizeSlider" min="24" max="120" value="48">
+     </div>
+     <div class="slider-wrapper">
+      <div class="slider-label-row"><span>Dimensione Export PNG</span> <span id="exportSizeValue">512px</span>
+      </div><input type="range" class="slider-control" id="exportSizeSlider" min="40" max="200" step="64" value="512">
+      <p style="font-size: 11px; margin: 4px 0 0 0; opacity: 0.7;">Dimensione finale del file PNG salvato</p>
+     </div>
+    </aside>
+    <section class="preview-section" id="previewSection">
+     <h2 class="section-heading">Anteprima</h2>
+     <div class="preview-canvas" id="previewCanvas">
+      <div class="icon-display" id="iconDisplay">
+       <div class="icon-shape" id="iconShape"><span class="icon-emoji" id="iconEmoji">🎨</span>
+       </div>
+      </div>
+     </div>
+     <div class="action-row"><button class="action-btn" id="saveButton">💾 Salva Icona PNG</button> <button class="action-btn" id="copySvgButton">📋 Copia SVG</button>
+     </div>
+    </section>
+   </div>
+  </main>
+  <script>
+    const defaultConfig = {
+      background_color: "#f0f4f8",
+      panel_background: "#ffffff",
+      preview_background: "#e2e8f0",
+      text_color: "#2d3748",
+      button_color: "#3b82f6",
+      font_family: "Inter",
+      font_size: 16,
+      app_title: "Icon Creator Studio"
+    };
+
+    let iconSettings = {
+      emoji: '🎨',
+      shape: 'circle',
+      bgColor: '#3b82f6',
+      iconSize: 80,
+      emojiSize: 48,
+      exportSize: 512
+    };
+
+    const shapeButtons = document.querySelectorAll('.shape-button');
+    const emojiInput = document.getElementById('emojiInput');
+    const bgColorPicker = document.getElementById('bgColorPicker');
+    const bgColorCode = document.getElementById('bgColorCode');
+    const iconSizeSlider = document.getElementById('iconSizeSlider');
+    const emojiSizeSlider = document.getElementById('emojiSizeSlider');
+    const exportSizeSlider = document.getElementById('exportSizeSlider');
+    const iconShape = document.getElementById('iconShape');
+    const iconEmoji = document.getElementById('iconEmoji');
+    const saveButton = document.getElementById('saveButton');
+    const copySvgButton = document.getElementById('copySvgButton');
+
+    // Shape selection
+    shapeButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        shapeButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        iconSettings.shape = btn.dataset.shape;
+        updateIconShape();
+      });
+    });
+
+    // Emoji input
+    emojiInput.addEventListener('input', (e) => {
+      iconSettings.emoji = e.target.value || '🎨';
+      iconEmoji.textContent = iconSettings.emoji;
+    });
+
+    // Background color
+    bgColorPicker.addEventListener('input', (e) => {
+      iconSettings.bgColor = e.target.value;
+      bgColorCode.value = e.target.value;
+      iconShape.style.background = e.target.value;
+    });
+
+    bgColorCode.addEventListener('input', (e) => {
+      const color = e.target.value;
+      if (/^#[0-9A-F]{6}$/i.test(color)) {
+        iconSettings.bgColor = color;
+        bgColorPicker.value = color;
+        iconShape.style.background = color;
+      }
+    });
+
+    // Icon size slider
+    iconSizeSlider.addEventListener('input', (e) => {
+      iconSettings.iconSize = parseInt(e.target.value);
+      document.getElementById('sizeValue').textContent = `${e.target.value}px`;
+      updateIconShape();
+    });
+
+    // Emoji size slider
+    emojiSizeSlider.addEventListener('input', (e) => {
+      iconSettings.emojiSize = parseInt(e.target.value);
+      document.getElementById('emojiSizeValue').textContent = `${e.target.value}px`;
+      iconEmoji.style.fontSize = `${e.target.value}px`;
+    });
+
+    // Export size slider
+    exportSizeSlider.addEventListener('input', (e) => {
+      iconSettings.exportSize = parseInt(e.target.value);
+      document.getElementById('exportSizeValue').textContent = `${e.target.value}px`;
+    });
+
+    function updateIconShape() {
+      const size = iconSettings.iconSize;
+      iconShape.style.width = `${size}px`;
+      iconShape.style.height = `${size}px`;
+      iconShape.style.background = iconSettings.bgColor;
+      
+      switch(iconSettings.shape) {
+        case 'circle':
+          iconShape.style.borderRadius = '50%';
+          iconShape.style.clipPath = 'none';
+          break;
+        case 'square':
+          iconShape.style.borderRadius = '0';
+          iconShape.style.clipPath = 'none';
+          break;
+        case 'rounded':
+          iconShape.style.borderRadius = '20%';
+          iconShape.style.clipPath = 'none';
+          break;
+        case 'hexagon':
+          iconShape.style.borderRadius = '0';
+          iconShape.style.clipPath = 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)';
+          break;
+      }
+    }
+
+    function showNotification(message, isSuccess = true) {
+      const notification = document.createElement('div');
+      notification.className = 'save-notification';
+      notification.textContent = message;
+      notification.style.background = isSuccess ? '#10b981' : '#ef4444';
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.style.animation = 'slideInUp 0.3s ease-out reverse';
+        setTimeout(() => {
+          document.body.removeChild(notification);
+        }, 300);
+      }, 2000);
+    }
+
+    // Save as PNG
+    saveButton.addEventListener('click', () => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const exportSize = iconSettings.exportSize;
+      
+      canvas.width = exportSize;
+      canvas.height = exportSize;
+      
+      // Draw background shape
+      ctx.fillStyle = iconSettings.bgColor;
+      
+      switch(iconSettings.shape) {
+        case 'circle':
+          ctx.beginPath();
+          ctx.arc(exportSize/2, exportSize/2, exportSize/2, 0, Math.PI * 2);
+          ctx.fill();
+          break;
+        case 'square':
+          ctx.fillRect(0, 0, exportSize, exportSize);
+          break;
+        case 'rounded':
+          const radius = exportSize * 0.2;
+          ctx.beginPath();
+          ctx.moveTo(radius, 0);
+          ctx.lineTo(exportSize - radius, 0);
+          ctx.quadraticCurveTo(exportSize, 0, exportSize, radius);
+          ctx.lineTo(exportSize, exportSize - radius);
+          ctx.quadraticCurveTo(exportSize, exportSize, exportSize - radius, exportSize);
+          ctx.lineTo(radius, exportSize);
+          ctx.quadraticCurveTo(0, exportSize, 0, exportSize - radius);
+          ctx.lineTo(0, radius);
+          ctx.quadraticCurveTo(0, 0, radius, 0);
+          ctx.fill();
+          break;
+        case 'hexagon':
+          ctx.beginPath();
+          ctx.moveTo(exportSize * 0.5, 0);
+          ctx.lineTo(exportSize, exportSize * 0.25);
+          ctx.lineTo(exportSize, exportSize * 0.75);
+          ctx.lineTo(exportSize * 0.5, exportSize);
+          ctx.lineTo(0, exportSize * 0.75);
+          ctx.lineTo(0, exportSize * 0.25);
+          ctx.closePath();
+          ctx.fill();
+          break;
+      }
+      
+      // Draw emoji - proporzionale alla dimensione export
+      const emojiRatio = iconSettings.emojiSize / iconSettings.iconSize;
+      const emojiFontSize = exportSize * emojiRatio;
+      ctx.font = `${emojiFontSize}px Arial`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(iconSettings.emoji, exportSize/2, exportSize/2);
+      
+      // Download
+      const link = document.createElement('a');
+      link.download = `icona-${exportSize}px.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+      
+      showNotification(`✅ Icona ${exportSize}x${exportSize}px salvata!`);
+    });
+
+    // Copy SVG
+    copySvgButton.addEventListener('click', () => {
+      let shapeSvg = '';
+      const size = iconSettings.exportSize;
+      const half = size / 2;
+      
+      switch(iconSettings.shape) {
+        case 'circle':
+          shapeSvg = `<circle cx="${half}" cy="${half}" r="${half}" fill="${iconSettings.bgColor}"/>`;
+          break;
+        case 'square':
+          shapeSvg = `<rect width="${size}" height="${size}" fill="${iconSettings.bgColor}"/>`;
+          break;
+        case 'rounded':
+          const rx = size * 0.2;
+          shapeSvg = `<rect width="${size}" height="${size}" rx="${rx}" ry="${rx}" fill="${iconSettings.bgColor}"/>`;
+          break;
+        case 'hexagon':
+          shapeSvg = `<polygon points="${half},0 ${size},${size*0.25} ${size},${size*0.75} ${half},${size} 0,${size*0.75} 0,${size*0.25}" fill="${iconSettings.bgColor}"/>`;
+          break;
+      }
+      
+      const emojiRatio = iconSettings.emojiSize / iconSettings.iconSize;
+      const emojiFontSize = size * emojiRatio;
+      
+      const svg = `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">
+  ${shapeSvg}
+  <text x="${half}" y="${half}" font-size="${emojiFontSize}" text-anchor="middle" dominant-baseline="central" font-family="Arial">${iconSettings.emoji}</text>
+</svg>`;
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(svg)
+          .then(() => {
+            showNotification('✅ Codice SVG copiato!');
+          })
+          .catch(() => {
+            fallbackCopy(svg);
+          });
+      } else {
+        fallbackCopy(svg);
+      }
+    });
+
+    function fallbackCopy(text) {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.left = '-9999px';
+      document.body.appendChild(textarea);
+      textarea.select();
+      
+      try {
+        document.execCommand('copy');
+        showNotification('✅ Codice SVG copiato!');
+      } catch (err) {
+        showNotification('❌ Errore durante la copia', false);
+      }
+      
+      document.body.removeChild(textarea);
+    }
+
+    async function onConfigChange(config) {
+      const appConfig = { ...defaultConfig, ...config };
+      
+      document.querySelector('.studio-wrapper').style.background = appConfig.background_color;
+      document.querySelector('.controls-section').style.background = appConfig.panel_background;
+      document.querySelector('.preview-section').style.background = appConfig.panel_background;
+      document.querySelector('.preview-canvas').style.background = appConfig.preview_background;
+      
+      document.querySelector('.app-title').style.color = appConfig.text_color;
+      document.querySelectorAll('.section-heading').forEach(heading => {
+        heading.style.color = appConfig.text_color;
+      });
+      document.querySelectorAll('.control-label').forEach(label => {
+        label.style.color = appConfig.text_color;
+      });
+      document.querySelectorAll('.slider-label-row').forEach(label => {
+        label.style.color = appConfig.text_color;
+      });
+      
+      document.querySelectorAll('.shape-button').forEach(btn => {
+        btn.style.background = appConfig.panel_background;
+        btn.style.color = appConfig.text_color;
+      });
+      
+      document.querySelectorAll('.action-btn').forEach(btn => {
+        btn.style.background = appConfig.button_color;
+      });
+      
+      document.querySelectorAll('.text-field, .color-code').forEach(input => {
+        input.style.background = appConfig.panel_background;
+        input.style.color = appConfig.text_color;
+      });
+      
+      const fontFamily = appConfig.font_family;
+      const baseFontStack = '-apple-system, BlinkMacSystemFont, sans-serif';
+      document.querySelector('.app-title').style.fontFamily = `${fontFamily}, ${baseFontStack}`;
+      document.querySelectorAll('.section-heading').forEach(heading => {
+        heading.style.fontFamily = `${fontFamily}, ${baseFontStack}`;
+      });
+      document.querySelectorAll('.control-label').forEach(label => {
+        label.style.fontFamily = `${fontFamily}, ${baseFontStack}`;
+      });
+      document.querySelectorAll('.shape-button').forEach(btn => {
+        btn.style.fontFamily = `${fontFamily}, ${baseFontStack}`;
+      });
+      document.querySelectorAll('.action-btn').forEach(btn => {
+        btn.style.fontFamily = `${fontFamily}, ${baseFontStack}`;
+      });
+      
+      const baseSize = appConfig.font_size;
+      document.querySelector('.app-title').style.fontSize = `${baseSize * 2.25}px`;
+      document.querySelectorAll('.section-heading').forEach(heading => {
+        heading.style.fontSize = `${baseSize}px`;
+      });
+      document.querySelectorAll('.control-label').forEach(label => {
+        label.style.fontSize = `${baseSize * 0.8125}px`;
+      });
+      document.querySelectorAll('.shape-button').forEach(btn => {
+        btn.style.fontSize = `${baseSize * 0.8125}px`;
+      });
+      document.querySelectorAll('.action-btn').forEach(btn => {
+        btn.style.fontSize = `${baseSize * 0.875}px`;
+      });
+      
+      document.getElementById('appTitle').textContent = appConfig.app_title;
+    }
+
+    function mapToCapabilities(config) {
+      const appConfig = { ...defaultConfig, ...config };
+      
+      return {
+        recolorables: [
+          {
+            get: () => appConfig.background_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.setConfig({ background_color: value });
+              }
+            }
+          },
+          {
+            get: () => appConfig.panel_background,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.setConfig({ panel_background: value });
+              }
+            }
+          },
+          {
+            get: () => appConfig.preview_background,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.setConfig({ preview_background: value });
+              }
+            }
+          },
+          {
+            get: () => appConfig.text_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.setConfig({ text_color: value });
+              }
+            }
+          },
+          {
+            get: () => appConfig.button_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.setConfig({ button_color: value });
+              }
+            }
+          }
+        ],
+        borderables: [],
+        fontEditable: {
+          get: () => appConfig.font_family,
+          set: (value) => {
+            if (window.elementSdk) {
+              window.elementSdk.setConfig({ font_family: value });
+            }
+          }
+        },
+        fontSizeable: {
+          get: () => appConfig.font_size,
+          set: (value) => {
+            if (window.elementSdk) {
+              window.elementSdk.setConfig({ font_size: value });
+            }
+          }
+        }
+      };
+    }
+
+    function mapToEditPanelValues(config) {
+      const appConfig = { ...defaultConfig, ...config };
+      return new Map([
+        ["app_title", appConfig.app_title]
+      ]);
+    }
+
+    // Initialize
+    updateIconShape();
+    iconEmoji.style.fontSize = `${iconSettings.emojiSize}px`;
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities,
+        mapToEditPanelValues
+      });
+    } else {
+      onConfigChange(defaultConfig);
+    }
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a44d263e0cc5e95',t:'MTc2NDExMjI1MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

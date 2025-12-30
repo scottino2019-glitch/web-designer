@@ -1,0 +1,520 @@
+<!doctype html>
+<html lang="fr" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Générateur de Blob SVG</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+    }
+    
+    .blob-container {
+      transition: all 0.3s ease;
+    }
+    
+    .control-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 8px;
+      border-radius: 5px;
+      outline: none;
+      transition: opacity 0.2s;
+    }
+    
+    .control-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .control-slider::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+    
+    .control-slider:hover::-webkit-slider-thumb {
+      transform: scale(1.2);
+    }
+    
+    .control-slider:hover::-moz-range-thumb {
+      transform: scale(1.2);
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full">
+  <div id="app" class="h-full w-full overflow-auto">
+   <div class="min-h-full w-full flex flex-col items-center p-8">
+    <header class="text-center mb-8">
+     <h1 id="mainTitle" class="text-5xl font-bold mb-2">Générateur de Blob SVG</h1>
+     <p id="subtitle" class="text-xl">Créez des formes organiques aléatoires</p>
+    </header>
+    <main class="w-full max-w-4xl flex flex-col items-center gap-8">
+     <div class="blob-container w-full max-w-md aspect-square rounded-2xl shadow-lg p-8 flex items-center justify-center">
+      <svg id="blobSvg" width="100%" height="100%" viewbox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><path id="blobPath" fill-rule="evenodd" clip-rule="evenodd"></path>
+      </svg>
+     </div>
+     <div class="w-full max-w-md rounded-xl shadow-md p-6">
+      <h2 class="text-2xl font-semibold mb-4">Contrôles</h2>
+      <div class="space-y-6">
+       <div><label for="shapeType" class="block text-sm font-medium mb-2"> Tipo di forma </label> <select id="shapeType" class="w-full px-4 py-2 rounded-lg border-2 font-medium"> <option value="organic">Organico</option> <option value="rounded">Arrotondato</option> <option value="angular">Angolare</option> <option value="star">Stella</option> <option value="flower">Fiore</option> </select>
+       </div>
+       <div><label for="colorPicker" class="block text-sm font-medium mb-2"> Colore del blob </label>
+        <div class="flex gap-3 items-center"><input type="color" id="colorPicker" class="w-16 h-16 rounded-lg cursor-pointer border-2" value="#8b5cf6"> <span id="colorValue" class="text-sm font-mono">#8b5cf6</span>
+        </div>
+       </div>
+       <div><label for="complexitySlider" class="block text-sm font-medium mb-2"> Complessità: <span id="complexityValue">5</span> punti </label> <input type="range" id="complexitySlider" class="control-slider" min="3" max="12" value="5">
+       </div>
+       <div><label for="smoothnessSlider" class="block text-sm font-medium mb-2"> Levigatura: <span id="smoothnessValue">50</span>% </label> <input type="range" id="smoothnessSlider" class="control-slider" min="0" max="100" value="50">
+       </div>
+       <div class="flex gap-3"><button id="generateBtn" class="flex-1 px-6 py-3 rounded-lg font-semibold transition-all duration-200 shadow-md hover:shadow-lg active:scale-95"> 🎲 Genera </button> <button id="downloadBtn" class="flex-1 px-6 py-3 rounded-lg font-semibold transition-all duration-200 shadow-md hover:shadow-lg active:scale-95"> 💾 Scarica SVG </button>
+       </div>
+      </div>
+     </div>
+     <div class="w-full max-w-md rounded-xl shadow-md p-6">
+      <div class="flex justify-between items-center mb-3">
+       <h3 class="text-lg font-semibold">Codice SVG</h3><button id="copyBtn" class="px-4 py-2 rounded-lg font-medium transition-all duration-200 shadow-sm hover:shadow-md active:scale-95"> 📋 Copia </button>
+      </div>
+      <div class="relative"><textarea id="svgCode" readonly class="w-full h-48 p-4 rounded-lg font-mono text-sm resize-none overflow-auto" style="background: #f8fafc; border: 2px solid #e2e8f0;"></textarea>
+       <div id="copiedMessage" class="absolute top-2 right-2 px-3 py-1 rounded-lg font-medium text-sm shadow-lg transition-opacity duration-300 opacity-0 pointer-events-none" style="background: #10b981; color: white;">
+        ✓ Copiato!
+       </div>
+      </div>
+     </div>
+     <footer class="text-center text-sm mt-8">
+      <p>Cliquez sur "Générer" pour créer un nouveau blob aléatoire</p>
+     </footer>
+    </main>
+   </div>
+  </div>
+  <script>
+    const defaultConfig = {
+      background_color: "#f0f4f8",
+      surface_color: "#ffffff",
+      text_color: "#1e293b",
+      primary_action_color: "#3b82f6",
+      secondary_action_color: "#10b981",
+      blob_color: "#8b5cf6",
+      slider_track_color: "#cbd5e1",
+      slider_thumb_color: "#3b82f6",
+      font_family: "system-ui",
+      font_size: 16,
+      main_title: "Générateur de Blob SVG",
+      subtitle: "Créez des formes organiques aléatoires",
+      generate_button_text: "🎲 Générer",
+      download_button_text: "💾 Télécharger SVG"
+    };
+
+    let complexity = 5;
+    let smoothness = 50;
+    let shapeType = 'organic';
+    let blobColor = '#8b5cf6';
+
+    function generateBlob(numPoints, smoothFactor, type) {
+      const points = [];
+      let actualPoints = numPoints;
+      
+      // Aumentiamo i punti per forme più definite
+      if (type === 'star') {
+        actualPoints = numPoints * 2; // Serve il doppio dei punti per le stelle
+      } else if (type === 'flower') {
+        actualPoints = Math.max(numPoints * 3, 24); // Molti più punti per i petali
+      } else if (type === 'rounded' || type === 'organic') {
+        actualPoints = Math.max(numPoints * 2, 16); // Più punti per forme organiche
+      }
+      
+      const angleStep = (Math.PI * 2) / actualPoints;
+      
+      for (let i = 0; i < actualPoints; i++) {
+        const angle = i * angleStep;
+        let radius;
+        
+        switch(type) {
+          case 'organic':
+            // Variazione casuale ma più ampia
+            const variation = Math.sin(i * 0.7) * 15 + Math.random() * 20;
+            radius = 70 + variation;
+            break;
+          case 'rounded':
+            // Forma molto più circolare con piccole variazioni
+            radius = 75 + Math.random() * 10;
+            break;
+          case 'angular':
+            // Forma angolare con variazioni più marcate
+            radius = 65 + Math.random() * 30;
+            break;
+          case 'star':
+            // Alterna tra punte lunghe e valli corte
+            if (i % 2 === 0) {
+              radius = 85 + Math.random() * 8; // Punte della stella
+            } else {
+              radius = 35 + Math.random() * 5; // Valli della stella
+            }
+            break;
+          case 'flower':
+            // Pattern sinusoidale per petali
+            const petalCount = Math.floor(numPoints / 2);
+            const petalPattern = Math.sin(i * Math.PI * 2 / actualPoints * petalCount);
+            radius = 60 + petalPattern * 30 + Math.random() * 5;
+            break;
+          default:
+            radius = 70 + Math.random() * 20;
+        }
+        
+        const x = 100 + Math.cos(angle) * radius;
+        const y = 100 + Math.sin(angle) * radius;
+        points.push({ x, y });
+      }
+      
+      points.push(points[0]);
+      
+      let pathData = `M ${points[0].x} ${points[0].y}`;
+      
+      if (type === 'angular') {
+        // Per forme angolari usiamo linee rette
+        for (let i = 1; i < points.length; i++) {
+          pathData += ` L ${points[i].x} ${points[i].y}`;
+        }
+      } else if (type === 'star') {
+        // Per le stelle usiamo linee rette ma con smoothing leggero
+        const smoothAmount = Math.min(smoothFactor / 100, 0.3);
+        for (let i = 0; i < points.length - 1; i++) {
+          const current = points[i];
+          const next = points[i + 1];
+          
+          const dx = (next.x - current.x) * smoothAmount;
+          const dy = (next.y - current.y) * smoothAmount;
+          
+          const cp1x = current.x + dx;
+          const cp1y = current.y + dy;
+          const cp2x = next.x - dx;
+          const cp2y = next.y - dy;
+          
+          pathData += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${next.x} ${next.y}`;
+        }
+      } else {
+        // Per altre forme usiamo curve bezier
+        for (let i = 0; i < points.length - 1; i++) {
+          const current = points[i];
+          const next = points[i + 1];
+          
+          const smoothAmount = smoothFactor / 100;
+          const dx = (next.x - current.x) * smoothAmount;
+          const dy = (next.y - current.y) * smoothAmount;
+          
+          const cp1x = current.x + dx;
+          const cp1y = current.y + dy;
+          const cp2x = next.x - dx;
+          const cp2y = next.y - dy;
+          
+          pathData += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${next.x} ${next.y}`;
+        }
+      }
+      
+      pathData += ' Z';
+      return pathData;
+    }
+
+    function updateBlob() {
+      const blobPath = document.getElementById('blobPath');
+      const pathData = generateBlob(complexity, smoothness, shapeType);
+      blobPath.setAttribute('d', pathData);
+      blobPath.setAttribute('fill', blobColor);
+      
+      // Aggiorna il codice SVG
+      const svgCode = `<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <path d="${pathData}" fill="${blobColor}"/>
+</svg>`;
+      document.getElementById('svgCode').value = svgCode;
+    }
+
+    async function onConfigChange(config) {
+      const baseFont = config.font_family || defaultConfig.font_family;
+      const baseFontStack = 'system-ui, -apple-system, sans-serif';
+      const customFont = `${baseFont}, ${baseFontStack}`;
+      const baseSize = config.font_size || defaultConfig.font_size;
+
+      document.body.style.backgroundColor = config.background_color || defaultConfig.background_color;
+      document.body.style.fontFamily = customFont;
+
+      const appDiv = document.getElementById('app');
+      appDiv.style.color = config.text_color || defaultConfig.text_color;
+
+      const mainTitle = document.getElementById('mainTitle');
+      mainTitle.textContent = config.main_title || defaultConfig.main_title;
+      mainTitle.style.fontFamily = customFont;
+      mainTitle.style.fontSize = `${baseSize * 2}px`;
+      mainTitle.style.color = config.text_color || defaultConfig.text_color;
+
+      const subtitle = document.getElementById('subtitle');
+      subtitle.textContent = config.subtitle || defaultConfig.subtitle;
+      subtitle.style.fontFamily = customFont;
+      subtitle.style.fontSize = `${baseSize * 1.25}px`;
+      subtitle.style.color = config.text_color || defaultConfig.text_color;
+
+      const blobContainer = document.querySelector('.blob-container');
+      blobContainer.style.backgroundColor = config.surface_color || defaultConfig.surface_color;
+
+      const blobPath = document.getElementById('blobPath');
+      blobPath.setAttribute('fill', config.blob_color || defaultConfig.blob_color);
+
+      const controlsBox = document.querySelector('.rounded-xl.shadow-md');
+      controlsBox.style.backgroundColor = config.surface_color || defaultConfig.surface_color;
+
+      const controlsTitle = controlsBox.querySelector('h2');
+      controlsTitle.style.fontFamily = customFont;
+      controlsTitle.style.fontSize = `${baseSize * 1.5}px`;
+      controlsTitle.style.color = config.text_color || defaultConfig.text_color;
+
+      const shapeSelect = document.getElementById('shapeType');
+      shapeSelect.style.fontFamily = customFont;
+      shapeSelect.style.fontSize = `${baseSize}px`;
+      shapeSelect.style.backgroundColor = config.surface_color || defaultConfig.surface_color;
+      shapeSelect.style.color = config.text_color || defaultConfig.text_color;
+      shapeSelect.style.borderColor = config.text_color || defaultConfig.text_color;
+
+      const colorPicker = document.getElementById('colorPicker');
+      colorPicker.style.borderColor = config.text_color || defaultConfig.text_color;
+
+      const colorValue = document.getElementById('colorValue');
+      colorValue.style.fontFamily = customFont;
+      colorValue.style.fontSize = `${baseSize * 0.875}px`;
+      colorValue.style.color = config.text_color || defaultConfig.text_color;
+
+      const textColorValue = document.getElementById('textColorValue');
+      textColorValue.style.fontFamily = customFont;
+      textColorValue.style.fontSize = `${baseSize * 0.875}px`;
+      textColorValue.style.color = config.text_color || defaultConfig.text_color;
+
+      const textInput = document.getElementById('textInput');
+      textInput.style.fontFamily = customFont;
+      textInput.style.fontSize = `${baseSize}px`;
+      textInput.style.backgroundColor = config.surface_color || defaultConfig.surface_color;
+      textInput.style.color = config.text_color || defaultConfig.text_color;
+      textInput.style.borderColor = config.text_color || defaultConfig.text_color;
+
+      const textColorPicker = document.getElementById('textColorPicker');
+      textColorPicker.style.borderColor = config.text_color || defaultConfig.text_color;
+
+      const toggleGrid = document.getElementById('toggleGrid');
+      toggleGrid.style.backgroundColor = config.secondary_action_color || defaultConfig.secondary_action_color;
+      toggleGrid.style.color = '#ffffff';
+      toggleGrid.style.fontFamily = customFont;
+      toggleGrid.style.fontSize = `${baseSize * 0.75}px`;
+
+      const labels = document.querySelectorAll('label');
+      labels.forEach(label => {
+        label.style.fontFamily = customFont;
+        label.style.fontSize = `${baseSize * 0.875}px`;
+        label.style.color = config.text_color || defaultConfig.text_color;
+      });
+
+      const sliders = document.querySelectorAll('.control-slider');
+      const sliderTrackColor = config.slider_track_color || defaultConfig.slider_track_color;
+      const sliderThumbColor = config.slider_thumb_color || defaultConfig.slider_thumb_color;
+      sliders.forEach(slider => {
+        slider.style.backgroundColor = sliderTrackColor;
+        const style = document.createElement('style');
+        style.textContent = `
+          .control-slider::-webkit-slider-thumb {
+            background: ${sliderThumbColor};
+          }
+          .control-slider::-moz-range-thumb {
+            background: ${sliderThumbColor};
+          }
+        `;
+        if (!document.getElementById('slider-style')) {
+          style.id = 'slider-style';
+          document.head.appendChild(style);
+        } else {
+          document.getElementById('slider-style').textContent = style.textContent;
+        }
+      });
+
+      const generateBtn = document.getElementById('generateBtn');
+      generateBtn.textContent = config.generate_button_text || defaultConfig.generate_button_text;
+      generateBtn.style.backgroundColor = config.primary_action_color || defaultConfig.primary_action_color;
+      generateBtn.style.color = '#ffffff';
+      generateBtn.style.fontFamily = customFont;
+      generateBtn.style.fontSize = `${baseSize}px`;
+
+      const downloadBtn = document.getElementById('downloadBtn');
+      downloadBtn.textContent = config.download_button_text || defaultConfig.download_button_text;
+      downloadBtn.style.backgroundColor = config.secondary_action_color || defaultConfig.secondary_action_color;
+      downloadBtn.style.color = '#ffffff';
+      downloadBtn.style.fontFamily = customFont;
+      downloadBtn.style.fontSize = `${baseSize}px`;
+
+      const codeBox = document.querySelectorAll('.rounded-xl.shadow-md')[1];
+      if (codeBox) {
+        codeBox.style.backgroundColor = config.surface_color || defaultConfig.surface_color;
+      }
+
+      const codeTitle = document.querySelector('h3');
+      if (codeTitle) {
+        codeTitle.style.fontFamily = customFont;
+        codeTitle.style.fontSize = `${baseSize * 1.125}px`;
+        codeTitle.style.color = config.text_color || defaultConfig.text_color;
+      }
+
+      const copyBtn = document.getElementById('copyBtn');
+      copyBtn.style.backgroundColor = config.secondary_action_color || defaultConfig.secondary_action_color;
+      copyBtn.style.color = '#ffffff';
+      copyBtn.style.fontFamily = customFont;
+      copyBtn.style.fontSize = `${baseSize * 0.875}px`;
+
+      const svgCodeArea = document.getElementById('svgCode');
+      svgCodeArea.style.fontFamily = `'Courier New', monospace`;
+      svgCodeArea.style.fontSize = `${baseSize * 0.875}px`;
+      svgCodeArea.style.color = config.text_color || defaultConfig.text_color;
+
+      const footer = document.querySelector('footer p');
+      footer.style.fontFamily = customFont;
+      footer.style.fontSize = `${baseSize * 0.875}px`;
+      footer.style.color = config.text_color || defaultConfig.text_color;
+    }
+
+    function mapToCapabilities(config) {
+      return {
+        recolorables: [
+          {
+            get: () => config.background_color || defaultConfig.background_color,
+            set: (value) => {
+              config.background_color = value;
+              window.elementSdk.setConfig({ background_color: value });
+            }
+          },
+          {
+            get: () => config.surface_color || defaultConfig.surface_color,
+            set: (value) => {
+              config.surface_color = value;
+              window.elementSdk.setConfig({ surface_color: value });
+            }
+          },
+          {
+            get: () => config.text_color || defaultConfig.text_color,
+            set: (value) => {
+              config.text_color = value;
+              window.elementSdk.setConfig({ text_color: value });
+            }
+          },
+          {
+            get: () => config.primary_action_color || defaultConfig.primary_action_color,
+            set: (value) => {
+              config.primary_action_color = value;
+              window.elementSdk.setConfig({ primary_action_color: value });
+            }
+          },
+          {
+            get: () => config.secondary_action_color || defaultConfig.secondary_action_color,
+            set: (value) => {
+              config.secondary_action_color = value;
+              window.elementSdk.setConfig({ secondary_action_color: value });
+            }
+          }
+        ],
+        borderables: [],
+        fontEditable: {
+          get: () => config.font_family || defaultConfig.font_family,
+          set: (value) => {
+            config.font_family = value;
+            window.elementSdk.setConfig({ font_family: value });
+          }
+        },
+        fontSizeable: {
+          get: () => config.font_size || defaultConfig.font_size,
+          set: (value) => {
+            config.font_size = value;
+            window.elementSdk.setConfig({ font_size: value });
+          }
+        }
+      };
+    }
+
+    function mapToEditPanelValues(config) {
+      return new Map([
+        ["main_title", config.main_title || defaultConfig.main_title],
+        ["subtitle", config.subtitle || defaultConfig.subtitle],
+        ["generate_button_text", config.generate_button_text || defaultConfig.generate_button_text],
+        ["download_button_text", config.download_button_text || defaultConfig.download_button_text]
+      ]);
+    }
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities,
+        mapToEditPanelValues
+      });
+    }
+
+    document.getElementById('shapeType').addEventListener('change', (e) => {
+      shapeType = e.target.value;
+      updateBlob();
+    });
+
+    document.getElementById('colorPicker').addEventListener('input', (e) => {
+      blobColor = e.target.value;
+      document.getElementById('colorValue').textContent = blobColor;
+      updateBlob();
+    });
+
+    document.getElementById('complexitySlider').addEventListener('input', (e) => {
+      complexity = parseInt(e.target.value);
+      document.getElementById('complexityValue').textContent = complexity;
+      updateBlob();
+    });
+
+    document.getElementById('smoothnessSlider').addEventListener('input', (e) => {
+      smoothness = parseInt(e.target.value);
+      document.getElementById('smoothnessValue').textContent = smoothness;
+      updateBlob();
+    });
+
+    document.getElementById('generateBtn').addEventListener('click', () => {
+      updateBlob();
+    });
+
+    document.getElementById('downloadBtn').addEventListener('click', () => {
+      const svg = document.getElementById('blobSvg');
+      const serializer = new XMLSerializer();
+      const svgString = serializer.serializeToString(svg);
+      const blob = new Blob([svgString], { type: 'image/svg+xml' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'blob.svg';
+      link.click();
+      URL.revokeObjectURL(url);
+    });
+
+    document.getElementById('copyBtn').addEventListener('click', () => {
+      const svgCode = document.getElementById('svgCode');
+      svgCode.select();
+      navigator.clipboard.writeText(svgCode.value).then(() => {
+        const message = document.getElementById('copiedMessage');
+        message.style.opacity = '1';
+        setTimeout(() => {
+          message.style.opacity = '0';
+        }, 2000);
+      });
+    });
+
+    updateBlob();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9ab04afcf521707a',t:'MTc2NTIzOTE2Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
