@@ -1,0 +1,1405 @@
+<!doctype html>
+<html lang="it">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generatore Siti Web</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+        body {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 80px;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100%;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 2rem;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            animation: fadeInUp 0.8s ease-out 0.3s both;
+        }
+
+        .form-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+
+        .form-section h2 {
+            color: #333;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .color-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 0.5rem;
+        }
+
+        .color-option {
+            padding: 10px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .color-option:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .color-option.selected {
+            border-color: #667eea;
+            background: #f0f3ff;
+        }
+
+        .color-option.blue { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .color-option.green { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; }
+        .color-option.purple { background: linear-gradient(135deg, #9d50bb 0%, #6e48aa 100%); color: white; }
+        .color-option.orange { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; }
+        .color-option.teal { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; }
+        .color-option.pink { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white; }
+
+        .generate-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .generate-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .preview-section {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            overflow: hidden;
+            height: fit-content;
+        }
+
+        .preview-header {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-bottom: 1px solid #e1e5e9;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .preview-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .preview-dot.red { background: #ff5f56; }
+        .preview-dot.yellow { background: #ffbd2e; }
+        .preview-dot.green { background: #27ca3f; }
+
+        .preview-content {
+            padding: 0;
+            min-height: 400px;
+            background: #f8f9fa;
+        }
+
+        .generated-site {
+            width: 100%;
+            height: 100%;
+            min-height: 400px;
+        }
+
+        .sites-list {
+            margin-top: 2rem;
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            animation: fadeInUp 0.8s ease-out 0.6s both;
+        }
+
+        .sites-list h3 {
+            color: #333;
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+        }
+
+        .site-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border: 1px solid #e1e5e9;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .site-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .site-info h4 {
+            margin: 0 0 0.5rem 0;
+            color: #333;
+        }
+
+        .site-info p {
+            margin: 0;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .site-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-view {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-download {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-small:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+
+        .empty-state svg {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .color-options {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  <div class="container">
+   <header class="header">
+    <h1 id="generator-title">🎨 Generatore Siti per Web Designer</h1>
+    <p>Crea siti educativi per corsi, lezioni e materiali di web design con portfolio integrato</p>
+         <!-- BREADCRUMB PRIMA del main - INVULNERABILE -->
+ <div id="breadcrumb-container" style="
+  position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; 
+  z-index: 999999 !important; 
+  background: rgba(255,255,255,0.98) !important; 
+  backdrop-filter: blur(30px) !important; 
+  border-bottom: 2px solid #e5e7eb !important; 
+  padding: 12px 24px !important; 
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15) !important;
+">
+  <div style="max-width: 1280px; margin: 0 auto !important; display: flex !important; align-items: center !important; justify-content: center !important; gap: 16px !important;">
+    <a href="index.html" style="
+      padding: 8px 16px !important; background: linear-gradient(135deg, #3b82f6, #1d4ed8) !important; 
+      color: white !important; text-decoration: none !important; border-radius: 25px !important; 
+      font-weight: 700 !important; font-size: 14px !important; box-shadow: 0 4px 12px rgba(59,130,246,0.4) !important;
+      display: flex !important; align-items: center !important; gap: 8px !important;
+    ">🏠 Home</a>
+    
+    <span style="color: #9ca3af !important; font-weight: bold !important; font-size: 20px !important;">›</span>
+    
+    <span id="builder-btn" style="
+      padding: 8px 16px !important; 
+      background: linear-gradient(135deg, #f59e0b, #d97706) !important; 
+      color: white !important; border-radius: 25px !important; 
+      font-weight: 700 !important; font-size: 14px !important; cursor: pointer !important;
+      box-shadow: 0 4px 12px rgba(245,158,11,0.4) !important;
+      display: flex !important; align-items: center !important; gap: 8px !important;
+    " onclick="toggleLayoutMenu()">🏗️ Builder ▼</span>
+    
+    <div id="builder-menu" style="
+      position: fixed !important; top: 70px !important; left: 50% !important; 
+      transform: translateX(-50%) !important; width: 280px !important;
+      background: rgba(255,255,255,0.98) !important; backdrop-filter: blur(30px) !important;
+      border: 2px solid #f59e0b !important; border-radius: 20px !important; 
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3) !important;
+      display: none !important; max-height: 300px !important; overflow-y: auto !important;
+      z-index: 999998 !important; padding: 0 !important;
+    ">
+      <a href="builder_home.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important; border-bottom: 1px solid #f3f4f6 !important;" onmouseenter="this.style.background='#fef3c7 !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">🏠 Home Builder</a>
+      <a href="webBuilder.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important; border-bottom: 1px solid #f3f4f6 !important;" onmouseenter="this.style.background='#dbeafe !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">🌐 Web</a>
+      <a href="SiteBuilder.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important; border-bottom: 1px solid #f3f4f6 !important;" onmouseenter="this.style.background='#dbeafe !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">💻 Siti</a>
+      <a href="miniBuilder.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important; border-bottom: 1px solid #f3f4f6 !important;" onmouseenter="this.style.background='#dbeafe !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">📱 Mini</a>
+      <a href="Dom__.responsive.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important;" onmouseenter="this.style.background='#e9d5ff !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">⚙️ Dom</a>
+          <a href="libraryEditor.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important;" onmouseenter="this.style.background='#e9d5ff !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">📚 Library </a>
+          <a href="codecraft_studio.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important;" onmouseenter="this.style.background='#e9d5ff !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">🖊 Codecraft</a>
+                 <a href="builder_web.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important;" onmouseenter="this.style.background='#e9d5ff !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">🖥 Web2</a>
+         <a href="generatore-app.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important;" onmouseenter="this.style.background='#e9d5ff !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">📱 App</a>
+    </div>
+    
+    <span style="color: #9ca3af !important; font-weight: bold !important; font-size: 20px !important;">›</span>
+    
+    <span style="
+      padding: 8px 16px !important; 
+      background: linear-gradient(135deg, #10b981, #059669) !important; 
+      color: white !important; border-radius: 25px !important; 
+      font-weight: 800 !important; font-size: 14px !important; 
+      box-shadow: 0 4px 12px rgba(16,185,129,0.4) !important;
+      display: flex !important; align-items: center !important; gap: 8px !important;
+    ">🌐 Web3</span>
+  </div>
+</div> 
+   </header>
+   <div class="main-content">
+    <div class="form-section">
+     <h2 id="form-title">✨ Crea il Tuo Sito Educativo</h2>
+     <form id="site-form">
+      <div class="form-group"><label for="site-name">Nome del Sito/Corso *</label> <input type="text" id="site-name" required placeholder="Es: Web Design Academy">
+      </div>
+      <div class="form-group"><label for="hero-title">Titolo Principale *</label> <input type="text" id="hero-title" required placeholder="Es: Impara il Web Design Moderno">
+      </div>
+      <div class="form-group"><label for="hero-subtitle">Sottotitolo</label> <input type="text" id="hero-subtitle" placeholder="Es: Corsi professionali per diventare web designer">
+      </div>
+      <div class="form-group"><label for="about-title">Titolo Sezione Chi Siamo</label> <input type="text" id="about-title" placeholder="Es: Il Nostro Metodo">
+      </div>
+      <div class="form-group"><label for="about-text">Descrizione del Corso/Metodo</label> <textarea id="about-text" placeholder="Descrivi il tuo approccio educativo, la tua esperienza nel web design..."></textarea>
+      </div>
+      <div class="form-group"><label for="courses">Corsi e Lezioni</label> <textarea id="courses" placeholder="HTML &amp; CSS Fundamentals
+JavaScript Avanzato
+UI/UX Design
+Responsive Design"></textarea>
+      </div>
+      <div class="form-group"><label for="resources">Risorse e Materiali</label> <textarea id="resources" placeholder="Template gratuiti
+Cheat sheets CSS
+Librerie di icone
+Tool di design"></textarea>
+      </div>
+      <div class="form-group"><label for="portfolio-items">Progetti Portfolio</label> <textarea id="portfolio-items" placeholder="E-commerce moderno
+Landing page creativa
+Dashboard admin
+App mobile design"></textarea>
+      </div>
+      <div class="form-group"><label for="testimonials">Testimonianze Studenti</label> <textarea id="testimonials" placeholder="Marco: 'Corso fantastico, ora lavoro come freelancer'
+Sara: 'Metodo chiaro e pratico'"></textarea>
+      </div>
+      <div class="form-group"><label for="contact-info">Informazioni di Contatto</label> <textarea id="contact-info" placeholder="Email: info@webdesignacademy.it
+Telegram: @webdesigner
+Discord: WebDesign Community"></textarea>
+      </div>
+      <div class="form-group"><label>Schema Colori</label>
+       <div class="color-options">
+        <div class="color-option blue selected" data-color="blue">
+         Blu
+        </div>
+        <div class="color-option green" data-color="green">
+         Verde
+        </div>
+        <div class="color-option purple" data-color="purple">
+         Viola
+        </div>
+        <div class="color-option orange" data-color="orange">
+         Arancio
+        </div>
+        <div class="color-option teal" data-color="teal">
+         Turchese
+        </div>
+        <div class="color-option pink" data-color="pink">
+         Rosa
+        </div>
+       </div>
+      </div><button type="submit" class="generate-btn" id="generate-btn"> 🎨 Genera Sito Educativo </button> <button type="button" class="generate-btn" id="download-current-btn" style="display: none; margin-top: 1rem; background: linear-gradient(135deg, #28a745 0%, #20c997 100%);"> 💾 Scarica Sito Corrente </button>
+     </form>
+    </div>
+    <div class="preview-section">
+     <div class="preview-header">
+      <div class="preview-dot red"></div>
+      <div class="preview-dot yellow"></div>
+      <div class="preview-dot green"></div><span style="margin-left: 10px; color: #666; font-size: 0.9rem;">Anteprima Sito</span>
+     </div>
+     <div class="preview-content">
+      <div class="loading" id="loading">
+       <div class="spinner"></div>
+       <p>Generazione in corso...</p>
+      </div>
+      <div class="empty-state" id="empty-state">
+       <svg viewbox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+       </svg>
+       <p>Compila il form per vedere l'anteprima del tuo sito</p>
+      </div><iframe class="generated-site" id="generated-site" style="display: none;"></iframe>
+     </div>
+    </div>
+   </div>
+   <div class="sites-list">
+    <h3>🎓 I Tuoi Siti Educativi</h3>
+    <div id="sites-container">
+     <div class="empty-state">
+      <svg viewbox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />
+      </svg>
+      <p>Nessun sito generato ancora. Crea il tuo primo sito!</p>
+     </div>
+    </div>
+   </div>
+  </div>
+  <script>
+        // Configurazione predefinita
+        const defaultConfig = {
+            generator_title: "🎨 Generatore Siti per Web Designer",
+            form_title: "✨ Crea il Tuo Sito Educativo",
+            background_color: "#667eea",
+            surface_color: "#ffffff",
+            text_color: "#333333",
+            primary_action_color: "#667eea",
+            secondary_action_color: "#764ba2",
+            font_family: "Inter",
+            font_size: 16
+        };
+
+        let currentSites = [];
+        let selectedColor = 'blue';
+
+        // Carica i siti dal localStorage
+        function loadSites() {
+            try {
+                const saved = localStorage.getItem('webdesigner_sites');
+                currentSites = saved ? JSON.parse(saved) : [];
+                renderSitesList();
+            } catch (error) {
+                currentSites = [];
+                renderSitesList();
+            }
+        }
+
+        // Salva i siti nel localStorage
+        function saveSites() {
+            try {
+                localStorage.setItem('webdesigner_sites', JSON.stringify(currentSites));
+            } catch (error) {
+                console.error('Errore nel salvare i siti:', error);
+            }
+        }
+
+        // Funzioni per aggiornare il contenuto
+        async function onConfigChange(config) {
+            const elements = {
+                'generator-title': config.generator_title || defaultConfig.generator_title,
+                'form-title': config.form_title || defaultConfig.form_title
+            };
+
+            Object.entries(elements).forEach(([id, text]) => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.textContent = text;
+                }
+            });
+
+            // Aggiorna i colori
+            const backgroundColor = config.background_color || defaultConfig.background_color;
+            const surfaceColor = config.surface_color || defaultConfig.surface_color;
+            const textColor = config.text_color || defaultConfig.text_color;
+            const primaryActionColor = config.primary_action_color || defaultConfig.primary_action_color;
+
+            document.body.style.background = `linear-gradient(135deg, ${backgroundColor} 0%, ${config.secondary_action_color || defaultConfig.secondary_action_color} 100%)`;
+
+            // Aggiorna il font
+            const customFont = config.font_family || defaultConfig.font_family;
+            const baseFontStack = '-apple-system, BlinkMacSystemFont, sans-serif';
+            document.body.style.fontFamily = `${customFont}, ${baseFontStack}`;
+
+            // Aggiorna la dimensione del font
+            const baseSize = config.font_size || defaultConfig.font_size;
+            document.documentElement.style.fontSize = `${baseSize}px`;
+        }
+
+        function mapToCapabilities(config) {
+            return {
+                recolorables: [
+                    {
+                        get: () => config.background_color || defaultConfig.background_color,
+                        set: (value) => {
+                            config.background_color = value;
+                            window.elementSdk.setConfig({ background_color: value });
+                        }
+                    },
+                    {
+                        get: () => config.surface_color || defaultConfig.surface_color,
+                        set: (value) => {
+                            config.surface_color = value;
+                            window.elementSdk.setConfig({ surface_color: value });
+                        }
+                    },
+                    {
+                        get: () => config.text_color || defaultConfig.text_color,
+                        set: (value) => {
+                            config.text_color = value;
+                            window.elementSdk.setConfig({ text_color: value });
+                        }
+                    },
+                    {
+                        get: () => config.primary_action_color || defaultConfig.primary_action_color,
+                        set: (value) => {
+                            config.primary_action_color = value;
+                            window.elementSdk.setConfig({ primary_action_color: value });
+                        }
+                    },
+                    {
+                        get: () => config.secondary_action_color || defaultConfig.secondary_action_color,
+                        set: (value) => {
+                            config.secondary_action_color = value;
+                            window.elementSdk.setConfig({ secondary_action_color: value });
+                        }
+                    }
+                ],
+                borderables: [],
+                fontEditable: {
+                    get: () => config.font_family || defaultConfig.font_family,
+                    set: (value) => {
+                        config.font_family = value;
+                        window.elementSdk.setConfig({ font_family: value });
+                    }
+                },
+                fontSizeable: {
+                    get: () => config.font_size || defaultConfig.font_size,
+                    set: (value) => {
+                        config.font_size = value;
+                        window.elementSdk.setConfig({ font_size: value });
+                    }
+                }
+            };
+        }
+
+        function mapToEditPanelValues(config) {
+            return new Map([
+                ["generator_title", config.generator_title || defaultConfig.generator_title],
+                ["form_title", config.form_title || defaultConfig.form_title]
+            ]);
+        }
+
+        // Gestione selezione colori
+        function setupColorSelection() {
+            document.querySelectorAll('.color-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedColor = this.dataset.color;
+                });
+            });
+        }
+
+        // Generazione del sito
+        async function generateSite(formData) {
+            const colorSchemes = {
+                blue: { primary: '#667eea', secondary: '#764ba2', accent: '#4facfe' },
+                green: { primary: '#11998e', secondary: '#38ef7d', accent: '#06ffa5' },
+                purple: { primary: '#9d50bb', secondary: '#6e48aa', accent: '#b06ab3' },
+                orange: { primary: '#f093fb', secondary: '#f5576c', accent: '#ff9a9e' },
+                teal: { primary: '#4facfe', secondary: '#00f2fe', accent: '#43e97b' },
+                pink: { primary: '#fa709a', secondary: '#fee140', accent: '#ffecd2' }
+            };
+
+            const colors = colorSchemes[formData.colorScheme];
+            
+            const siteHTML = `<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${formData.siteName}</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
+            line-height: 1.6; 
+            overflow-x: hidden;
+        }
+        .header { 
+            background: linear-gradient(135deg, ${colors.primary} 0%, ${colors.secondary} 100%); 
+            color: white; 
+            padding: 1rem 0; 
+            position: fixed; 
+            width: 100%; 
+            top: 0; 
+            z-index: 1000;
+            animation: slideDown 0.8s ease-out;
+        }
+        .nav { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding: 0 20px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+        .logo { 
+            font-size: 1.5rem; 
+            font-weight: bold; 
+            animation: fadeInLeft 1s ease-out;
+        }
+        .nav-links { 
+            display: flex; 
+            list-style: none; 
+            gap: 2rem; 
+        }
+        .nav-links a { 
+            color: white; 
+            text-decoration: none; 
+            transition: all 0.3s ease; 
+        }
+        .nav-links a:hover { 
+            transform: translateY(-2px); 
+        }
+        .hero { 
+            background: linear-gradient(135deg, ${colors.primary} 0%, ${colors.secondary} 100%); 
+            color: white; 
+            padding: 120px 0 80px; 
+            text-align: center; 
+        }
+        .hero h1 { 
+            font-size: 3rem; 
+            margin-bottom: 1rem; 
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+        .hero p { 
+            font-size: 1.2rem; 
+            margin-bottom: 2rem; 
+            opacity: 0.9; 
+            animation: fadeInUp 1s ease-out 0.6s both;
+        }
+        .cta-button { 
+            background: white; 
+            color: ${colors.primary}; 
+            padding: 15px 30px; 
+            border: none; 
+            border-radius: 50px; 
+            font-size: 1.1rem; 
+            font-weight: bold; 
+            cursor: pointer; 
+            transition: all 0.3s ease; 
+            animation: fadeInUp 1s ease-out 0.9s both;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .cta-button:hover { 
+            transform: translateY(-3px); 
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3); 
+        }
+        .section { 
+            padding: 80px 0; 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding-left: 20px; 
+            padding-right: 20px; 
+        }
+        .about { 
+            background: #f8f9fa; 
+        }
+        .about h2 { 
+            font-size: 2.5rem; 
+            margin-bottom: 1.5rem; 
+            color: #333; 
+            text-align: center;
+            animation: fadeInUp 1s ease-out;
+        }
+        .about p { 
+            font-size: 1.1rem; 
+            color: #666; 
+            text-align: center; 
+            max-width: 800px; 
+            margin: 0 auto;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+        .services { 
+            background: white; 
+        }
+        .services h2 { 
+            font-size: 2.5rem; 
+            margin-bottom: 3rem; 
+            color: #333; 
+            text-align: center;
+            animation: fadeInUp 1s ease-out;
+        }
+        .services-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+            gap: 2rem; 
+        }
+        .service-card { 
+            background: white; 
+            padding: 2rem; 
+            border-radius: 15px; 
+            text-align: center; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+            transition: all 0.3s ease;
+            animation: fadeInUp 1s ease-out;
+        }
+        .service-card:hover { 
+            transform: translateY(-10px); 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15); 
+        }
+        .service-icon { 
+            font-size: 3rem; 
+            margin-bottom: 1rem; 
+            background: linear-gradient(135deg, ${colors.primary} 0%, ${colors.secondary} 100%); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            background-clip: text; 
+        }
+        .resources { 
+            background: #f8f9fa; 
+        }
+        .resources-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+            gap: 1.5rem; 
+        }
+        .resource-item { 
+            background: white; 
+            padding: 1.5rem; 
+            border-radius: 10px; 
+            text-align: center; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
+            transition: all 0.3s ease;
+            animation: fadeInUp 1s ease-out;
+        }
+        .resource-item:hover { 
+            transform: translateY(-5px); 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15); 
+        }
+        .resource-icon { 
+            font-size: 2rem; 
+            margin-bottom: 1rem; 
+            color: ${colors.primary}; 
+        }
+        .download-btn { 
+            background: ${colors.primary}; 
+            color: white; 
+            border: none; 
+            padding: 8px 16px; 
+            border-radius: 20px; 
+            cursor: pointer; 
+            font-size: 0.9rem; 
+            margin-top: 1rem; 
+            transition: all 0.3s ease; 
+        }
+        .download-btn:hover { 
+            background: ${colors.secondary}; 
+            transform: translateY(-2px); 
+        }
+        .portfolio { 
+            background: white; 
+        }
+        .portfolio-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 2rem; 
+        }
+        .portfolio-item { 
+            background: white; 
+            border-radius: 15px; 
+            overflow: hidden; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+            transition: all 0.3s ease;
+            animation: fadeInUp 1s ease-out;
+        }
+        .portfolio-item:hover { 
+            transform: translateY(-10px); 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15); 
+        }
+        .portfolio-image { 
+            height: 200px; 
+            background: linear-gradient(135deg, ${colors.primary} 0%, ${colors.secondary} 100%); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+        }
+        .portfolio-placeholder { 
+            width: 80px; 
+            height: 80px; 
+            background: rgba(255,255,255,0.2); 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            backdrop-filter: blur(10px); 
+        }
+        .portfolio-number { 
+            font-size: 2rem; 
+            font-weight: bold; 
+            color: white; 
+        }
+        .portfolio-item h4 { 
+            padding: 1rem; 
+            margin: 0; 
+            color: #333; 
+        }
+        .portfolio-item p { 
+            padding: 0 1rem 1rem; 
+            margin: 0; 
+            color: #666; 
+            font-size: 0.9rem; 
+        }
+        .testimonials { 
+            background: #f8f9fa; 
+        }
+        .testimonials-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+            gap: 2rem; 
+        }
+        .testimonial-card { 
+            background: white; 
+            padding: 2rem; 
+            border-radius: 15px; 
+            text-align: center; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+            transition: all 0.3s ease;
+            animation: fadeInUp 1s ease-out;
+        }
+        .testimonial-card:hover { 
+            transform: translateY(-5px); 
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15); 
+        }
+        .testimonial-avatar { 
+            width: 60px; 
+            height: 60px; 
+            border-radius: 50%; 
+            background: linear-gradient(135deg, ${colors.primary} 0%, ${colors.secondary} 100%); 
+            color: white; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 1.5rem; 
+            font-weight: bold; 
+            margin: 0 auto 1rem; 
+        }
+        .testimonial-card p { 
+            font-style: italic; 
+            color: #666; 
+            margin-bottom: 1rem; 
+        }
+        .testimonial-card h5 { 
+            color: ${colors.primary}; 
+            font-weight: bold; 
+            margin: 0; 
+        }
+        .contact { 
+            background: linear-gradient(135deg, ${colors.primary} 0%, ${colors.secondary} 100%); 
+            color: white; 
+            text-align: center; 
+        }
+        .contact h2 { 
+            font-size: 2.5rem; 
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 1s ease-out;
+        }
+        .contact p { 
+            font-size: 1.1rem; 
+            opacity: 0.9;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+        .footer { 
+            background: #333; 
+            color: white; 
+            text-align: center; 
+            padding: 2rem 0; 
+        }
+        @keyframes slideDown {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes fadeInUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes fadeInLeft {
+            from { transform: translateX(-30px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .hero h1 { font-size: 2rem; }
+            .services-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">${formData.siteName}</div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">Metodo</a></li>
+                <li><a href="#courses">Corsi</a></li>
+                <li><a href="#resources">Risorse</a></li>
+                <li><a href="#portfolio">Portfolio</a></li>
+                <li><a href="#contact">Contatti</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="home" class="hero">
+        <div class="section">
+            <h1>${formData.heroTitle}</h1>
+            ${formData.heroSubtitle ? `<p>${formData.heroSubtitle}</p>` : ''}
+            <button class="cta-button">Inizia a Imparare</button>
+        </div>
+    </section>
+
+    ${formData.aboutTitle || formData.aboutText ? `
+    <section id="about" class="about">
+        <div class="section">
+            <h2>${formData.aboutTitle || 'Il Nostro Metodo'}</h2>
+            ${formData.aboutText ? `<p>${formData.aboutText}</p>` : ''}
+        </div>
+    </section>
+    ` : ''}
+
+    ${formData.courses ? `
+    <section id="courses" class="services">
+        <div class="section">
+            <h2>📚 Corsi e Lezioni</h2>
+            <div class="services-grid">
+                ${formData.courses.split('\n').filter(s => s.trim()).map(course => `
+                    <div class="service-card">
+                        <div class="service-icon">🎓</div>
+                        <h3>${course.trim()}</h3>
+                        <p>Impara con esempi pratici e progetti reali</p>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    </section>
+    ` : ''}
+
+    ${formData.resources ? `
+    <section id="resources" class="resources">
+        <div class="section">
+            <h2>🛠️ Risorse e Materiali</h2>
+            <div class="resources-grid">
+                ${formData.resources.split('\n').filter(s => s.trim()).map(resource => `
+                    <div class="resource-item">
+                        <div class="resource-icon">📁</div>
+                        <h4>${resource.trim()}</h4>
+                        <button class="download-btn">Scarica</button>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    </section>
+    ` : ''}
+
+    ${formData.portfolioItems ? `
+    <section id="portfolio" class="portfolio">
+        <div class="section">
+            <h2>🎨 Portfolio Progetti</h2>
+            <div class="portfolio-grid">
+                ${formData.portfolioItems.split('\n').filter(s => s.trim()).map((project, index) => `
+                    <div class="portfolio-item">
+                        <div class="portfolio-image">
+                            <div class="portfolio-placeholder">
+                                <span class="portfolio-number">${index + 1}</span>
+                            </div>
+                        </div>
+                        <h4>${project.trim()}</h4>
+                        <p>Progetto realizzato durante il corso</p>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    </section>
+    ` : ''}
+
+    ${formData.testimonials ? `
+    <section id="testimonials" class="testimonials">
+        <div class="section">
+            <h2>💬 Cosa Dicono i Nostri Studenti</h2>
+            <div class="testimonials-grid">
+                ${formData.testimonials.split('\n').filter(s => s.trim()).map(testimonial => {
+                    const parts = testimonial.split(':');
+                    const name = parts[0]?.trim() || 'Studente';
+                    const quote = parts[1]?.trim() || testimonial.trim();
+                    return `
+                        <div class="testimonial-card">
+                            <div class="testimonial-avatar">${name.charAt(0)}</div>
+                            <p>"${quote}"</p>
+                            <h5>${name}</h5>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        </div>
+    </section>
+    ` : ''}
+
+    ${formData.contactInfo ? `
+    <section id="contact" class="contact">
+        <div class="section">
+            <h2>Contattaci</h2>
+            <p>${formData.contactInfo.replace(/\n/g, '<br>')}</p>
+        </div>
+    </section>
+    ` : ''}
+
+    <footer class="footer">
+        <div class="section">
+            <p>&copy; 2024 ${formData.siteName}. Tutti i diritti riservati.</p>
+        </div>
+    </footer>
+</body>
+</html>`;
+
+            return siteHTML;
+        }
+
+        // Gestione del form
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+            
+            if (currentSites.length >= 50) {
+                showMessage("Limite massimo di 50 siti raggiunto. Elimina alcuni siti prima di crearne di nuovi.", "error");
+                return;
+            }
+
+            const formData = {
+                siteName: document.getElementById('site-name').value,
+                heroTitle: document.getElementById('hero-title').value,
+                heroSubtitle: document.getElementById('hero-subtitle').value,
+                aboutTitle: document.getElementById('about-title').value,
+                aboutText: document.getElementById('about-text').value,
+                courses: document.getElementById('courses').value,
+                resources: document.getElementById('resources').value,
+                portfolioItems: document.getElementById('portfolio-items').value,
+                testimonials: document.getElementById('testimonials').value,
+                contactInfo: document.getElementById('contact-info').value,
+                colorScheme: selectedColor
+            };
+
+            // Mostra loading
+            showLoading(true);
+            const generateBtn = document.getElementById('generate-btn');
+            generateBtn.disabled = true;
+            generateBtn.textContent = '⏳ Generazione...';
+
+            try {
+                // Genera il sito
+                const siteHTML = await generateSite(formData);
+                
+                // Mostra anteprima
+                const iframe = document.getElementById('generated-site');
+                iframe.srcdoc = siteHTML;
+                showPreview();
+                
+                // Mostra pulsante download e salva HTML corrente
+                const downloadBtn = document.getElementById('download-current-btn');
+                downloadBtn.style.display = 'block';
+                downloadBtn.onclick = () => downloadCurrentSite(siteHTML, formData.siteName);
+
+                // Salva nel localStorage
+                const siteData = {
+                    id: Date.now().toString(),
+                    site_name: formData.siteName,
+                    hero_title: formData.heroTitle,
+                    hero_subtitle: formData.heroSubtitle || '',
+                    about_title: formData.aboutTitle || '',
+                    about_text: formData.aboutText || '',
+                    courses: formData.courses || '',
+                    resources: formData.resources || '',
+                    portfolio_items: formData.portfolioItems || '',
+                    testimonials: formData.testimonials || '',
+                    contact_info: formData.contactInfo || '',
+                    color_scheme: formData.colorScheme,
+                    created_at: new Date().toISOString()
+                };
+
+                currentSites.push(siteData);
+                saveSites();
+                renderSitesList();
+                showMessage("Sito generato con successo! 🎉", "success");
+
+            } catch (error) {
+                showMessage("Errore nella generazione del sito: " + error.message, "error");
+            } finally {
+                showLoading(false);
+                generateBtn.disabled = false;
+                generateBtn.textContent = '🎨 Genera Sito Educativo';
+            }
+        }
+
+        // Funzione per scaricare il sito corrente
+        function downloadCurrentSite(siteHTML, siteName) {
+            try {
+                const blob = new Blob([siteHTML], { type: 'text/html' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${siteName.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.html`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                showMessage("Sito scaricato con successo! 📁", "success");
+            } catch (error) {
+                showMessage("Errore nel download: " + error.message, "error");
+            }
+        }
+
+        // Funzioni di utilità
+        function showLoading(show) {
+            const loading = document.getElementById('loading');
+            const emptyState = document.getElementById('empty-state');
+            const iframe = document.getElementById('generated-site');
+            
+            if (show) {
+                loading.style.display = 'block';
+                emptyState.style.display = 'none';
+                iframe.style.display = 'none';
+            } else {
+                loading.style.display = 'none';
+            }
+        }
+
+        function showPreview() {
+            const loading = document.getElementById('loading');
+            const emptyState = document.getElementById('empty-state');
+            const iframe = document.getElementById('generated-site');
+            
+            loading.style.display = 'none';
+            emptyState.style.display = 'none';
+            iframe.style.display = 'block';
+        }
+
+        function showMessage(message, type) {
+            // Crea un toast message
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                border-radius: 10px;
+                color: white;
+                font-weight: bold;
+                z-index: 10000;
+                animation: slideInRight 0.3s ease-out;
+                max-width: 300px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            `;
+            
+            if (type === 'success') {
+                toast.style.background = 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)';
+            } else {
+                toast.style.background = 'linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%)';
+            }
+            
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideOutRight 0.3s ease-out';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function renderSitesList() {
+            const container = document.getElementById('sites-container');
+            
+            if (currentSites.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                        </svg>
+                        <p>Nessun sito generato ancora. Crea il tuo primo sito!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = currentSites.map(site => `
+                <div class="site-item">
+                    <div class="site-info">
+                        <h4>${site.site_name}</h4>
+                        <p>Creato il ${new Date(site.created_at).toLocaleDateString('it-IT')} • Schema: ${site.color_scheme}</p>
+                    </div>
+                    <div class="site-actions">
+                        <button class="btn-small btn-view" onclick="viewSite('${site.id}')">👁️ Visualizza</button>
+                        <button class="btn-small btn-download" onclick="downloadSite('${site.id}')">💾 Scarica</button>
+                        <button class="btn-small btn-delete" onclick="deleteSite('${site.id}')">🗑️ Elimina</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Funzioni globali per i pulsanti
+        window.viewSite = async function(siteId) {
+            const site = currentSites.find(s => s.id === siteId);
+            if (site) {
+                const siteHTML = await generateSite({
+                    siteName: site.site_name,
+                    heroTitle: site.hero_title,
+                    heroSubtitle: site.hero_subtitle,
+                    aboutTitle: site.about_title,
+                    aboutText: site.about_text,
+                    courses: site.courses,
+                    resources: site.resources,
+                    portfolioItems: site.portfolio_items,
+                    testimonials: site.testimonials,
+                    contactInfo: site.contact_info,
+                    colorScheme: site.color_scheme
+                });
+                
+                const iframe = document.getElementById('generated-site');
+                iframe.srcdoc = siteHTML;
+                showPreview();
+            }
+        };
+
+        window.downloadSite = async function(siteId) {
+            const site = currentSites.find(s => s.id === siteId);
+            if (site) {
+                try {
+                    const siteHTML = await generateSite({
+                        siteName: site.site_name,
+                        heroTitle: site.hero_title,
+                        heroSubtitle: site.hero_subtitle,
+                        aboutTitle: site.about_title,
+                        aboutText: site.about_text,
+                        courses: site.courses,
+                        resources: site.resources,
+                        portfolioItems: site.portfolio_items,
+                        testimonials: site.testimonials,
+                        contactInfo: site.contact_info,
+                        colorScheme: site.color_scheme
+                    });
+                    
+                    // Crea il file e scaricalo
+                    const blob = new Blob([siteHTML], { type: 'text/html' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `${site.site_name.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.html`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    
+                    showMessage("Sito scaricato con successo! 📁", "success");
+                } catch (error) {
+                    showMessage("Errore nel download: " + error.message, "error");
+                }
+            }
+        };
+
+        window.deleteSite = async function(siteId) {
+            const siteIndex = currentSites.findIndex(s => s.id === siteId);
+            if (siteIndex !== -1) {
+                currentSites.splice(siteIndex, 1);
+                saveSites();
+                renderSitesList();
+                showMessage("Sito eliminato con successo", "success");
+            }
+        };
+
+        // Inizializzazione
+        document.addEventListener('DOMContentLoaded', async function() {
+            setupColorSelection();
+            loadSites();
+            
+            // Gestione form
+            document.getElementById('site-form').addEventListener('submit', handleFormSubmit);
+            
+            // Inizializza Element SDK
+            if (window.elementSdk) {
+                window.elementSdk.init({
+                    defaultConfig,
+                    onConfigChange,
+                    mapToCapabilities,
+                    mapToEditPanelValues
+                });
+            }
+        });
+          // FUNZIONE CLICK PER MENU BUILDER
+function toggleLayoutMenu() {
+  const menu = document.getElementById('builder-menu');
+  if (!menu) return;
+  menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+}
+
+// CHIUDE MENU CLICCANDO FUORI
+document.addEventListener('click', function(e) {
+  const menu = document.getElementById('builder-menu');
+  const btn = document.getElementById('builder-btn');
+  if (!menu || !btn) return;
+
+  if (!btn.contains(e.target) && !menu.contains(e.target)) {
+    menu.style.display = 'none';
+  }
+});
+    </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'997d00773568bae8',t:'MTc2MjAxNjk4Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

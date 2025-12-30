@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SiteBuilder - Crea il tuo sito</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .dragging { opacity: 0.5; }
+        .drop-zone { border: 2px dashed #3b82f6; background: rgba(59, 130, 246, 0.1); }
+        .element-hover { outline: 2px solid #3b82f6; outline-offset: 2px; }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans min-h-screen bg-stone-50 text-neutral-800 antialiased pt-20">
+    <!-- BREADCRUMB PRIMA del main - INVULNERABILE -->
+ <div id="breadcrumb-container" style="
+  position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; 
+  z-index: 999999 !important; 
+  background: rgba(255,255,255,0.98) !important; 
+  backdrop-filter: blur(30px) !important; 
+  border-bottom: 2px solid #e5e7eb !important; 
+  padding: 12px 24px !important; 
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15) !important;
+">
+  <div style="max-width: 1280px; margin: 0 auto !important; display: flex !important; align-items: center !important; justify-content: center !important; gap: 16px !important;">
+    <a href="index.html" style="
+      padding: 8px 16px !important; background: linear-gradient(135deg, #3b82f6, #1d4ed8) !important; 
+      color: white !important; text-decoration: none !important; border-radius: 25px !important; 
+      font-weight: 700 !important; font-size: 14px !important; box-shadow: 0 4px 12px rgba(59,130,246,0.4) !important;
+      display: flex !important; align-items: center !important; gap: 8px !important;
+    ">🏠 Home</a>
+    
+    <span style="color: #9ca3af !important; font-weight: bold !important; font-size: 20px !important;">›</span>
+    
+    <span id="builder-btn" style="
+      padding: 8px 16px !important; 
+      background: linear-gradient(135deg, #f59e0b, #d97706) !important; 
+      color: white !important; border-radius: 25px !important; 
+      font-weight: 700 !important; font-size: 14px !important; cursor: pointer !important;
+      box-shadow: 0 4px 12px rgba(245,158,11,0.4) !important;
+      display: flex !important; align-items: center !important; gap: 8px !important;
+    " onclick="toggleLayoutMenu()">🏗️ Builder ▼</span>
+    
+    <div id="builder-menu" style="
+      position: fixed !important; top: 70px !important; left: 50% !important; 
+      transform: translateX(-50%) !important; width: 280px !important;
+      background: rgba(255,255,255,0.98) !important; backdrop-filter: blur(30px) !important;
+      border: 2px solid #f59e0b !important; border-radius: 20px !important; 
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3) !important;
+      display: none !important; max-height: 300px !important; overflow-y: auto !important;
+      z-index: 999998 !important; padding: 0 !important;
+    ">
+      <a href="builder_home.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important; border-bottom: 1px solid #f3f4f6 !important;" onmouseenter="this.style.background='#fef3c7 !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">🏠 Home Builder</a>
+      <a href="webBuilder.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important; border-bottom: 1px solid #f3f4f6 !important;" onmouseenter="this.style.background='#dbeafe !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">🌐 Web</a>
+      <a href="miniBuilder.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important; border-bottom: 1px solid #f3f4f6 !important;" onmouseenter="this.style.background='#dbeafe !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">📱 Mini</a>
+      <a href="libraryEditor.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important; border-bottom: 1px solid #f3f4f6 !important;" onmouseenter="this.style.background='#dbeafe !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">📚 Library</a>
+      <a href="Dom__.responsive.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important;" onmouseenter="this.style.background='#e9d5ff !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">⚙️ Dom</a>
+          <a href="codecraft_studio.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important;" onmouseenter="this.style.background='#e9d5ff !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">🖊 Codecraft</a>
+          <a href="builder_web.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important;" onmouseenter="this.style.background='#e9d5ff !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';"> 🖥 Web2</a>
+                 <a href="generatore_siti_web.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important;" onmouseenter="this.style.background='#e9d5ff !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">🌐 Web3</a>
+         <a href="generatore-app.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important;" onmouseenter="this.style.background='#e9d5ff !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">📱 App</a>
+    </div>
+    
+    <span style="color: #9ca3af !important; font-weight: bold !important; font-size: 20px !important;">›</span>
+    
+    <span style="
+      padding: 8px 16px !important; 
+      background: linear-gradient(135deg, #10b981, #059669) !important; 
+      color: white !important; border-radius: 25px !important; 
+      font-weight: 800 !important; font-size: 14px !important; 
+      box-shadow: 0 4px 12px rgba(16,185,129,0.4) !important;
+      display: flex !important; align-items: center !important; gap: 8px !important;
+    ">💻 Siti</span>
+  </div>
+</div> 
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b">
+        <div class="flex items-center justify-between px-6 py-4">
+            <h1 class="text-2xl font-bold text-gray-800">🌐 SiteBuilder</h1>
+            <div class="flex gap-3">
+                <button onclick="previewSite()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                    👁️ Anteprima
+                </button>
+                <button onclick="exportSite()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                    💾 Esporta
+                </button>
+                <button onclick="clearAll()" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors">
+                    🗑️ Pulisci Tutto
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex h-screen">
+        <!-- Sidebar con elementi -->
+        <div class="w-80 bg-white shadow-lg border-r overflow-y-auto">
+            <div class="p-6">
+                <h2 class="text-lg font-semibold text-gray-800 mb-4">📦 Elementi</h2>
+                
+                <div class="space-y-3">
+                    <div class="bg-gray-50 p-3 rounded-lg border-2 border-dashed border-gray-300 cursor-move hover:border-blue-400 transition-colors" 
+                         draggable="true" ondragstart="dragStart(event)" data-type="header">
+                        <div class="text-sm font-medium text-gray-700">📝 Intestazione</div>
+                        <div class="text-xs text-gray-500">Titolo principale</div>
+                    </div>
+
+                    <div class="bg-gray-50 p-3 rounded-lg border-2 border-dashed border-gray-300 cursor-move hover:border-blue-400 transition-colors" 
+                         draggable="true" ondragstart="dragStart(event)" data-type="text">
+                        <div class="text-sm font-medium text-gray-700">📄 Testo</div>
+                        <div class="text-xs text-gray-500">Paragrafo di testo</div>
+                    </div>
+
+                    <div class="bg-gray-50 p-3 rounded-lg border-2 border-dashed border-gray-300 cursor-move hover:border-blue-400 transition-colors" 
+                         draggable="true" ondragstart="dragStart(event)" data-type="button">
+                        <div class="text-sm font-medium text-gray-700">🔘 Pulsante</div>
+                        <div class="text-xs text-gray-500">Bottone cliccabile</div>
+                    </div>
+
+                    <div class="bg-gray-50 p-3 rounded-lg border-2 border-dashed border-gray-300 cursor-move hover:border-blue-400 transition-colors" 
+                         draggable="true" ondragstart="dragStart(event)" data-type="image">
+                        <div class="text-sm font-medium text-gray-700">🖼️ Immagine</div>
+                        <div class="text-xs text-gray-500">Placeholder immagine</div>
+                    </div>
+
+                    <div class="bg-gray-50 p-3 rounded-lg border-2 border-dashed border-gray-300 cursor-move hover:border-blue-400 transition-colors" 
+                         draggable="true" ondragstart="dragStart(event)" data-type="section">
+                        <div class="text-sm font-medium text-gray-700">📋 Sezione</div>
+                        <div class="text-xs text-gray-500">Container per contenuti</div>
+                    </div>
+
+                    <div class="bg-gray-50 p-3 rounded-lg border-2 border-dashed border-gray-300 cursor-move hover:border-blue-400 transition-colors" 
+                         draggable="true" ondragstart="dragStart(event)" data-type="list">
+                        <div class="text-sm font-medium text-gray-700">📝 Lista</div>
+                        <div class="text-xs text-gray-500">Elenco puntato</div>
+                    </div>
+
+                    <div class="bg-gray-50 p-3 rounded-lg border-2 border-dashed border-gray-300 cursor-move hover:border-blue-400 transition-colors" 
+                         draggable="true" ondragstart="dragStart(event)" data-type="card">
+                        <div class="text-sm font-medium text-gray-700">🃏 Card</div>
+                        <div class="text-xs text-gray-500">Scheda con contenuto</div>
+                    </div>
+
+                    <div class="bg-gray-50 p-3 rounded-lg border-2 border-dashed border-gray-300 cursor-move hover:border-blue-400 transition-colors" 
+                         draggable="true" ondragstart="dragStart(event)" data-type="form">
+                        <div class="text-sm font-medium text-gray-700">📝 Form</div>
+                        <div class="text-xs text-gray-500">Modulo di contatto</div>
+                    </div>
+
+                    <div class="bg-gray-50 p-3 rounded-lg border-2 border-dashed border-gray-300 cursor-move hover:border-blue-400 transition-colors" 
+                         draggable="true" ondragstart="dragStart(event)" data-type="navbar">
+                        <div class="text-sm font-medium text-gray-700">🧭 Navbar</div>
+                        <div class="text-xs text-gray-500">Barra di navigazione</div>
+                    </div>
+
+                    <div class="bg-gray-50 p-3 rounded-lg border-2 border-dashed border-gray-300 cursor-move hover:border-blue-400 transition-colors" 
+                         draggable="true" ondragstart="dragStart(event)" data-type="footer">
+                        <div class="text-sm font-medium text-gray-700">🦶 Footer</div>
+                        <div class="text-xs text-gray-500">Piè di pagina</div>
+                    </div>
+
+                    <div class="bg-gray-50 p-3 rounded-lg border-2 border-dashed border-gray-300 cursor-move hover:border-blue-400 transition-colors" 
+                         draggable="true" ondragstart="dragStart(event)" data-type="hero">
+                        <div class="text-sm font-medium text-gray-700">🌟 Hero</div>
+                        <div class="text-xs text-gray-500">Sezione principale</div>
+                    </div>
+
+                    <div class="bg-gray-50 p-3 rounded-lg border-2 border-dashed border-gray-300 cursor-move hover:border-blue-400 transition-colors" 
+                         draggable="true" ondragstart="dragStart(event)" data-type="grid">
+                        <div class="text-sm font-medium text-gray-700">⚏ Griglia</div>
+                        <div class="text-xs text-gray-500">Layout a 3 colonne</div>
+                    </div>
+                </div>
+
+                <!-- Pannello proprietà -->
+                <div id="properties-panel" class="mt-8 p-4 bg-blue-50 rounded-lg hidden">
+                    <h3 class="font-semibold text-gray-800 mb-3">⚙️ Proprietà</h3>
+                    <div id="properties-content"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Area di lavoro -->
+        <div class="flex-1 p-6">
+            <div class="bg-white rounded-lg shadow-lg h-full overflow-auto">
+                <div id="canvas" class="min-h-full p-8" 
+                     ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <div class="text-center text-gray-400 py-20">
+                        <div class="text-6xl mb-4">🎨</div>
+                        <h3 class="text-xl font-medium mb-2">Inizia a costruire il tuo sito</h3>
+                        <p>Trascina gli elementi dalla barra laterale qui</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Anteprima -->
+    <div id="preview-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center h-full p-4">
+            <div class="bg-white rounded-lg w-full max-w-4xl h-5/6 flex flex-col">
+                <div class="flex items-center justify-between p-4 border-b">
+                    <h3 class="text-lg font-semibold">👁️ Anteprima Sito</h3>
+                    <button onclick="closePreview()" class="text-gray-500 hover:text-gray-700">✕</button>
+                </div>
+                <div id="preview-content" class="flex-1 overflow-auto p-6"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let draggedElement = null;
+        let selectedElement = null;
+        let elementCounter = 0;
+
+        function dragStart(e) {
+            draggedElement = e.target.dataset.type;
+            e.target.classList.add('dragging');
+        }
+
+        function allowDrop(e) {
+            e.preventDefault();
+            const canvas = document.getElementById('canvas');
+            if (e.target === canvas || canvas.contains(e.target)) {
+                canvas.classList.add('drop-zone');
+            }
+        }
+
+        function drop(e) {
+            e.preventDefault();
+            const canvas = document.getElementById('canvas');
+            canvas.classList.remove('drop-zone');
+            
+            if (draggedElement) {
+                createElement(draggedElement);
+                draggedElement = null;
+            }
+        }
+
+        function createElement(type) {
+            const canvas = document.getElementById('canvas');
+            const emptyMessage = canvas.querySelector('.text-center.text-gray-400');
+            if (emptyMessage) emptyMessage.remove();
+
+            elementCounter++;
+            const elementId = `element-${elementCounter}`;
+            let element;
+
+            switch(type) {
+                case 'header':
+                    element = document.createElement('h1');
+                    element.className = 'text-4xl font-bold text-gray-800 mb-6 cursor-pointer hover:bg-blue-50 p-2 rounded';
+                    element.textContent = 'Il Tuo Titolo Principale';
+                    break;
+                
+                case 'text':
+                    element = document.createElement('p');
+                    element.className = 'text-gray-600 mb-4 leading-relaxed cursor-pointer hover:bg-blue-50 p-2 rounded';
+                    element.textContent = 'Questo è un paragrafo di esempio. Puoi modificare questo testo cliccando su di esso e personalizzarlo come preferisci.';
+                    break;
+                
+                case 'button':
+                    element = document.createElement('button');
+                    element.className = 'bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors cursor-pointer';
+                    element.textContent = 'Clicca qui';
+                    element.onclick = () => alert('Pulsante cliccato!');
+                    break;
+                
+                case 'image':
+                    element = document.createElement('div');
+                    element.className = 'bg-gray-200 border-2 border-dashed border-gray-400 rounded-lg p-8 text-center cursor-pointer hover:bg-blue-50';
+                    element.innerHTML = '<div class="text-4xl mb-2">🖼️</div><div class="text-gray-600">Immagine Placeholder</div>';
+                    break;
+                
+                case 'section':
+                    element = document.createElement('div');
+                    element.className = 'bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg p-6 mb-6 cursor-pointer hover:bg-blue-50';
+                    element.innerHTML = '<div class="text-gray-500 text-center">📋 Sezione - Trascina altri elementi qui</div>';
+                    break;
+                
+                case 'list':
+                    element = document.createElement('ul');
+                    element.className = 'list-disc list-inside text-gray-600 mb-4 cursor-pointer hover:bg-blue-50 p-2 rounded';
+                    element.innerHTML = '<li>Primo elemento della lista</li><li>Secondo elemento della lista</li><li>Terzo elemento della lista</li>';
+                    break;
+                
+                case 'card':
+                    element = document.createElement('div');
+                    element.className = 'bg-white border border-gray-200 rounded-lg p-6 shadow-md mb-4 cursor-pointer hover:bg-blue-50';
+                    element.innerHTML = '<h3 class="text-xl font-semibold text-gray-800 mb-2">Titolo Card</h3><p class="text-gray-600">Questo è il contenuto della card. Puoi modificarlo cliccando due volte.</p>';
+                    break;
+                
+                case 'form':
+                    element = document.createElement('div');
+                    element.className = 'bg-white border border-gray-200 rounded-lg p-6 mb-4 cursor-pointer hover:bg-blue-50';
+                    element.innerHTML = '<h3 class="text-lg font-semibold text-gray-800 mb-4">Modulo di Contatto</h3><div class="space-y-4"><input type="text" placeholder="Nome" class="w-full p-3 border border-gray-300 rounded-lg"><input type="email" placeholder="Email" class="w-full p-3 border border-gray-300 rounded-lg"><textarea placeholder="Messaggio" class="w-full p-3 border border-gray-300 rounded-lg h-24"></textarea><button class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">Invia</button></div>';
+                    break;
+                
+                case 'navbar':
+                    element = document.createElement('nav');
+                    element.className = 'bg-white shadow-sm border-b p-4 mb-6 cursor-pointer hover:bg-blue-50';
+                    element.innerHTML = '<div class="flex items-center justify-between"><div class="text-xl font-bold text-gray-800">Logo</div><div class="flex space-x-6"><a href="#" class="text-gray-600 hover:text-gray-800">Home</a><a href="#" class="text-gray-600 hover:text-gray-800">Chi Siamo</a><a href="#" class="text-gray-600 hover:text-gray-800">Servizi</a><a href="#" class="text-gray-600 hover:text-gray-800">Contatti</a></div></div>';
+                    break;
+                
+                case 'footer':
+                    element = document.createElement('footer');
+                    element.className = 'bg-gray-800 text-white p-8 mt-8 cursor-pointer hover:bg-gray-700';
+                    element.innerHTML = '<div class="text-center"><p class="mb-2">© 2024 Il Mio Sito. Tutti i diritti riservati.</p><div class="flex justify-center space-x-4"><a href="#" class="text-gray-300 hover:text-white">Privacy</a><a href="#" class="text-gray-300 hover:text-white">Termini</a><a href="#" class="text-gray-300 hover:text-white">Contatti</a></div></div>';
+                    break;
+                
+                case 'hero':
+                    element = document.createElement('div');
+                    element.className = 'bg-gradient-to-r from-blue-600 to-purple-600 text-white p-16 text-center rounded-lg mb-8 cursor-pointer hover:from-blue-700 hover:to-purple-700';
+                    element.innerHTML = '<h1 class="text-5xl font-bold mb-4">Benvenuto nel nostro sito</h1><p class="text-xl mb-8">Scopri tutto quello che abbiamo da offrire</p><button class="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100">Inizia Ora</button>';
+                    break;
+                
+                case 'grid':
+                    element = document.createElement('div');
+                    element.className = 'grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 cursor-pointer hover:bg-blue-50 p-4 rounded';
+                    element.innerHTML = '<div class="bg-white p-6 rounded-lg shadow-md"><h3 class="text-lg font-semibold mb-2">Colonna 1</h3><p class="text-gray-600">Contenuto della prima colonna</p></div><div class="bg-white p-6 rounded-lg shadow-md"><h3 class="text-lg font-semibold mb-2">Colonna 2</h3><p class="text-gray-600">Contenuto della seconda colonna</p></div><div class="bg-white p-6 rounded-lg shadow-md"><h3 class="text-lg font-semibold mb-2">Colonna 3</h3><p class="text-gray-600">Contenuto della terza colonna</p></div>';
+                    break;
+            }
+
+            element.id = elementId;
+            element.addEventListener('click', () => selectElement(element));
+            element.addEventListener('dblclick', () => editElement(element));
+            
+            canvas.appendChild(element);
+        }
+
+        function selectElement(element) {
+            if (selectedElement) {
+                selectedElement.classList.remove('element-hover');
+            }
+            
+            selectedElement = element;
+            element.classList.add('element-hover');
+            showProperties(element);
+        }
+
+        function showProperties(element) {
+            const panel = document.getElementById('properties-panel');
+            const content = document.getElementById('properties-content');
+            
+            let propertiesHTML = `
+                <div class="space-y-3">
+                    <button onclick="editElement(selectedElement)" class="w-full bg-blue-600 text-white py-2 px-3 rounded text-sm hover:bg-blue-700">
+                        ✏️ Modifica Contenuto
+                    </button>
+                    <button onclick="deleteElement(selectedElement)" class="w-full bg-red-600 text-white py-2 px-3 rounded text-sm hover:bg-red-700">
+                        🗑️ Elimina
+                    </button>
+                </div>
+            `;
+            
+            content.innerHTML = propertiesHTML;
+            panel.classList.remove('hidden');
+        }
+
+        function editElement(element) {
+            const currentText = element.textContent || element.innerHTML;
+            const newText = prompt('Modifica il contenuto:', currentText);
+            
+            if (newText !== null) {
+                if (element.tagName === 'BUTTON') {
+                    element.textContent = newText;
+                } else if (element.className.includes('bg-gray-200')) {
+                    element.innerHTML = `<div class="text-4xl mb-2">🖼️</div><div class="text-gray-600">${newText}</div>`;
+                } else {
+                    element.textContent = newText;
+                }
+            }
+        }
+
+        function deleteElement(element) {
+            if (confirm('Sei sicuro di voler eliminare questo elemento?')) {
+                element.remove();
+                selectedElement = null;
+                document.getElementById('properties-panel').classList.add('hidden');
+                
+                const canvas = document.getElementById('canvas');
+                if (canvas.children.length === 0) {
+                    canvas.innerHTML = `
+                        <div class="text-center text-gray-400 py-20">
+                            <div class="text-6xl mb-4">🎨</div>
+                            <h3 class="text-xl font-medium mb-2">Inizia a costruire il tuo sito</h3>
+                            <p>Trascina gli elementi dalla barra laterale qui</p>
+                        </div>
+                    `;
+                }
+            }
+        }
+
+        function previewSite() {
+            const canvas = document.getElementById('canvas');
+            const modal = document.getElementById('preview-modal');
+            const previewContent = document.getElementById('preview-content');
+            
+            const clonedContent = canvas.cloneNode(true);
+            const elements = clonedContent.querySelectorAll('*');
+            
+            elements.forEach(el => {
+                el.classList.remove('cursor-pointer', 'hover:bg-blue-50', 'element-hover');
+                el.removeAttribute('onclick');
+            });
+            
+            previewContent.innerHTML = clonedContent.innerHTML;
+            modal.classList.remove('hidden');
+        }
+
+        function closePreview() {
+            document.getElementById('preview-modal').classList.add('hidden');
+        }
+
+        function clearAll() {
+            if (confirm('Sei sicuro di voler eliminare tutti gli elementi e ricominciare da capo?')) {
+                const canvas = document.getElementById('canvas');
+                
+                // Remove all child elements
+                while (canvas.firstChild) {
+                    canvas.removeChild(canvas.firstChild);
+                }
+                
+                // Add back the empty state message
+                const emptyMessage = document.createElement('div');
+                emptyMessage.className = 'text-center text-gray-400 py-20';
+                emptyMessage.innerHTML = `
+                    <div class="text-6xl mb-4">🎨</div>
+                    <h3 class="text-xl font-medium mb-2">Inizia a costruire il tuo sito</h3>
+                    <p>Trascina gli elementi dalla barra laterale qui</p>
+                `;
+                canvas.appendChild(emptyMessage);
+                
+                // Reset selected element and hide properties panel
+                selectedElement = null;
+                document.getElementById('properties-panel').classList.add('hidden');
+                
+                // Reset counter
+                elementCounter = 0;
+            }
+        }
+
+        function exportSite() {
+            const canvas = document.getElementById('canvas');
+            const content = canvas.innerHTML;
+            
+            const cleanContent = content
+                .replace(/cursor-pointer/g, '')
+                .replace(/hover:bg-blue-50/g, '')
+                .replace(/element-hover/g, '')
+                .replace(/onclick="[^"]*"/g, '');
+            
+            const htmlTemplate = '<!DOCTYPE html>\n' +
+                '<html lang="it">\n' +
+                '<head>\n' +
+                '    <meta charset="UTF-8">\n' +
+                '    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
+                '    <title>Il Mio Sito</title>\n' +
+                '    <script src="https://cdn.tailwindcss.com"><\/script>\n' +
+                '</head>\n' +
+                '<body class="bg-white font-sans">\n' +
+                '    <div class="container mx-auto px-4 py-8">\n' +
+                '        ' + cleanContent + '\n' +
+                '    </div>\n' +
+                '</body>\n' +
+                '</html>';
+
+            showExportModal(htmlTemplate);
+        }
+
+        function showExportModal(htmlCode) {
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4';
+            
+            const modalContent = document.createElement('div');
+            modalContent.className = 'bg-white rounded-lg w-full max-w-4xl h-5/6 flex flex-col';
+            
+            const header = document.createElement('div');
+            header.className = 'flex items-center justify-between p-4 border-b';
+            header.innerHTML = '<h3 class="text-lg font-semibold">💾 Codice HTML del tuo sito</h3><button onclick="this.closest(\'.fixed\').remove()" class="text-gray-500 hover:text-gray-700 text-xl">✕</button>';
+            
+            const body = document.createElement('div');
+            body.className = 'flex-1 overflow-auto p-4';
+            
+            const description = document.createElement('p');
+            description.className = 'text-sm text-gray-600 mb-4';
+            description.textContent = 'Copia questo codice e salvalo come file .html per pubblicare il tuo sito:';
+            
+            const textarea = document.createElement('textarea');
+            textarea.className = 'w-full h-full border rounded-lg p-4 font-mono text-sm bg-gray-50 resize-none';
+            textarea.readOnly = true;
+            textarea.value = htmlCode;
+            textarea.onclick = function() { this.select(); };
+            
+            const footer = document.createElement('div');
+            footer.className = 'p-4 border-t';
+            
+            const copyBtn = document.createElement('button');
+            copyBtn.className = 'bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 mr-2';
+            copyBtn.innerHTML = '📋 Copia Codice';
+            copyBtn.onclick = function() {
+                copyToClipboard(htmlCode);
+                alert('Codice copiato negli appunti!');
+            };
+            
+            const closeBtn = document.createElement('button');
+            closeBtn.className = 'bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700';
+            closeBtn.textContent = 'Chiudi';
+            closeBtn.onclick = function() {
+                modal.remove();
+            };
+            
+            body.appendChild(description);
+            body.appendChild(textarea);
+            footer.appendChild(copyBtn);
+            footer.appendChild(closeBtn);
+            modalContent.appendChild(header);
+            modalContent.appendChild(body);
+            modalContent.appendChild(footer);
+            modal.appendChild(modalContent);
+            
+            document.body.appendChild(modal);
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).catch(() => {
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+            });
+        }
+
+        document.addEventListener('dragend', (e) => {
+            e.target.classList.remove('dragging');
+            document.getElementById('canvas').classList.remove('drop-zone');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('#canvas') && !e.target.closest('#properties-panel')) {
+                if (selectedElement) {
+                    selectedElement.classList.remove('element-hover');
+                    selectedElement = null;
+                    document.getElementById('properties-panel').classList.add('hidden');
+                }
+            }
+        });
+        // FUNZIONE CLICK PER MENU BUILDER
+function toggleLayoutMenu() {
+  const menu = document.getElementById('builder-menu');
+  if (!menu) return;
+  menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+}
+
+// CHIUDE MENU CLICCANDO FUORI
+document.addEventListener('click', function(e) {
+  const menu = document.getElementById('builder-menu');
+  const btn = document.getElementById('builder-btn');
+  if (!menu || !btn) return;
+
+  if (!btn.contains(e.target) && !menu.contains(e.target)) {
+    menu.style.display = 'none';
+  }
+});
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97e6e05757adee5c',t:'MTc1Nzc1ODQ1Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

@@ -1,0 +1,1486 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Builder - Crea il tuo sito</title>
+     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 300px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            padding: 20px;
+            background: rgba(102, 126, 234, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header h1 {
+            color: #4c51bf;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .tabs {
+            display: flex;
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            color: #6b7280;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            background: white;
+            color: #4c51bf;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab:hover {
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .editor-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .editor {
+            flex: 1;
+            display: none;
+            flex-direction: column;
+        }
+
+        .editor.active {
+            display: flex;
+        }
+
+        .editor textarea {
+            flex: 1;
+            border: none;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            resize: none;
+            outline: none;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .controls {
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            font-size: 12px;
+        }
+
+        .btn-primary {
+            background: #4c51bf;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #4338ca;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .btn-secondary:hover {
+            background: #d1d5db;
+        }
+
+        .preview-container {
+            flex: 1;
+            background: white;
+            border-left: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .preview-header {
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .preview-header h3 {
+            color: #374151;
+            font-size: 16px;
+        }
+
+        .preview-frame {
+            flex: 1;
+            border: none;
+            background: white;
+        }
+
+        .template-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            padding: 20px;
+        }
+
+        .template-card {
+            padding: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .template-card:hover {
+            border-color: #4c51bf;
+            background: rgba(255, 255, 255, 0.8);
+            transform: translateY(-2px);
+        }
+
+        .template-card h4 {
+            color: #374151;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .template-card p {
+            color: #6b7280;
+            font-size: 12px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: 50vh;
+            }
+            
+            .preview-container {
+                height: 50vh;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-stone-50 text-neutral-800 antialiased pt-20">
+     <!-- BREADCRUMB PRIMA del main - INVULNERABILE -->
+ <div id="breadcrumb-container" style="
+  position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; 
+  z-index: 999999 !important; 
+  background: rgba(255,255,255,0.98) !important; 
+  backdrop-filter: blur(30px) !important; 
+  border-bottom: 2px solid #e5e7eb !important; 
+  padding: 12px 24px !important; 
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15) !important;
+">
+  <div style="max-width: 1280px; margin: 0 auto !important; display: flex !important; align-items: center !important; justify-content: center !important; gap: 16px !important;">
+    <a href="index.html" style="
+      padding: 8px 16px !important; background: linear-gradient(135deg, #3b82f6, #1d4ed8) !important; 
+      color: white !important; text-decoration: none !important; border-radius: 25px !important; 
+      font-weight: 700 !important; font-size: 14px !important; box-shadow: 0 4px 12px rgba(59,130,246,0.4) !important;
+      display: flex !important; align-items: center !important; gap: 8px !important;
+    ">🏠 Home</a>
+    
+    <span style="color: #9ca3af !important; font-weight: bold !important; font-size: 20px !important;">›</span>
+    
+    <span id="builder-btn" style="
+      padding: 8px 16px !important; 
+      background: linear-gradient(135deg, #f59e0b, #d97706) !important; 
+      color: white !important; border-radius: 25px !important; 
+      font-weight: 700 !important; font-size: 14px !important; cursor: pointer !important;
+      box-shadow: 0 4px 12px rgba(245,158,11,0.4) !important;
+      display: flex !important; align-items: center !important; gap: 8px !important;
+    " onclick="toggleLayoutMenu()">🏗️ Builder ▼</span>
+    
+    <div id="builder-menu" style="
+      position: fixed !important; top: 70px !important; left: 50% !important; 
+      transform: translateX(-50%) !important; width: 280px !important;
+      background: rgba(255,255,255,0.98) !important; backdrop-filter: blur(30px) !important;
+      border: 2px solid #f59e0b !important; border-radius: 20px !important; 
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3) !important;
+      display: none !important; max-height: 300px !important; overflow-y: auto !important;
+      z-index: 999998 !important; padding: 0 !important;
+    ">
+      <a href="builder_home.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important; border-bottom: 1px solid #f3f4f6 !important;" onmouseenter="this.style.background='#fef3c7 !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">🏠 Home Builder</a>
+      <a href="webBuilder.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important; border-bottom: 1px solid #f3f4f6 !important;" onmouseenter="this.style.background='#dbeafe !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">🌐 Web</a>
+      <a href="SiteBuilder.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important; border-bottom: 1px solid #f3f4f6 !important;" onmouseenter="this.style.background='#dbeafe !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">💻 Siti</a>
+      <a href="miniBuilder.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important; border-bottom: 1px solid #f3f4f6 !important;" onmouseenter="this.style.background='#dbeafe !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">📱 Mini</a>
+      <a href="Dom__.responsive.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important;" onmouseenter="this.style.background='#e9d5ff !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">⚙️ Dom</a>
+          <a href="libraryEditor.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important;" onmouseenter="this.style.background='#e9d5ff !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">📚 Library </a>
+          <a href="codecraft_studio.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important;" onmouseenter="this.style.background='#e9d5ff !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">🖊 Codecraft</a>
+                 <a href="generatore_siti_web.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important;" onmouseenter="this.style.background='#e9d5ff !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">🌐 Web3</a>
+         <a href="generatore-app.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important;" onmouseenter="this.style.background='#e9d5ff !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">📱 App</a>
+    </div>
+    
+    <span style="color: #9ca3af !important; font-weight: bold !important; font-size: 20px !important;">›</span>
+    
+    <span style="
+      padding: 8px 16px !important; 
+      background: linear-gradient(135deg, #10b981, #059669) !important; 
+      color: white !important; border-radius: 25px !important; 
+      font-weight: 800 !important; font-size: 14px !important; 
+      box-shadow: 0 4px 12px rgba(16,185,129,0.4) !important;
+      display: flex !important; align-items: center !important; gap: 8px !important;
+    ">🖥 Web2</span>
+  </div>
+</div> 
+    <div class="container">
+        <div class="sidebar">
+            <div class="header">
+                <h1>🚀 Web Builder</h1>
+                <p>Crea siti web in tempo reale</p>
+            </div>
+            
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('html')">HTML</button>
+                <button class="tab" onclick="switchTab('css')">CSS</button>
+                <button class="tab" onclick="switchTab('js')">JS</button>
+                <button class="tab" onclick="switchTab('templates')">📋</button>
+            </div>
+            
+            <div class="editor-container">
+                <div class="editor active" id="html-editor">
+                    <textarea id="html-code" placeholder="Scrivi il tuo HTML qui..." oninput="updatePreview()"><!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Il Mio Sito</title>
+</head>
+<body>
+    <header style="background: #4c51bf; color: white; padding: 2rem; text-align: center;">
+        <h1>Benvenuto nel mio sito! 🎉</h1>
+        <p>Creato con Web Builder</p>
+    </header>
+    
+    <main style="padding: 2rem; max-width: 800px; margin: 0 auto;">
+        <section style="margin-bottom: 2rem;">
+            <h2 style="color: #374151; margin-bottom: 1rem;">Chi sono</h2>
+            <p style="line-height: 1.6; color: #6b7280;">
+                Questo è il mio primo sito web creato con il Web Builder! 
+                Puoi modificare questo testo e aggiungere i tuoi contenuti.
+            </p>
+        </section>
+        
+        <section>
+            <h2 style="color: #374151; margin-bottom: 1rem;">I miei progetti</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+                <div style="border: 1px solid #e5e7eb; padding: 1.5rem; border-radius: 8px;">
+                    <h3 style="color: #4c51bf; margin-bottom: 0.5rem;">Progetto 1</h3>
+                    <p style="color: #6b7280;">Descrizione del primo progetto</p>
+                </div>
+                <div style="border: 1px solid #e5e7eb; padding: 1.5rem; border-radius: 8px;">
+                    <h3 style="color: #4c51bf; margin-bottom: 0.5rem;">Progetto 2</h3>
+                    <p style="color: #6b7280;">Descrizione del secondo progetto</p>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer style="background: #f3f4f6; padding: 2rem; text-align: center; margin-top: 3rem;">
+        <p style="color: #6b7280;">© 2024 - Il mio sito web</p>
+    </footer>
+</body>
+</html></textarea>
+                </div>
+                
+                <div class="editor" id="css-editor">
+                    <textarea id="css-code" placeholder="Scrivi il tuo CSS qui..." oninput="updatePreview()">/* Aggiungi i tuoi stili CSS qui */
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 12px 24px;
+    background: #4c51bf;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: background 0.3s ease;
+}
+
+.btn:hover {
+    background: #4338ca;
+}
+
+.card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 15px;
+    }
+}</textarea>
+                </div>
+                
+                <div class="editor" id="js-editor">
+                    <textarea id="js-code" placeholder="Scrivi il tuo JavaScript qui..." oninput="updatePreview()">// Aggiungi il tuo JavaScript qui
+
+// Esempio: Funzione per cambiare colore al click
+function cambiaColore(elemento) {
+    const colori = ['#4c51bf', '#dc2626', '#059669', '#d97706', '#7c3aed'];
+    const coloreRandom = colori[Math.floor(Math.random() * colori.length)];
+    elemento.style.backgroundColor = coloreRandom;
+}
+
+// Esempio: Animazione al caricamento
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Sito caricato! 🎉');
+    
+    // Aggiungi animazione fade-in agli elementi
+    const elementi = document.querySelectorAll('section');
+    elementi.forEach((elemento, index) => {
+        elemento.style.opacity = '0';
+        elemento.style.transform = 'translateY(20px)';
+        elemento.style.transition = 'all 0.6s ease';
+        
+        setTimeout(() => {
+            elemento.style.opacity = '1';
+            elemento.style.transform = 'translateY(0)';
+        }, index * 200);
+    });
+});
+
+// Esempio: Contatore click
+let clickCount = 0;
+function contaClick() {
+    clickCount++;
+    alert(`Hai cliccato ${clickCount} volte!`);
+}</textarea>
+                </div>
+                
+                <div class="editor" id="templates-editor">
+                    <div class="template-grid">
+                        <div class="template-card" onclick="loadTemplate('landing')">
+                            <h4>🏠 Landing Page</h4>
+                            <p>Pagina di presentazione moderna</p>
+                        </div>
+                        <div class="template-card" onclick="loadTemplate('portfolio')">
+                            <h4>💼 Portfolio</h4>
+                            <p>Mostra i tuoi progetti</p>
+                        </div>
+                        <div class="template-card" onclick="loadTemplate('blog')">
+                            <h4>📝 Blog</h4>
+                            <p>Template per articoli</p>
+                        </div>
+                        <div class="template-card" onclick="loadTemplate('business')">
+                            <h4>🏢 Business</h4>
+                            <p>Sito aziendale professionale</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <button class="btn btn-primary" onclick="updatePreview()">▶️ Aggiorna</button>
+                <button class="btn btn-secondary" onclick="clearCode()">🗑️ Pulisci</button>
+                <button class="btn btn-secondary" onclick="downloadCode()">💾 Scarica</button>
+                <button class="btn btn-secondary" onclick="fullscreen()">🔍 Schermo intero</button>
+            </div>
+        </div>
+        
+        <div class="preview-container">
+            <div class="preview-header">
+                <h3>👁️ Anteprima Live</h3>
+                <span style="color: #6b7280; font-size: 12px;">Aggiornamento automatico</span>
+            </div>
+            <iframe id="preview" class="preview-frame"></iframe>
+        </div>
+    </div>
+
+    <script>
+        let currentTab = 'html';
+        
+        function switchTab(tab) {
+            // Rimuovi classe active da tutti i tab
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.editor').forEach(e => e.classList.remove('active'));
+            
+            // Aggiungi classe active al tab selezionato
+            event.target.classList.add('active');
+            document.getElementById(tab + '-editor').classList.add('active');
+            
+            currentTab = tab;
+        }
+        
+        function updatePreview() {
+            const htmlCode = document.getElementById('html-code').value;
+            const cssCode = document.getElementById('css-code').value;
+            const jsCode = document.getElementById('js-code').value;
+            
+            const preview = document.getElementById('preview');
+            const previewDoc = preview.contentDocument || preview.contentWindow.document;
+            
+            // Combina HTML, CSS e JS
+            let fullCode = htmlCode;
+            
+            // Aggiungi CSS se presente
+            if (cssCode.trim()) {
+                const cssTag = `<style>${cssCode}</style>`;
+                if (fullCode.includes('</head>')) {
+                    fullCode = fullCode.replace('</head>', cssTag + '</head>');
+                } else {
+                    fullCode = cssTag + fullCode;
+                }
+            }
+            
+            // Aggiungi JS se presente
+            if (jsCode.trim()) {
+                const jsTag = `<script>${jsCode}<\/script>`;
+                if (fullCode.includes('</body>')) {
+                    fullCode = fullCode.replace('</body>', jsTag + '</body>');
+                } else {
+                    fullCode = fullCode + jsTag;
+                }
+            }
+            
+            previewDoc.open();
+            previewDoc.write(fullCode);
+            previewDoc.close();
+        }
+        
+        function clearCode() {
+            if (confirm('Sei sicuro di voler cancellare tutto il codice?')) {
+                document.getElementById('html-code').value = '';
+                document.getElementById('css-code').value = '';
+                document.getElementById('js-code').value = '';
+                updatePreview();
+            }
+        }
+        
+        function downloadCode() {
+            const htmlCode = document.getElementById('html-code').value;
+            const cssCode = document.getElementById('css-code').value;
+            const jsCode = document.getElementById('js-code').value;
+            
+            let fullCode = htmlCode;
+            
+            if (cssCode.trim()) {
+                const cssTag = `<style>\n${cssCode}\n</style>`;
+                if (fullCode.includes('</head>')) {
+                    fullCode = fullCode.replace('</head>', cssTag + '\n</head>');
+                } else {
+                    fullCode = cssTag + '\n' + fullCode;
+                }
+            }
+            
+            if (jsCode.trim()) {
+                const jsTag = `<script>\n${jsCode}\n<\/script>`;
+                if (fullCode.includes('</body>')) {
+                    fullCode = fullCode.replace('</body>', jsTag + '\n</body>');
+                } else {
+                    fullCode = fullCode + '\n' + jsTag;
+                }
+            }
+            
+            const blob = new Blob([fullCode], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'mio-sito.html';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+        
+        function fullscreen() {
+            const preview = document.getElementById('preview');
+            if (preview.requestFullscreen) {
+                preview.requestFullscreen();
+            } else if (preview.webkitRequestFullscreen) {
+                preview.webkitRequestFullscreen();
+            } else if (preview.msRequestFullscreen) {
+                preview.msRequestFullscreen();
+            }
+        }
+        
+        function loadTemplate(type) {
+            const templates = {
+                landing: {
+                    html: `<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Landing Page</title>
+</head>
+<body>
+    <header class="hero">
+        <nav>
+            <div class="logo">MioBrand</div>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#servizi">Servizi</a></li>
+                <li><a href="#contatti">Contatti</a></li>
+            </ul>
+        </nav>
+        <div class="hero-content">
+            <h1>Trasforma le tue idee in realtà</h1>
+            <p>Soluzioni innovative per il tuo business</p>
+            <button class="cta-btn" onclick="alert('Contattaci!')">Inizia Ora</button>
+        </div>
+    </header>
+    
+    <section class="features">
+        <h2>I nostri servizi</h2>
+        <div class="feature-grid">
+            <div class="feature">
+                <h3>🚀 Veloce</h3>
+                <p>Risultati in tempi record</p>
+            </div>
+            <div class="feature">
+                <h3>💡 Innovativo</h3>
+                <p>Tecnologie all'avanguardia</p>
+            </div>
+            <div class="feature">
+                <h3>🎯 Preciso</h3>
+                <p>Soluzioni su misura</p>
+            </div>
+        </div>
+    </section>
+</body>
+</html>`,
+                    css: `.hero {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+}
+
+.hero-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 2rem;
+}
+
+.hero-content h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.cta-btn {
+    background: white;
+    color: #667eea;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 2rem;
+}
+
+.features {
+    padding: 4rem 2rem;
+    text-align: center;
+}
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.feature {
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}`,
+                    js: `// Animazioni smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({ behavior: 'smooth' });
+        }
+    });
+});
+
+// Animazione al caricamento
+window.addEventListener('load', () => {
+    document.querySelector('.hero-content').style.animation = 'fadeInUp 1s ease-out';
+});`
+                },
+                portfolio: {
+                    html: `<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Il Mio Portfolio</title>
+</head>
+<body>
+    <header>
+        <h1>Mario Rossi</h1>
+        <p>Web Developer & Designer</p>
+    </header>
+    
+    <section class="about">
+        <h2>Chi sono</h2>
+        <p>Sono un developer appassionato con 5 anni di esperienza nella creazione di siti web moderni e funzionali.</p>
+    </section>
+    
+    <section class="projects">
+        <h2>I miei progetti</h2>
+        <div class="project-grid">
+            <div class="project-card" onclick="showProject(1)">
+                <h3>E-commerce Platform</h3>
+                <p>Piattaforma completa per vendite online</p>
+                <span class="tech">React, Node.js</span>
+            </div>
+            <div class="project-card" onclick="showProject(2)">
+                <h3>App Mobile</h3>
+                <p>Applicazione per gestione task</p>
+                <span class="tech">React Native</span>
+            </div>
+            <div class="project-card" onclick="showProject(3)">
+                <h3>Dashboard Analytics</h3>
+                <p>Pannello di controllo per dati</p>
+                <span class="tech">Vue.js, D3.js</span>
+            </div>
+        </div>
+    </section>
+    
+    <footer>
+        <p>Contattami: mario@email.com | +39 123 456 7890</p>
+    </footer>
+</body>
+</html>`,
+                    css: `body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+    color: #333;
+}
+
+header {
+    background: #2c3e50;
+    color: white;
+    text-align: center;
+    padding: 4rem 2rem;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.about, .projects {
+    padding: 3rem 2rem;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.project-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.project-card {
+    background: white;
+    border-radius: 10px;
+    padding: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.project-card:hover {
+    transform: translateY(-5px);
+}
+
+.tech {
+    background: #3498db;
+    color: white;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    display: inline-block;
+    margin-top: 1rem;
+}
+
+footer {
+    background: #34495e;
+    color: white;
+    text-align: center;
+    padding: 2rem;
+}`,
+                    js: `function showProject(id) {
+    const projects = {
+        1: "E-commerce completo con carrello, pagamenti e gestione ordini",
+        2: "App mobile per organizzare task quotidiani con notifiche",
+        3: "Dashboard interattiva per visualizzare metriche aziendali"
+    };
+    
+    alert("Progetto " + id + ": " + projects[id]);
+}
+
+// Animazione scroll
+window.addEventListener('scroll', () => {
+    const cards = document.querySelectorAll('.project-card');
+    cards.forEach(card => {
+        const rect = card.getBoundingClientRect();
+        if (rect.top < window.innerHeight) {
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }
+    });
+});
+
+// Inizializza animazioni
+document.addEventListener('DOMContentLoaded', () => {
+    const cards = document.querySelectorAll('.project-card');
+    cards.forEach(card => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        card.style.transition = 'all 0.6s ease';
+    });
+});`
+                },
+                blog: {
+                    html: `<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Il Mio Blog</title>
+</head>
+<body>
+    <header class="blog-header">
+        <h1>📝 Il Mio Blog</h1>
+        <p>Pensieri, idee e tutorial</p>
+    </header>
+    
+    <main class="container">
+        <article class="post">
+            <h2>Come creare un sito web moderno</h2>
+            <div class="post-meta">
+                <span>📅 15 Dicembre 2024</span>
+                <span>👤 Mario Rossi</span>
+                <span>🏷️ Web Development</span>
+            </div>
+            <p>Creare un sito web moderno richiede attenzione a diversi aspetti: design responsive, performance e user experience...</p>
+            <button class="read-more" onclick="expandPost(1)">Leggi tutto</button>
+        </article>
+        
+        <article class="post">
+            <h2>JavaScript: Tips e Tricks</h2>
+            <div class="post-meta">
+                <span>📅 10 Dicembre 2024</span>
+                <span>👤 Mario Rossi</span>
+                <span>🏷️ JavaScript</span>
+            </div>
+            <p>Ecco alcuni trucchi utili per scrivere JavaScript più efficiente e pulito...</p>
+            <button class="read-more" onclick="expandPost(2)">Leggi tutto</button>
+        </article>
+        
+        <article class="post">
+            <h2>CSS Grid vs Flexbox</h2>
+            <div class="post-meta">
+                <span>📅 5 Dicembre 2024</span>
+                <span>👤 Mario Rossi</span>
+                <span>🏷️ CSS</span>
+            </div>
+            <p>Quando usare CSS Grid e quando preferire Flexbox? Analizziamo le differenze...</p>
+            <button class="read-more" onclick="expandPost(3)">Leggi tutto</button>
+        </article>
+    </main>
+    
+    <aside class="sidebar">
+        <div class="widget">
+            <h3>Categorie</h3>
+            <ul>
+                <li><a href="#" onclick="filterPosts('web')">Web Development</a></li>
+                <li><a href="#" onclick="filterPosts('js')">JavaScript</a></li>
+                <li><a href="#" onclick="filterPosts('css')">CSS</a></li>
+            </ul>
+        </div>
+        
+        <div class="widget">
+            <h3>Articoli recenti</h3>
+            <ul>
+                <li><a href="#">Come creare un sito web moderno</a></li>
+                <li><a href="#">JavaScript: Tips e Tricks</a></li>
+                <li><a href="#">CSS Grid vs Flexbox</a></li>
+            </ul>
+        </div>
+    </aside>
+</body>
+</html>`,
+                    css: `body {
+    font-family: 'Georgia', serif;
+    margin: 0;
+    padding: 0;
+    background: #f8f9fa;
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    grid-template-rows: auto 1fr;
+    grid-template-areas: 
+        "header header"
+        "main sidebar";
+    min-height: 100vh;
+}
+
+.blog-header {
+    grid-area: header;
+    background: linear-gradient(135deg, #2c3e50, #3498db);
+    color: white;
+    text-align: center;
+    padding: 3rem 2rem;
+}
+
+.container {
+    grid-area: main;
+    padding: 2rem;
+    max-width: 800px;
+}
+
+.sidebar {
+    grid-area: sidebar;
+    background: white;
+    padding: 2rem;
+    border-left: 1px solid #e9ecef;
+}
+
+.post {
+    background: white;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.post h2 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+}
+
+.post-meta {
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.read-more {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 1rem;
+}
+
+.widget {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+}
+
+.widget h3 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+}
+
+.widget ul {
+    list-style: none;
+    padding: 0;
+}
+
+.widget li {
+    margin-bottom: 0.5rem;
+}
+
+.widget a {
+    color: #3498db;
+    text-decoration: none;
+}
+
+@media (max-width: 768px) {
+    body {
+        grid-template-columns: 1fr;
+        grid-template-areas: 
+            "header"
+            "main"
+            "sidebar";
+    }
+}`,
+                    js: `function expandPost(id) {
+    const fullPosts = {
+        1: "Creare un sito web moderno richiede attenzione a diversi aspetti: design responsive, performance e user experience. È importante utilizzare tecnologie moderne come HTML5, CSS3 e JavaScript ES6+. Il design deve essere mobile-first e accessibile a tutti gli utenti.",
+        2: "JavaScript offre molte funzionalità potenti. Alcuni tips utili: usa const e let invece di var, sfrutta le arrow functions, utilizza destructuring per estrarre valori da oggetti e array, e non dimenticare async/await per gestire le operazioni asincrone.",
+        3: "CSS Grid è perfetto per layout bidimensionali complessi, mentre Flexbox eccelle nei layout unidimensionali. Grid ti permette di controllare righe e colonne simultaneamente, Flexbox è ideale per allineare elementi lungo un asse principale."
+    };
+    
+    alert("Articolo completo:\\n\\n" + fullPosts[id]);
+}
+
+function filterPosts(category) {
+    alert("Filtrando articoli per categoria: " + category);
+    // Qui potresti implementare la logica di filtro reale
+}
+
+// Animazione di caricamento
+document.addEventListener('DOMContentLoaded', () => {
+    const posts = document.querySelectorAll('.post');
+    posts.forEach((post, index) => {
+        post.style.opacity = '0';
+        post.style.transform = 'translateY(20px)';
+        
+        setTimeout(() => {
+            post.style.transition = 'all 0.6s ease';
+            post.style.opacity = '1';
+            post.style.transform = 'translateY(0)';
+        }, index * 200);
+    });
+});`
+                },
+                business: {
+                    html: `<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechSolutions - La tua azienda digitale</title>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">TechSolutions</div>
+            <ul class="nav-menu">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#servizi">Servizi</a></li>
+                <li><a href="#chi-siamo">Chi Siamo</a></li>
+                <li><a href="#contatti">Contatti</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <section id="home" class="hero-section">
+        <div class="hero-content">
+            <h1>Trasformiamo le tue idee in soluzioni digitali</h1>
+            <p>Esperti in sviluppo software, consulenza IT e trasformazione digitale</p>
+            <button class="cta-button" onclick="scrollToSection('contatti')">Richiedi Preventivo</button>
+        </div>
+    </section>
+    
+    <section id="servizi" class="services-section">
+        <div class="container">
+            <h2>I Nostri Servizi</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">💻</div>
+                    <h3>Sviluppo Software</h3>
+                    <p>Applicazioni web e mobile su misura per le tue esigenze aziendali</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">☁️</div>
+                    <h3>Cloud Solutions</h3>
+                    <p>Migrazione e gestione di infrastrutture cloud scalabili e sicure</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">📊</div>
+                    <h3>Business Intelligence</h3>
+                    <p>Analisi dati e dashboard per decisioni aziendali informate</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🔒</div>
+                    <h3>Cybersecurity</h3>
+                    <p>Protezione completa dei tuoi sistemi e dati aziendali</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="chi-siamo" class="about-section">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-text">
+                    <h2>Chi Siamo</h2>
+                    <p>Con oltre 10 anni di esperienza nel settore IT, TechSolutions è il partner ideale per la trasformazione digitale della tua azienda.</p>
+                    <div class="stats">
+                        <div class="stat">
+                            <h3>150+</h3>
+                            <p>Progetti Completati</p>
+                        </div>
+                        <div class="stat">
+                            <h3>50+</h3>
+                            <p>Clienti Soddisfatti</p>
+                        </div>
+                        <div class="stat">
+                            <h3>24/7</h3>
+                            <p>Supporto Tecnico</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="contatti" class="contact-section">
+        <div class="container">
+            <h2>Contattaci</h2>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h3>Informazioni di Contatto</h3>
+                    <p>📍 Via Roma 123, 20100 Milano</p>
+                    <p>📞 +39 02 1234 5678</p>
+                    <p>✉️ info@techsolutions.it</p>
+                </div>
+                <form class="contact-form" onsubmit="submitForm(event)">
+                    <input type="text" placeholder="Nome" required>
+                    <input type="email" placeholder="Email" required>
+                    <textarea placeholder="Messaggio" rows="5" required></textarea>
+                    <button type="submit">Invia Messaggio</button>
+                </form>
+            </div>
+        </div>
+    </section>
+    
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 TechSolutions. Tutti i diritti riservati.</p>
+        </div>
+    </footer>
+</body>
+</html>`,
+                    css: `* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    color: #333;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.navbar {
+    background: #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #2c5aa0;
+}
+
+.nav-menu {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+}
+
+.nav-menu a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.nav-menu a:hover {
+    color: #2c5aa0;
+}
+
+.hero-section {
+    background: linear-gradient(135deg, #2c5aa0, #1e3a8a);
+    color: white;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    padding-top: 80px;
+}
+
+.hero-content h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.hero-content p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+}
+
+.cta-button {
+    background: #fff;
+    color: #2c5aa0;
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.cta-button:hover {
+    transform: translateY(-2px);
+}
+
+.services-section {
+    padding: 5rem 0;
+    background: #f8f9fa;
+}
+
+.services-section h2 {
+    text-align: center;
+    margin-bottom: 3rem;
+    font-size: 2.5rem;
+    color: #2c5aa0;
+}
+
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+.service-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+}
+
+.service-card:hover {
+    transform: translateY(-5px);
+}
+
+.service-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.about-section {
+    padding: 5rem 0;
+}
+
+.about-content {
+    text-align: center;
+}
+
+.about-section h2 {
+    font-size: 2.5rem;
+    color: #2c5aa0;
+    margin-bottom: 2rem;
+}
+
+.stats {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin-top: 3rem;
+}
+
+.stat h3 {
+    font-size: 2rem;
+    color: #2c5aa0;
+}
+
+.contact-section {
+    padding: 5rem 0;
+    background: #f8f9fa;
+}
+
+.contact-section h2 {
+    text-align: center;
+    margin-bottom: 3rem;
+    font-size: 2.5rem;
+    color: #2c5aa0;
+}
+
+.contact-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+}
+
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.contact-form input,
+.contact-form textarea {
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+.contact-form button {
+    background: #2c5aa0;
+    color: white;
+    border: none;
+    padding: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+footer {
+    background: #333;
+    color: white;
+    text-align: center;
+    padding: 2rem 0;
+}
+
+@media (max-width: 768px) {
+    .hero-content h1 {
+        font-size: 2rem;
+    }
+    
+    .contact-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .stats {
+        flex-direction: column;
+        gap: 1rem;
+    }
+}`,
+                    js: `function scrollToSection(sectionId) {
+    const element = document.getElementById(sectionId);
+    if (element) {
+        element.scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'start'
+        });
+    }
+}
+
+function submitForm(event) {
+    event.preventDefault();
+    
+    // Simula invio form
+    const button = event.target.querySelector('button');
+    const originalText = button.textContent;
+    
+    button.textContent = 'Invio in corso...';
+    button.disabled = true;
+    
+    setTimeout(() => {
+        alert('Messaggio inviato con successo! Ti contatteremo presto.');
+        event.target.reset();
+        button.textContent = originalText;
+        button.disabled = false;
+    }, 2000);
+}
+
+// Animazioni al scroll
+function animateOnScroll() {
+    const elements = document.querySelectorAll('.service-card, .stat');
+    
+    elements.forEach(element => {
+        const elementTop = element.getBoundingClientRect().top;
+        const elementVisible = 150;
+        
+        if (elementTop < window.innerHeight - elementVisible) {
+            element.style.opacity = '1';
+            element.style.transform = 'translateY(0)';
+        }
+    });
+}
+
+// Inizializza animazioni
+document.addEventListener('DOMContentLoaded', () => {
+    const elements = document.querySelectorAll('.service-card, .stat');
+    elements.forEach(element => {
+        element.style.opacity = '0';
+        element.style.transform = 'translateY(30px)';
+        element.style.transition = 'all 0.6s ease';
+    });
+    
+    window.addEventListener('scroll', animateOnScroll);
+    animateOnScroll(); // Controlla elementi già visibili
+});
+
+// Navbar scroll effect
+window.addEventListener('scroll', () => {
+    const navbar = document.querySelector('.navbar');
+    if (window.scrollY > 50) {
+        navbar.style.background = 'rgba(255, 255, 255, 0.95)';
+        navbar.style.backdropFilter = 'blur(10px)';
+    } else {
+        navbar.style.background = '#fff';
+        navbar.style.backdropFilter = 'none';
+    }
+});`
+                }
+            };
+            
+            const template = templates[type];
+            if (template) {
+                document.getElementById('html-code').value = template.html;
+                document.getElementById('css-code').value = template.css;
+                document.getElementById('js-code').value = template.js;
+                updatePreview();
+                
+                // Torna al tab HTML
+                switchTab('html');
+                document.querySelector('.tab').click();
+            }
+        }
+        
+        // Inizializza l'anteprima al caricamento
+        document.addEventListener('DOMContentLoaded', function() {
+            updatePreview();
+        });
+          // FUNZIONE CLICK PER MENU BUILDER
+function toggleLayoutMenu() {
+  const menu = document.getElementById('builder-menu');
+  if (!menu) return;
+  menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+}
+
+// CHIUDE MENU CLICCANDO FUORI
+document.addEventListener('click', function(e) {
+  const menu = document.getElementById('builder-menu');
+  const btn = document.getElementById('builder-btn');
+  if (!menu || !btn) return;
+
+  if (!btn.contains(e.target) && !menu.contains(e.target)) {
+    menu.style.display = 'none';
+  }
+});
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98344dec3727edde',t:'MTc1ODU3MDM0NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

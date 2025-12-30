@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeCraft Studio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            box-sizing: border-box;
+            margin: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            color: #333;
+        }
+
+        html {
+            height: 100%;
+        }
+
+        .studio {
+            display: flex;
+            height: 100%;
+            background: white;
+            margin: 20px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 220px;
+            background: #f8fafc;
+            border-right: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            padding: 20px 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .logo h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .tools {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        .tool-section {
+            margin-bottom: 35px;
+        }
+
+        .tool-section h3 {
+            margin: 0 0 15px 0;
+            font-size: 14px;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .tool-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tool-item:hover {
+            background: #667eea;
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .tool-icon {
+            font-size: 18px;
+            margin-right: 12px;
+        }
+
+        .main-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .toolbar {
+            padding: 20px 30px;
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .project-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .action-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .action-btn.primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .action-btn.primary:hover {
+            background: #5a67d8;
+        }
+
+        .action-btn.secondary {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .action-btn.secondary:hover {
+            background: #e2e8f0;
+        }
+
+        .workspace {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1px;
+            background: #e2e8f0;
+        }
+
+        .editor-panel {
+            background: #1e1e1e;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-header {
+            padding: 15px 20px;
+            background: #2d2d2d;
+            color: #e2e8f0;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .code-area {
+            flex: 1;
+            background: #1e1e1e;
+            color: #d4d4d4;
+            border: none;
+            padding: 20px;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            resize: none;
+            outline: none;
+        }
+
+        .preview-panel {
+            background: white;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .preview-frame {
+            flex: 1;
+            border: none;
+            background: white;
+        }
+
+        .status-bar {
+            padding: 12px 30px;
+            background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        @media (max-width: 768px) {
+            .studio {
+                margin: 10px;
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: 200px;
+            }
+            
+            .workspace {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-stone-50 text-neutral-800 antialiased pt-20">
+     <!-- BREADCRUMB PRIMA del main - INVULNERABILE -->
+ <div id="breadcrumb-container" style="
+  position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; 
+  z-index: 999999 !important; 
+  background: rgba(255,255,255,0.98) !important; 
+  backdrop-filter: blur(30px) !important; 
+  border-bottom: 2px solid #e5e7eb !important; 
+  padding: 12px 24px !important; 
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15) !important;
+">
+  <div style="max-width: 1280px; margin: 0 auto !important; display: flex !important; align-items: center !important; justify-content: center !important; gap: 16px !important;">
+    <a href="index.html" style="
+      padding: 8px 16px !important; background: linear-gradient(135deg, #3b82f6, #1d4ed8) !important; 
+      color: white !important; text-decoration: none !important; border-radius: 25px !important; 
+      font-weight: 700 !important; font-size: 14px !important; box-shadow: 0 4px 12px rgba(59,130,246,0.4) !important;
+      display: flex !important; align-items: center !important; gap: 8px !important;
+    ">🏠 Home</a>
+    
+    <span style="color: #9ca3af !important; font-weight: bold !important; font-size: 20px !important;">›</span>
+    
+    <span id="builder-btn" style="
+      padding: 8px 16px !important; 
+      background: linear-gradient(135deg, #f59e0b, #d97706) !important; 
+      color: white !important; border-radius: 25px !important; 
+      font-weight: 700 !important; font-size: 14px !important; cursor: pointer !important;
+      box-shadow: 0 4px 12px rgba(245,158,11,0.4) !important;
+      display: flex !important; align-items: center !important; gap: 8px !important;
+    " onclick="toggleLayoutMenu()">🏗️ Builder ▼</span>
+    
+    <div id="builder-menu" style="
+      position: fixed !important; top: 70px !important; left: 50% !important; 
+      transform: translateX(-50%) !important; width: 280px !important;
+      background: rgba(255,255,255,0.98) !important; backdrop-filter: blur(30px) !important;
+      border: 2px solid #f59e0b !important; border-radius: 20px !important; 
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3) !important;
+      display: none !important; max-height: 300px !important; overflow-y: auto !important;
+      z-index: 999998 !important; padding: 0 !important;
+    ">
+      <a href="builder_home.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important; border-bottom: 1px solid #f3f4f6 !important;" onmouseenter="this.style.background='#fef3c7 !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">🏠 Home Builder</a>
+      <a href="webBuilder.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important; border-bottom: 1px solid #f3f4f6 !important;" onmouseenter="this.style.background='#dbeafe !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">🌐 Web</a>
+      <a href="SiteBuilder.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important; border-bottom: 1px solid #f3f4f6 !important;" onmouseenter="this.style.background='#dbeafe !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">💻 Siti</a>
+      <a href="miniBuilder.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important; border-bottom: 1px solid #f3f4f6 !important;" onmouseenter="this.style.background='#dbeafe !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">📱 Mini</a>
+      <a href="Dom__.responsive.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important;" onmouseenter="this.style.background='#e9d5ff !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">⚙️ Dom</a>
+          <a href="libraryEditor.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important;" onmouseenter="this.style.background='#e9d5ff !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">📚 Library </a>
+          <a href="builder_web.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important;" onmouseenter="this.style.background='#e9d5ff !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';"> 🖥 Web2</a>
+                 <a href="generatore_siti_web.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important;" onmouseenter="this.style.background='#e9d5ff !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">🌐 Web3</a>
+         <a href="generatore-app.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important;" onmouseenter="this.style.background='#e9d5ff !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">📱 App</a>
+    </div>
+    
+    <span style="color: #9ca3af !important; font-weight: bold !important; font-size: 20px !important;">›</span>
+    
+    <span style="
+      padding: 8px 16px !important; 
+      background: linear-gradient(135deg, #10b981, #059669) !important; 
+      color: white !important; border-radius: 25px !important; 
+      font-weight: 800 !important; font-size: 14px !important; 
+      box-shadow: 0 4px 12px rgba(16,185,129,0.4) !important;
+      display: flex !important; align-items: center !important; gap: 8px !important;
+    ">🖊 Codecraft</span>
+  </div>
+</div> 
+    <div class="studio">
+        <aside class="sidebar">
+            <div class="logo">
+                <h1>⚡ CodeCraft</h1>
+            </div>
+            
+            <div class="tools">
+                <div class="tool-section">
+                    <h3>Elementi UI</h3>
+                    <div class="tool-item" onclick="insertCode('button')">
+                        <span class="tool-icon">🔘</span>
+                        <span>Pulsante</span>
+                    </div>
+                    <div class="tool-item" onclick="insertCode('input')">
+                        <span class="tool-icon">📝</span>
+                        <span>Campo Testo</span>
+                    </div>
+                    <div class="tool-item" onclick="insertCode('card')">
+                        <span class="tool-icon">🎴</span>
+                        <span>Card</span>
+                    </div>
+                    <div class="tool-item" onclick="insertCode('hero')">
+                        <span class="tool-icon">🌟</span>
+                        <span>Hero Section</span>
+                    </div>
+                </div>
+
+                <div class="tool-section">
+                    <h3>Layout</h3>
+                    <div class="tool-item" onclick="insertCode('grid')">
+                        <span class="tool-icon">⚏</span>
+                        <span>Griglia</span>
+                    </div>
+                    <div class="tool-item" onclick="insertCode('flex')">
+                        <span class="tool-icon">📐</span>
+                        <span>Flexbox</span>
+                    </div>
+                    <div class="tool-item" onclick="insertCode('navbar')">
+                        <span class="tool-icon">🧭</span>
+                        <span>Navbar</span>
+                    </div>
+                </div>
+
+                <div class="tool-section">
+                    <h3>Interazioni</h3>
+                    <div class="tool-item" onclick="insertCode('modal')">
+                        <span class="tool-icon">🪟</span>
+                        <span>Modal</span>
+                    </div>
+                    <div class="tool-item" onclick="insertCode('animation')">
+                        <span class="tool-icon">✨</span>
+                        <span>Animazione</span>
+                    </div>
+                    <div class="tool-item" onclick="insertCode('form')">
+                        <span class="tool-icon">📋</span>
+                        <span>Form</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-area">
+            <div class="toolbar">
+                <div class="project-name">🚀 Il Mio Progetto</div>
+                <div class="actions">
+                    <button class="action-btn secondary" onclick="newProject()">Nuovo</button>
+                    <button class="action-btn secondary" onclick="saveProject()">Salva</button>
+                    <button class="action-btn primary" onclick="previewCode()">Anteprima</button>
+                </div>
+            </div>
+
+            <div class="workspace">
+                <div class="editor-panel">
+                    <div class="panel-header">📝 Editor HTML/CSS/JS</div>
+                    <textarea class="code-area" id="codeEditor"><!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Mia App</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 500px;
+        }
+        
+        h1 {
+            color: #1e293b;
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+        }
+        
+        p {
+            color: #64748b;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+        
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Benvenuto!</h1>
+        <p>Usa gli strumenti a sinistra per creare la tua app</p>
+        <button class="btn" onclick="saluta()">Inizia a creare</button>
+    </div>
+    
+    <script>
+        function saluta() {
+            document.querySelector('h1').textContent = '🚀 Fantastico!';
+            document.querySelector('p').textContent = 'Ora aggiungi altri elementi dalla barra laterale!';
+        }
+    </script>
+</body>
+</html></textarea>
+                </div>
+
+                <div class="preview-panel">
+                    <div class="panel-header">👁️ Anteprima Live</div>
+                    <iframe class="preview-frame" id="previewFrame"></iframe>
+                </div>
+            </div>
+
+            <div class="status-bar" id="statusBar">
+                ✅ Pronto per creare • Usa gli strumenti per aggiungere elementi
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const editor = document.getElementById('codeEditor');
+        const preview = document.getElementById('previewFrame');
+        const status = document.getElementById('statusBar');
+
+        // Auto-aggiorna anteprima
+        editor.addEventListener('input', updatePreview);
+        updatePreview();
+
+        function updatePreview() {
+            const code = editor.value;
+            preview.srcdoc = code;
+        }
+
+        function insertCode(type) {
+            const templates = {
+                button: '\n        <button class="btn" onclick="showMessage(\'Pulsante cliccato! 🎉\')">Nuovo Pulsante</button>',
+                
+                input: '\n        <div style="margin: 1rem 0;">\n            <input type="text" placeholder="Inserisci testo..." style="padding: 0.75rem; border: 2px solid #e2e8f0; border-radius: 8px; width: 100%; font-size: 1rem;" oninput="showMessage(\'Hai scritto: \' + this.value)">\n        </div>',
+                
+                card: '\n        <div style="background: white; padding: 2rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); margin: 1rem 0; max-width: 300px; cursor: pointer; transition: transform 0.3s ease;" onclick="flipCard(this)">\n            <h3 style="color: #1e293b; margin-bottom: 1rem;">Titolo Card</h3>\n            <p style="color: #64748b; margin-bottom: 1.5rem;">Descrizione della card con contenuto interessante.</p>\n            <button class="btn" onclick="event.stopPropagation(); showMessage(\'Azione eseguita!\')">Azione</button>\n        </div>',
+                
+                hero: '\n        <section style="text-align: center; padding: 4rem 2rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; margin: 2rem 0; border-radius: 20px; cursor: pointer; transition: all 0.3s ease;" onclick="animateHero(this)">\n            <h2 style="font-size: 3rem; margin-bottom: 1rem;">🌟 Hero Section</h2>\n            <p style="font-size: 1.2rem; margin-bottom: 2rem; opacity: 0.9;">Una sezione hero accattivante per il tuo sito</p>\n            <button class="btn" style="background: white; color: #667eea;" onclick="event.stopPropagation(); showMessage(\'Call to Action cliccato!\')">Call to Action</button>\n        </section>',
+                
+                grid: '\n        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin: 2rem 0;">\n            <div style="background: #f8fafc; padding: 1.5rem; border-radius: 12px; text-align: center; cursor: pointer; transition: all 0.3s ease;" onclick="highlightItem(this)">\n                <div style="font-size: 2rem; margin-bottom: 0.5rem;">📱</div>\n                <h4>Mobile</h4>\n            </div>\n            <div style="background: #f8fafc; padding: 1.5rem; border-radius: 12px; text-align: center; cursor: pointer; transition: all 0.3s ease;" onclick="highlightItem(this)">\n                <div style="font-size: 2rem; margin-bottom: 0.5rem;">💻</div>\n                <h4>Desktop</h4>\n            </div>\n            <div style="background: #f8fafc; padding: 1.5rem; border-radius: 12px; text-align: center; cursor: pointer; transition: all 0.3s ease;" onclick="highlightItem(this)">\n                <div style="font-size: 2rem; margin-bottom: 0.5rem;">⌚</div>\n                <h4>Watch</h4>\n            </div>\n        </div>',
+                
+                flex: '\n        <div style="display: flex; gap: 1rem; align-items: center; justify-content: space-between; padding: 1.5rem; background: #f8fafc; border-radius: 12px; margin: 1rem 0;">\n            <div style="flex: 1; cursor: pointer; padding: 0.5rem; border-radius: 8px; transition: background 0.3s;" onclick="showMessage(\'Elemento 1 cliccato!\'); this.style.background=\'#667eea\'; this.style.color=\'white\'; setTimeout(() => {this.style.background=\'transparent\'; this.style.color=\'#333\'}, 500)">Elemento 1</div>\n            <div style="flex: 2; text-align: center; font-weight: bold; cursor: pointer; padding: 0.5rem; border-radius: 8px; transition: background 0.3s;" onclick="showMessage(\'Elemento centrale cliccato!\'); this.style.background=\'#667eea\'; this.style.color=\'white\'; setTimeout(() => {this.style.background=\'transparent\'; this.style.color=\'#333\'}, 500)">Elemento Centrale</div>\n            <div style="flex: 1; text-align: right; cursor: pointer; padding: 0.5rem; border-radius: 8px; transition: background 0.3s;" onclick="showMessage(\'Elemento 3 cliccato!\'); this.style.background=\'#667eea\'; this.style.color=\'white\'; setTimeout(() => {this.style.background=\'transparent\'; this.style.color=\'#333\'}, 500)">Elemento 3</div>\n        </div>',
+                
+                navbar: '\n        <nav style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem; background: #1e293b; color: white; border-radius: 12px; margin: 1rem 0;">\n            <div style="font-weight: bold; font-size: 1.2rem; cursor: pointer;" onclick="showMessage(\'Brand cliccato!\')">🚀 Brand</div>\n            <div style="display: flex; gap: 2rem;">\n                <a href="#" style="color: white; text-decoration: none; transition: opacity 0.3s; padding: 0.5rem;" onclick="event.preventDefault(); showMessage(\'Home cliccato!\'); this.style.background=\'rgba(255,255,255,0.2)\'; setTimeout(() => this.style.background=\'transparent\', 300); return false;" onmouseover="this.style.opacity=\'0.7\'" onmouseout="this.style.opacity=\'1\'">Home</a>\n                <a href="#" style="color: white; text-decoration: none; transition: opacity 0.3s; padding: 0.5rem;" onclick="event.preventDefault(); showMessage(\'About cliccato!\'); this.style.background=\'rgba(255,255,255,0.2)\'; setTimeout(() => this.style.background=\'transparent\', 300); return false;" onmouseover="this.style.opacity=\'0.7\'" onmouseout="this.style.opacity=\'1\'">About</a>\n                <a href="#" style="color: white; text-decoration: none; transition: opacity 0.3s; padding: 0.5rem;" onclick="event.preventDefault(); showMessage(\'Contatti cliccato!\'); this.style.background=\'rgba(255,255,255,0.2)\'; setTimeout(() => this.style.background=\'transparent\', 300); return false;" onmouseover="this.style.opacity=\'0.7\'" onmouseout="this.style.opacity=\'1\'">Contatti</a>\n            </div>\n        </nav>',
+                
+                modal: '\n        <div id="myModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;" onclick="closeModal()">\n            <div style="background: white; margin: 10% auto; padding: 2rem; width: 400px; border-radius: 16px; text-align: center; transform: scale(0.7); transition: transform 0.3s ease;" onclick="event.stopPropagation()">\n                <h3 style="margin-bottom: 1rem;">🎉 Modal Interattivo</h3>\n                <p style="margin-bottom: 2rem;">Questo modal funziona perfettamente!</p>\n                <button class="btn" onclick="closeModal()">Chiudi</button>\n            </div>\n        </div>\n        <button class="btn" onclick="openModal()">Apri Modal</button>',
+                
+                animation: '\n        <div class="animated-box" style="width: 100px; height: 100px; background: #667eea; border-radius: 12px; margin: 2rem auto; cursor: pointer; transition: all 0.3s ease; position: relative;" onclick="animateBox(this)" onmouseover="this.style.transform=\'scale(1.05)\'" onmouseout="this.style.transform=\'scale(1)\'">\n            <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: white; font-size: 2rem;">✨</div>\n        </div>',
+                
+                form: '\n        <form style="background: #f8fafc; padding: 2rem; border-radius: 16px; margin: 2rem 0; max-width: 400px;" onsubmit="handleFormSubmit(event)">\n            <h3 style="margin-bottom: 1.5rem; color: #1e293b;">📝 Contattaci</h3>\n            <div style="margin-bottom: 1rem;">\n                <label for="nome" style="display: block; margin-bottom: 0.5rem; color: #374151;">Nome</label>\n                <input type="text" id="nome" name="nome" required style="width: 100%; padding: 0.75rem; border: 2px solid #e2e8f0; border-radius: 8px; transition: border-color 0.3s;" onfocus="this.style.borderColor=\'#667eea\'" onblur="this.style.borderColor=\'#e2e8f0\'">\n            </div>\n            <div style="margin-bottom: 1.5rem;">\n                <label for="email" style="display: block; margin-bottom: 0.5rem; color: #374151;">Email</label>\n                <input type="email" id="email" name="email" required style="width: 100%; padding: 0.75rem; border: 2px solid #e2e8f0; border-radius: 8px; transition: border-color 0.3s;" onfocus="this.style.borderColor=\'#667eea\'" onblur="this.style.borderColor=\'#e2e8f0\'">\n            </div>\n            <button type="submit" class="btn">Invia Messaggio</button>\n        </form>'
+            };
+
+            const code = templates[type];
+            if (code) {
+                // Prima aggiungi le funzioni JavaScript se non ci sono
+                addJavaScriptFunctions();
+                
+                const currentCode = editor.value;
+                const insertPoint = currentCode.lastIndexOf('</div>');
+                
+                if (insertPoint !== -1) {
+                    const newCode = currentCode.substring(0, insertPoint) + code + '\n    ' + currentCode.substring(insertPoint);
+                    editor.value = newCode;
+                    updatePreview();
+                    updateStatus(`✅ Aggiunto: ${type}`);
+                }
+            }
+        }
+
+        function newProject() {
+            if (confirm('Vuoi creare un nuovo progetto? Il lavoro attuale andrà perso.')) {
+                location.reload();
+            }
+        }
+
+        function saveProject() {
+            const code = editor.value;
+            const blob = new Blob([code], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'mio-progetto.html';
+            a.click();
+            URL.revokeObjectURL(url);
+            updateStatus('💾 Progetto salvato!');
+        }
+
+        function previewCode() {
+            const code = editor.value;
+            const newWindow = window.open('', '_blank');
+            newWindow.document.write(code);
+            newWindow.document.close();
+            updateStatus('🚀 Anteprima aperta in nuova finestra');
+        }
+
+        function updateStatus(message) {
+            status.textContent = message;
+            setTimeout(() => {
+                status.textContent = '✅ Pronto per creare • Usa gli strumenti per aggiungere elementi';
+            }, 3000);
+        }
+
+        // Aggiungi le funzioni JavaScript direttamente nel codice generato
+        function addJavaScriptFunctions() {
+            const currentCode = editor.value;
+            
+            // Controlla se le funzioni sono già presenti
+            if (currentCode.includes('function showMessage')) {
+                return;
+            }
+            
+            const jsCode = `
+        
+        function showMessage(message) {
+            const messageDiv = document.createElement('div');
+            messageDiv.style.cssText = 'position: fixed; top: 20px; right: 20px; background: #667eea; color: white; padding: 15px 20px; border-radius: 8px; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.3);';
+            messageDiv.textContent = message;
+            document.body.appendChild(messageDiv);
+            setTimeout(() => messageDiv.remove(), 3000);
+        }
+        
+        function flipCard(card) {
+            card.style.transform = 'rotateY(180deg)';
+            card.style.background = '#667eea';
+            card.style.color = 'white';
+            setTimeout(() => {
+                card.style.transform = 'rotateY(0deg)';
+                card.style.background = 'white';
+                card.style.color = '#333';
+            }, 1000);
+            showMessage('Card animata! ✨');
+        }
+        
+        function animateHero(hero) {
+            hero.style.transform = 'scale(1.02)';
+            hero.style.boxShadow = '0 20px 60px rgba(0,0,0,0.3)';
+            setTimeout(() => {
+                hero.style.transform = 'scale(1)';
+                hero.style.boxShadow = 'none';
+            }, 300);
+            showMessage('Hero animato! 🚀');
+        }
+        
+        function highlightItem(item) {
+            const originalBg = item.style.background;
+            item.style.background = '#667eea';
+            item.style.color = 'white';
+            item.style.transform = 'translateY(-5px)';
+            setTimeout(() => {
+                item.style.background = originalBg;
+                item.style.color = '#333';
+                item.style.transform = 'translateY(0)';
+            }, 500);
+            showMessage('Elemento evidenziato! 💫');
+        }
+        
+        function openModal() {
+            const modal = document.getElementById('myModal');
+            if (modal) {
+                modal.style.display = 'block';
+                const content = modal.querySelector('div > div');
+                if (content) content.style.transform = 'scale(1)';
+                showMessage('Modal aperto! 🪟');
+            }
+        }
+        
+        function closeModal() {
+            const modal = document.getElementById('myModal');
+            if (modal) {
+                modal.style.display = 'none';
+                showMessage('Modal chiuso! ✅');
+            }
+        }
+        
+        function animateBox(element) {
+            const colors = ['#667eea', '#764ba2', '#ff6b6b', '#4ecdc4', '#45b7d1'];
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+            element.style.transform = 'scale(1.2) rotate(360deg)';
+            element.style.background = randomColor;
+            element.style.boxShadow = '0 10px 30px rgba(0,0,0,0.3)';
+            setTimeout(() => {
+                element.style.transform = 'scale(1) rotate(0deg)';
+                element.style.boxShadow = 'none';
+            }, 600);
+            showMessage('Animazione completata! ✨');
+        }
+        
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            const form = event.target;
+            const nome = form.nome.value;
+            const email = form.email.value;
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            
+            submitBtn.textContent = 'Invio in corso...';
+            submitBtn.disabled = true;
+            
+            setTimeout(() => {
+                submitBtn.textContent = '✅ Inviato!';
+                submitBtn.style.background = '#28a745';
+                showMessage('Grazie ' + nome + '! Messaggio inviato 📧');
+                
+                setTimeout(() => {
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
+                    submitBtn.style.background = '#667eea';
+                    form.reset();
+                }, 2000);
+            }, 1500);
+            
+            return false;
+        }`;
+            
+            // Trova la posizione giusta per inserire le funzioni
+            const functionInsertPoint = currentCode.indexOf('function saluta()');
+            if (functionInsertPoint !== -1) {
+                const newCode = currentCode.substring(0, functionInsertPoint) + jsCode + '\n        \n        ' + currentCode.substring(functionInsertPoint);
+                editor.value = newCode;
+                updatePreview();
+            }
+        }
+                       // FUNZIONE CLICK PER MENU BUILDER
+function toggleLayoutMenu() {
+  const menu = document.getElementById('builder-menu');
+  if (!menu) return;
+  menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+}
+
+// CHIUDE MENU CLICCANDO FUORI
+document.addEventListener('click', function(e) {
+  const menu = document.getElementById('builder-menu');
+  const btn = document.getElementById('builder-btn');
+  if (!menu || !btn) return;
+
+  if (!btn.contains(e.target) && !menu.contains(e.target)) {
+    menu.style.display = 'none';
+  }
+});
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99408d35a6c73a89',t:'MTc2MTM4MzEyMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

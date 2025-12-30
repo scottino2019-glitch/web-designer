@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Builder</title>
+  <style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #f5f5f5;
+}
+
+.app-header {
+  background: white;
+  padding: 15px;
+  text-align: center;
+  border-bottom: 2px solid #ddd;
+}
+
+.app-header h1 {
+  font-size: 24px;
+  color: #333;
+}
+
+.container {
+  display: flex;
+  height: calc(100vh - 62px);
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+  
+  .editor-panel, .preview-panel {
+    height: 50vh;
+  }
+}
+
+.editor-panel, .preview-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #ddd;
+}
+
+.tabs {
+  display: flex;
+  border-bottom: 1px solid #ddd;
+  background: white;
+}
+
+.tab {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  background: white;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  font-size: 14px;
+}
+
+.tab:hover {
+  background: #f0f0f0;
+}
+
+.tab.active {
+  border-bottom-color: #3b82f6;
+  color: #3b82f6;
+  font-weight: bold;
+}
+
+.editor, #components-pane {
+  flex: 1;
+  padding: 20px;
+  border: none;
+  resize: none;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  background: white;
+  display: none;
+  overflow-y: auto;
+}
+
+.editor.active, #components-pane.active {
+  display: block;
+}
+
+#components-pane {
+  overflow-y: auto;
+}
+
+.component-btn {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 10px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.component-btn:hover {
+  background: #2563eb;
+}
+
+.preview-controls {
+  display: flex;
+  gap: 10px;
+  padding: 15px;
+  background: white;
+  border-bottom: 1px solid #ddd;
+  flex-wrap: wrap;
+}
+
+.preview-controls button {
+  padding: 8px 16px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.preview-controls button:hover {
+  background: #2563eb;
+}
+
+.preview {
+  flex: 1;
+  border: none;
+  background: white;
+  width: 100%;
+}
+
+/* Modal styles */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal.active {
+  display: flex;
+}
+
+.modal-content {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.modal-content h3 {
+  margin: 0 0 20px 0;
+  color: #333;
+}
+
+.modal-content input {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.modal-buttons button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.modal-cancel {
+  background: #e5e7eb;
+  color: #333;
+}
+
+.modal-confirm {
+  background: #3b82f6;
+  color: white;
+}
+
+.modal-confirm:hover {
+  background: #2563eb;
+}
+
+/* Projects list styles */
+#projects-pane {
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.project-item {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+}
+
+.project-name {
+  font-weight: bold;
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.project-date {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.project-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.project-actions button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.project-load {
+  background: #3b82f6;
+  color: white;
+}
+
+.project-load:hover {
+  background: #2563eb;
+}
+
+.project-download {
+  background: #10b981;
+  color: white;
+}
+
+.project-download:hover {
+  background: #059669;
+}
+
+.project-delete {
+  background: #ef4444;
+  color: white;
+}
+
+.project-delete:hover {
+  background: #dc2626;
+}
+
+.no-projects {
+  text-align: center;
+  color: #666;
+  padding: 40px 20px;
+  font-size: 14px;
+}
+
+.message {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  padding: 12px 20px;
+  background: #10b981;
+  color: white;
+  border-radius: 5px;
+  font-weight: bold;
+  z-index: 2000;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(400px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+  </style>
+</head>
+<body>
+  <div class="app-header">
+    <h1>🌐 Web Builder</h1>
+<!-- BREADCRUMB PRIMA del main - INVULNERABILE -->
+ <div id="breadcrumb-container" style="
+  position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; 
+  z-index: 999999 !important; 
+  background: rgba(255,255,255,0.98) !important; 
+  backdrop-filter: blur(30px) !important; 
+  border-bottom: 2px solid #e5e7eb !important; 
+  padding: 12px 24px !important; 
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15) !important;
+">
+  <div style="max-width: 1280px; margin: 0 auto !important; display: flex !important; align-items: center !important; justify-content: center !important; gap: 16px !important;">
+    <a href="index.html" style="
+      padding: 8px 16px !important; background: linear-gradient(135deg, #3b82f6, #1d4ed8) !important; 
+      color: white !important; text-decoration: none !important; border-radius: 25px !important; 
+      font-weight: 700 !important; font-size: 14px !important; box-shadow: 0 4px 12px rgba(59,130,246,0.4) !important;
+      display: flex !important; align-items: center !important; gap: 8px !important;
+    ">🏠 Home</a>
+    
+    <span style="color: #9ca3af !important; font-weight: bold !important; font-size: 20px !important;">›</span>
+    
+    <span id="builder-btn" style="
+      padding: 8px 16px !important; 
+      background: linear-gradient(135deg, #f59e0b, #d97706) !important; 
+      color: white !important; border-radius: 25px !important; 
+      font-weight: 700 !important; font-size: 14px !important; cursor: pointer !important;
+      box-shadow: 0 4px 12px rgba(245,158,11,0.4) !important;
+      display: flex !important; align-items: center !important; gap: 8px !important;
+    " onclick="toggleLayoutMenu()">🏗️ Builder ▼</span>
+    
+    <div id="builder-menu" style="
+      position: fixed !important; top: 70px !important; left: 50% !important; 
+      transform: translateX(-50%) !important; width: 280px !important;
+      background: rgba(255,255,255,0.98) !important; backdrop-filter: blur(30px) !important;
+      border: 2px solid #f59e0b !important; border-radius: 20px !important; 
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3) !important;
+      display: none !important; max-height: 300px !important; overflow-y: auto !important;
+      z-index: 999998 !important; padding: 0 !important;
+    ">
+      <a href="builder_home.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important; border-bottom: 1px solid #f3f4f6 !important;" onmouseenter="this.style.background='#fef3c7 !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">🏠 Home Builder</a>
+      <a href="SiteBuilder.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important; border-bottom: 1px solid #f3f4f6 !important;" onmouseenter="this.style.background='#dbeafe !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">💻 Siti</a>
+      <a href="miniBuilder.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important; border-bottom: 1px solid #f3f4f6 !important;" onmouseenter="this.style.background='#dbeafe !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">📱 Mini</a>
+      <a href="libraryEditor.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important; border-bottom: 1px solid #f3f4f6 !important;" onmouseenter="this.style.background='#dbeafe !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">📚 Library</a>
+      <a href="Dom__.responsive.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important;" onmouseenter="this.style.background='#e9d5ff !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">⚙️ Dom</a>
+          <a href="codecraft_studio.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important;" onmouseenter="this.style.background='#e9d5ff !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">🖊 Codecraft</a>
+          <a href="builder_web.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important;" onmouseenter="this.style.background='#e9d5ff !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">🖥 Web2</a>
+         <a href="generatore_siti_web.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important;" onmouseenter="this.style.background='#e9d5ff !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">🌐 Web3</a>
+         <a href="generatore-app.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important;" onmouseenter="this.style.background='#e9d5ff !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">📱 App</a>
+    </div>
+    
+    <span style="color: #9ca3af !important; font-weight: bold !important; font-size: 20px !important;">›</span>
+    
+    <span style="
+      padding: 8px 16px !important; 
+      background: linear-gradient(135deg, #10b981, #059669) !important; 
+      color: white !important; border-radius: 25px !important; 
+      font-weight: 800 !important; font-size: 14px !important; 
+      box-shadow: 0 4px 12px rgba(16,185,129,0.4) !important;
+      display: flex !important; align-items: center !important; gap: 8px !important;
+    ">🌐 Web</span>
+  </div>
+</div>      
+  </div>
+
+  <div class="container">
+    <div class="editor-panel">
+      <div class="tabs">
+        <button class="tab active" data-tab="html">HTML</button>
+        <button class="tab" data-tab="css">CSS</button>
+        <button class="tab" data-tab="js">JavaScript</button>
+        <button class="tab" data-tab="components">Componenti</button>
+        <button class="tab" data-tab="progetti">Progetti</button>
+      </div>
+      
+      <textarea id="htmlEditor" class="editor active" spellcheck="false"></textarea>
+      <textarea id="cssEditor" class="editor" spellcheck="false"></textarea>
+      <textarea id="jsEditor" class="editor" spellcheck="false"></textarea>
+      
+      <div id="projects-pane" style="display: none;">
+        <div style="padding: 20px;">
+          <h3 style="margin-bottom: 20px; color: #333;">Progetti Salvati</h3>
+          <div id="projects-list"></div>
+        </div>
+      </div>
+
+      <div id="components-pane">
+        <button class="component-btn" data-component="hero">Hero Section</button>
+        <button class="component-btn" data-component="header">Header</button>
+        <button class="component-btn" data-component="card">Card</button>
+        <button class="component-btn" data-component="buttons">Buttons</button>
+        <button class="component-btn" data-component="footer">Footer</button>
+        <button class="component-btn" data-component="grid">Grid Layout</button>
+        <button class="component-btn" data-component="flex">Flex Layout</button>
+      </div>
+    </div>
+
+    <div class="preview-panel">
+      <div class="preview-controls">
+        <button id="refreshBtn">🔄 Aggiorna</button>
+        <button id="resetBtn">🗑️ Reset</button>
+        <button id="saveProjectBtn">💾 Salva Progetto</button>
+        <button id="myProjectsBtn">📂 I Miei Progetti</button>
+        <button id="downloadBtn">⬇️ Scarica</button>
+      </div>
+      <iframe id="previewIframe" class="preview" sandbox="allow-scripts"></iframe>
+    </div>
+  </div>
+
+  <!-- Modal for saving projects -->
+  <div id="saveModal" class="modal">
+    <div class="modal-content">
+      <h3>💾 Salva Nuovo Progetto</h3>
+      <input type="text" id="projectNameInput" placeholder="Nome del progetto...">
+      <div class="modal-buttons">
+        <button class="modal-cancel" onclick="closeSaveModal()">Annulla</button>
+        <button class="modal-confirm" onclick="confirmSaveProject()">Salva</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+// Codice di default
+const defaultCode = {
+  html: '<h1>Ciao!</h1>\n<p>Modifica il codice a sinistra</p>',
+  css: 'body {\n  font-family: Arial, sans-serif;\n  padding: 20px;\n  background: #f5f5f5;\n}\n\nh1 {\n  color: #333;\n}\n\np {\n  color: #666;\n}',
+  js: "console.log('Ciao da JavaScript!');"
+};
+
+// Stato dell'applicazione (in memoria JavaScript)
+const state = {
+  html: defaultCode.html,
+  css: defaultCode.css,
+  js: defaultCode.js
+};
+
+// Progetti salvati (in memoria JavaScript)
+let savedProjects = JSON.parse(localStorage.getItem('savedProjects')) || [];
+
+// Componenti predefiniti
+const components = {
+  hero: '<div style="background: #3b82f6; color: white; padding: 60px 20px; text-align: center;">\n  <h1>Titolo Hero</h1>\n  <p>Sottotitolo</p>\n  <button style="padding: 10px 20px; background: white; color: #3b82f6; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">Bottone</button>\n</div>',
+  
+  header: '<header style="background: white; padding: 20px; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center;">\n  <h2 style="margin: 0;">Logo</h2>\n  <nav style="display: flex; gap: 20px;">\n    <a href="#" style="text-decoration: none; color: #333;">Home</a>\n    <a href="#" style="text-decoration: none; color: #333;">About</a>\n    <a href="#" style="text-decoration: none; color: #333;">Contact</a>\n  </nav>\n</header>',
+  
+  card: '<div style="max-width: 300px; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); overflow: hidden; margin: 20px;">\n  <img src="https://via.placeholder.com/300x200" style="width: 100%; height: 200px; object-fit: cover;" alt="img">\n  <div style="padding: 20px;">\n    <h3 style="margin: 0 0 10px 0;">Titolo Card</h3>\n    <p style="margin: 0 0 15px 0; color: #666;">Descrizione breve</p>\n    <button style="padding: 10px 20px; background: #3b82f6; color: white; border: none; border-radius: 5px; cursor: pointer;">Leggi</button>\n  </div>\n</div>',
+  
+  buttons: '<div style="display: flex; gap: 10px; padding: 20px; flex-wrap: wrap;">\n  <button style="padding: 10px 20px; background: #3b82f6; color: white; border: none; border-radius: 5px; cursor: pointer;">Primary</button>\n  <button style="padding: 10px 20px; background: #e5e7eb; color: #333; border: none; border-radius: 5px; cursor: pointer;">Secondary</button>\n  <button style="padding: 10px 20px; background: white; color: #3b82f6; border: 2px solid #3b82f6; border-radius: 5px; cursor: pointer;">Outline</button>\n</div>',
+  
+  footer: '<footer style="background: #1f2937; color: white; padding: 40px 20px; text-align: center;">\n  <p>&copy; 2025 Il Tuo Sito. Tutti i diritti riservati.</p>\n</footer>',
+  
+  grid: '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; padding: 40px 20px;">\n  <div style="background: #e0e7ff; padding: 40px; text-align: center; border-radius: 8px;">Item 1</div>\n  <div style="background: #e0e7ff; padding: 40px; text-align: center; border-radius: 8px;">Item 2</div>\n  <div style="background: #e0e7ff; padding: 40px; text-align: center; border-radius: 8px;">Item 3</div>\n</div>',
+  
+  flex: '<div style="display: flex; gap: 20px; padding: 40px 20px; flex-wrap: wrap;">\n  <div style="flex: 1; min-width: 200px; background: #dbeafe; padding: 40px; text-align: center; border-radius: 8px;">Item 1</div>\n  <div style="flex: 1; min-width: 200px; background: #dbeafe; padding: 40px; text-align: center; border-radius: 8px;">Item 2</div>\n  <div style="flex: 1; min-width: 200px; background: #dbeafe; padding: 40px; text-align: center; border-radius: 8px;">Item 3</div>\n</div>'
+};
+
+// Riferimenti agli elementi
+const htmlEditor = document.getElementById('htmlEditor');
+const cssEditor = document.getElementById('cssEditor');
+const jsEditor = document.getElementById('jsEditor');
+const previewIframe = document.getElementById('previewIframe');
+const refreshBtn = document.getElementById('refreshBtn');
+const resetBtn = document.getElementById('resetBtn');
+const saveProjectBtn = document.getElementById('saveProjectBtn');
+const myProjectsBtn = document.getElementById('myProjectsBtn');
+const downloadBtn = document.getElementById('downloadBtn');
+const saveModal = document.getElementById('saveModal');
+const projectNameInput = document.getElementById('projectNameInput');
+const projectsList = document.getElementById('projects-list');
+const projectsPane = document.getElementById('projects-pane');
+
+// Inizializza gli editor con i valori predefiniti
+function init() {
+  htmlEditor.value = state.html;
+  cssEditor.value = state.css;
+  jsEditor.value = state.js;
+  
+  // Aggiorna la preview all'avvio
+  updatePreview();
+}
+
+// Aggiorna lo stato quando l'utente modifica il codice
+htmlEditor.addEventListener('input', (e) => {
+  state.html = e.target.value;
+});
+
+cssEditor.addEventListener('input', (e) => {
+  state.css = e.target.value;
+});
+
+jsEditor.addEventListener('input', (e) => {
+  state.js = e.target.value;
+});
+
+// Gestione dei tab
+const tabs = document.querySelectorAll('.tab');
+const editors = document.querySelectorAll('.editor');
+const componentsPane = document.getElementById('components-pane');
+
+tabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    // Rimuovi active da tutti
+    tabs.forEach(t => t.classList.remove('active'));
+    editors.forEach(e => e.classList.remove('active'));
+    componentsPane.classList.remove('active');
+    projectsPane.style.display = 'none';
+    
+    // Aggiungi active al tab cliccato
+    tab.classList.add('active');
+    
+    // Mostra l'editor corrispondente
+    const tabName = tab.dataset.tab;
+    if (tabName === 'html') {
+      htmlEditor.classList.add('active');
+    } else if (tabName === 'css') {
+      cssEditor.classList.add('active');
+    } else if (tabName === 'js') {
+      jsEditor.classList.add('active');
+    } else if (tabName === 'components') {
+      componentsPane.classList.add('active');
+    } else if (tabName === 'progetti') {
+      projectsPane.style.display = 'block';
+      renderProjectsList();
+    }
+  });
+});
+
+// Inserisci componenti
+const componentBtns = document.querySelectorAll('[data-component]');
+componentBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const componentKey = btn.dataset.component;
+    const componentHTML = components[componentKey];
+    
+    // Aggiungi il componente all'HTML
+    state.html += '\n\n' + componentHTML;
+    htmlEditor.value = state.html;
+    
+    // Passa al tab HTML
+    tabs[0].click();
+  });
+});
+
+// Aggiorna la preview
+function updatePreview() {
+  const fullHTML = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <style>${state.css}</style>
+    </head>
+    <body>
+      ${state.html}
+      <script>
+        try {
+          ${state.js}
+        } catch(e) {
+          console.error('Errore JavaScript:', e);
+        }
+      <\/script>
+    </body>
+    </html>
+  `;
+
+  const blob = new Blob([fullHTML], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  previewIframe.src = url;
+}
+
+// Pulsante Aggiorna
+refreshBtn.addEventListener('click', () => {
+  updatePreview();
+  const originalText = refreshBtn.textContent;
+  refreshBtn.textContent = '✓ Aggiornata!';
+  refreshBtn.style.background = '#10b981';
+  setTimeout(() => {
+    refreshBtn.textContent = originalText;
+    refreshBtn.style.background = '';
+  }, 1500);
+});
+
+// Pulsante Reset
+resetBtn.addEventListener('click', () => {
+  if (confirm('Sei sicuro? Questo eliminerà tutto il codice corrente')) {
+    state.html = defaultCode.html;
+    state.css = defaultCode.css;
+    state.js = defaultCode.js;
+    
+    htmlEditor.value = state.html;
+    cssEditor.value = state.css;
+    jsEditor.value = state.js;
+    
+    updatePreview();
+    showMessage('✅ Codice ripristinato!');
+  }
+});
+
+// Pulsante Salva Progetto
+saveProjectBtn.addEventListener('click', () => {
+  saveModal.classList.add('active');
+  projectNameInput.value = '';
+  projectNameInput.focus();
+});
+
+// Pulsante I Miei Progetti
+myProjectsBtn.addEventListener('click', () => {
+  // Vai al tab Progetti
+  document.querySelector('[data-tab="progetti"]').click();
+});
+
+// Chiudi modal
+function closeSaveModal() {
+  saveModal.classList.remove('active');
+}
+
+// Conferma salvataggio progetto
+function confirmSaveProject() {
+  const projectName = projectNameInput.value.trim();
+  
+  if (!projectName) {
+    alert('Inserisci un nome per il progetto!');
+    return;
+  }
+  
+  // Controlla se esiste già un progetto con lo stesso nome
+  const existingIndex = savedProjects.findIndex(p => p.nome === projectName);
+  
+  if (existingIndex !== -1) {
+    if (!confirm('Esiste già un progetto con questo nome. Vuoi sovrascriverlo?')) {
+      return;
+    }
+    // Rimuovi il vecchio progetto
+    savedProjects.splice(existingIndex, 1);
+  }
+  
+  // Salva il nuovo progetto
+  const newProject = {
+    id: Date.now().toString(),
+    nome: projectName,
+    html: state.html,
+    css: state.css,
+    js: state.js,
+    data: new Date().toLocaleString('it-IT')
+  };
+  
+  savedProjects.unshift(newProject);
+    localStorage.setItem('savedProjects', JSON.stringify(savedProjects));
+  
+  closeSaveModal();
+  showMessage('✅ Progetto salvato!');
+  
+  // Se siamo nel tab progetti, aggiorna la lista
+  if (projectsPane.style.display === 'block') {
+    renderProjectsList();
+  }
+}
+
+// Mostra messaggio temporaneo
+function showMessage(text) {
+  const message = document.createElement('div');
+  message.className = 'message';
+  message.textContent = text;
+  document.body.appendChild(message);
+  
+  setTimeout(() => {
+    message.remove();
+  }, 2000);
+}
+
+// Renderizza la lista dei progetti
+function renderProjectsList() {
+  if (savedProjects.length === 0) {
+    projectsList.innerHTML = '<div class="no-projects">Nessun progetto salvato. Salva il tuo primo progetto!</div>';
+    return;
+  }
+  
+  projectsList.innerHTML = savedProjects.map(project => `
+    <div class="project-item">
+      <div class="project-name">📄 ${project.nome}</div>
+      <div class="project-date">Salvato: ${project.data}</div>
+      <div class="project-actions">
+        <button class="project-load" onclick="loadProject('${project.id}')">Carica</button>
+        <button class="project-download" onclick="downloadProject('${project.id}')">Scarica</button>
+        <button class="project-delete" onclick="deleteProject('${project.id}')">Elimina</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+// Carica un progetto
+function loadProject(projectId) {
+  const project = savedProjects.find(p => p.id === projectId);
+  if (!project) return;
+  
+  state.html = project.html;
+  state.css = project.css;
+  state.js = project.js;
+  
+  htmlEditor.value = state.html;
+  cssEditor.value = state.css;
+  jsEditor.value = state.js;
+  
+  updatePreview();
+  
+  // Vai al tab HTML
+  document.querySelector('[data-tab="html"]').click();
+  
+  showMessage('✅ Progetto caricato!');
+}
+
+// Scarica un progetto
+function downloadProject(projectId) {
+  const project = savedProjects.find(p => p.id === projectId);
+  if (!project) return;
+  
+  const fullHTML = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${project.nome}</title>
+  <style>
+${project.css}
+  </style>
+</head>
+<body>
+${project.html}
+  <script>
+${project.js}
+  <\/script>
+</body>
+</html>`;
+
+  const blob = new Blob([fullHTML], { type: 'text/html' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = project.nome.replace(/[^a-z0-9]/gi, '_').toLowerCase() + '.html';
+  a.click();
+  
+  showMessage('✅ Progetto scaricato!');
+}
+
+// Elimina un progetto
+function deleteProject(projectId) {
+  const project = savedProjects.find(p => p.id === projectId);
+  if (!project) return;
+  
+  if (!confirm(`Sei sicuro di voler eliminare "${project.nome}"?`)) {
+    return;
+  }
+  
+  savedProjects = savedProjects.filter(p => p.id !== projectId);
+    localStorage.setItem('savedProjects', JSON.stringify(savedProjects));
+  renderProjectsList();
+  showMessage('✅ Progetto eliminato!');
+}
+
+// Pulsante Scarica
+downloadBtn.addEventListener('click', () => {
+  const fullHTML = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Il Mio Sito</title>
+  <style>
+${state.css}
+  </style>
+</head>
+<body>
+${state.html}
+  <script>
+${state.js}
+  <\/script>
+</body>
+</html>`;
+
+  const blob = new Blob([fullHTML], { type: 'text/html' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'index.html';
+  a.click();
+  
+  const originalText = downloadBtn.textContent;
+  downloadBtn.textContent = '✓ Scaricato!';
+  downloadBtn.style.background = '#10b981';
+  setTimeout(() => {
+    downloadBtn.textContent = originalText;
+    downloadBtn.style.background = '';
+  }, 1500);
+});
+
+// Supporto per Tab nei textarea
+[htmlEditor, cssEditor, jsEditor].forEach(editor => {
+  editor.addEventListener('keydown', (e) => {
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      const start = editor.selectionStart;
+      const end = editor.selectionEnd;
+      editor.value = editor.value.substring(0, start) + '  ' + editor.value.substring(end);
+      editor.selectionStart = editor.selectionEnd = start + 2;
+    }
+  });
+});
+
+// Supporto per Enter nel modal
+projectNameInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    confirmSaveProject();
+  } else if (e.key === 'Escape') {
+    closeSaveModal();
+  }
+});
+
+// Chiudi modal cliccando fuori
+saveModal.addEventListener('click', (e) => {
+  if (e.target === saveModal) {
+    closeSaveModal();
+  }
+});
+
+// Avvia l'app
+init();
+      // FUNZIONE CLICK PER MENU BUILDER
+function toggleLayoutMenu() {
+  const menu = document.getElementById('builder-menu');
+  if (!menu) return;
+  menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+}
+
+// CHIUDE MENU CLICCANDO FUORI
+document.addEventListener('click', function(e) {
+  const menu = document.getElementById('builder-menu');
+  const btn = document.getElementById('builder-btn');
+  if (!menu || !btn) return;
+
+  if (!btn.contains(e.target) && !menu.contains(e.target)) {
+    menu.style.display = 'none';
+  }
+});
+  </script>
+</body>
+</html>

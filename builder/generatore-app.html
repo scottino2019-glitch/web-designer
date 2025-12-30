@@ -1,0 +1,1174 @@
+<!doctype html>
+<html lang="it" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generatore di App</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+      padding: 80px;
+    }
+    
+    .app-wrapper {
+      min-height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .config-card {
+      transition: all 0.3s ease;
+    }
+    
+    .config-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+    
+    .generated-preview {
+      animation: fadeIn 0.4s ease-out;
+    }
+    
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+    
+    .color-option {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      cursor: pointer;
+      border: 3px solid transparent;
+      transition: all 0.2s ease;
+    }
+    
+    .color-option:hover {
+      transform: scale(1.1);
+    }
+    
+    .color-option.selected {
+      border-color: #2d3748;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    
+    .feature-checkbox {
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full">
+  <div class="app-wrapper w-full"><!-- Generator Screen -->
+   <div id="generatorScreen" class="w-full flex-1 flex flex-col">
+        <!-- BREADCRUMB PRIMA del main - INVULNERABILE -->
+ <div id="breadcrumb-container" style="
+  position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; 
+  z-index: 999999 !important; 
+  background: rgba(255,255,255,0.98) !important; 
+  backdrop-filter: blur(30px) !important; 
+  border-bottom: 2px solid #e5e7eb !important; 
+  padding: 12px 24px !important; 
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15) !important;
+">
+  <div style="max-width: 1280px; margin: 0 auto !important; display: flex !important; align-items: center !important; justify-content: center !important; gap: 16px !important;">
+    <a href="index.html" style="
+      padding: 8px 16px !important; background: linear-gradient(135deg, #3b82f6, #1d4ed8) !important; 
+      color: white !important; text-decoration: none !important; border-radius: 25px !important; 
+      font-weight: 700 !important; font-size: 14px !important; box-shadow: 0 4px 12px rgba(59,130,246,0.4) !important;
+      display: flex !important; align-items: center !important; gap: 8px !important;
+    ">🏠 Home</a>
+    
+    <span style="color: #9ca3af !important; font-weight: bold !important; font-size: 20px !important;">›</span>
+    
+    <span id="builder-btn" style="
+      padding: 8px 16px !important; 
+      background: linear-gradient(135deg, #f59e0b, #d97706) !important; 
+      color: white !important; border-radius: 25px !important; 
+      font-weight: 700 !important; font-size: 14px !important; cursor: pointer !important;
+      box-shadow: 0 4px 12px rgba(245,158,11,0.4) !important;
+      display: flex !important; align-items: center !important; gap: 8px !important;
+    " onclick="toggleLayoutMenu()">🏗️ Builder ▼</span>
+    
+    <div id="builder-menu" style="
+      position: fixed !important; top: 70px !important; left: 50% !important; 
+      transform: translateX(-50%) !important; width: 280px !important;
+      background: rgba(255,255,255,0.98) !important; backdrop-filter: blur(30px) !important;
+      border: 2px solid #f59e0b !important; border-radius: 20px !important; 
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3) !important;
+      display: none !important; max-height: 300px !important; overflow-y: auto !important;
+      z-index: 999998 !important; padding: 0 !important;
+    ">
+      <a href="builder_home.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important; border-bottom: 1px solid #f3f4f6 !important;" onmouseenter="this.style.background='#fef3c7 !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">🏠 Home Builder</a>
+      <a href="webBuilder.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important; border-bottom: 1px solid #f3f4f6 !important;" onmouseenter="this.style.background='#dbeafe !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">🌐 Web</a>
+      <a href="SiteBuilder.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important; border-bottom: 1px solid #f3f4f6 !important;" onmouseenter="this.style.background='#dbeafe !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">💻 Siti</a>
+      <a href="miniBuilder.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important; border-bottom: 1px solid #f3f4f6 !important;" onmouseenter="this.style.background='#dbeafe !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">📱 Mini</a>
+      <a href="Dom__.responsive.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important;" onmouseenter="this.style.background='#e9d5ff !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">⚙️ Dom</a>
+          <a href="libraryEditor.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important;" onmouseenter="this.style.background='#e9d5ff !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">📚 Library </a>
+          <a href="codecraft_studio.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important;" onmouseenter="this.style.background='#e9d5ff !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">🖊 Codecraft</a>
+                 <a href="builder_web.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important;" onmouseenter="this.style.background='#e9d5ff !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">🖥 Web2</a>
+         <a href="generatore_siti_web.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important;" onmouseenter="this.style.background='#e9d5ff !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">🌐 Web3</a>
+    </div>
+    
+    <span style="color: #9ca3af !important; font-weight: bold !important; font-size: 20px !important;">›</span>
+    
+    <span style="
+      padding: 8px 16px !important; 
+      background: linear-gradient(135deg, #10b981, #059669) !important; 
+      color: white !important; border-radius: 25px !important; 
+      font-weight: 800 !important; font-size: 14px !important; 
+      box-shadow: 0 4px 12px rgba(16,185,129,0.4) !important;
+      display: flex !important; align-items: center !important; gap: 8px !important;
+    ">📱 App</span>
+  </div>
+</div>     
+       <header class="w-full" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+     <div class="max-w-7xl mx-auto px-6 py-12 text-center">
+      <h1 id="mainTitle" class="text-5xl font-bold text-white mb-3">Generatore di App</h1>
+      <p id="subtitle" class="text-xl text-white opacity-90">Configura e genera la tua app personalizzata</p>
+     </div>
+    </header>
+    <main class="flex-1 w-full overflow-auto" style="background-color: #f8f9fa;">
+     <div class="max-w-7xl mx-auto px-6 py-12"><!-- Step 1: Choose App Type -->
+      <section class="mb-12">
+       <h2 class="text-3xl font-bold mb-6" style="color: #2d3748;">1. Scegli il Tipo di App</h2>
+       <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div class="config-card bg-white rounded-2xl p-6 shadow-lg cursor-pointer" style="border: 3px solid transparent;" onclick="selectAppType('landing')">
+         <div class="text-5xl mb-3">
+          🚀
+         </div>
+         <h3 class="text-xl font-bold mb-2" style="color: #667eea;">Landing Page</h3>
+         <p class="text-gray-600 text-sm">Pagina di presentazione con sezioni personalizzabili</p>
+        </div>
+        <div class="config-card bg-white rounded-2xl p-6 shadow-lg cursor-pointer" style="border: 3px solid transparent;" onclick="selectAppType('portfolio')">
+         <div class="text-5xl mb-3">
+          💼
+         </div>
+         <h3 class="text-xl font-bold mb-2" style="color: #667eea;">Portfolio</h3>
+         <p class="text-gray-600 text-sm">Mostra i tuoi progetti e competenze</p>
+        </div>
+        <div class="config-card bg-white rounded-2xl p-6 shadow-lg cursor-pointer" style="border: 3px solid transparent;" onclick="selectAppType('dashboard')">
+         <div class="text-5xl mb-3">
+          📊
+         </div>
+         <h3 class="text-xl font-bold mb-2" style="color: #667eea;">Dashboard</h3>
+         <p class="text-gray-600 text-sm">Pannello di controllo con statistiche</p>
+        </div>
+        <div class="config-card bg-white rounded-2xl p-6 shadow-lg cursor-pointer" style="border: 3px solid transparent;" onclick="selectAppType('blog')">
+         <div class="text-5xl mb-3">
+          📰
+         </div>
+         <h3 class="text-xl font-bold mb-2" style="color: #667eea;">Blog</h3>
+         <p class="text-gray-600 text-sm">Piattaforma per articoli e contenuti</p>
+        </div>
+        <div class="config-card bg-white rounded-2xl p-6 shadow-lg cursor-pointer" style="border: 3px solid transparent;" onclick="selectAppType('ecommerce')">
+         <div class="text-5xl mb-3">
+          🛍️
+         </div>
+         <h3 class="text-xl font-bold mb-2" style="color: #667eea;">E-commerce</h3>
+         <p class="text-gray-600 text-sm">Vetrina prodotti e catalogo online</p>
+        </div>
+        <div class="config-card bg-white rounded-2xl p-6 shadow-lg cursor-pointer" style="border: 3px solid transparent;" onclick="selectAppType('restaurant')">
+         <div class="text-5xl mb-3">
+          🍕
+         </div>
+         <h3 class="text-xl font-bold mb-2" style="color: #667eea;">Ristorante</h3>
+         <p class="text-gray-600 text-sm">Menu digitale e informazioni ristorante</p>
+        </div>
+        <div class="config-card bg-white rounded-2xl p-6 shadow-lg cursor-pointer" style="border: 3px solid transparent;" onclick="selectAppType('event')">
+         <div class="text-5xl mb-3">
+          🎉
+         </div>
+         <h3 class="text-xl font-bold mb-2" style="color: #667eea;">Evento</h3>
+         <p class="text-gray-600 text-sm">Pagina per conferenze e eventi</p>
+        </div>
+        <div class="config-card bg-white rounded-2xl p-6 shadow-lg cursor-pointer" style="border: 3px solid transparent;" onclick="selectAppType('fitness')">
+         <div class="text-5xl mb-3">
+          💪
+         </div>
+         <h3 class="text-xl font-bold mb-2" style="color: #667eea;">Fitness</h3>
+         <p class="text-gray-600 text-sm">Programmi di allenamento e servizi</p>
+        </div>
+       </div>
+       <div id="selectedType" class="mt-4 text-lg font-semibold" style="color: #667eea;"></div>
+      </section><!-- Step 2: Configure -->
+      <section class="mb-12">
+       <h2 class="text-3xl font-bold mb-6" style="color: #2d3748;">2. Configura l'App</h2>
+       <div class="bg-white rounded-2xl p-8 shadow-lg">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+         <div><label for="appTitle" class="block text-lg font-semibold mb-2" style="color: #4a5568;">Titolo dell'App</label> <input type="text" id="appTitle" placeholder="Es: Il Mio Sito Web" class="w-full p-4 rounded-xl text-lg" style="background-color: #f7fafc; border: 2px solid #e2e8f0; color: #2d3748;">
+         </div>
+         <div><label for="appDescription" class="block text-lg font-semibold mb-2" style="color: #4a5568;">Descrizione</label> <input type="text" id="appDescription" placeholder="Es: Sviluppatore Web e Designer" class="w-full p-4 rounded-xl text-lg" style="background-color: #f7fafc; border: 2px solid #e2e8f0; color: #2d3748;">
+         </div>
+         <div><label class="block text-lg font-semibold mb-3" style="color: #4a5568;">Colore Principale</label>
+          <div class="flex gap-3">
+           <div class="color-option" style="background-color: #667eea;" onclick="selectColor('#667eea')"></div>
+           <div class="color-option" style="background-color: #48bb78;" onclick="selectColor('#48bb78')"></div>
+           <div class="color-option" style="background-color: #ed8936;" onclick="selectColor('#ed8936')"></div>
+           <div class="color-option" style="background-color: #e53e3e;" onclick="selectColor('#e53e3e')"></div>
+           <div class="color-option" style="background-color: #9f7aea;" onclick="selectColor('#9f7aea')"></div>
+          </div>
+         </div>
+         <div><label class="block text-lg font-semibold mb-3" style="color: #4a5568;">Funzionalità da Includere</label>
+          <div class="space-y-2"><label class="flex items-center gap-3 cursor-pointer"> <input type="checkbox" class="feature-checkbox" id="featureContact" checked> <span style="color: #2d3748;">Modulo Contatti</span> </label> <label class="flex items-center gap-3 cursor-pointer"> <input type="checkbox" class="feature-checkbox" id="featureGallery" checked> <span style="color: #2d3748;">Galleria/Sezioni</span> </label> <label class="flex items-center gap-3 cursor-pointer"> <input type="checkbox" class="feature-checkbox" id="featureStats"> <span style="color: #2d3748;">Statistiche</span> </label>
+          </div>
+         </div>
+        </div>
+       </div>
+      </section><!-- Step 3: Generate -->
+      <section class="text-center"><button onclick="generateApp()" class="px-12 py-5 rounded-2xl text-2xl font-bold text-white shadow-2xl" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"> ✨ Genera la Mia App </button>
+      </section>
+     </div>
+    </main>
+   </div><!-- Preview Screen -->
+   <div id="previewScreen" class="w-full flex-1 flex-col" style="display: none;">
+    <div class="w-full" style="background-color: #2d3748;">
+     <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <h2 class="text-2xl font-bold text-white">Anteprima della Tua App</h2><button onclick="backToGenerator()" class="px-6 py-3 bg-white rounded-xl font-bold" style="color: #667eea;">← Modifica</button>
+     </div>
+    </div>
+    <div class="flex-1 w-full overflow-auto" style="background-color: #f8f9fa;">
+     <div id="generatedApp" class="generated-preview w-full"><!-- Generated app will be inserted here -->
+     </div>
+    </div>
+   </div>
+  </div>
+  <script>
+    const defaultConfig = {
+      main_title: "Generatore di App",
+      subtitle: "Configura e genera la tua app personalizzata"
+    };
+    
+    let selectedAppType = null;
+    let selectedColor = '#667eea';
+    
+    function selectAppType(type) {
+      selectedAppType = type;
+      
+      // Remove selection from all cards
+      document.querySelectorAll('.config-card').forEach(card => {
+        card.style.borderColor = 'transparent';
+      });
+      
+      // Highlight selected card
+      event.currentTarget.style.borderColor = '#667eea';
+      
+      const typeNames = {
+        'landing': 'Landing Page',
+        'portfolio': 'Portfolio',
+        'dashboard': 'Dashboard',
+        'blog': 'Blog',
+        'ecommerce': 'E-commerce',
+        'restaurant': 'Ristorante',
+        'event': 'Evento',
+        'fitness': 'Fitness'
+      };
+      
+      document.getElementById('selectedType').textContent = `✓ Selezionato: ${typeNames[type]}`;
+    }
+    
+    function selectColor(color) {
+      selectedColor = color;
+      
+      document.querySelectorAll('.color-option').forEach(option => {
+        option.classList.remove('selected');
+      });
+      
+      event.currentTarget.classList.add('selected');
+    }
+    
+    function generateApp() {
+      if (!selectedAppType) {
+        showMessage('Per favore seleziona un tipo di app!');
+        return;
+      }
+      
+      const title = document.getElementById('appTitle').value || 'La Mia App';
+      const description = document.getElementById('appDescription').value || 'Benvenuto nella mia applicazione';
+      const hasContact = document.getElementById('featureContact').checked;
+      const hasGallery = document.getElementById('featureGallery').checked;
+      const hasStats = document.getElementById('featureStats').checked;
+      
+      let appHTML = '';
+      
+      if (selectedAppType === 'landing') {
+        appHTML = generateLandingPage(title, description, hasContact, hasGallery, hasStats);
+      } else if (selectedAppType === 'portfolio') {
+        appHTML = generatePortfolio(title, description, hasContact, hasGallery, hasStats);
+      } else if (selectedAppType === 'dashboard') {
+        appHTML = generateDashboard(title, description, hasContact, hasGallery, hasStats);
+      } else if (selectedAppType === 'blog') {
+        appHTML = generateBlog(title, description, hasContact, hasGallery, hasStats);
+      } else if (selectedAppType === 'ecommerce') {
+        appHTML = generateEcommerce(title, description, hasContact, hasGallery, hasStats);
+      } else if (selectedAppType === 'restaurant') {
+        appHTML = generateRestaurant(title, description, hasContact, hasGallery, hasStats);
+      } else if (selectedAppType === 'event') {
+        appHTML = generateEvent(title, description, hasContact, hasGallery, hasStats);
+      } else if (selectedAppType === 'fitness') {
+        appHTML = generateFitness(title, description, hasContact, hasGallery, hasStats);
+      }
+      
+      document.getElementById('generatedApp').innerHTML = appHTML;
+      document.getElementById('generatorScreen').style.display = 'none';
+      document.getElementById('previewScreen').style.display = 'flex';
+    }
+    
+    function generateLandingPage(title, description, hasContact, hasGallery, hasStats) {
+      return `
+        <div class="w-full">
+          <!-- Hero Section -->
+          <section class="w-full py-24 px-6" style="background: linear-gradient(135deg, ${selectedColor} 0%, ${adjustColorBrightness(selectedColor, -20)} 100%);">
+            <div class="max-w-5xl mx-auto text-center">
+              <h1 class="text-6xl font-bold text-white mb-6">${title}</h1>
+              <p class="text-2xl text-white opacity-90 mb-8">${description}</p>
+              <button class="px-10 py-5 bg-white rounded-2xl text-xl font-bold shadow-xl" style="color: ${selectedColor};">Inizia Ora</button>
+            </div>
+          </section>
+          
+          ${hasStats ? `
+          <!-- Stats Section -->
+          <section class="w-full py-20 px-6" style="background-color: #ffffff;">
+            <div class="max-w-6xl mx-auto">
+              <h2 class="text-4xl font-bold text-center mb-12" style="color: ${selectedColor};">I Nostri Numeri</h2>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="text-center p-8 rounded-2xl shadow-lg" style="background-color: #f7fafc;">
+                  <div class="text-5xl font-bold mb-2" style="color: ${selectedColor};">1000+</div>
+                  <div class="text-xl" style="color: #4a5568;">Progetti Completati</div>
+                </div>
+                <div class="text-center p-8 rounded-2xl shadow-lg" style="background-color: #f7fafc;">
+                  <div class="text-5xl font-bold mb-2" style="color: ${selectedColor};">500+</div>
+                  <div class="text-xl" style="color: #4a5568;">Clienti Felici</div>
+                </div>
+                <div class="text-center p-8 rounded-2xl shadow-lg" style="background-color: #f7fafc;">
+                  <div class="text-5xl font-bold mb-2" style="color: ${selectedColor};">98%</div>
+                  <div class="text-xl" style="color: #4a5568;">Soddisfazione</div>
+                </div>
+              </div>
+            </div>
+          </section>
+          ` : ''}
+          
+          ${hasGallery ? `
+          <!-- Features Section -->
+          <section class="w-full py-20 px-6" style="background-color: #f8f9fa;">
+            <div class="max-w-6xl mx-auto">
+              <h2 class="text-4xl font-bold text-center mb-12" style="color: ${selectedColor};">Caratteristiche</h2>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white p-8 rounded-2xl shadow-lg">
+                  <div class="text-5xl mb-4">🚀</div>
+                  <h3 class="text-2xl font-bold mb-3" style="color: ${selectedColor};">Veloce</h3>
+                  <p class="text-gray-600">Prestazioni ottimizzate per la migliore esperienza utente</p>
+                </div>
+                <div class="bg-white p-8 rounded-2xl shadow-lg">
+                  <div class="text-5xl mb-4">🎨</div>
+                  <h3 class="text-2xl font-bold mb-3" style="color: ${selectedColor};">Bello</h3>
+                  <p class="text-gray-600">Design moderno e accattivante che cattura l'attenzione</p>
+                </div>
+                <div class="bg-white p-8 rounded-2xl shadow-lg">
+                  <div class="text-5xl mb-4">💡</div>
+                  <h3 class="text-2xl font-bold mb-3" style="color: ${selectedColor};">Intelligente</h3>
+                  <p class="text-gray-600">Funzionalità avanzate per massimizzare i risultati</p>
+                </div>
+              </div>
+            </div>
+          </section>
+          ` : ''}
+          
+          ${hasContact ? `
+          <!-- Contact Section -->
+          <section class="w-full py-20 px-6" style="background-color: #ffffff;">
+            <div class="max-w-2xl mx-auto">
+              <h2 class="text-4xl font-bold text-center mb-12" style="color: ${selectedColor};">Contattaci</h2>
+              <form class="space-y-6" onsubmit="handleContact(event)">
+                <div>
+                  <label for="contactName" class="block text-lg font-semibold mb-2" style="color: #4a5568;">Nome</label>
+                  <input type="text" id="contactName" required class="w-full p-4 rounded-xl text-lg" style="background-color: #f7fafc; border: 2px solid #e2e8f0; color: #2d3748;">
+                </div>
+                <div>
+                  <label for="contactEmail" class="block text-lg font-semibold mb-2" style="color: #4a5568;">Email</label>
+                  <input type="email" id="contactEmail" required class="w-full p-4 rounded-xl text-lg" style="background-color: #f7fafc; border: 2px solid #e2e8f0; color: #2d3748;">
+                </div>
+                <div>
+                  <label for="contactMessage" class="block text-lg font-semibold mb-2" style="color: #4a5568;">Messaggio</label>
+                  <textarea id="contactMessage" rows="4" required class="w-full p-4 rounded-xl text-lg" style="background-color: #f7fafc; border: 2px solid #e2e8f0; color: #2d3748;"></textarea>
+                </div>
+                <button type="submit" class="w-full py-4 rounded-xl text-xl font-bold text-white" style="background-color: ${selectedColor};">Invia Messaggio</button>
+                <div id="contactFeedback" class="text-center text-lg font-semibold" style="display: none; color: ${selectedColor};">✓ Messaggio inviato con successo!</div>
+              </form>
+            </div>
+          </section>
+          ` : ''}
+        </div>
+      `;
+    }
+    
+    function generatePortfolio(title, description, hasContact, hasGallery, hasStats) {
+      return `
+        <div class="w-full">
+          <!-- Header -->
+          <header class="w-full py-16 px-6" style="background-color: ${selectedColor};">
+            <div class="max-w-5xl mx-auto text-center">
+              <h1 class="text-5xl font-bold text-white mb-4">${title}</h1>
+              <p class="text-xl text-white opacity-90">${description}</p>
+            </div>
+          </header>
+          
+          ${hasGallery ? `
+          <!-- Projects Section -->
+          <section class="w-full py-20 px-6" style="background-color: #f8f9fa;">
+            <div class="max-w-6xl mx-auto">
+              <h2 class="text-4xl font-bold text-center mb-12" style="color: ${selectedColor};">I Miei Progetti</h2>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white rounded-2xl overflow-hidden shadow-lg">
+                  <div class="p-8" style="background: linear-gradient(135deg, ${selectedColor} 0%, ${adjustColorBrightness(selectedColor, -20)} 100%); height: 200px;"></div>
+                  <div class="p-6">
+                    <h3 class="text-2xl font-bold mb-2" style="color: ${selectedColor};">Progetto 1</h3>
+                    <p class="text-gray-600">Una descrizione del progetto e delle tecnologie utilizzate</p>
+                  </div>
+                </div>
+                <div class="bg-white rounded-2xl overflow-hidden shadow-lg">
+                  <div class="p-8" style="background: linear-gradient(45deg, ${selectedColor} 0%, ${adjustColorBrightness(selectedColor, 20)} 100%); height: 200px;"></div>
+                  <div class="p-6">
+                    <h3 class="text-2xl font-bold mb-2" style="color: ${selectedColor};">Progetto 2</h3>
+                    <p class="text-gray-600">Una descrizione del progetto e delle tecnologie utilizzate</p>
+                  </div>
+                </div>
+                <div class="bg-white rounded-2xl overflow-hidden shadow-lg">
+                  <div class="p-8" style="background: linear-gradient(225deg, ${selectedColor} 0%, ${adjustColorBrightness(selectedColor, -10)} 100%); height: 200px;"></div>
+                  <div class="p-6">
+                    <h3 class="text-2xl font-bold mb-2" style="color: ${selectedColor};">Progetto 3</h3>
+                    <p class="text-gray-600">Una descrizione del progetto e delle tecnologie utilizzate</p>
+                  </div>
+                </div>
+                <div class="bg-white rounded-2xl overflow-hidden shadow-lg">
+                  <div class="p-8" style="background: linear-gradient(315deg, ${selectedColor} 0%, ${adjustColorBrightness(selectedColor, 15)} 100%); height: 200px;"></div>
+                  <div class="p-6">
+                    <h3 class="text-2xl font-bold mb-2" style="color: ${selectedColor};">Progetto 4</h3>
+                    <p class="text-gray-600">Una descrizione del progetto e delle tecnologie utilizzate</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+          ` : ''}
+          
+          ${hasStats ? `
+          <!-- Skills Section -->
+          <section class="w-full py-20 px-6" style="background-color: #ffffff;">
+            <div class="max-w-4xl mx-auto">
+              <h2 class="text-4xl font-bold text-center mb-12" style="color: ${selectedColor};">Competenze</h2>
+              <div class="space-y-6">
+                <div>
+                  <div class="flex justify-between mb-2">
+                    <span class="text-lg font-semibold" style="color: #4a5568;">Design</span>
+                    <span class="text-lg font-semibold" style="color: ${selectedColor};">90%</span>
+                  </div>
+                  <div class="w-full h-4 rounded-full" style="background-color: #e2e8f0;">
+                    <div class="h-4 rounded-full" style="width: 90%; background-color: ${selectedColor};"></div>
+                  </div>
+                </div>
+                <div>
+                  <div class="flex justify-between mb-2">
+                    <span class="text-lg font-semibold" style="color: #4a5568;">Sviluppo Web</span>
+                    <span class="text-lg font-semibold" style="color: ${selectedColor};">85%</span>
+                  </div>
+                  <div class="w-full h-4 rounded-full" style="background-color: #e2e8f0;">
+                    <div class="h-4 rounded-full" style="width: 85%; background-color: ${selectedColor};"></div>
+                  </div>
+                </div>
+                <div>
+                  <div class="flex justify-between mb-2">
+                    <span class="text-lg font-semibold" style="color: #4a5568;">Marketing</span>
+                    <span class="text-lg font-semibold" style="color: ${selectedColor};">75%</span>
+                  </div>
+                  <div class="w-full h-4 rounded-full" style="background-color: #e2e8f0;">
+                    <div class="h-4 rounded-full" style="width: 75%; background-color: ${selectedColor};"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+          ` : ''}
+          
+          ${hasContact ? `
+          <!-- Contact Section -->
+          <section class="w-full py-20 px-6" style="background-color: #f8f9fa;">
+            <div class="max-w-2xl mx-auto text-center">
+              <h2 class="text-4xl font-bold mb-6" style="color: ${selectedColor};">Lavoriamo Insieme</h2>
+              <p class="text-xl text-gray-600 mb-8">Hai un progetto in mente? Parliamone!</p>
+              <button class="px-10 py-5 rounded-2xl text-xl font-bold text-white" style="background-color: ${selectedColor};">Contattami</button>
+            </div>
+          </section>
+          ` : ''}
+        </div>
+      `;
+    }
+    
+    function generateDashboard(title, description, hasContact, hasGallery, hasStats) {
+      return `
+        <div class="w-full" style="background-color: #f8f9fa; min-height: 100%;">
+          <!-- Dashboard Header -->
+          <header class="w-full px-6 py-6" style="background-color: #ffffff; border-bottom: 2px solid #e2e8f0;">
+            <div class="max-w-7xl mx-auto flex justify-between items-center">
+              <div>
+                <h1 class="text-3xl font-bold" style="color: ${selectedColor};">${title}</h1>
+                <p class="text-gray-600">${description}</p>
+              </div>
+              <button class="px-6 py-3 rounded-xl font-bold text-white" style="background-color: ${selectedColor};">+ Nuovo</button>
+            </div>
+          </header>
+          
+          <div class="max-w-7xl mx-auto px-6 py-8">
+            ${hasStats ? `
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+              <div class="bg-white rounded-2xl p-6 shadow">
+                <div class="flex items-center justify-between mb-4">
+                  <span class="text-gray-600">Utenti Totali</span>
+                  <span class="text-3xl">👥</span>
+                </div>
+                <div class="text-3xl font-bold" style="color: ${selectedColor};">1,234</div>
+                <div class="text-sm text-green-600 mt-2">↑ 12% questo mese</div>
+              </div>
+              
+              <div class="bg-white rounded-2xl p-6 shadow">
+                <div class="flex items-center justify-between mb-4">
+                  <span class="text-gray-600">Vendite</span>
+                  <span class="text-3xl">💰</span>
+                </div>
+                <div class="text-3xl font-bold" style="color: ${selectedColor};">€45,678</div>
+                <div class="text-sm text-green-600 mt-2">↑ 8% questo mese</div>
+              </div>
+              
+              <div class="bg-white rounded-2xl p-6 shadow">
+                <div class="flex items-center justify-between mb-4">
+                  <span class="text-gray-600">Progetti</span>
+                  <span class="text-3xl">📁</span>
+                </div>
+                <div class="text-3xl font-bold" style="color: ${selectedColor};">89</div>
+                <div class="text-sm text-gray-600 mt-2">→ Nessun cambiamento</div>
+              </div>
+              
+              <div class="bg-white rounded-2xl p-6 shadow">
+                <div class="flex items-center justify-between mb-4">
+                  <span class="text-gray-600">Messaggi</span>
+                  <span class="text-3xl">✉️</span>
+                </div>
+                <div class="text-3xl font-bold" style="color: ${selectedColor};">156</div>
+                <div class="text-sm text-red-600 mt-2">↓ 3% questo mese</div>
+              </div>
+            </div>
+            ` : ''}
+            
+            ${hasGallery ? `
+            <!-- Activity Table -->
+            <div class="bg-white rounded-2xl p-8 shadow mb-8">
+              <h2 class="text-2xl font-bold mb-6" style="color: ${selectedColor};">Attività Recenti</h2>
+              <div class="space-y-4">
+                <div class="flex items-center justify-between p-4 rounded-xl" style="background-color: #f7fafc;">
+                  <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-full flex items-center justify-center" style="background-color: ${selectedColor};">
+                      <span class="text-white text-xl">📊</span>
+                    </div>
+                    <div>
+                      <div class="font-semibold" style="color: #2d3748;">Nuovo rapporto generato</div>
+                      <div class="text-sm text-gray-600">2 ore fa</div>
+                    </div>
+                  </div>
+                  <button class="px-4 py-2 rounded-lg font-semibold" style="background-color: ${selectedColor}; color: white;">Visualizza</button>
+                </div>
+                
+                <div class="flex items-center justify-between p-4 rounded-xl" style="background-color: #f7fafc;">
+                  <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-full flex items-center justify-center" style="background-color: ${selectedColor};">
+                      <span class="text-white text-xl">✅</span>
+                    </div>
+                    <div>
+                      <div class="font-semibold" style="color: #2d3748;">Progetto completato</div>
+                      <div class="text-sm text-gray-600">5 ore fa</div>
+                    </div>
+                  </div>
+                  <button class="px-4 py-2 rounded-lg font-semibold" style="background-color: ${selectedColor}; color: white;">Visualizza</button>
+                </div>
+                
+                <div class="flex items-center justify-between p-4 rounded-xl" style="background-color: #f7fafc;">
+                  <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-full flex items-center justify-center" style="background-color: ${selectedColor};">
+                      <span class="text-white text-xl">👤</span>
+                    </div>
+                    <div>
+                      <div class="font-semibold" style="color: #2d3748;">Nuovo utente registrato</div>
+                      <div class="text-sm text-gray-600">1 giorno fa</div>
+                    </div>
+                  </div>
+                  <button class="px-4 py-2 rounded-lg font-semibold" style="background-color: ${selectedColor}; color: white;">Visualizza</button>
+                </div>
+              </div>
+            </div>
+            ` : ''}
+            
+            ${hasContact ? `
+            <!-- Quick Actions -->
+            <div class="bg-white rounded-2xl p-8 shadow">
+              <h2 class="text-2xl font-bold mb-6" style="color: ${selectedColor};">Azioni Rapide</h2>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <button class="p-6 rounded-xl text-left" style="background-color: #f7fafc; border: 2px solid #e2e8f0;">
+                  <div class="text-3xl mb-2">📧</div>
+                  <div class="font-bold" style="color: ${selectedColor};">Invia Email</div>
+                  <div class="text-sm text-gray-600">Contatta il tuo team</div>
+                </button>
+                
+                <button class="p-6 rounded-xl text-left" style="background-color: #f7fafc; border: 2px solid #e2e8f0;">
+                  <div class="text-3xl mb-2">📁</div>
+                  <div class="font-bold" style="color: ${selectedColor};">Nuovo Progetto</div>
+                  <div class="text-sm text-gray-600">Crea un nuovo progetto</div>
+                </button>
+                
+                <button class="p-6 rounded-xl text-left" style="background-color: #f7fafc; border: 2px solid #e2e8f0;">
+                  <div class="text-3xl mb-2">📊</div>
+                  <div class="font-bold" style="color: ${selectedColor};">Genera Rapporto</div>
+                  <div class="text-sm text-gray-600">Esporta i dati</div>
+                </button>
+              </div>
+            </div>
+            ` : ''}
+          </div>
+        </div>
+      `;
+    }
+    
+    function handleContact(event) {
+      event.preventDefault();
+      const feedback = document.getElementById('contactFeedback');
+      feedback.style.display = 'block';
+      setTimeout(() => {
+        feedback.style.display = 'none';
+        event.target.reset();
+      }, 3000);
+    }
+    
+    function generateBlog(title, description, hasContact, hasGallery, hasStats) {
+      return `
+        <div class="w-full">
+          <!-- Blog Header -->
+          <header class="w-full py-12 px-6" style="background-color: #ffffff; border-bottom: 2px solid #e2e8f0;">
+            <div class="max-w-5xl mx-auto text-center">
+              <h1 class="text-5xl font-bold mb-3" style="color: ${selectedColor};">${title}</h1>
+              <p class="text-xl text-gray-600">${description}</p>
+            </div>
+          </header>
+          
+          ${hasGallery ? `
+          <!-- Blog Posts -->
+          <section class="w-full py-16 px-6" style="background-color: #f8f9fa;">
+            <div class="max-w-5xl mx-auto">
+              <div class="space-y-8">
+                <article class="bg-white rounded-2xl overflow-hidden shadow-lg">
+                  <div style="background: linear-gradient(135deg, ${selectedColor} 0%, ${adjustColorBrightness(selectedColor, -20)} 100%); height: 300px;"></div>
+                  <div class="p-8">
+                    <div class="flex items-center gap-4 mb-4">
+                      <span class="px-4 py-1 rounded-full text-sm font-semibold text-white" style="background-color: ${selectedColor};">Tecnologia</span>
+                      <span class="text-gray-600">15 Marzo 2024</span>
+                    </div>
+                    <h2 class="text-3xl font-bold mb-4" style="color: ${selectedColor};">Il Futuro del Web Design</h2>
+                    <p class="text-gray-600 text-lg mb-6">Scopri le ultime tendenze e tecnologie che stanno rivoluzionando il modo in cui creiamo esperienze digitali...</p>
+                    <button class="px-6 py-3 rounded-xl font-bold text-white" style="background-color: ${selectedColor};">Leggi di più →</button>
+                  </div>
+                </article>
+                
+                <article class="bg-white rounded-2xl overflow-hidden shadow-lg">
+                  <div style="background: linear-gradient(45deg, ${selectedColor} 0%, ${adjustColorBrightness(selectedColor, 20)} 100%); height: 300px;"></div>
+                  <div class="p-8">
+                    <div class="flex items-center gap-4 mb-4">
+                      <span class="px-4 py-1 rounded-full text-sm font-semibold text-white" style="background-color: ${selectedColor};">Design</span>
+                      <span class="text-gray-600">12 Marzo 2024</span>
+                    </div>
+                    <h2 class="text-3xl font-bold mb-4" style="color: ${selectedColor};">Principi di Design Moderno</h2>
+                    <p class="text-gray-600 text-lg mb-6">Una guida completa ai principi fondamentali che rendono un design veramente efficace e memorabile...</p>
+                    <button class="px-6 py-3 rounded-xl font-bold text-white" style="background-color: ${selectedColor};">Leggi di più →</button>
+                  </div>
+                </article>
+              </div>
+            </div>
+          </section>
+          ` : ''}
+          
+          ${hasStats ? `
+          <!-- Blog Stats -->
+          <section class="w-full py-16 px-6" style="background-color: #ffffff;">
+            <div class="max-w-5xl mx-auto">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="text-center p-6">
+                  <div class="text-5xl font-bold mb-2" style="color: ${selectedColor};">150+</div>
+                  <div class="text-xl text-gray-600">Articoli Pubblicati</div>
+                </div>
+                <div class="text-center p-6">
+                  <div class="text-5xl font-bold mb-2" style="color: ${selectedColor};">50K+</div>
+                  <div class="text-xl text-gray-600">Lettori Mensili</div>
+                </div>
+                <div class="text-center p-6">
+                  <div class="text-5xl font-bold mb-2" style="color: ${selectedColor};">10+</div>
+                  <div class="text-xl text-gray-600">Categorie</div>
+                </div>
+              </div>
+            </div>
+          </section>
+          ` : ''}
+        </div>
+      `;
+    }
+    
+    function generateEcommerce(title, description, hasContact, hasGallery, hasStats) {
+      return `
+        <div class="w-full">
+          <!-- Store Header -->
+          <header class="w-full py-16 px-6" style="background: linear-gradient(135deg, ${selectedColor} 0%, ${adjustColorBrightness(selectedColor, -20)} 100%);">
+            <div class="max-w-6xl mx-auto text-center">
+              <h1 class="text-5xl font-bold text-white mb-4">${title}</h1>
+              <p class="text-xl text-white opacity-90">${description}</p>
+            </div>
+          </header>
+          
+          ${hasGallery ? `
+          <!-- Products -->
+          <section class="w-full py-16 px-6" style="background-color: #f8f9fa;">
+            <div class="max-w-6xl mx-auto">
+              <h2 class="text-4xl font-bold text-center mb-12" style="color: ${selectedColor};">I Nostri Prodotti</h2>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white rounded-2xl overflow-hidden shadow-lg">
+                  <div style="background: linear-gradient(135deg, ${selectedColor} 0%, ${adjustColorBrightness(selectedColor, -20)} 100%); height: 250px;"></div>
+                  <div class="p-6">
+                    <h3 class="text-2xl font-bold mb-2" style="color: #2d3748;">Prodotto Premium</h3>
+                    <p class="text-gray-600 mb-4">Descrizione del prodotto di alta qualità</p>
+                    <div class="flex justify-between items-center">
+                      <span class="text-3xl font-bold" style="color: ${selectedColor};">€99</span>
+                      <button class="px-6 py-3 rounded-xl font-bold text-white" style="background-color: ${selectedColor};">Acquista</button>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="bg-white rounded-2xl overflow-hidden shadow-lg">
+                  <div style="background: linear-gradient(45deg, ${selectedColor} 0%, ${adjustColorBrightness(selectedColor, 20)} 100%); height: 250px;"></div>
+                  <div class="p-6">
+                    <h3 class="text-2xl font-bold mb-2" style="color: #2d3748;">Prodotto Standard</h3>
+                    <p class="text-gray-600 mb-4">Ottimo rapporto qualità-prezzo</p>
+                    <div class="flex justify-between items-center">
+                      <span class="text-3xl font-bold" style="color: ${selectedColor};">€59</span>
+                      <button class="px-6 py-3 rounded-xl font-bold text-white" style="background-color: ${selectedColor};">Acquista</button>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="bg-white rounded-2xl overflow-hidden shadow-lg">
+                  <div style="background: linear-gradient(225deg, ${selectedColor} 0%, ${adjustColorBrightness(selectedColor, -10)} 100%); height: 250px;"></div>
+                  <div class="p-6">
+                    <h3 class="text-2xl font-bold mb-2" style="color: #2d3748;">Prodotto Base</h3>
+                    <p class="text-gray-600 mb-4">Perfetto per iniziare</p>
+                    <div class="flex justify-between items-center">
+                      <span class="text-3xl font-bold" style="color: ${selectedColor};">€29</span>
+                      <button class="px-6 py-3 rounded-xl font-bold text-white" style="background-color: ${selectedColor};">Acquista</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+          ` : ''}
+          
+          ${hasStats ? `
+          <!-- Store Features -->
+          <section class="w-full py-16 px-6" style="background-color: #ffffff;">
+            <div class="max-w-6xl mx-auto">
+              <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="text-center p-6">
+                  <div class="text-5xl mb-3">🚚</div>
+                  <h3 class="text-xl font-bold mb-2" style="color: ${selectedColor};">Spedizione Gratis</h3>
+                  <p class="text-gray-600">Su ordini oltre €50</p>
+                </div>
+                <div class="text-center p-6">
+                  <div class="text-5xl mb-3">🔒</div>
+                  <h3 class="text-xl font-bold mb-2" style="color: ${selectedColor};">Pagamento Sicuro</h3>
+                  <p class="text-gray-600">Transazioni protette</p>
+                </div>
+                <div class="text-center p-6">
+                  <div class="text-5xl mb-3">↩️</div>
+                  <h3 class="text-xl font-bold mb-2" style="color: ${selectedColor};">Reso Facile</h3>
+                  <p class="text-gray-600">30 giorni di garanzia</p>
+                </div>
+                <div class="text-center p-6">
+                  <div class="text-5xl mb-3">💬</div>
+                  <h3 class="text-xl font-bold mb-2" style="color: ${selectedColor};">Supporto 24/7</h3>
+                  <p class="text-gray-600">Sempre disponibili</p>
+                </div>
+              </div>
+            </div>
+          </section>
+          ` : ''}
+        </div>
+      `;
+    }
+    
+    function generateRestaurant(title, description, hasContact, hasGallery, hasStats) {
+      return `
+        <div class="w-full">
+          <!-- Restaurant Hero -->
+          <section class="w-full py-24 px-6" style="background: linear-gradient(135deg, ${selectedColor} 0%, ${adjustColorBrightness(selectedColor, -20)} 100%);">
+            <div class="max-w-5xl mx-auto text-center">
+              <h1 class="text-6xl font-bold text-white mb-4">${title}</h1>
+              <p class="text-2xl text-white opacity-90 mb-8">${description}</p>
+              <button class="px-10 py-5 bg-white rounded-2xl text-xl font-bold" style="color: ${selectedColor};">Prenota un Tavolo</button>
+            </div>
+          </section>
+          
+          ${hasGallery ? `
+          <!-- Menu Section -->
+          <section class="w-full py-16 px-6" style="background-color: #ffffff;">
+            <div class="max-w-5xl mx-auto">
+              <h2 class="text-4xl font-bold text-center mb-12" style="color: ${selectedColor};">Il Nostro Menu</h2>
+              <div class="space-y-6">
+                <div class="flex justify-between items-center p-6 rounded-2xl" style="background-color: #f7fafc; border-left: 4px solid ${selectedColor};">
+                  <div>
+                    <h3 class="text-2xl font-bold mb-2" style="color: #2d3748;">Pasta alla Carbonara</h3>
+                    <p class="text-gray-600">Guanciale, uova, pecorino romano e pepe nero</p>
+                  </div>
+                  <span class="text-3xl font-bold" style="color: ${selectedColor};">€14</span>
+                </div>
+                
+                <div class="flex justify-between items-center p-6 rounded-2xl" style="background-color: #f7fafc; border-left: 4px solid ${selectedColor};">
+                  <div>
+                    <h3 class="text-2xl font-bold mb-2" style="color: #2d3748;">Pizza Margherita</h3>
+                    <p class="text-gray-600">Pomodoro, mozzarella di bufala e basilico fresco</p>
+                  </div>
+                  <span class="text-3xl font-bold" style="color: ${selectedColor};">€12</span>
+                </div>
+                
+                <div class="flex justify-between items-center p-6 rounded-2xl" style="background-color: #f7fafc; border-left: 4px solid ${selectedColor};">
+                  <div>
+                    <h3 class="text-2xl font-bold mb-2" style="color: #2d3748;">Tiramisù</h3>
+                    <p class="text-gray-600">Savoiardi, mascarpone, caffè e cacao</p>
+                  </div>
+                  <span class="text-3xl font-bold" style="color: ${selectedColor};">€7</span>
+                </div>
+                
+                <div class="flex justify-between items-center p-6 rounded-2xl" style="background-color: #f7fafc; border-left: 4px solid ${selectedColor};">
+                  <div>
+                    <h3 class="text-2xl font-bold mb-2" style="color: #2d3748;">Bistecca Fiorentina</h3>
+                    <p class="text-gray-600">Carne di manzo alla brace con contorno</p>
+                  </div>
+                  <span class="text-3xl font-bold" style="color: ${selectedColor};">€28</span>
+                </div>
+              </div>
+            </div>
+          </section>
+          ` : ''}
+          
+          ${hasStats ? `
+          <!-- Restaurant Info -->
+          <section class="w-full py-16 px-6" style="background-color: #f8f9fa;">
+            <div class="max-w-6xl mx-auto">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white p-8 rounded-2xl shadow text-center">
+                  <div class="text-5xl mb-3">⏰</div>
+                  <h3 class="text-xl font-bold mb-2" style="color: ${selectedColor};">Orari</h3>
+                  <p class="text-gray-600">Lun-Dom: 12:00-23:00</p>
+                </div>
+                <div class="bg-white p-8 rounded-2xl shadow text-center">
+                  <div class="text-5xl mb-3">📍</div>
+                  <h3 class="text-xl font-bold mb-2" style="color: ${selectedColor};">Dove Siamo</h3>
+                  <p class="text-gray-600">Via Roma 123, Milano</p>
+                </div>
+                <div class="bg-white p-8 rounded-2xl shadow text-center">
+                  <div class="text-5xl mb-3">📞</div>
+                  <h3 class="text-xl font-bold mb-2" style="color: ${selectedColor};">Contatti</h3>
+                  <p class="text-gray-600">+39 02 1234567</p>
+                </div>
+              </div>
+            </div>
+          </section>
+          ` : ''}
+        </div>
+      `;
+    }
+    
+    function generateEvent(title, description, hasContact, hasGallery, hasStats) {
+      return `
+        <div class="w-full">
+          <!-- Event Hero -->
+          <section class="w-full py-24 px-6" style="background: linear-gradient(135deg, ${selectedColor} 0%, ${adjustColorBrightness(selectedColor, -20)} 100%);">
+            <div class="max-w-5xl mx-auto text-center">
+              <div class="text-6xl mb-4">🎉</div>
+              <h1 class="text-5xl font-bold text-white mb-4">${title}</h1>
+              <p class="text-2xl text-white opacity-90 mb-6">${description}</p>
+              <div class="flex gap-4 justify-center items-center text-white text-xl mb-8">
+                <span>📅 25 Giugno 2024</span>
+                <span>•</span>
+                <span>⏰ 18:00</span>
+                <span>•</span>
+                <span>📍 Milano</span>
+              </div>
+              <button class="px-10 py-5 bg-white rounded-2xl text-xl font-bold" style="color: ${selectedColor};">Registrati Ora</button>
+            </div>
+          </section>
+          
+          ${hasGallery ? `
+          <!-- Event Schedule -->
+          <section class="w-full py-16 px-6" style="background-color: #ffffff;">
+            <div class="max-w-4xl mx-auto">
+              <h2 class="text-4xl font-bold text-center mb-12" style="color: ${selectedColor};">Programma dell'Evento</h2>
+              <div class="space-y-6">
+                <div class="flex gap-6 p-6 rounded-2xl" style="background-color: #f7fafc;">
+                  <div class="text-center" style="min-width: 100px;">
+                    <div class="text-3xl font-bold" style="color: ${selectedColor};">18:00</div>
+                    <div class="text-gray-600">Start</div>
+                  </div>
+                  <div class="flex-1">
+                    <h3 class="text-2xl font-bold mb-2" style="color: #2d3748;">Registrazione e Benvenuto</h3>
+                    <p class="text-gray-600">Accoglienza ospiti e networking informale</p>
+                  </div>
+                </div>
+                
+                <div class="flex gap-6 p-6 rounded-2xl" style="background-color: #f7fafc;">
+                  <div class="text-center" style="min-width: 100px;">
+                    <div class="text-3xl font-bold" style="color: ${selectedColor};">19:00</div>
+                  </div>
+                  <div class="flex-1">
+                    <h3 class="text-2xl font-bold mb-2" style="color: #2d3748;">Keynote Speech</h3>
+                    <p class="text-gray-600">Intervento principale del relatore ospite</p>
+                  </div>
+                </div>
+                
+                <div class="flex gap-6 p-6 rounded-2xl" style="background-color: #f7fafc;">
+                  <div class="text-center" style="min-width: 100px;">
+                    <div class="text-3xl font-bold" style="color: ${selectedColor};">20:30</div>
+                  </div>
+                  <div class="flex-1">
+                    <h3 class="text-2xl font-bold mb-2" style="color: #2d3748;">Networking e Aperitivo</h3>
+                    <p class="text-gray-600">Momento di incontro e scambio tra partecipanti</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+          ` : ''}
+          
+          ${hasStats ? `
+          <!-- Event Stats -->
+          <section class="w-full py-16 px-6" style="background-color: #f8f9fa;">
+            <div class="max-w-6xl mx-auto">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="text-center p-8">
+                  <div class="text-5xl font-bold mb-2" style="color: ${selectedColor};">500+</div>
+                  <div class="text-xl text-gray-600">Partecipanti Attesi</div>
+                </div>
+                <div class="text-center p-8">
+                  <div class="text-5xl font-bold mb-2" style="color: ${selectedColor};">20+</div>
+                  <div class="text-xl text-gray-600">Speaker Internazionali</div>
+                </div>
+                <div class="text-center p-8">
+                  <div class="text-5xl font-bold mb-2" style="color: ${selectedColor};">8h</div>
+                  <div class="text-xl text-gray-600">Di Contenuti</div>
+                </div>
+              </div>
+            </div>
+          </section>
+          ` : ''}
+        </div>
+      `;
+    }
+    
+    function generateFitness(title, description, hasContact, hasGallery, hasStats) {
+      return `
+        <div class="w-full">
+          <!-- Fitness Hero -->
+          <section class="w-full py-24 px-6" style="background: linear-gradient(135deg, ${selectedColor} 0%, ${adjustColorBrightness(selectedColor, -20)} 100%);">
+            <div class="max-w-5xl mx-auto text-center">
+              <div class="text-6xl mb-4">💪</div>
+              <h1 class="text-5xl font-bold text-white mb-4">${title}</h1>
+              <p class="text-2xl text-white opacity-90 mb-8">${description}</p>
+              <button class="px-10 py-5 bg-white rounded-2xl text-xl font-bold" style="color: ${selectedColor};">Prova Gratuita</button>
+            </div>
+          </section>
+          
+          ${hasGallery ? `
+          <!-- Training Programs -->
+          <section class="w-full py-16 px-6" style="background-color: #f8f9fa;">
+            <div class="max-w-6xl mx-auto">
+              <h2 class="text-4xl font-bold text-center mb-12" style="color: ${selectedColor};">I Nostri Programmi</h2>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white rounded-2xl p-8 shadow-lg">
+                  <div class="text-5xl mb-4">🏃</div>
+                  <h3 class="text-2xl font-bold mb-3" style="color: ${selectedColor};">Cardio Intensive</h3>
+                  <p class="text-gray-600 mb-6">Brucia calorie e migliora la resistenza cardiovascolare</p>
+                  <ul class="space-y-2 mb-6">
+                    <li class="flex items-center gap-2 text-gray-600"><span style="color: ${selectedColor};">✓</span> 3 sessioni/settimana</li>
+                    <li class="flex items-center gap-2 text-gray-600"><span style="color: ${selectedColor};">✓</span> 45 minuti/sessione</li>
+                    <li class="flex items-center gap-2 text-gray-600"><span style="color: ${selectedColor};">✓</span> Tutti i livelli</li>
+                  </ul>
+                  <button class="w-full py-3 rounded-xl font-bold text-white" style="background-color: ${selectedColor};">Inizia Ora</button>
+                </div>
+                
+                <div class="bg-white rounded-2xl p-8 shadow-lg">
+                  <div class="text-5xl mb-4">🏋️</div>
+                  <h3 class="text-2xl font-bold mb-3" style="color: ${selectedColor};">Strength Training</h3>
+                  <p class="text-gray-600 mb-6">Costruisci massa muscolare e aumenta la forza</p>
+                  <ul class="space-y-2 mb-6">
+                    <li class="flex items-center gap-2 text-gray-600"><span style="color: ${selectedColor};">✓</span> 4 sessioni/settimana</li>
+                    <li class="flex items-center gap-2 text-gray-600"><span style="color: ${selectedColor};">✓</span> 60 minuti/sessione</li>
+                    <li class="flex items-center gap-2 text-gray-600"><span style="color: ${selectedColor};">✓</span> Livello intermedio</li>
+                  </ul>
+                  <button class="w-full py-3 rounded-xl font-bold text-white" style="background-color: ${selectedColor};">Inizia Ora</button>
+                </div>
+                
+                <div class="bg-white rounded-2xl p-8 shadow-lg">
+                  <div class="text-5xl mb-4">🧘</div>
+                  <h3 class="text-2xl font-bold mb-3" style="color: ${selectedColor};">Yoga & Relax</h3>
+                  <p class="text-gray-600 mb-6">Migliora flessibilità e benessere mentale</p>
+                  <ul class="space-y-2 mb-6">
+                    <li class="flex items-center gap-2 text-gray-600"><span style="color: ${selectedColor};">✓</span> 2 sessioni/settimana</li>
+                    <li class="flex items-center gap-2 text-gray-600"><span style="color: ${selectedColor};">✓</span> 50 minuti/sessione</li>
+                    <li class="flex items-center gap-2 text-gray-600"><span style="color: ${selectedColor};">✓</span> Tutti i livelli</li>
+                  </ul>
+                  <button class="w-full py-3 rounded-xl font-bold text-white" style="background-color: ${selectedColor};">Inizia Ora</button>
+                </div>
+              </div>
+            </div>
+          </section>
+          ` : ''}
+          
+          ${hasStats ? `
+          <!-- Fitness Stats -->
+          <section class="w-full py-16 px-6" style="background-color: #ffffff;">
+            <div class="max-w-6xl mx-auto">
+              <h2 class="text-3xl font-bold text-center mb-12" style="color: ${selectedColor};">I Nostri Risultati</h2>
+              <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="text-center p-6">
+                  <div class="text-5xl font-bold mb-2" style="color: ${selectedColor};">2000+</div>
+                  <div class="text-xl text-gray-600">Membri Attivi</div>
+                </div>
+                <div class="text-center p-6">
+                  <div class="text-5xl font-bold mb-2" style="color: ${selectedColor};">50+</div>
+                  <div class="text-xl text-gray-600">Trainer Certificati</div>
+                </div>
+                <div class="text-center p-6">
+                  <div class="text-5xl font-bold mb-2" style="color: ${selectedColor};">15</div>
+                  <div class="text-xl text-gray-600">Anni di Esperienza</div>
+                </div>
+                <div class="text-center p-6">
+                  <div class="text-5xl font-bold mb-2" style="color: ${selectedColor};">98%</div>
+                  <div class="text-xl text-gray-600">Soddisfazione</div>
+                </div>
+              </div>
+            </div>
+          </section>
+          ` : ''}
+        </div>
+      `;
+    }
+    
+    function adjustColorBrightness(hex, percent) {
+      const num = parseInt(hex.replace('#', ''), 16);
+      const amt = Math.round(2.55 * percent);
+      const R = (num >> 16) + amt;
+      const G = (num >> 8 & 0x00FF) + amt;
+      const B = (num & 0x0000FF) + amt;
+      return '#' + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 +
+        (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 +
+        (B < 255 ? B < 1 ? 0 : B : 255))
+        .toString(16).slice(1);
+    }
+    
+    function backToGenerator() {
+      document.getElementById('generatorScreen').style.display = 'flex';
+      document.getElementById('previewScreen').style.display = 'none';
+    }
+    
+    function showMessage(message) {
+      const messageDiv = document.createElement('div');
+      messageDiv.textContent = message;
+      messageDiv.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #2d3748;
+        color: white;
+        padding: 20px 40px;
+        border-radius: 12px;
+        font-size: 18px;
+        font-weight: bold;
+        z-index: 1000;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+      `;
+      document.body.appendChild(messageDiv);
+      setTimeout(() => {
+        messageDiv.remove();
+      }, 2500);
+    }
+    
+    // Element SDK integration
+    async function onConfigChange(config) {
+      document.getElementById('mainTitle').textContent = config.main_title || defaultConfig.main_title;
+      document.getElementById('subtitle').textContent = config.subtitle || defaultConfig.subtitle;
+    }
+    
+    function mapToCapabilities(config) {
+      return {
+        recolorables: [],
+        borderables: [],
+        fontEditable: undefined,
+        fontSizeable: undefined
+      };
+    }
+    
+    function mapToEditPanelValues(config) {
+      return new Map([
+        ["main_title", config.main_title || defaultConfig.main_title],
+        ["subtitle", config.subtitle || defaultConfig.subtitle]
+      ]);
+    }
+    
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities,
+        mapToEditPanelValues
+      });
+    }
+    
+    // Select first color by default
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelector('.color-option').classList.add('selected');
+    });
+             // FUNZIONE CLICK PER MENU BUILDER
+function toggleLayoutMenu() {
+  const menu = document.getElementById('builder-menu');
+  if (!menu) return;
+  menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+}
+
+// CHIUDE MENU CLICCANDO FUORI
+document.addEventListener('click', function(e) {
+  const menu = document.getElementById('builder-menu');
+  const btn = document.getElementById('builder-btn');
+  if (!menu || !btn) return;
+
+  if (!btn.contains(e.target) && !menu.contains(e.target)) {
+    menu.style.display = 'none';
+  }
+});
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9b4bb68a822ded53',t:'MTc2Njg2ODg2NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

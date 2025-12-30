@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mini Web Builder • Soft UI (Tailwind, no Blob)</title>
+
+  <!-- Font + Tailwind -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <script>
+    // Tailwind CDN config (font)
+    window.tailwind = window.tailwind || {};
+    window.tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui', 'Segoe UI', 'Roboto'] }
+        }
+      }
+    };
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body { font-family: Inter, ui-sans-serif, system-ui, "Segoe UI", Roboto, sans-serif; }
+    ::selection { background: rgba(2,132,199,.16); } /* sky-600 at 16% */
+    html { scroll-behavior: smooth; }
+    /* Scrollbar sobria */
+    ::-webkit-scrollbar { width: 10px; height: 10px; }
+    ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+  </style>
+</head>
+<body class="min-h-screen bg-stone-50 text-neutral-800 antialiased pt-20">
+  <!-- Preload classi dinamiche (per sicurezza con Tailwind CDN) -->
+  <div class="hidden">
+    <div class="text-left text-center"></div>
+    <div class="my-2 my-4 my-6 my-8 my-12"></div>
+    <div class="rounded-none rounded-md rounded-xl rounded-2xl"></div>
+    <div class="ring-2 ring-sky-500 ring-offset-2 ring-offset-white"></div>
+    <div class="text-stone-700 text-sky-700 text-indigo-700"></div>
+    <div class="bg-neutral-700 hover:bg-neutral-800 text-white bg-sky-600 hover:bg-sky-700 bg-indigo-600 hover:bg-indigo-700"></div>
+    <div class="bg-stone-200 text-stone-800 bg-sky-100 text-sky-800 bg-indigo-100 text-indigo-800"></div>
+    <div class="border-stone-300 border-stone-200 border-sky-300 border-indigo-300"></div>
+    <div class="hidden md:flex md:hidden block"></div>
+  </div>
+
+  <div class="max-w-[1200px] mx-auto px-4 py-6 md:py-10">
+  <!-- BREADCRUMB PRIMA del main - INVULNERABILE -->
+ <div id="breadcrumb-container" style="
+  position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; 
+  z-index: 999999 !important; 
+  background: rgba(255,255,255,0.98) !important; 
+  backdrop-filter: blur(30px) !important; 
+  border-bottom: 2px solid #e5e7eb !important; 
+  padding: 12px 24px !important; 
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15) !important;
+">
+  <div style="max-width: 1280px; margin: 0 auto !important; display: flex !important; align-items: center !important; justify-content: center !important; gap: 16px !important;">
+    <a href="index.html" style="
+      padding: 8px 16px !important; background: linear-gradient(135deg, #3b82f6, #1d4ed8) !important; 
+      color: white !important; text-decoration: none !important; border-radius: 25px !important; 
+      font-weight: 700 !important; font-size: 14px !important; box-shadow: 0 4px 12px rgba(59,130,246,0.4) !important;
+      display: flex !important; align-items: center !important; gap: 8px !important;
+    ">🏠 Home</a>
+    
+    <span style="color: #9ca3af !important; font-weight: bold !important; font-size: 20px !important;">›</span>
+    
+    <span id="builder-btn" style="
+      padding: 8px 16px !important; 
+      background: linear-gradient(135deg, #f59e0b, #d97706) !important; 
+      color: white !important; border-radius: 25px !important; 
+      font-weight: 700 !important; font-size: 14px !important; cursor: pointer !important;
+      box-shadow: 0 4px 12px rgba(245,158,11,0.4) !important;
+      display: flex !important; align-items: center !important; gap: 8px !important;
+    " onclick="toggleLayoutMenu()">🏗️ Builder ▼</span>
+    
+    <div id="builder-menu" style="
+      position: fixed !important; top: 70px !important; left: 50% !important; 
+      transform: translateX(-50%) !important; width: 280px !important;
+      background: rgba(255,255,255,0.98) !important; backdrop-filter: blur(30px) !important;
+      border: 2px solid #f59e0b !important; border-radius: 20px !important; 
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3) !important;
+      display: none !important; max-height: 300px !important; overflow-y: auto !important;
+      z-index: 999998 !important; padding: 0 !important;
+    ">
+      <a href="builder_home.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important; border-bottom: 1px solid #f3f4f6 !important;" onmouseenter="this.style.background='#fef3c7 !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">🏠 Home Builder</a>
+      <a href="webBuilder.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important; border-bottom: 1px solid #f3f4f6 !important;" onmouseenter="this.style.background='#dbeafe !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">🌐 Web</a>
+      <a href="SiteBuilder.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important; border-bottom: 1px solid #f3f4f6 !important;" onmouseenter="this.style.background='#dbeafe !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">💻 Siti</a>
+      <a href="libraryEditor.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important; border-bottom: 1px solid #f3f4f6 !important;" onmouseenter="this.style.background='#dbeafe !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">📚 Library</a>
+      <a href="Dom__.responsive.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important;" onmouseenter="this.style.background='#e9d5ff !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">⚙️ Dom</a>
+          <a href="codecraft_studio.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important;" onmouseenter="this.style.background='#e9d5ff !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">🖊 Codecraft</a>
+          <a href="builder_web.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important;" onmouseenter="this.style.background='#e9d5ff !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';"> 🖥 Web2</a>
+                 <a href="generatore_siti_web.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important;" onmouseenter="this.style.background='#e9d5ff !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">🌐 Web3</a>
+         <a href="generatore-app.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important;" onmouseenter="this.style.background='#e9d5ff !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">📱 App</a>
+    </div>
+    
+    <span style="color: #9ca3af !important; font-weight: bold !important; font-size: 20px !important;">›</span>
+    
+    <span style="
+      padding: 8px 16px !important; 
+      background: linear-gradient(135deg, #10b981, #059669) !important; 
+      color: white !important; border-radius: 25px !important; 
+      font-weight: 800 !important; font-size: 14px !important; 
+      box-shadow: 0 4px 12px rgba(16,185,129,0.4) !important;
+      display: flex !important; align-items: center !important; gap: 8px !important;
+    ">📱 Mini</span>
+  </div>
+</div> 
+      <!-- Header -->
+    <header class="mb-6 md:mb-8">
+      <div class="flex items-center justify-between gap-3 bg-white border border-neutral-200 rounded-xl px-4 py-3 md:px-5 md:py-4 shadow-sm">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg bg-stone-100 border border-stone-200 flex items-center justify-center">
+            <svg width="22" height="22" viewBox="0 0 24 24" class="text-sky-600" aria-hidden="true">
+              <path fill="currentColor" d="M11 2v6H5l6 14v-6h6L11 2z"/>
+            </svg>
+          </div>
+          <div>
+            <h1 class="text-[18px] md:text-xl font-extrabold tracking-tight">Mini Web Builder • Soft UI</h1>
+            <p class="text-neutral-500 text-sm">Esportazione con copia (no Blob) • Palette riposante</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 sm:gap-3">
+          <button id="saveBtn" class="px-3 py-2 sm:px-4 sm:py-2 rounded-lg bg-neutral-100 hover:bg-neutral-200 border border-neutral-200 transition">
+            Salva
+          </button>
+          <button id="loadBtn" class="px-3 py-2 sm:px-4 sm:py-2 rounded-lg bg-neutral-100 hover:bg-neutral-200 border border-neutral-200 transition">
+            Carica
+          </button>
+          <button id="newBtn" class="px-3 py-2 sm:px-4 sm:py-2 rounded-lg bg-neutral-100 hover:bg-neutral-200 border border-neutral-200 transition">
+            Nuovo
+          </button>
+          <button id="exportBtn" class="px-3 py-2 sm:px-4 sm:py-2 rounded-lg bg-neutral-700 hover:bg-neutral-800 text-white font-semibold transition">
+            Copia HTML
+          </button>
+        </div>
+
+      </div>
+      
+    </header>
+      
+         
+
+    <!-- Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-[280px_1fr_300px] gap-4 md:gap-6">
+      <!-- Componenti -->
+      <aside class="bg-white border border-neutral-200 rounded-xl p-4 md:p-5 shadow-sm">
+        <h2 class="text-lg font-bold mb-3">Componenti</h2>
+        <p class="text-neutral-600 text-sm mb-4">Clicca per aggiungere al canvas</p>
+
+        <div class="grid grid-cols-2 gap-3">
+          <button data-add="heading" class="add-component group p-3 rounded-lg bg-neutral-50 hover:bg-neutral-100 border border-neutral-200 transition text-left">
+            <div class="w-10 h-10 rounded-md bg-stone-100 border border-stone-200 flex items-center justify-center mb-2">
+              <span class="font-extrabold text-neutral-700">H</span>
+            </div>
+            <div class="text-sm font-semibold">Titolo</div>
+            <div class="text-xs text-neutral-500">H2 grande</div>
+          </button>
+
+          <button data-add="paragraph" class="add-component group p-3 rounded-lg bg-neutral-50 hover:bg-neutral-100 border border-neutral-200 transition text-left">
+            <div class="w-10 h-10 rounded-md bg-stone-100 border border-stone-200 flex items-center justify-center mb-2">
+              <svg width="18" height="18" viewBox="0 0 24 24" class="text-neutral-700" aria-hidden="true"><path fill="currentColor" d="M3 7h18v2H3V7m0 4h12v2H3v-2m0 4h18v2H3v-2Z"/></svg>
+            </div>
+            <div class="text-sm font-semibold">Testo</div>
+            <div class="text-xs text-neutral-500">Paragrafo</div>
+          </button>
+
+          <button data-add="button" class="add-component group p-3 rounded-lg bg-neutral-50 hover:bg-neutral-100 border border-neutral-200 transition text-left">
+            <div class="w-10 h-10 rounded-md bg-stone-100 border border-stone-200 flex items-center justify-center mb-2">
+              <svg width="18" height="18" viewBox="0 0 24 24" class="text-neutral-700" aria-hidden="true"><path fill="currentColor" d="M7 11h10v2H7z"/></svg>
+            </div>
+            <div class="text-sm font-semibold">Pulsante</div>
+            <div class="text-xs text-neutral-500">CTA</div>
+          </button>
+
+          <button data-add="divider" class="add-component group p-3 rounded-lg bg-neutral-50 hover:bg-neutral-100 border border-neutral-200 transition text-left">
+            <div class="w-10 h-10 rounded-md bg-stone-100 border border-stone-200 flex items-center justify-center mb-2">
+              <svg width="18" height="18" viewBox="0 0 24 24" class="text-neutral-700" aria-hidden="true"><path fill="currentColor" d="M3 12h18v1H3z"/></svg>
+            </div>
+            <div class="text-sm font-semibold">Separatore</div>
+            <div class="text-xs text-neutral-500">Linea</div>
+          </button>
+
+          <button data-add="card" class="add-component group p-3 rounded-lg bg-neutral-50 hover:bg-neutral-100 border border-neutral-200 transition text-left">
+            <div class="w-10 h-10 rounded-md bg-stone-100 border border-stone-200 flex items-center justify-center mb-2">
+              <svg width="18" height="18" viewBox="0 0 24 24" class="text-neutral-700" aria-hidden="true"><path fill="currentColor" d="M4 6h16v12H4z"/></svg>
+            </div>
+            <div class="text-sm font-semibold">Card</div>
+            <div class="text-xs text-neutral-500">Box contenuto</div>
+          </button>
+
+          <button data-add="hero" class="add-component group p-3 rounded-lg bg-neutral-50 hover:bg-neutral-100 border border-neutral-200 transition text-left">
+            <div class="w-10 h-10 rounded-md bg-stone-100 border border-stone-200 flex items-center justify-center mb-2">
+              <svg width="18" height="18" viewBox="0 0 24 24" class="text-neutral-700" aria-hidden="true"><path fill="currentColor" d="M3 5h18v6H3V5m0 8h10v6H3v-6Z"/></svg>
+            </div>
+            <div class="text-sm font-semibold">Hero</div>
+            <div class="text-xs text-neutral-500">Intro grande</div>
+          </button>
+
+          <button data-add="menu" class="add-component group p-3 rounded-lg bg-neutral-50 hover:bg-neutral-100 border border-neutral-200 transition text-left">
+            <div class="w-10 h-10 rounded-md bg-stone-100 border border-stone-200 flex items-center justify-center mb-2">
+              <svg width="18" height="18" viewBox="0 0 24 24" class="text-neutral-700" aria-hidden="true"><path fill="currentColor" d="M4 7h16v2H4V7m0 4h16v2H4v-2m0 4h16v2H4v-2Z"/></svg>
+            </div>
+            <div class="text-sm font-semibold">Menu</div>
+            <div class="text-xs text-neutral-500">Navbar</div>
+          </button>
+
+          <button data-add="footer" class="add-component group p-3 rounded-lg bg-neutral-50 hover:bg-neutral-100 border border-neutral-200 transition text-left">
+            <div class="w-10 h-10 rounded-md bg-stone-100 border border-stone-200 flex items-center justify-center mb-2">
+              <svg width="18" height="18" viewBox="0 0 24 24" class="text-neutral-700" aria-hidden="true"><path fill="currentColor" d="M3 18h18v2H3v-2M3 4h18v8H3V4Z"/></svg>
+            </div>
+            <div class="text-sm font-semibold">Footer</div>
+            <div class="text-xs text-neutral-500">Piè di pagina</div>
+          </button>
+        </div>
+      </aside>
+
+      <!-- Canvas -->
+      <main class="bg-white border border-neutral-200 rounded-xl p-3 md:p-4 shadow-sm">
+        <div class="rounded-lg bg-neutral-50 border border-neutral-200 text-neutral-800 min-h-[560px] p-4 md:p-8 overflow-auto" id="canvasWrap">
+          <div class="mx-auto w-full max-w-3xl" id="canvas" aria-label="Canvas di progettazione">
+            <div id="emptyState" class="border-2 border-dashed border-neutral-300 rounded-xl p-8 text-center bg-white">
+              <div class="mx-auto w-14 h-14 rounded-full bg-stone-100 border border-stone-200 text-sky-600 flex items-center justify-center mb-4">
+                <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M11 21v-8H3l8-10v8h8l-8 10Z"/></svg>
+              </div>
+              <h3 class="text-lg font-extrabold text-neutral-900 mb-1">Inizia qui</h3>
+              <p class="text-neutral-600">Aggiungi componenti, poi fai doppio click sui testi per modificarli.</p>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- Proprietà -->
+      <aside class="bg-white border border-neutral-200 rounded-xl p-4 md:p-5 shadow-sm">
+        <h2 class="text-lg font-bold mb-4">Proprietà</h2>
+
+        <div id="noSelection" class="text-neutral-700">
+          <p class="text-sm">Nessun elemento selezionato.</p>
+          <ul class="text-sm mt-2 list-disc list-inside text-neutral-500">
+            <li>Clicca un componente nel canvas per modificarlo</li>
+            <li>Doppio click sui testi per cambiarli</li>
+            <li>Esporta per copiare l'HTML (nessun Blob)</li>
+          </ul>
+        </div>
+
+        <div id="propsPanel" class="hidden space-y-5">
+          <div>
+            <div class="text-sm text-neutral-500">Tipo</div>
+            <div id="propType" class="font-semibold">—</div>
+          </div>
+
+          <div>
+            <div class="text-sm mb-2">Allineamento</div>
+            <div class="inline-flex rounded-lg overflow-hidden border border-neutral-200">
+              <button id="alignLeft" class="px-3 py-2 bg-neutral-50 hover:bg-neutral-100">Sinistra</button>
+              <button id="alignCenter" class="px-3 py-2 bg-neutral-50 hover:bg-neutral-100">Centro</button>
+            </div>
+          </div>
+
+          <div>
+            <div class="text-sm mb-2">Colore accento</div>
+            <div class="flex items-center gap-3" id="accentPalette">
+              <button data-accent="stone" class="w-7 h-7 rounded-full bg-stone-500 ring-2 ring-transparent"></button>
+              <button data-accent="sky" class="w-7 h-7 rounded-full bg-sky-500 ring-2 ring-transparent"></button>
+              <button data-accent="indigo" class="w-7 h-7 rounded-full bg-indigo-500 ring-2 ring-transparent"></button>
+            </div>
+          </div>
+
+          <div>
+            <div class="flex justify-between text-sm mb-2">
+              <span>Spaziatura</span><span id="spacingVal" class="text-neutral-500">medio</span>
+            </div>
+            <input id="spacingRange" type="range" min="1" max="5" value="3" class="w-full accent-sky-600">
+          </div>
+
+          <div>
+            <div class="flex justify-between text-sm mb-2">
+              <span>Arrotondamento</span><span id="radiusVal" class="text-neutral-500">medio</span>
+            </div>
+            <input id="radiusRange" type="range" min="0" max="3" value="2" class="w-full accent-sky-600">
+          </div>
+
+          <div class="pt-1">
+            <div class="text-sm mb-2">Azioni</div>
+            <div class="flex flex-wrap gap-2">
+              <button id="moveUp" class="px-3 py-2 rounded-lg bg-neutral-100 hover:bg-neutral-200 border border-neutral-200">Su</button>
+              <button id="moveDown" class="px-3 py-2 rounded-lg bg-neutral-100 hover:bg-neutral-200 border border-neutral-200">Giù</button>
+              <button id="duplicate" class="px-3 py-2 rounded-lg bg-neutral-100 hover:bg-neutral-200 border border-neutral-200">Duplica</button>
+              <button id="delete" class="px-3 py-2 rounded-lg bg-rose-500/90 hover:bg-rose-500 text-white">Elimina</button>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- Modale Export -->
+  <div id="exportModal" class="fixed inset-0 hidden items-center justify-center z-50">
+    <div class="absolute inset-0 bg-black/40"></div>
+    <div class="relative mx-4 w-full max-w-3xl rounded-xl bg-white border border-neutral-200 shadow-2xl overflow-hidden">
+      <div class="px-5 py-4 border-b border-neutral-200 bg-neutral-50 text-neutral-800 flex items-center justify-between">
+        <h3 class="font-bold">Codice pronto da copiare</h3>
+        <button id="closeExport" class="px-3 py-1.5 rounded-lg bg-neutral-100 hover:bg-neutral-200 border border-neutral-200">Chiudi</button>
+      </div>
+      <div class="p-4 bg-white">
+        <textarea id="exportCode" class="w-full h-80 p-3 rounded-lg border border-neutral-200 font-mono text-[12.5px] leading-5 text-neutral-800 bg-neutral-50"></textarea>
+        <div class="flex items-center justify-between mt-3">
+          <p class="text-neutral-600 text-sm">Copia e incolla dove preferisci. Non viene usato alcun download con Blob.</p>
+          <div class="flex items-center gap-2">
+            <button id="copyCode" class="px-4 py-2 rounded-lg bg-sky-600 text-white hover:bg-sky-700">Copia</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="fixed left-1/2 -translate-x-1/2 bottom-6 hidden px-4 py-2 rounded-lg bg-neutral-900 text-white shadow-md">
+    <span id="toastMsg" class="text-sm font-medium"></span>
+  </div>
+
+    <script>
+    const $ = (sel, ctx=document) => ctx.querySelector(sel);
+    const $$ = (sel, ctx=document) => Array.from(ctx.querySelectorAll(sel));
+
+    const canvas = $('#canvas');
+    const emptyState = $('#emptyState');
+
+    const noSelection = $('#noSelection');
+    const propsPanel = $('#propsPanel');
+    const propType = $('#propType');
+    const alignLeftBtn = $('#alignLeft');
+    const alignCenterBtn = $('#alignCenter');
+    const palette = $('#accentPalette');
+    const spacingRange = $('#spacingRange');
+    const spacingVal = $('#spacingVal');
+    const radiusRange = $('#radiusRange');
+    const radiusVal = $('#radiusVal');
+    const moveUpBtn = $('#moveUp');
+    const moveDownBtn = $('#moveDown');
+    const duplicateBtn = $('#duplicate');
+    const deleteBtn = $('#delete');
+
+    const exportBtn = $('#exportBtn');
+    const exportModal = $('#exportModal');
+    const exportCode = $('#exportCode');
+    const closeExport = $('#closeExport');
+    const copyCode = $('#copyCode');
+
+    const saveBtn = $('#saveBtn');
+    const loadBtn = $('#loadBtn');
+    const newBtn = $('#newBtn');
+
+    const toast = $('#toast');
+    const toastMsg = $('#toastMsg');
+
+    // Temi morbidi
+    const THEMES = {
+      stone:  { text: 'text-stone-700',  button: 'bg-neutral-700 hover:bg-neutral-800 text-white', badge:'bg-stone-200 text-stone-800', border:'border-stone-300' },
+      sky:    { text: 'text-sky-700',    button: 'bg-sky-600 hover:bg-sky-700 text-white',         badge:'bg-sky-100 text-sky-800',     border:'border-sky-300' },
+      indigo: { text: 'text-indigo-700', button: 'bg-indigo-600 hover:bg-indigo-700 text-white',   badge:'bg-indigo-100 text-indigo-800',border:'border-indigo-300' },
+    };
+    const THEME_KEYS = Object.keys(THEMES);
+
+    const SPACING = { 1:'my-2', 2:'my-4', 3:'my-6', 4:'my-8', 5:'my-12' };
+    const RADIUS = { 0:'rounded-none', 1:'rounded-md', 2:'rounded-xl', 3:'rounded-2xl' };
+
+    let selectedId = null;
+
+    function uid() {
+      return 'cmp-' + Math.random().toString(36).slice(2, 9) + Date.now().toString(36).slice(-3);
+    }
+
+    function showToast(msg, timeout=1600) {
+      toastMsg.textContent = msg;
+      toast.classList.remove('hidden');
+      toast.style.opacity = '1';
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(()=> toast.classList.add('hidden'), 280);
+      }, timeout);
+    }
+
+    function ensureNotEmpty() {
+      if (canvas.children.length) {
+        emptyState.classList.add('hidden');
+      } else {
+        emptyState.classList.remove('hidden');
+      }
+    }
+
+    function getComponentById(id) {
+      return id ? canvas.querySelector(`[data-id="${id}"]`) : null;
+    }
+
+    function clearSelection() {
+      $$('.component', canvas).forEach(el => {
+        el.classList.remove('ring-2','ring-sky-500','ring-offset-2');
+      });
+      selectedId = null;
+      noSelection.classList.remove('hidden');
+      propsPanel.classList.add('hidden');
+    }
+
+    function selectComponent(el) {
+      if (!el) return;
+      $$('.component', canvas).forEach(n => n.classList.remove('ring-2','ring-sky-500','ring-offset-2'));
+      el.classList.add('ring-2','ring-sky-500','ring-offset-2');
+      selectedId = el.dataset.id;
+      updatePropsPanel(el);
+    }
+
+    function updatePropsPanel(el) {
+      noSelection.classList.add('hidden');
+      propsPanel.classList.remove('hidden');
+
+      propType.textContent = el.dataset.type ? el.dataset.type.toUpperCase() : 'Elemento';
+
+      const isCenter = el.classList.contains('text-center');
+      alignLeftBtn.classList.toggle('bg-neutral-200', !isCenter);
+      alignCenterBtn.classList.toggle('bg-neutral-200', isCenter);
+
+      let foundSpacing = 3;
+      Object.entries(SPACING).forEach(([k, cls]) => { if (el.classList.contains(cls)) foundSpacing = Number(k); });
+      spacingRange.value = foundSpacing;
+      spacingVal.textContent = ['minimo','basso','medio','alto','ampio'][foundSpacing-1];
+
+      let foundRadius = 2;
+      Object.entries(RADIUS).forEach(([k, cls]) => { if (el.classList.contains(cls)) foundRadius = Number(k); });
+      radiusRange.value = foundRadius;
+      radiusVal.textContent = ['spigoli','leggero','medio','morbido'][foundRadius];
+
+      const curr = el.dataset.accent || 'stone';
+      $$('#accentPalette button').forEach(b=>{
+        b.classList.remove('ring-2','ring-white');
+        if (b.dataset.accent === curr) {
+          b.classList.add('ring-2','ring-white');
+        }
+      });
+    }
+
+    function createComponent(type) {
+      const id = uid();
+      const wrapper = document.createElement('section');
+      wrapper.dataset.id = id;
+      wrapper.dataset.type = type;
+      wrapper.dataset.accent = 'stone';
+      wrapper.className = `component ${SPACING[3]} ${RADIUS[2]} text-left`;
+
+      if (type === 'heading') {
+        wrapper.innerHTML = `
+          <h2 data-editable class="text-3xl md:text-4xl font-extrabold ${THEMES.stone.text} leading-tight">Un titolo chiaro e riposante</h2>
+          <p data-editable class="mt-2 text-neutral-700">Scrivi una breve descrizione per dare contesto al titolo.</p>
+        `;
+      } else if (type === 'paragraph') {
+        wrapper.innerHTML = `
+          <p data-editable class="text-[17px] leading-7 text-neutral-700">
+            Questo è un paragrafo di esempio. Doppio click per modificare il testo direttamente qui.
+          </p>
+        `;
+      } else if (type === 'button') {
+        wrapper.classList.add('text-center');
+        wrapper.innerHTML = `
+          <a data-role="button" data-editable href="#" class="inline-flex items-center justify-center px-5 py-3 ${THEMES.stone.button} rounded-lg font-semibold shadow-sm">
+            Inizia ora
+          </a>
+        `;
+      } else if (type === 'divider') {
+        wrapper.innerHTML = `<hr data-role="divider" class="border-t ${THEMES.stone.border}">`;
+      } else if (type === 'card') {
+        wrapper.innerHTML = `
+          <div data-role="box" class="p-6 rounded-xl border ${THEMES.stone.border} bg-white">
+            <span data-role="badge" class="inline-block text-xs px-2 py-1 rounded-md ${THEMES.stone.badge} mb-3">Novità</span>
+            <h3 data-editable class="text-2xl font-bold ${THEMES.stone.text}">Una card elegante e sobria</h3>
+            <p data-editable class="mt-2 text-neutral-700">Perfetta per evidenziare funzionalità, servizi o prodotti.</p>
+            <div class="mt-4">
+              <a data-role="button" data-editable href="#" class="inline-flex items-center justify-center px-4 py-2 ${THEMES.stone.button} rounded-lg font-semibold shadow-sm">
+                Scopri di più
+              </a>
+            </div>
+          </div>
+        `;
+      } else if (type === 'hero') {
+        wrapper.innerHTML = `
+          <div data-role="box" class="relative overflow-hidden rounded-xl p-8 md:p-10 bg-white border ${THEMES.stone.border}">
+            <div class="relative z-10 max-w-2xl">
+              <h1 data-editable class="text-4xl md:text-5xl font-extrabold ${THEMES.stone.text} leading-tight">
+                Crea pagine piacevoli da leggere
+              </h1>
+              <p data-editable class="mt-3 text-neutral-700 text-lg">
+                Aggiungi componenti, personalizza i colori tenui e copia l'HTML pronto.
+              </p>
+              <div class="mt-5 flex flex-wrap gap-3">
+                <a data-role="button" data-editable href="#" class="inline-flex items-center justify-center px-5 py-3 ${THEMES.stone.button} rounded-lg font-semibold shadow-sm">
+                  Comincia subito
+                </a>
+                <span data-role="badge" class="inline-flex items-center px-3 py-2 rounded-md ${THEMES.stone.badge}">Soft UI</span>
+              </div>
+            </div>
+          </div>
+        `;
+      } else if (type === 'menu') {
+        wrapper.innerHTML = `
+          <nav data-role="box" class="rounded-xl border ${THEMES.stone.border} bg-white p-4 md:p-5">
+            <div class="flex items-center justify-between gap-4">
+              <div class="flex items-center gap-2">
+                <div class="w-9 h-9 rounded-md bg-stone-100 border border-stone-200 flex items-center justify-center">
+                  <svg width="18" height="18" viewBox="0 0 24 24" class="${THEMES.stone.text.replace('text-','fill-')}" aria-hidden="true"><path d="M11 2v6H5l6 14v-6h6L11 2z"/></svg>
+                </div>
+                <span data-editable class="font-extrabold text-lg ${THEMES.stone.text}">Brand</span>
+              </div>
+              <button data-role="menu-toggle" class="md:hidden inline-flex items-center justify-center px-3 py-2 rounded-md border border-neutral-200 text-neutral-700 bg-neutral-50 hover:bg-neutral-100">
+                Menu
+              </button>
+              <div data-role="menu-panel" class="hidden md:flex items-center gap-5">
+                <a href="#" data-editable class="text-neutral-700 hover:text-neutral-900">Servizi</a>
+                <a href="#" data-editable class="text-neutral-700 hover:text-neutral-900">Prezzi</a>
+                <a href="#" data-editable class="text-neutral-700 hover:text-neutral-900">Contatti</a>
+                <a data-role="button" data-editable href="#" class="inline-flex items-center justify-center px-4 py-2 ${THEMES.stone.button} rounded-lg font-semibold shadow-sm">
+                  Contattaci
+                </a>
+              </div>
+            </div>
+          </nav>
+        `;
+      } else if (type === 'footer') {
+        wrapper.innerHTML = `
+          <footer data-role="box" class="rounded-xl border ${THEMES.stone.border} bg-white p-8 md:p-10">
+            <div class="grid gap-8 md:grid-cols-3">
+              <div>
+                <div class="flex items-center gap-2">
+                  <div class="w-9 h-9 rounded-md bg-stone-100 border border-stone-200 flex items-center justify-center">
+                    <svg width="18" height="18" viewBox="0 0 24 24" class="${THEMES.stone.text.replace('text-','fill-')}" aria-hidden="true"><path d="M11 2v6H5l6 14v-6h6L11 2z"/></svg>
+                  </div>
+                  <span data-editable class="font-extrabold text-lg ${THEMES.stone.text}">SoftBrand</span>
+                </div>
+                <p data-editable class="mt-3 text-neutral-600">Crea pagine piacevoli, veloci da costruire e facili da leggere.</p>
+              </div>
+              <div>
+                <h4 class="text-sm font-semibold ${THEMES.stone.text}">Prodotto</h4>
+                <ul class="mt-3 space-y-2 text-neutral-700">
+                  <li><a href="#" data-editable class="hover:text-neutral-900">Funzioni</a></li>
+                  <li><a href="#" data-editable class="hover:text-neutral-900">Prezzi</a></li>
+                  <li><a href="#" data-editable class="hover:text-neutral-900">Template</a></li>
+                </ul>
+              </div>
+              <div>
+                <h4 class="text-sm font-semibold ${THEMES.stone.text}">Risorse</h4>
+                <ul class="mt-3 space-y-2 text-neutral-700">
+                  <li><a href="#" data-editable class="hover:text-neutral-900">Guida</a></li>
+                  <li><a href="#" data-editable class="hover:text-neutral-900">Blog</a></li>
+                  <li><a href="#" data-editable class="hover:text-neutral-900">Supporto</a></li>
+                </ul>
+              </div>
+            </div>
+            <div class="mt-8 pt-6 border-t border-stone-200 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-neutral-600">
+              <p data-editable>© 2025 SoftBrand. Tutti i diritti riservati.</p>
+              <div class="flex items-center gap-3">
+                <a href="#" aria-label="Twitter" class="text-neutral-500 hover:text-neutral-800">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M22 5.8c-.7.3-1.5.5-2.2.6c.8-.5 1.4-1.2 1.7-2.1c-.7.5-1.6.8-2.5 1c-.7-.7-1.7-1.1-2.8-1.1c-2.1 0-3.7 1.6-3.7 3.6c0 .3 0 .6.1.9c-3-.1-5.7-1.5-7.5-3.8c-.3.6-.5 1.2-.5 1.9c0 1.2.6 2.3 1.6 3c-.6 0-1.1-.2-1.6-.4v.1c0 1.7 1.3 3.2 3 3.5c-.3.1-.6.1-.9.1c-.2 0-.4 0-.6-.1c.4 1.4 1.8 2.5 3.4 2.5c-1.3 1-3 1.6-4.8 1.6h-1c1.7 1 3.8 1.6 6 1.6c7.2 0 11.2-5.8 11.2-10.8v-.5c.8-.5 1.5-1.2 2.1-1.9z"/></svg>
+                </a>
+                <a href="#" aria-label="GitHub" class="text-neutral-500 hover:text-neutral-800">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-3.2 19.5c.5.1.7-.2.7-.5v-1.8c-2.7.6-3.3-1.1-3.3-1.1c-.4-1-1-1.3-1-1.3c-.8-.6.1-.6.1-.6c.9.1 1.4 1 1.4 1c.8 1.4 2.1 1 2.6.8c.1-.6.3-1 .5-1.2c-2.2-.2-4.5-1.1-4.5-4.9c0-1.1.4-2 1-2.7c-.1-.2-.4-1.3.1-2.7c0 0 .8-.3 2.8 1c.8-.2 1.6-.3 2.4-.3c.8 0 1.6.1 2.4.3c2-1.3 2.8-1 2.8-1c.5 1.4.2 2.5.1 2.7c.6.7 1 1.6 1 2.7c0 3.8-2.3 4.7-4.5 4.9c.3.2.6.7.6 1.5v2.3c0 .3.2.6.7.5A10 10 0 0 0 12 2z"/></svg>
+                </a>
+              </div>
+            </div>
+          </footer>
+        `;
+      } else {
+        wrapper.innerHTML = `<p data-editable class="text-neutral-700">Componente</p>`;
+      }
+
+      return wrapper;
+    }
+
+    function addComponent(type) {
+      const node = createComponent(type);
+      canvas.appendChild(node);
+      ensureNotEmpty();
+      selectComponent(node);
+      node.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function applyAccent(component, themeKey) {
+      if (!THEMES[themeKey]) themeKey = 'stone';
+      component.dataset.accent = themeKey;
+
+      const targets = {
+        text: $$('[data-editable].text-2xl, [data-editable].text-3xl, [data-editable].text-4xl, [data-editable].text-5xl, h1[data-editable], h2[data-editable], h3[data-editable]', component),
+        buttons: $$('[data-role="button"]', component),
+        badge: $$('[data-role="badge"]', component),
+        box: $$('[data-role="box"]', component),
+        divider: $$('[data-role="divider"]', component),
+      };
+
+      const removeThemeClasses = (el) => {
+        if (!el) return;
+        THEME_KEYS.forEach(k => {
+          const t = THEMES[k];
+          el.classList.remove(...(t.text||'').split(' ').filter(Boolean));
+          el.classList.remove(...(t.button||'').split(' ').filter(Boolean));
+          el.classList.remove(...(t.badge||'').split(' ').filter(Boolean));
+          el.classList.remove(...(t.border||'').split(' ').filter(Boolean));
+        });
+      };
+
+      targets.text.forEach(el => { removeThemeClasses(el); el.classList.add(...THEMES[themeKey].text.split(' ')); });
+      targets.buttons.forEach(el => { removeThemeClasses(el); el.classList.add(...THEMES[themeKey].button.split(' ')); });
+      targets.badge.forEach(el => { removeThemeClasses(el); el.classList.add(...THEMES[themeKey].badge.split(' ')); });
+      targets.box.forEach(el => { removeThemeClasses(el); el.classList.add(...THEMES[themeKey].border.split(' ')); });
+      targets.divider.forEach(el => { removeThemeClasses(el); el.classList.add(...THEMES[themeKey].border.split(' ')); });
+    }
+
+    function applySpacing(component, val) {
+      Object.values(SPACING).forEach(cls => component.classList.remove(cls));
+      component.classList.add(SPACING[val] || SPACING[3]);
+    }
+
+    function applyRadius(component, val) {
+      Object.values(RADIUS).forEach(cls => component.classList.remove(cls));
+      component.classList.add(RADIUS[val] || RADIUS[2]);
+      $$('[data-role="box"], [data-role="button"], [data-role="badge"]', component).forEach(el=>{
+        Object.values(RADIUS).forEach(cls => el.classList.remove(cls));
+        el.classList.add(RADIUS[val] || RADIUS[2]);
+      });
+    }
+
+    function applyAlignment(component, center=false) {
+      component.classList.toggle('text-center', center);
+      component.classList.toggle('text-left', !center);
+    }
+
+    // Aggiunta componenti
+    $$('.add-component').forEach(btn => {
+      btn.addEventListener('click', () => addComponent(btn.dataset.add));
+    });
+
+    // Selezione, prevenzione click su link e toggle menu nel canvas
+    $('#canvasWrap').addEventListener('click', (e) => {
+      // Evita navigazioni
+      const a = e.target.closest('a');
+      if (a && a.closest('#canvas')) {
+        e.preventDefault();
+      }
+
+      // Toggle menu responsive dentro il componente Menu
+      const toggle = e.target.closest('[data-role="menu-toggle"]');
+      if (toggle) {
+        e.preventDefault();
+        const cmp = toggle.closest('.component');
+        const panel = cmp ? cmp.querySelector('[data-role="menu-panel"]') : null;
+        if (panel) {
+          const isHidden = panel.classList.contains('hidden');
+          panel.classList.toggle('hidden', !isHidden ? true : false); // force update for clarity
+          panel.classList.toggle('hidden', !isHidden ? true : false); // ensure state
+          // Simpler: switch based on previous state
+          panel.classList.toggle('hidden', false); // show by default
+          if (!isHidden) { panel.classList.add('hidden'); } // if was open, hide
+          toggle.setAttribute('aria-expanded', String(isHidden));
+        }
+      }
+
+      // Selezione componente
+      const cmp = e.target.closest('.component');
+      if (cmp && canvas.contains(cmp)) {
+        selectComponent(cmp);
+      } else {
+        clearSelection();
+      }
+    });
+
+    // Editing inline
+    canvas.addEventListener('dblclick', (e) => {
+      const editable = e.target.closest('[data-editable]');
+      if (!editable) return;
+      editable.setAttribute('contenteditable', 'true');
+      editable.classList.add('outline-dashed','outline-2','outline-sky-400','outline-offset-2','bg-sky-50');
+      editable.focus();
+      const end = document.createRange();
+      end.selectNodeContents(editable);
+      end.collapse(false);
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(end);
+    });
+    canvas.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && e.target.hasAttribute('contenteditable')) {
+        e.preventDefault();
+        e.target.blur();
+      }
+    });
+    canvas.addEventListener('blur', (e) => {
+      if (e.target && e.target.hasAttribute('contenteditable')) {
+        e.target.removeAttribute('contenteditable');
+        e.target.classList.remove('outline-dashed','outline-2','outline-sky-400','outline-offset-2','bg-sky-50');
+      }
+    }, true);
+
+    // Pannello proprietà
+    alignLeftBtn.addEventListener('click', () => {
+      const el = getComponentById(selectedId);
+      if (!el) return;
+      applyAlignment(el, false);
+      updatePropsPanel(el);
+    });
+    alignCenterBtn.addEventListener('click', () => {
+      const el = getComponentById(selectedId);
+      if (!el) return;
+      applyAlignment(el, true);
+      updatePropsPanel(el);
+    });
+
+    palette.addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-accent]');
+      if (!btn) return;
+      const el = getComponentById(selectedId);
+      if (!el) return;
+      applyAccent(el, btn.dataset.accent);
+      updatePropsPanel(el);
+    });
+
+    spacingRange.addEventListener('input', () => {
+      const el = getComponentById(selectedId);
+      if (!el) return;
+      applySpacing(el, spacingRange.value);
+      spacingVal.textContent = ['minimo','basso','medio','alto','ampio'][spacingRange.value-1];
+    });
+
+    radiusRange.addEventListener('input', () => {
+      const el = getComponentById(selectedId);
+      if (!el) return;
+      applyRadius(el, radiusRange.value);
+      radiusVal.textContent = ['spigoli','leggero','medio','morbido'][radiusRange.value];
+    });
+
+    moveUpBtn.addEventListener('click', () => {
+      const el = getComponentById(selectedId);
+      if (!el) return;
+      const prev = el.previousElementSibling;
+      if (prev) canvas.insertBefore(el, prev);
+    });
+
+    moveDownBtn.addEventListener('click', () => {
+      const el = getComponentById(selectedId);
+      if (!el) return;
+      const next = el.nextElementSibling;
+      if (next) canvas.insertBefore(next, el);
+    });
+
+    duplicateBtn.addEventListener('click', () => {
+      const el = getComponentById(selectedId);
+      if (!el) return;
+      const clone = el.cloneNode(true);
+      clone.dataset.id = uid();
+      clone.classList.remove('ring-2','ring-sky-500','ring-offset-2');
+      canvas.insertBefore(clone, el.nextElementSibling);
+      selectComponent(clone);
+      showToast('Duplicato');
+    });
+
+    deleteBtn.addEventListener('click', () => {
+      const el = getComponentById(selectedId);
+      if (!el) return;
+      el.remove();
+      clearSelection();
+      ensureNotEmpty();
+    });
+
+    // Export — nessun Blob: solo copia o selezione manuale
+    function sanitizeForExport(root) {
+      const clone = root.cloneNode(true);
+      $$('.component', clone).forEach(el=>{
+        el.classList.remove('ring-2','ring-sky-500','ring-offset-2');
+      });
+      $$('[contenteditable]', clone).forEach(el=>{
+        el.removeAttribute('contenteditable');
+        el.classList.remove('outline-dashed','outline-2','outline-sky-400','outline-offset-2','bg-sky-50');
+      });
+      $$('*', clone).forEach(n=>{
+        [...n.attributes].forEach(a=>{
+          if (a.name.startsWith('data-')) n.removeAttribute(a.name);
+        });
+      });
+      return clone.innerHTML.trim();
+    }
+
+    // Generazione robusta del documento esportato
+    function buildExportHTML(inner) {
+      const doc = document.implementation.createHTMLDocument('Pagina');
+      // Head: font + Tailwind
+      const linkPre = doc.createElement('link'); linkPre.rel='preconnect'; linkPre.href='https://fonts.googleapis.com';
+      const linkPre2 = doc.createElement('link'); linkPre2.rel='preconnect'; linkPre2.href='https://fonts.gstatic.com'; linkPre2.crossOrigin='';
+      const linkFont = doc.createElement('link'); linkFont.rel='stylesheet'; linkFont.href='https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap';
+      const scriptTw = doc.createElement('script'); scriptTw.src='https://cdn.tailwindcss.com';
+      const style = doc.createElement('style'); style.textContent = 'body{font-family:Inter,ui-sans-serif,system-ui,Segoe UI,Roboto}::selection{background:rgba(2,132,199,.16);}';
+      doc.head.append(linkPre, linkPre2, linkFont, scriptTw, style);
+      // Body
+      doc.body.className = 'bg-stone-50 text-neutral-800 antialiased';
+      const main = doc.createElement('main');
+      main.className = 'mx-auto max-w-3xl p-6 md:p-10';
+      main.innerHTML = inner;
+      doc.body.appendChild(main);
+      return '<!DOCTYPE html>\n' + doc.documentElement.outerHTML;
+    }
+
+    exportBtn.addEventListener('click', () => {
+      clearSelection();
+      const clean = sanitizeForExport(canvas);
+      exportCode.value = buildExportHTML(clean);
+      exportModal.classList.remove('hidden');
+      exportModal.classList.add('flex');
+    });
+
+    closeExport.addEventListener('click', () => {
+      exportModal.classList.add('hidden');
+      exportModal.classList.remove('flex');
+    });
+
+    copyCode.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(exportCode.value);
+        copyCode.textContent = 'Copiato!';
+        setTimeout(()=> copyCode.textContent = 'Copia', 1100);
+        showToast('HTML copiato negli appunti');
+      } catch (e) {
+        exportCode.focus();
+        exportCode.select();
+        const ok = document.execCommand('copy');
+        showToast(ok ? 'Copiato (fallback)' : 'Seleziona e copia manualmente');
+      }
+    });
+
+    // Salva / Carica / Nuovo
+    saveBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      localStorage.setItem('miniWebBuilderSoftCleanV1', canvas.innerHTML);
+      showToast('Design salvato');
+    });
+
+    loadBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const data = localStorage.getItem('miniWebBuilderSoftCleanV1');
+      if (!data) return showToast('Nessun salvataggio trovato');
+      canvas.innerHTML = data;
+      clearSelection();
+      ensureNotEmpty();
+      showToast('Design caricato');
+    });
+
+    newBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (canvas.children.length && !confirm('Creare un nuovo canvas? I contenuti non salvati andranno persi.')) return;
+      canvas.innerHTML = '';
+      clearSelection();
+      ensureNotEmpty();
+      showToast('Canvas pulito');
+    });
+
+    // Init
+    ensureNotEmpty();
+         // FUNZIONE CLICK PER MENU BUILDER
+function toggleLayoutMenu() {
+  const menu = document.getElementById('builder-menu');
+  if (!menu) return;
+  menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+}
+
+// CHIUDE MENU CLICCANDO FUORI
+document.addEventListener('click', function(e) {
+  const menu = document.getElementById('builder-menu');
+  const btn = document.getElementById('builder-btn');
+  if (!menu || !btn) return;
+
+  if (!btn.contains(e.target) && !menu.contains(e.target)) {
+    menu.style.display = 'none';
+  }
+});
+  </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'983869aa74ac83be',t:'MTc1ODYxMzQyMy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
