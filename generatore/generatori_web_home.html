@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>I Miei Generatori - Tool Personalizzati</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      margin: 0; padding: 0;
+      background: linear-gradient(135deg, #1e1b4b 0%, #2d1b69 50%, #4158d0 100%);
+      min-height: 100vh;
+      color: #e2e8f0;
+    }
+    
+    /* NAVBAR + BREADCRUMBS */
+    .breadcrumb-container {
+      padding: 12px 24px;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+    }
+    .breadcrumb-nav {
+      display: flex;
+      align-items: center;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      font-size: 14px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .breadcrumb-nav li {
+      display: flex;
+      align-items: center;
+    }
+    .breadcrumb-nav a {
+      color: #3b82f6;
+      text-decoration: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+      font-weight: 500;
+    }
+    .breadcrumb-nav a:hover {
+      background: #eff6ff;
+      color: #1d4ed8;
+      transform: translateY(-1px);
+    }
+    .breadcrumb-nav .current {
+      color: #1e293b;
+      font-weight: 700;
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.7);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .breadcrumb-separator {
+      margin: 0 12px;
+      color: #6b7280;
+      font-weight: 600;
+      font-size: 16px;
+    }
+    
+    /* HERO SECTION */
+    .hero {
+      text-align: center; 
+      padding: 4rem 2rem; 
+      max-width: 1200px; 
+      margin: 0 auto;
+    }
+    .hero h1 {
+      font-size: clamp(2.5rem, 5vw, 4rem); 
+      font-weight: 900;
+      background: linear-gradient(135deg, #ffd700, #ff6b6b, #4ecdc4, #45b7d1);
+      -webkit-background-clip: text; 
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 1rem; 
+      animation: pulseGlow 2s infinite;
+    }
+    @keyframes pulseGlow {
+      0%, 100% { filter: drop-shadow(0 0 5px rgba(255,215,0,0.5)); }
+      50% { filter: drop-shadow(0 0 20px rgba(255,215,0,0.8)); }
+    }
+    .hero p {
+      font-size: 1.3rem; 
+      color: #cbd5e1; 
+      max-width: 600px; 
+      margin: 0 auto 3rem;
+      opacity: 0.9;
+    }
+    
+    /* GRID CARDS - VISIBILI E PIÙ GRANDI */
+    .cards-grid {
+      max-width: 1400px; 
+      margin: 0 auto; 
+      padding: 2rem;
+      display: grid; 
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2.5rem;
+    }
+    .card {
+      background: rgba(255,255,255,0.15); 
+      backdrop-filter: blur(20px);
+      border-radius: 24px; 
+      padding: 2.5rem; 
+      text-align: center;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1px solid rgba(255,255,255,0.2);
+      position: relative; 
+      overflow: hidden;
+      min-height: 260px; 
+      display: flex; 
+      flex-direction: column; 
+      justify-content: center;
+    }
+    .card::before {
+      content: ''; 
+      position: absolute; 
+      top: 0; 
+      left: 0; 
+      right: 0; 
+      height: 6px;
+      background: linear-gradient(90deg, var(--card-accent), transparent);
+      opacity: 0.9;
+    }
+    .card::after {
+      content: ''; 
+      position: absolute; 
+      inset: 0; 
+      background: 
+        radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
+        rgba(255,255,255,0.15), transparent 50%);
+      opacity: 0; 
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+    .card:hover {
+      transform: translateY(-20px) rotateX(8deg) scale(1.02); 
+      box-shadow: 0 40px 80px rgba(0,0,0,0.45);
+      border-color: rgba(255,215,0,0.6);
+    }
+    .card:hover::after { opacity: 1; }
+    .card-icon { 
+      font-size: 4rem; 
+      margin-bottom: 1.5rem; 
+      filter: drop-shadow(0 8px 16px rgba(0,0,0,0.4));
+      transition: all 0.3s;
+    }
+    .card:hover .card-icon {
+      transform: scale(1.2) rotate(10deg);
+    }
+    .card h3 { 
+      font-size: 1.6rem; 
+      font-weight: 800; 
+      margin: 0 0 1rem; 
+      background: linear-gradient(135deg, #fff, #f8fafc); 
+      -webkit-background-clip: text; 
+      -webkit-text-fill-color: transparent;
+    }
+    .card p { 
+      color: #e2e8f0; 
+      margin: 0 0 2rem; 
+      font-size: 1.1rem; 
+      opacity: 0.95; 
+      line-height: 1.6;
+    }
+    .card a {
+      display: inline-block; 
+      padding: 1.2rem 3rem; 
+      background: linear-gradient(135deg, var(--card-accent), var(--card-accent-dark));
+      color: white; 
+      text-decoration: none; 
+      border-radius: 50px; 
+      font-weight: 700;
+      font-size: 1rem; 
+      transition: all 0.3s; 
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      position: relative; 
+      overflow: hidden;
+    }
+    .card a::before {
+      content: ''; 
+      position: absolute; 
+      top: 0; 
+      left: -100%; 
+      width: 100%; 
+      height: 100%; 
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: left 0.5s;
+    }
+    .card a:hover::before {
+      left: 100%;
+    }
+    .card a:hover { 
+      transform: translateY(-4px); 
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+    
+    /* ACCENTS UNICI PER OGNI CARD */
+    .card:nth-child(1) { --card-accent: #ffd700; --card-accent-dark: #ffed4a; }
+    .card:nth-child(2) { --card-accent: #ff6b6b; --card-accent-dark: #ff5252; }
+    .card:nth-child(3) { --card-accent: #4ecdc4; --card-accent-dark: #26a69a; }
+    .card:nth-child(4) { --card-accent: #45b7d1; --card-accent-dark: #2196f3; }
+    .card:nth-child(5) { --card-accent: #f9ca24; --card-accent-dark: #fbc02d; }
+    .card:nth-child(6) { --card-accent: #6c5ce7; --card-accent-dark: #5f3dc4; }
+    .card:nth-child(7) { --card-accent: #fd79a8; --card-accent-dark: #e91e63; }
+    .card:nth-child(8) { --card-accent: #00b894; --card-accent-dark: #00a085; }
+    .card:nth-child(9) { --card-accent: #e17055; --card-accent-dark: #d8437a; }
+    .card:nth-child(10) { --card-accent: #74b9ff; --card-accent-dark: #2196f3; }
+    .card:nth-child(11) { --card-accent: #a29bfe; --card-accent-dark: #9c27b0; }
+    .card:nth-child(12) { --card-accent: #fdcb6e; --card-accent-dark: #ff9800; }
+    .card:nth-child(13) { --card-accent: #00cec9; --card-accent-dark: #00bcd4; }
+    .card:nth-child(14) { --card-accent: #55a3ff; --card-accent-dark: #1976d2; }
+    .card:nth-child(15) { --card-accent: #ff7675; --card-accent-dark: #f44336; }
+    .card:nth-child(16) { --card-accent: #ffeaa7; --card-accent-dark: #ffeb3b; }
+      .card:nth-child(17) { --card-accent:  #55a3ff; --card-accent-dark: #ffeb3b; }
+      .card:nth-child(18) { --card-accent: #e17055; --card-accent-dark: #ffeb3b; }
+       .card:nth-child(19) { --card-accent: #45b7d1; --card-accent-dark: #2196f3; }
+      .card:nth-child(20) { --card-accent: #74b9ff; --card-accent-dark: #2196f3; }
+       .card:nth-child(21) { --card-accent: #fdcb6e; --card-accent-dark: #ff9800; }
+    
+    /* MOUSE TRACKER */
+    .card { --mouse-x: 50%; --mouse-y: 50%; }
+    .card:hover { cursor: pointer; }
+    
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .cards-grid { 
+        grid-template-columns: 1fr; 
+        padding: 1rem; 
+        gap: 2rem;
+      }
+      .card { 
+        min-height: 240px; 
+        padding: 2rem; 
+      }
+      .hero { padding: 2rem 1rem; }
+      .breadcrumb-container { padding: 12px 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- BREADCRUMBS -->
+  <div class="breadcrumb-container">
+    <nav aria-label="Breadcrumb">
+      <ol id="breadcrumb" class="breadcrumb-nav"></ol>
+    </nav>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero">
+    <h1>🛠️ I Miei Generatori</h1>
+    <p>Tool personalizzati creati per il web design. Tutto quello che serve per i tuoi progetti speciali!</p>
+  </section>
+
+  <!-- CARDS GRID -->
+  <section class="cards-grid">
+    <div class="card">
+      <div class="card-icon">🖍</div>
+      <h3>Css Visual</h3>
+      <p>Css Builder</p>
+      <a href="css-visual-builder.html">Apri Tool</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">💳</div>
+      <h3>Card Designer</h3>
+      <p>Crea la tua card personalizzata</p>
+      <a href="carddesigner.html">Apri Tool</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔤</div>
+      <h3>Editor Stilizzato</h3>
+      <p>Crea testi unici e creativi</p>
+      <a href="editorstillizzato.html">Apri Tool</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">💦</div>
+      <h3>Blob</h3>
+      <p>Genera Blob</p>
+      <a href="blob-generator.html">Apri Tool</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔤</div>
+      <h3>Font Creator</h3>
+      <p>Crea font personalizzati</p>
+      <a href="font_creator.html">Apri Tool</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">💳</div>
+      <h3>Modal</h3>
+      <p>Genera semplici modal</p>
+      <a href="gen_modal_semplice.html">Apri Tool</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔧</div>
+      <h3>Generatore Tailwind</h3>
+      <p>Grafica Tailwind CSS</p>
+      <a href="generatore_tailwind.html">Apri Tool</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔘</div>
+      <h3>Bottoni</h3>
+      <p>Genera bottoni personalizzati</p>
+      <a href="generatore_bottoni.html">Apri Tool</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">🎫</div>
+      <h3>Card Colorate</h3>
+      <p>Genera card colorate</p>
+      <a href="generatore_card_colorate.html">Apri Tool</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">🧩</div>
+      <h3>Icone SVG</h3>
+      <p>SVG personalizzati</p>
+      <a href="generatore_icone_svg.html">Apri Tool</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">📝</div>
+      <h3>JSON Gen</h3>
+      <p>Genera file JSON</p>
+      <a href="generatore_json.html">Apri Tool</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">🧾</div>
+      <h3>Menu</h3>
+      <p>Menu personalizzati</p>
+      <a href="generatore_menu.html">Apri Tool</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">⚒</div>
+      <h3>Gen Dinamico</h3>
+      <p>Vari snippets dinamici</p>
+      <a href="generatore.html">Apri Tool</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">🧩</div>
+      <h3>Icone</h3>
+      <p>Crea icone personalizzate</p>
+      <a href="iconcreator.html">Apri Tool</a>
+    </div>
+          <div class="card">
+      <div class="card-icon">🧩</div>
+      <h3>Icone</h3>
+      <p>Crea icone personalizzate</p>
+      <a href="iconcreator1.html">Apri Tool</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">🌌</div>
+      <h3>Loghi</h3>
+      <p>Loghi per il brand</p>
+      <a href="logocreator.html">Apri Tool</a>
+    </div>
+      <div class="card">
+      <div class="card-icon">🌌</div>
+      <h3>Loghi</h3>
+      <p>Loghi per il brand</p>
+      <a href="logocreator1.html">Apri Tool</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">⛓‍💥</div>
+      <h3>Qr Code</h3>
+      <p>Generatore Qr Code</p>
+      <a href="#">Apri Tool</a>
+    </div>
+      <div class="card">
+      <div class="card-icon">✔️</div>
+      <h3>Toogle Tool</h3>
+      <p>Tutto-in-uno custom</p>
+      <a href="toogle-creator.html">Apri Tool</a>
+    </div>
+       <div class="card">
+      <div class="card-icon">⚒</div>
+      <h3>Playground Tool</h3>
+      <p>Tutto-in-uno custom</p>
+      <a href="pulsante-card-modal.html">Apri Tool</a>
+    </div>
+       <div class="card">
+      <div class="card-icon">⚒</div>
+      <h3>Hero menu Footer</h3>
+      <p>Tutto-in-uno custom</p>
+      <a href="hero-menu-footer.html">Apri Tool</a>
+    </div>
+  </section>
+
+  <script>
+    // BREADCRUMBS DATA - CORRETTO E COMPLETO
+    const pageData = {
+      '/': { label: 'Home', icon: '🏠' },
+      '/generatori/': { 
+        label: 'Generatori', 
+        icon: '⚙️',
+        children: [
+          { url: '/generatori/tool/', label: 'I Miei Tool', icon: '🛠️', file: 'generatori_web_home.html' }
+        ]
+      },
+      '/generatori/tool/': { 
+        label: 'I Miei Tool', 
+        icon: '🛠️'
+      }
+    };
+
+    function createBreadcrumbs(currentPath) {
+      const breadcrumbContainer = document.getElementById('breadcrumb');
+      if (!breadcrumbContainer) {
+        console.warn('Breadcrumb container non trovato');
+        return;
+      }
+      
+      breadcrumbContainer.innerHTML = '';
+
+      const segments = getPathSegments(currentPath);
+
+      segments.forEach((segment, index) => {
+        const isLast = index === segments.length - 1;
+        const segmentData = pageData[segment.path];
+        
+        if (!segmentData) return;
+
+        const li = document.createElement('li');
+
+        if (isLast) {
+          li.innerHTML = `
+            <span class="current">
+              <span>${segmentData.icon}</span>
+              <span>${segmentData.label}</span>
+            </span>
+          `;
+        } else {
+          li.innerHTML = `
+            <a href="${mapUrlToFile(segment.path)}" title="${segmentData.label}">
+              <span>${segmentData.icon}</span>
+              <span>${segmentData.label}</span>
+            </a>
+          `;
+        }
+
+        breadcrumbContainer.appendChild(li);
+
+        if (!isLast) {
+          const separator = document.createElement('span');
+          separator.className = 'breadcrumb-separator';
+          separator.textContent = '›';
+          breadcrumbContainer.appendChild(separator);
+        }
+      });
+    }
+
+    function mapUrlToFile(path) {
+      // Cerca nei children prima
+      for (let parentPath in pageData) {
+        if (pageData[parentPath].children) {
+          const child = pageData[parentPath].children.find(c => c.url === path);
+          if (child && child.file) return child.file;
+        }
+      }
+      
+      // Mapping fallback
+      const fileMap = {
+        '/': 'index.html',
+        '/generatori/': 'generatori_home.html',
+        '/generatori/tool/': 'generatori_web_home.html'
+      };
+      return fileMap[path] || 'index.html';
+    }
+
+    function getPathSegments(path) {
+      if (path === '/') {
+        return [{ path: '/', label: 'Home' }];
+      }
+      
+      const segments = [];
+      const parts = path.split('/').filter(part => part !== '');
+      let currentPath = '';
+      
+      segments.push({ path: '/', label: 'Home' });
+      
+      parts.forEach(part => {
+        currentPath += '/' + part;
+        segments.push({ path: currentPath + '/', label: part.replace(/-/g, ' ').replace(/\bw/g, l => l.toUpperCase()) });
+      });
+      
+      return segments;
+    }
+
+    // MOUSE TRACKER PER LE CARDS
+    document.querySelectorAll('.card').forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        card.style.setProperty('--mouse-x', `${x}%`);
+        card.style.setProperty('--mouse-y', `${y}%`);
+      });
+    });
+
+    // AVVIA breadcrumbs per questa pagina
+    document.addEventListener('DOMContentLoaded', () => {
+      createBreadcrumbs('/generatori/tool/');
+    });
+  </script>
+</body>
+</html>
