@@ -1,0 +1,918 @@
+<!doctype html>
+<html lang="it">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grid Layout Generator</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    
+    html {
+      height: 100%;
+    }
+    
+    .generator-wrapper {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: 80px;
+      gap: 24px;
+      overflow-y: auto;
+    }
+    
+    .header-area {
+      text-align: center;
+    }
+    
+    .app-heading {
+      font-size: 36px;
+      font-weight: 800;
+      margin: 0;
+      padding-bottom: 8px;
+    }
+    
+    .main-layout {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 24px;
+      flex: 1;
+    }
+    
+    @media (max-width: 968px) {
+      .main-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .controls-panel {
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      max-height: 800px;
+      overflow-y: auto;
+    }
+    
+    .preview-panel {
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    
+    .panel-heading {
+      font-size: 16px;
+      font-weight: 700;
+      margin: 0 0 12px 0;
+    }
+    
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .field-label {
+      font-weight: 600;
+      font-size: 13px;
+    }
+    
+    .range-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .range-header {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 600;
+      font-size: 13px;
+    }
+    
+    .range-slider {
+      width: 100%;
+      cursor: pointer;
+    }
+    
+    .preset-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+    
+    .preset-btn {
+      padding: 12px;
+      border: 2px solid transparent;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+    
+    .preset-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .preset-btn.active {
+      border-color: #3b82f6;
+    }
+    
+    .color-selector {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    
+    .color-box {
+      width: 60px;
+      height: 40px;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    
+    .color-value {
+      flex: 1;
+      padding: 10px;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: monospace;
+    }
+    
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .toggle-row:hover {
+      background: rgba(0,0,0,0.03);
+    }
+    
+    .toggle-switch {
+      width: 48px;
+      height: 26px;
+      border-radius: 13px;
+      position: relative;
+      transition: all 0.3s;
+    }
+    
+    .toggle-knob {
+      width: 22px;
+      height: 22px;
+      background: white;
+      border-radius: 50%;
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      transition: all 0.3s;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    .toggle-row.active .toggle-knob {
+      left: 24px;
+    }
+    
+    .toggle-label {
+      font-weight: 600;
+      font-size: 13px;
+      flex: 1;
+    }
+    
+    .grid-preview {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      min-height: 500px;
+      padding: 40px;
+      overflow: auto;
+    }
+    
+    .grid-container {
+      display: grid;
+      width: 100%;
+      max-width: 900px;
+      transition: all 0.3s;
+    }
+    
+    .grid-cell {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      min-height: 100px;
+      border-radius: 8px;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+    
+    .grid-cell:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+    
+    .actions-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    
+    .action-button {
+      flex: 1;
+      padding: 14px 24px;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      color: white;
+      min-width: 150px;
+    }
+    
+    .action-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+    }
+    
+    .action-button:active {
+      transform: translateY(0);
+    }
+
+    .notification-toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      padding: 16px 24px;
+      background: #10b981;
+      color: white;
+      border-radius: 12px;
+      font-weight: 700;
+      box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
+      z-index: 1000;
+      animation: slideUp 0.3s ease-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(100px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+     <!-- BREADCRUMB PRIMA del main - INVULNERABILE -->
+ <div id="breadcrumb-container" style="
+  position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; 
+  z-index: 999999 !important; 
+  background: rgba(255,255,255,0.98) !important; 
+  backdrop-filter: blur(30px) !important; 
+  border-bottom: 2px solid #e5e7eb !important; 
+  padding: 12px 24px !important; 
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15) !important;
+">
+  <div style="max-width: 1280px; margin: 0 auto !important; display: flex !important; align-items: center !important; justify-content: center !important; gap: 16px !important;">
+    <a href="index.html" style="
+      padding: 8px 16px !important; background: linear-gradient(135deg, #3b82f6, #1d4ed8) !important; 
+      color: white !important; text-decoration: none !important; border-radius: 25px !important; 
+      font-weight: 700 !important; font-size: 14px !important; box-shadow: 0 4px 12px rgba(59,130,246,0.4) !important;
+      display: flex !important; align-items: center !important; gap: 8px !important;
+    ">🏠 Home</a>
+    
+    <span style="color: #9ca3af !important; font-weight: bold !important; font-size: 20px !important;">›</span>
+    
+    <span id="layout-btn" style="
+      padding: 8px 16px !important; 
+      background: linear-gradient(135deg, #f59e0b, #d97706) !important; 
+      color: white !important; border-radius: 25px !important; 
+      font-weight: 700 !important; font-size: 14px !important; cursor: pointer !important;
+      box-shadow: 0 4px 12px rgba(245,158,11,0.4) !important;
+      display: flex !important; align-items: center !important; gap: 8px !important;
+    " onclick="toggleLayoutMenu()">📱 Layout ▼</span>
+    
+    <div id="layout-menu" style="
+      position: fixed !important; top: 70px !important; left: 50% !important; 
+      transform: translateX(-50%) !important; width: 280px !important;
+      background: rgba(255,255,255,0.98) !important; backdrop-filter: blur(30px) !important;
+      border: 2px solid #f59e0b !important; border-radius: 20px !important; 
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3) !important;
+      display: none !important; max-height: 300px !important; overflow-y: auto !important;
+      z-index: 999998 !important; padding: 0 !important;
+    ">
+      <a href="layout_home.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important; border-bottom: 1px solid #f3f4f6 !important;" onmouseenter="this.style.background='#fef3c7 !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">🏠 Home Layout</a>
+      <a href="patterngeneretor.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important; border-bottom: 1px solid #f3f4f6 !important;" onmouseenter="this.style.background='#dbeafe !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">🌈 Pattern Generator</a>
+      <a href="generatore_grid_flex.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important; border-bottom: 1px solid #f3f4f6 !important;" onmouseenter="this.style.background='#dbeafe !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">📱 Generatore 2</a>
+      <a href="gen_grid_flex.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important; border-bottom: 1px solid #f3f4f6 !important;" onmouseenter="this.style.background='#dbeafe !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">📱 Generatore 3</a>
+      <a href="layout.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important;" onmouseenter="this.style.background='#e9d5ff !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">🖌️ Layout</a>
+        <a href="parallax-generator.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important;" onmouseenter="this.style.background='#e9d5ff !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">🏄 Parallax </a>
+        <a href="Glassmorphism.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important;" onmouseenter="this.style.background='#e9d5ff !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">🔮 Glassmorph </a>
+    </div>
+    
+    <span style="color: #9ca3af !important; font-weight: bold !important; font-size: 20px !important;">›</span>
+    
+    <span style="
+      padding: 8px 16px !important; 
+      background: linear-gradient(135deg, #10b981, #059669) !important; 
+      color: white !important; border-radius: 25px !important; 
+      font-weight: 800 !important; font-size: 14px !important; 
+      box-shadow: 0 4px 12px rgba(16,185,129,0.4) !important;
+      display: flex !important; align-items: center !important; gap: 8px !important;
+    ">📱 Generatore</span>
+  </div>
+</div>
+ 
+
+
+  <!-- IL TUO MAIN RIMANE INVARIATO -->
+  <main class="generator-wrapper">
+   <header class="header-area">
+    <h1 class="app-heading" id="appHeading">Grid Layout Generator</h1>
+   </header>
+   <div class="main-layout">
+    <aside class="controls-panel" id="controlsPanel">
+     <div>
+      <h2 class="panel-heading">Layout Preimpostati</h2>
+      <div class="preset-grid"><button class="preset-btn active" data-preset="custom">🎨 Personalizzato</button> <button class="preset-btn" data-preset="2col">📱 2 Colonne</button> <button class="preset-btn" data-preset="3col">🖥️ 3 Colonne</button> <button class="preset-btn" data-preset="4col">📺 4 Colonne</button> <button class="preset-btn" data-preset="sidebar">📄 Sidebar</button> <button class="preset-btn" data-preset="hero">🎯 Hero Layout</button>
+      </div>
+     </div>
+     <div class="range-container">
+      <div class="range-header"><span>Colonne</span> <span id="columnsDisplay">3</span>
+      </div><input type="range" class="range-slider" id="columnsSlider" min="1" max="6" value="3">
+     </div>
+     <div class="range-container">
+      <div class="range-header"><span>Righe</span> <span id="rowsDisplay">3</span>
+      </div><input type="range" class="range-slider" id="rowsSlider" min="1" max="6" value="3">
+     </div>
+     <div class="range-container">
+      <div class="range-header"><span>Spaziatura (Gap)</span> <span id="gapDisplay">16px</span>
+      </div><input type="range" class="range-slider" id="gapSlider" min="0" max="48" value="16">
+     </div>
+     <div class="field-group"><label class="field-label">Colore Celle</label>
+      <div class="color-selector"><input type="color" class="color-box" id="cellColorPicker" value="#3b82f6"> <input type="text" class="color-value" id="cellColorCode" value="#3b82f6">
+      </div>
+     </div>
+     <div class="field-group"><label class="field-label">Colore Testo</label>
+      <div class="color-selector"><input type="color" class="color-box" id="textColorPicker" value="#ffffff"> <input type="text" class="color-value" id="textColorCode" value="#ffffff">
+      </div>
+     </div>
+     <div>
+      <h2 class="panel-heading">Opzioni</h2>
+      <div class="toggle-row active" id="numbersToggle">
+       <div class="toggle-switch">
+        <div class="toggle-knob"></div>
+       </div><span class="toggle-label">Mostra Numeri</span>
+      </div>
+      <div class="toggle-row active" id="responsiveToggle">
+       <div class="toggle-switch">
+        <div class="toggle-knob"></div>
+       </div><span class="toggle-label">Layout Responsive</span>
+      </div>
+     </div>
+    </aside>
+    <section class="preview-panel" id="previewPanel">
+     <h2 class="panel-heading">Anteprima Layout</h2>
+     <div class="grid-preview" id="gridPreview">
+      <div class="grid-container" id="gridContainer"><!-- Grid cells will be generated here -->
+      </div>
+     </div>
+     <div class="actions-row"><button class="action-button" id="copyHtmlBtn">📋 Copia HTML</button> <button class="action-button" id="copyCssBtn">💅 Copia CSS</button> <button class="action-button" id="exportBtn">📥 Esporta Completo</button>
+     </div>
+    </section>
+   </div>
+  </main>
+  <script>
+    const defaultConfig = {
+      background_color: "#f0f4f8",
+      panel_background: "#ffffff",
+      preview_background: "#e2e8f0",
+      text_color: "#2d3748",
+      button_color: "#3b82f6",
+      font_family: "Inter",
+      font_size: 16,
+      app_title: "Grid Layout Generator"
+    };
+
+    let gridSettings = {
+      columns: 3,
+      rows: 3,
+      gap: 16,
+      cellColor: '#3b82f6',
+      textColor: '#ffffff',
+      showNumbers: true,
+      responsive: true,
+      preset: 'custom'
+    };
+
+    const presetButtons = document.querySelectorAll('.preset-btn');
+    const columnsSlider = document.getElementById('columnsSlider');
+    const rowsSlider = document.getElementById('rowsSlider');
+    const gapSlider = document.getElementById('gapSlider');
+    const cellColorPicker = document.getElementById('cellColorPicker');
+    const cellColorCode = document.getElementById('cellColorCode');
+    const textColorPicker = document.getElementById('textColorPicker');
+    const textColorCode = document.getElementById('textColorCode');
+    const numbersToggle = document.getElementById('numbersToggle');
+    const responsiveToggle = document.getElementById('responsiveToggle');
+    const gridContainer = document.getElementById('gridContainer');
+    const copyHtmlBtn = document.getElementById('copyHtmlBtn');
+    const copyCssBtn = document.getElementById('copyCssBtn');
+    const exportBtn = document.getElementById('exportBtn');
+
+    // Preset configurations
+    const presets = {
+      custom: { columns: 3, rows: 3 },
+      '2col': { columns: 2, rows: 3 },
+      '3col': { columns: 3, rows: 2 },
+      '4col': { columns: 4, rows: 2 },
+      sidebar: { columns: 3, rows: 3, template: '1fr 2fr 1fr / repeat(3, 1fr)' },
+      hero: { columns: 2, rows: 2, template: '2fr 1fr / 1fr 1fr' }
+    };
+
+    // Preset selection
+    presetButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        presetButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        gridSettings.preset = btn.dataset.preset;
+        const preset = presets[btn.dataset.preset];
+        
+        if (preset) {
+          gridSettings.columns = preset.columns;
+          gridSettings.rows = preset.rows;
+          columnsSlider.value = preset.columns;
+          rowsSlider.value = preset.rows;
+          document.getElementById('columnsDisplay').textContent = preset.columns;
+          document.getElementById('rowsDisplay').textContent = preset.rows;
+          generateGrid();
+        }
+      });
+    });
+
+    // Sliders
+    columnsSlider.addEventListener('input', (e) => {
+      gridSettings.columns = parseInt(e.target.value);
+      document.getElementById('columnsDisplay').textContent = e.target.value;
+      generateGrid();
+    });
+
+    rowsSlider.addEventListener('input', (e) => {
+      gridSettings.rows = parseInt(e.target.value);
+      document.getElementById('rowsDisplay').textContent = e.target.value;
+      generateGrid();
+    });
+
+    gapSlider.addEventListener('input', (e) => {
+      gridSettings.gap = parseInt(e.target.value);
+      document.getElementById('gapDisplay').textContent = `${e.target.value}px`;
+      gridContainer.style.gap = `${e.target.value}px`;
+    });
+
+    // Cell color
+    cellColorPicker.addEventListener('input', (e) => {
+      gridSettings.cellColor = e.target.value;
+      cellColorCode.value = e.target.value;
+      updateCellColors();
+    });
+
+    cellColorCode.addEventListener('input', (e) => {
+      const color = e.target.value;
+      if (/^#[0-9A-F]{6}$/i.test(color)) {
+        gridSettings.cellColor = color;
+        cellColorPicker.value = color;
+        updateCellColors();
+      }
+    });
+
+    // Text color
+    textColorPicker.addEventListener('input', (e) => {
+      gridSettings.textColor = e.target.value;
+      textColorCode.value = e.target.value;
+      updateCellColors();
+    });
+
+    textColorCode.addEventListener('input', (e) => {
+      const color = e.target.value;
+      if (/^#[0-9A-F]{6}$/i.test(color)) {
+        gridSettings.textColor = color;
+        textColorPicker.value = color;
+        updateCellColors();
+      }
+    });
+
+    // Toggles
+    numbersToggle.addEventListener('click', () => {
+      numbersToggle.classList.toggle('active');
+      gridSettings.showNumbers = numbersToggle.classList.contains('active');
+      generateGrid();
+    });
+
+    responsiveToggle.addEventListener('click', () => {
+      responsiveToggle.classList.toggle('active');
+      gridSettings.responsive = responsiveToggle.classList.contains('active');
+    });
+
+    function generateGrid() {
+      gridContainer.innerHTML = '';
+      const totalCells = gridSettings.columns * gridSettings.rows;
+      
+      gridContainer.style.gridTemplateColumns = `repeat(${gridSettings.columns}, 1fr)`;
+      gridContainer.style.gridTemplateRows = `repeat(${gridSettings.rows}, 1fr)`;
+      gridContainer.style.gap = `${gridSettings.gap}px`;
+      
+      for (let i = 1; i <= totalCells; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'grid-cell';
+        cell.textContent = gridSettings.showNumbers ? `${i}` : '';
+        cell.style.background = gridSettings.cellColor;
+        cell.style.color = gridSettings.textColor;
+        gridContainer.appendChild(cell);
+      }
+    }
+
+    function updateCellColors() {
+      const cells = document.querySelectorAll('.grid-cell');
+      cells.forEach(cell => {
+        cell.style.background = gridSettings.cellColor;
+        cell.style.color = gridSettings.textColor;
+      });
+      
+      document.querySelectorAll('.toggle-switch').forEach(toggle => {
+        if (toggle.parentElement.classList.contains('active')) {
+          toggle.style.background = gridSettings.cellColor;
+        }
+      });
+    }
+
+    function generateHTML() {
+      const totalCells = gridSettings.columns * gridSettings.rows;
+      let html = '<div class="grid-container">\n';
+      
+      for (let i = 1; i <= totalCells; i++) {
+        const content = gridSettings.showNumbers ? i : `Contenuto ${i}`;
+        html += `  <div class="grid-item">${content}</div>\n`;
+      }
+      
+      html += '</div>';
+      return html;
+    }
+
+    function generateCSS() {
+      // Usa le impostazioni correnti del gridSettings
+      const cols = gridSettings.columns;
+      const rows = gridSettings.rows;
+      const gap = gridSettings.gap;
+      const bgColor = gridSettings.cellColor;
+      const txtColor = gridSettings.textColor;
+      
+      let css = `.grid-container {
+  display: grid;
+  grid-template-columns: repeat(${cols}, 1fr);
+  grid-template-rows: repeat(${rows}, 1fr);
+  gap: ${gap}px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.grid-item {
+  background: ${bgColor};
+  color: ${txtColor};
+  padding: 20px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 18px;
+  min-height: 120px;
+  transition: all 0.3s;
+}
+
+.grid-item:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}`;
+
+      if (gridSettings.responsive) {
+        const tabletCols = Math.max(1, Math.floor(cols / 2));
+        css += `
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .grid-container {
+    grid-template-columns: repeat(${tabletCols}, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .grid-container {
+    grid-template-columns: 1fr;
+    gap: ${Math.max(8, gap / 2)}px;
+  }
+  
+  .grid-item {
+    min-height: 80px;
+  }
+}`;
+      }
+
+      return css;
+    }
+
+    function showToast(message, success = true) {
+      const toast = document.createElement('div');
+      toast.className = 'notification-toast';
+      toast.textContent = message;
+      toast.style.background = success ? '#10b981' : '#ef4444';
+      document.body.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.style.animation = 'slideUp 0.3s ease-out reverse';
+        setTimeout(() => {
+          document.body.removeChild(toast);
+        }, 300);
+      }, 2000);
+    }
+
+    function copyToClipboard(text, message) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text)
+          .then(() => {
+            showToast(message);
+          })
+          .catch(() => {
+            fallbackCopy(text, message);
+          });
+      } else {
+        fallbackCopy(text, message);
+      }
+    }
+
+    function fallbackCopy(text, message) {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.left = '-9999px';
+      document.body.appendChild(textarea);
+      textarea.select();
+      
+      try {
+        document.execCommand('copy');
+        showToast(message);
+      } catch (err) {
+        showToast('❌ Errore durante la copia', false);
+      }
+      
+      document.body.removeChild(textarea);
+    }
+
+    // Copy buttons
+    copyHtmlBtn.addEventListener('click', () => {
+      const html = generateHTML();
+      copyToClipboard(html, '✅ Codice HTML copiato!');
+    });
+
+    copyCssBtn.addEventListener('click', () => {
+      const css = generateCSS();
+      copyToClipboard(css, '✅ Codice CSS copiato!');
+    });
+
+    exportBtn.addEventListener('click', () => {
+      const html = generateHTML();
+      const css = generateCSS();
+      const fullCode = `<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grid Layout</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      padding: 40px 20px;
+      background: #f0f4f8;
+    }
+
+${css}
+  </style>
+</head>
+<body>
+
+${html}
+
+</body>
+</html>`;
+
+      copyToClipboard(fullCode, '✅ Codice completo copiato!');
+    });
+
+    async function onConfigChange(config) {
+      const appConfig = { ...defaultConfig, ...config };
+      
+      document.querySelector('.generator-wrapper').style.background = appConfig.background_color;
+      document.querySelector('.controls-panel').style.background = appConfig.panel_background;
+      document.querySelector('.preview-panel').style.background = appConfig.panel_background;
+      document.querySelector('.grid-preview').style.background = appConfig.preview_background;
+      
+      document.querySelector('.app-heading').style.color = appConfig.text_color;
+      document.querySelectorAll('.panel-heading').forEach(heading => {
+        heading.style.color = appConfig.text_color;
+      });
+      document.querySelectorAll('.field-label').forEach(label => {
+        label.style.color = appConfig.text_color;
+      });
+      document.querySelectorAll('.range-header').forEach(header => {
+        header.style.color = appConfig.text_color;
+      });
+      document.querySelectorAll('.toggle-label').forEach(label => {
+        label.style.color = appConfig.text_color;
+      });
+      
+      document.querySelectorAll('.preset-btn').forEach(btn => {
+        btn.style.background = appConfig.panel_background;
+        btn.style.color = appConfig.text_color;
+      });
+      
+      document.querySelectorAll('.action-button').forEach(btn => {
+        btn.style.background = appConfig.button_color;
+      });
+      
+      document.querySelectorAll('.color-value').forEach(input => {
+        input.style.background = appConfig.panel_background;
+        input.style.color = appConfig.text_color;
+      });
+      
+      document.querySelectorAll('.toggle-switch').forEach(toggle => {
+        if (toggle.parentElement.classList.contains('active')) {
+          toggle.style.background = gridSettings.cellColor;
+        } else {
+          toggle.style.background = '#cbd5e0';
+        }
+      });
+      
+      const fontFamily = appConfig.font_family;
+      const baseFontStack = '-apple-system, BlinkMacSystemFont, sans-serif';
+      document.querySelector('.app-heading').style.fontFamily = `${fontFamily}, ${baseFontStack}`;
+      document.querySelectorAll('.panel-heading').forEach(heading => {
+        heading.style.fontFamily = `${fontFamily}, ${baseFontStack}`;
+      });
+      document.querySelectorAll('.field-label').forEach(label => {
+        label.style.fontFamily = `${fontFamily}, ${baseFontStack}`;
+      });
+      
+      const baseSize = appConfig.font_size;
+      document.querySelector('.app-heading').style.fontSize = `${baseSize * 2.25}px`;
+      document.querySelectorAll('.panel-heading').forEach(heading => {
+        heading.style.fontSize = `${baseSize}px`;
+      });
+      document.querySelectorAll('.field-label').forEach(label => {
+        label.style.fontSize = `${baseSize * 0.8125}px`;
+      });
+      
+      document.getElementById('appHeading').textContent = appConfig.app_title;
+    }
+
+    function mapToCapabilities(config) {
+      const appConfig = { ...defaultConfig, ...config };
+      
+      return {
+        recolorables: [
+          {
+            get: () => appConfig.background_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.setConfig({ background_color: value });
+              }
+            }
+          },
+          {
+            get: () => appConfig.panel_background,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.setConfig({ panel_background: value });
+              }
+            }
+          },
+          {
+            get: () => appConfig.preview_background,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.setConfig({ preview_background: value });
+              }
+            }
+          },
+          {
+            get: () => appConfig.text_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.setConfig({ text_color: value });
+              }
+            }
+          },
+          {
+            get: () => appConfig.button_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.setConfig({ button_color: value });
+              }
+            }
+          }
+        ],
+        borderables: [],
+        fontEditable: {
+          get: () => appConfig.font_family,
+          set: (value) => {
+            if (window.elementSdk) {
+              window.elementSdk.setConfig({ font_family: value });
+            }
+          }
+        },
+        fontSizeable: {
+          get: () => appConfig.font_size,
+          set: (value) => {
+            if (window.elementSdk) {
+              window.elementSdk.setConfig({ font_size: value });
+            }
+          }
+        }
+      };
+    }
+
+    function mapToEditPanelValues(config) {
+      const appConfig = { ...defaultConfig, ...config };
+      return new Map([
+        ["app_title", appConfig.app_title]
+      ]);
+    }
+
+    // Initialize
+    generateGrid();
+    updateCellColors();
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities,
+        mapToEditPanelValues
+      });
+    } else {
+      onConfigChange(defaultConfig);
+    }
+      
+// FUNZIONE CLICK PER MENU LAYOUT
+function toggleLayoutMenu() {
+  const menu = document.getElementById('layout-menu');
+  menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+}
+
+// CHIUDE MENU CLICCANDO FUORI
+document.addEventListener('click', function(e) {
+  const menu = document.getElementById('layout-menu');
+  const btn = document.getElementById('layout-btn');
+  if (menu && btn && !btn.contains(e.target) && !menu.contains(e.target)) {
+    menu.style.display = 'none';
+  }
+});
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a44fba47540ed4a',t:'MTc2NDExMzk0MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
