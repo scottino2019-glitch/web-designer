@@ -383,9 +383,9 @@
       display: flex !important; align-items: center !important; gap: 8px !important;
     " onclick="toggleLayoutMenu()">🏗️ Builder ▼</span>
     
-    <div id="builder-menu" style="
+   <div id="builder-menu" style="
   position: fixed !important; 
-  top: 90px !important;  /* ← AUMENTATO DA 70px A 90px */
+  top: 110px !important;  /* ← AUMENTATO A 110px */
   left: 50% !important; 
   transform: translateX(-50%) !important; 
   width: 280px !important;
@@ -397,7 +397,7 @@
   display: none !important; 
   max-height: 300px !important; 
   overflow-y: auto !important;
-  z-index: 999998 !important; 
+  z-index: 999999 !important;  /* ← STESSO z-index dell'header */
   padding: 0 !important;
 ">
       <a href="builder_home.html" style="display: block !important; padding: 14px 20px !important; color: #374151 !important; text-decoration: none !important; font-weight: 600 !important; border-bottom: 1px solid #f3f4f6 !important;" onmouseenter="this.style.background='#fef3c7 !important'; this.style.paddingLeft='24px !important';" onmouseleave="this.style.background='' !important; this.style.paddingLeft='20px !important';">🏠 Home Builder</a>
