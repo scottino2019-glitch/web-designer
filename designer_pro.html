@@ -1,0 +1,787 @@
+<!doctype html>
+<html lang="it">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Designer Pro Tools</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+      
+    }
+    
+    * {
+      box-sizing: border-box;
+    }
+    
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .tool-card {
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .tool-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      overflow-y: auto;
+    }
+    
+    .modal.active {
+      display: flex;
+      align-items: start;
+      justify-content: center;
+      padding: 2rem;
+    }
+    
+    .modal-content {
+      background: white;
+      border-radius: 1rem;
+      max-width: 1000px;
+      width: 100%;
+      max-height: 90%;
+      overflow-y: auto;
+      margin-top: 2rem;
+    }
+    
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+    
+    .modal.active .modal-content {
+      animation: fadeIn 0.2s ease-out;
+    }
+    
+    .copy-btn {
+      transition: all 0.2s ease;
+    }
+    
+    .copy-btn:active {
+      transform: scale(0.95);
+    }
+    
+    .grid-preview {
+      display: grid;
+      gap: 1rem;
+      padding: 1rem;
+    }
+    
+    .grid-column {
+      background-color: #3b82f6;
+      height: 60px;
+      border-radius: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+    }
+      /* BREADCRUMBS */
+    .breadcrumb-container {
+      padding: 12px 24px;
+      background: #f9fafb;
+    }
+    .breadcrumb-nav {
+      display: flex;
+      align-items: center;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      font-size: 14px;
+    }
+    .breadcrumb-nav li {
+      display: flex;
+      align-items: center;
+    }
+    .breadcrumb-nav a {
+      color: #3b82f6;
+      text-decoration: none;
+      padding: 6px 10px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .breadcrumb-nav a:hover {
+      background: #eff6ff;
+      color: #1d4ed8;
+    }
+    .breadcrumb-nav .current {
+      color: #374151;
+      font-weight: 600;
+      padding: 6px 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .breadcrumb-separator {
+      margin: 0 8px;
+      color: #9ca3af;
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="w-full min-h-full" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+     
+  <div class="w-full min-h-full p-8">
+   <div class="w-full max-w-7xl mx-auto"><!-- Header -->
+    <header class="text-center mb-12">
+     <h1 id="mainTitle" class="text-5xl font-bold mb-4 text-white">Designer Pro Tools</h1>
+     <p class="text-xl text-white opacity-90">Strumenti professionali che non trovi altrove</p>
+        <nav class="navbar">
+    <div class="navbar-header">
+    <div class="breadcrumb-container">
+      <nav aria-label="Breadcrumb">
+        <ol id="breadcrumb" class="breadcrumb-nav"></ol>
+      </nav>
+    </div>
+  </nav>   
+    </header>
+       
+       <!-- Tools Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"><!-- Lorem Ipsum Generator -->
+     <div class="tool-card rounded-2xl p-6 shadow-xl" style="background-color: #ffffff;" data-tool="lorem">
+      <div class="w-16 h-16 rounded-xl mb-4 flex items-center justify-center" style="background-color: #8b5cf6;">
+       <svg width="32" height="32" viewbox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path> <polyline points="14 2 14 8 20 8"></polyline> <line x1="16" y1="13" x2="8" y2="13"></line> <line x1="16" y1="17" x2="8" y2="17"></line> <polyline points="10 9 9 9 8 9"></polyline>
+       </svg>
+      </div>
+      <h3 class="text-xl font-bold mb-2" style="color: #1e293b;">Lorem Ipsum Realistico</h3>
+      <p class="text-sm" style="color: #64748b;">Testi placeholder per design, tech, moda e food</p>
+     </div><!-- Unit Converter -->
+     <div class="tool-card rounded-2xl p-6 shadow-xl" style="background-color: #ffffff;" data-tool="converter">
+      <div class="w-16 h-16 rounded-xl mb-4 flex items-center justify-center" style="background-color: #06b6d4;">
+       <svg width="32" height="32" viewbox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><polyline points="16 3 21 3 21 8"></polyline> <line x1="4" y1="20" x2="21" y2="3"></line> <polyline points="21 16 21 21 16 21"></polyline> <line x1="15" y1="15" x2="21" y2="21"></line> <line x1="4" y1="4" x2="9" y2="9"></line>
+       </svg>
+      </div>
+      <h3 class="text-xl font-bold mb-2" style="color: #1e293b;">Calcolatore Responsive</h3>
+      <p class="text-sm" style="color: #64748b;">Converti px in rem, em, vh, vw istantaneamente</p>
+     </div><!-- Grid Generator -->
+     <div class="tool-card rounded-2xl p-6 shadow-xl" style="background-color: #ffffff;" data-tool="grid">
+      <div class="w-16 h-16 rounded-xl mb-4 flex items-center justify-center" style="background-color: #10b981;">
+       <svg width="32" height="32" viewbox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect> <rect x="14" y="3" width="7" height="7"></rect> <rect x="14" y="14" width="7" height="7"></rect> <rect x="3" y="14" width="7" height="7"></rect>
+       </svg>
+      </div>
+      <h3 class="text-xl font-bold mb-2" style="color: #1e293b;">Generatore Layout Grid</h3>
+      <p class="text-sm" style="color: #64748b;">Visualizza e copia griglie CSS personalizzate</p>
+     </div><!-- Typography Scale -->
+     <div class="tool-card rounded-2xl p-6 shadow-xl" style="background-color: #ffffff;" data-tool="typography">
+      <div class="w-16 h-16 rounded-xl mb-4 flex items-center justify-center" style="background-color: #f59e0b;">
+       <svg width="32" height="32" viewbox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><polyline points="4 7 4 4 20 4 20 7"></polyline> <line x1="9" y1="20" x2="15" y2="20"></line> <line x1="12" y1="4" x2="12" y2="20"></line>
+       </svg>
+      </div>
+      <h3 class="text-xl font-bold mb-2" style="color: #1e293b;">Gerarchia Tipografica</h3>
+      <p class="text-sm" style="color: #64748b;">Scale tipografiche armoniche con proporzioni</p>
+     </div><!-- Placeholder Generator -->
+     <div class="tool-card rounded-2xl p-6 shadow-xl" style="background-color: #ffffff;" data-tool="placeholder">
+      <div class="w-16 h-16 rounded-xl mb-4 flex items-center justify-center" style="background-color: #ec4899;">
+       <svg width="32" height="32" viewbox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect> <circle cx="8.5" cy="8.5" r="1.5"></circle> <polyline points="21 15 16 10 5 21"></polyline>
+       </svg>
+      </div>
+      <h3 class="text-xl font-bold mb-2" style="color: #1e293b;">Placeholder Immagini</h3>
+      <p class="text-sm" style="color: #64748b;">Genera URL SVG per immagini placeholder</p>
+     </div><!-- Color Blindness Simulator -->
+     <div class="tool-card rounded-2xl p-6 shadow-xl" style="background-color: #ffffff;" data-tool="colorblind">
+      <div class="w-16 h-16 rounded-xl mb-4 flex items-center justify-center" style="background-color: #ef4444;">
+       <svg width="32" height="32" viewbox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path> <circle cx="12" cy="12" r="3"></circle>
+       </svg>
+      </div>
+      <h3 class="text-xl font-bold mb-2" style="color: #1e293b;">Simulatore Daltonismo</h3>
+      <p class="text-sm" style="color: #64748b;">Visualizza i colori con diversi tipi di daltonismo</p>
+     </div>
+    </div>
+   </div>
+  </div><!-- Lorem Ipsum Modal -->
+  <div id="loremModal" class="modal">
+   <div class="modal-content p-8">
+    <div class="flex justify-between items-center mb-6">
+     <h2 class="text-3xl font-bold" style="color: #1e293b;">Lorem Ipsum Realistico</h2><button class="close-modal text-4xl" style="color: #64748b;">×</button>
+    </div>
+    <div class="grid grid-cols-2 gap-4 mb-6">
+     <div><label class="block text-sm font-semibold mb-2" style="color: #475569;">Tipo di Contenuto</label> <select id="loremType" class="w-full px-4 py-2 rounded-lg border-2" style="border-color: #e2e8f0;"> <option value="design">Design &amp; UX</option> <option value="tech">Tech &amp; Startup</option> <option value="fashion">Moda &amp; Lifestyle</option> <option value="food">Food &amp; Restaurant</option> <option value="travel">Viaggi &amp; Turismo</option> </select>
+     </div>
+     <div><label class="block text-sm font-semibold mb-2" style="color: #475569;">Lunghezza</label> <select id="loremLength" class="w-full px-4 py-2 rounded-lg border-2" style="border-color: #e2e8f0;"> <option value="short">Corto (1 frase)</option> <option value="medium">Medio (1 paragrafo)</option> <option value="long">Lungo (3 paragrafi)</option> </select>
+     </div>
+    </div><button id="generateLorem" class="w-full px-6 py-3 rounded-lg font-semibold text-white mb-4" style="background-color: #8b5cf6;">Genera Testo</button>
+    <div class="rounded-lg p-6" style="background-color: #f1f5f9;">
+     <div class="flex justify-between items-center mb-3"><label class="text-sm font-semibold" style="color: #475569;">Testo Generato</label> <button id="copyLorem" class="copy-btn px-4 py-2 rounded-lg font-semibold text-white text-sm" style="background-color: #3b82f6;">Copia</button>
+     </div>
+     <div id="loremResult" class="text-base leading-relaxed" style="color: #1e293b; min-height: 100px;"></div>
+    </div>
+   </div>
+  </div><!-- Unit Converter Modal -->
+  <div id="converterModal" class="modal">
+   <div class="modal-content p-8">
+    <div class="flex justify-between items-center mb-6">
+     <h2 class="text-3xl font-bold" style="color: #1e293b;">Calcolatore Responsive</h2><button class="close-modal text-4xl" style="color: #64748b;">×</button>
+    </div>
+    <div class="mb-6"><label class="block text-sm font-semibold mb-2" style="color: #475569;">Base Font Size (per rem/em)</label> <input type="number" id="baseFontSize" value="16" class="w-full px-4 py-2 rounded-lg border-2" style="border-color: #e2e8f0;">
+    </div>
+    <div class="mb-6"><label class="block text-sm font-semibold mb-2" style="color: #475569;">Valore in Pixel</label> <input type="number" id="pxValue" value="24" class="w-full px-4 py-2 rounded-lg border-2" style="border-color: #e2e8f0;">
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+     <div class="rounded-lg p-4" style="background-color: #f1f5f9;">
+      <p class="text-sm font-semibold mb-2" style="color: #475569;">REM</p>
+      <p id="remResult" class="text-2xl font-bold" style="color: #1e293b;">1.5rem</p>
+     </div>
+     <div class="rounded-lg p-4" style="background-color: #f1f5f9;">
+      <p class="text-sm font-semibold mb-2" style="color: #475569;">EM</p>
+      <p id="emResult" class="text-2xl font-bold" style="color: #1e293b;">1.5em</p>
+     </div>
+     <div class="rounded-lg p-4" style="background-color: #f1f5f9;">
+      <p class="text-sm font-semibold mb-2" style="color: #475569;">VH (viewport 1000px)</p>
+      <p id="vhResult" class="text-2xl font-bold" style="color: #1e293b;">2.4vh</p>
+     </div>
+     <div class="rounded-lg p-4" style="background-color: #f1f5f9;">
+      <p class="text-sm font-semibold mb-2" style="color: #475569;">VW (viewport 1000px)</p>
+      <p id="vwResult" class="text-2xl font-bold" style="color: #1e293b;">2.4vw</p>
+     </div>
+    </div>
+   </div>
+  </div><!-- Grid Generator Modal -->
+  <div id="gridModal" class="modal">
+   <div class="modal-content p-8">
+    <div class="flex justify-between items-center mb-6">
+     <h2 class="text-3xl font-bold" style="color: #1e293b;">Generatore Layout Grid</h2><button class="close-modal text-4xl" style="color: #64748b;">×</button>
+    </div>
+    <div class="grid grid-cols-2 gap-4 mb-6">
+     <div><label class="block text-sm font-semibold mb-2" style="color: #475569;">Colonne: <span id="gridColsValue">3</span></label> <input type="range" id="gridCols" min="2" max="12" value="3" class="w-full">
+     </div>
+     <div><label class="block text-sm font-semibold mb-2" style="color: #475569;">Gap: <span id="gridGapValue">1</span>rem</label> <input type="range" id="gridGap" min="0.5" max="4" step="0.5" value="1" class="w-full">
+     </div>
+    </div>
+    <div class="rounded-lg p-6 mb-6" style="background-color: #f1f5f9;">
+     <p class="text-sm font-semibold mb-3" style="color: #475569;">Anteprima</p>
+     <div id="gridPreview" class="grid-preview rounded-lg" style="background-color: #e2e8f0;"></div>
+    </div>
+    <div class="rounded-lg p-4 mb-4" style="background-color: #f1f5f9;">
+     <div class="flex justify-between items-center mb-2"><label class="text-sm font-semibold" style="color: #475569;">Codice CSS</label> <button id="copyGrid" class="copy-btn px-4 py-2 rounded-lg font-semibold text-white text-sm" style="background-color: #3b82f6;">Copia</button>
+     </div><code id="gridCode" class="text-sm block" style="color: #1e293b;"></code>
+    </div>
+   </div>
+  </div><!-- Typography Modal -->
+  <div id="typographyModal" class="modal">
+   <div class="modal-content p-8">
+    <div class="flex justify-between items-center mb-6">
+     <h2 class="text-3xl font-bold" style="color: #1e293b;">Gerarchia Tipografica</h2><button class="close-modal text-4xl" style="color: #64748b;">×</button>
+    </div>
+    <div class="grid grid-cols-2 gap-4 mb-6">
+     <div><label class="block text-sm font-semibold mb-2" style="color: #475569;">Base Size (px)</label> <input type="number" id="typeBase" value="16" class="w-full px-4 py-2 rounded-lg border-2" style="border-color: #e2e8f0;">
+     </div>
+     <div><label class="block text-sm font-semibold mb-2" style="color: #475569;">Scala</label> <select id="typeScale" class="w-full px-4 py-2 rounded-lg border-2" style="border-color: #e2e8f0;"> <option value="1.125">Minor Third (1.125)</option> <option value="1.2">Major Third (1.2)</option> <option value="1.25" selected>Perfect Fourth (1.25)</option> <option value="1.333">Perfect Fifth (1.333)</option> <option value="1.5">Golden Ratio (1.5)</option> <option value="1.618">Phi (1.618)</option> </select>
+     </div>
+    </div><button id="generateType" class="w-full px-6 py-3 rounded-lg font-semibold text-white mb-6" style="background-color: #f59e0b;">Genera Scala</button>
+    <div id="typeResult" class="space-y-4"></div>
+   </div>
+  </div><!-- Placeholder Modal -->
+  <div id="placeholderModal" class="modal">
+   <div class="modal-content p-8">
+    <div class="flex justify-between items-center mb-6">
+     <h2 class="text-3xl font-bold" style="color: #1e293b;">Placeholder Immagini</h2><button class="close-modal text-4xl" style="color: #64748b;">×</button>
+    </div>
+    <div class="grid grid-cols-2 gap-4 mb-6">
+     <div><label class="block text-sm font-semibold mb-2" style="color: #475569;">Larghezza (px)</label> <input type="number" id="imgWidth" value="800" class="w-full px-4 py-2 rounded-lg border-2" style="border-color: #e2e8f0;">
+     </div>
+     <div><label class="block text-sm font-semibold mb-2" style="color: #475569;">Altezza (px)</label> <input type="number" id="imgHeight" value="600" class="w-full px-4 py-2 rounded-lg border-2" style="border-color: #e2e8f0;">
+     </div>
+     <div><label class="block text-sm font-semibold mb-2" style="color: #475569;">Colore Sfondo</label> <input type="color" id="imgBgColor" value="#3b82f6" class="w-full h-12 rounded-lg cursor-pointer border-2" style="border-color: #e2e8f0;">
+     </div>
+     <div><label class="block text-sm font-semibold mb-2" style="color: #475569;">Colore Testo</label> <input type="color" id="imgTextColor" value="#ffffff" class="w-full h-12 rounded-lg cursor-pointer border-2" style="border-color: #e2e8f0;">
+     </div>
+    </div>
+    <div class="mb-6"><label class="block text-sm font-semibold mb-2" style="color: #475569;">Testo (opzionale)</label> <input type="text" id="imgText" placeholder="800x600" class="w-full px-4 py-2 rounded-lg border-2" style="border-color: #e2e8f0;">
+    </div><button id="generatePlaceholder" class="w-full px-6 py-3 rounded-lg font-semibold text-white mb-4" style="background-color: #ec4899;">Genera Placeholder</button>
+    <div id="placeholderPreview" class="rounded-lg mb-4 flex items-center justify-center" style="background-color: #f1f5f9; min-height: 200px;"></div>
+    <div class="rounded-lg p-4" style="background-color: #f1f5f9;">
+     <div class="flex justify-between items-center mb-2"><label class="text-sm font-semibold" style="color: #475569;">URL Immagine</label> <button id="copyPlaceholder" class="copy-btn px-4 py-2 rounded-lg font-semibold text-white text-sm" style="background-color: #3b82f6;">Copia</button>
+     </div><code id="placeholderUrl" class="text-xs block break-all" style="color: #1e293b;"></code>
+    </div>
+   </div>
+  </div><!-- Color Blindness Modal -->
+  <div id="colorblindModal" class="modal">
+   <div class="modal-content p-8">
+    <div class="flex justify-between items-center mb-6">
+     <h2 class="text-3xl font-bold" style="color: #1e293b;">Simulatore Daltonismo</h2><button class="close-modal text-4xl" style="color: #64748b;">×</button>
+    </div>
+    <div class="mb-6"><label class="block text-sm font-semibold mb-2" style="color: #475569;">Seleziona Colore da Testare</label> <input type="color" id="cbTestColor" value="#3b82f6" class="w-full h-16 rounded-lg cursor-pointer border-2" style="border-color: #e2e8f0;">
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+     <div class="rounded-lg p-6 text-center" style="background-color: #f1f5f9;">
+      <p class="text-sm font-semibold mb-3" style="color: #475569;">Normale</p>
+      <div id="cbNormal" class="w-full h-32 rounded-lg mb-2"></div>
+      <p id="cbNormalHex" class="text-xs font-mono" style="color: #64748b;"></p>
+     </div>
+     <div class="rounded-lg p-6 text-center" style="background-color: #f1f5f9;">
+      <p class="text-sm font-semibold mb-3" style="color: #475569;">Protanopia (rosso)</p>
+      <div id="cbProtanopia" class="w-full h-32 rounded-lg mb-2"></div>
+      <p id="cbProtanopiaHex" class="text-xs font-mono" style="color: #64748b;"></p>
+     </div>
+     <div class="rounded-lg p-6 text-center" style="background-color: #f1f5f9;">
+      <p class="text-sm font-semibold mb-3" style="color: #475569;">Deuteranopia (verde)</p>
+      <div id="cbDeuteranopia" class="w-full h-32 rounded-lg mb-2"></div>
+      <p id="cbDeuteranopiaHex" class="text-xs font-mono" style="color: #64748b;"></p>
+     </div>
+     <div class="rounded-lg p-6 text-center" style="background-color: #f1f5f9;">
+      <p class="text-sm font-semibold mb-3" style="color: #475569;">Tritanopia (blu)</p>
+      <div id="cbTritanopia" class="w-full h-32 rounded-lg mb-2"></div>
+      <p id="cbTritanopiaHex" class="text-xs font-mono" style="color: #64748b;"></p>
+     </div>
+    </div>
+   </div>
+  </div>
+  <script>
+    const defaultConfig = {
+      main_title: 'Designer Pro Tools',
+      background_color: '#667eea',
+      secondary_color: '#764ba2',
+      text_color: '#ffffff',
+      card_color: '#ffffff',
+      accent_color: '#3b82f6',
+      font_family: 'ui-sans-serif, system-ui, sans-serif',
+      font_size: 16
+    };
+
+    async function onConfigChange(config) {
+      const customFont = config.font_family || defaultConfig.font_family;
+      const baseFontSize = config.font_size || defaultConfig.font_size;
+      const baseFontStack = 'ui-sans-serif, system-ui, sans-serif';
+      
+      document.getElementById('mainTitle').textContent = config.main_title || defaultConfig.main_title;
+      document.getElementById('mainTitle').style.fontFamily = `${customFont}, ${baseFontStack}`;
+      document.getElementById('mainTitle').style.fontSize = `${baseFontSize * 3.125}px`;
+      document.getElementById('mainTitle').style.color = config.text_color || defaultConfig.text_color;
+      
+      document.body.style.background = `linear-gradient(135deg, ${config.background_color || defaultConfig.background_color} 0%, ${config.secondary_color || defaultConfig.secondary_color} 100%)`;
+      
+      document.querySelectorAll('header p').forEach(el => {
+        el.style.fontFamily = `${customFont}, ${baseFontStack}`;
+        el.style.fontSize = `${baseFontSize * 1.25}px`;
+        el.style.color = config.text_color || defaultConfig.text_color;
+      });
+      
+      document.querySelectorAll('.tool-card').forEach(card => {
+        card.style.backgroundColor = config.card_color || defaultConfig.card_color;
+      });
+    }
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities: (config) => ({
+          recolorables: [
+            {
+              get: () => config.background_color || defaultConfig.background_color,
+              set: (value) => {
+                config.background_color = value;
+                window.elementSdk.setConfig({ background_color: value });
+              }
+            },
+            {
+              get: () => config.card_color || defaultConfig.card_color,
+              set: (value) => {
+                config.card_color = value;
+                window.elementSdk.setConfig({ card_color: value });
+              }
+            },
+            {
+              get: () => config.text_color || defaultConfig.text_color,
+              set: (value) => {
+                config.text_color = value;
+                window.elementSdk.setConfig({ text_color: value });
+              }
+            },
+            {
+              get: () => config.accent_color || defaultConfig.accent_color,
+              set: (value) => {
+                config.accent_color = value;
+                window.elementSdk.setConfig({ accent_color: value });
+              }
+            },
+            {
+              get: () => config.secondary_color || defaultConfig.secondary_color,
+              set: (value) => {
+                config.secondary_color = value;
+                window.elementSdk.setConfig({ secondary_color: value });
+              }
+            }
+          ],
+          borderables: [],
+          fontEditable: {
+            get: () => config.font_family || defaultConfig.font_family,
+            set: (value) => {
+              config.font_family = value;
+              window.elementSdk.setConfig({ font_family: value });
+            }
+          },
+          fontSizeable: {
+            get: () => config.font_size || defaultConfig.font_size,
+            set: (value) => {
+              config.font_size = value;
+              window.elementSdk.setConfig({ font_size: value });
+            }
+          }
+        }),
+        mapToEditPanelValues: (config) => new Map([
+          ['main_title', config.main_title || defaultConfig.main_title]
+        ])
+      });
+    }
+
+    // Modal functionality
+    document.querySelectorAll('.tool-card').forEach(card => {
+      card.addEventListener('click', (e) => {
+        const tool = e.currentTarget.getAttribute('data-tool');
+        const modalId = tool + 'Modal';
+        const modal = document.getElementById(modalId);
+        if (modal) {
+          modal.classList.add('active');
+          
+          if (tool === 'lorem') generateLoremText();
+          if (tool === 'converter') updateConverter();
+          if (tool === 'grid') updateGrid();
+          if (tool === 'colorblind') updateColorBlindness();
+        }
+      });
+    });
+
+    document.querySelectorAll('.close-modal').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.target.closest('.modal').classList.remove('active');
+      });
+    });
+
+    document.querySelectorAll('.modal').forEach(modal => {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          modal.classList.remove('active');
+        }
+      });
+    });
+
+    // Lorem Ipsum Generator
+    const loremTexts = {
+      design: {
+        short: "Il design non è solo ciò che vedi e senti. Il design è come funziona.",
+        medium: "L'esperienza utente è il cuore di ogni progetto digitale moderno. Un'interfaccia pulita e intuitiva non solo migliora l'usabilità, ma crea un legame emotivo con gli utenti. Ogni elemento visivo deve avere uno scopo preciso, contribuendo alla narrazione complessiva del brand.",
+        long: "Nel mondo del design contemporaneo, l'equilibrio tra estetica e funzionalità rappresenta la chiave del successo. I designer devono considerare non solo l'aspetto visivo, ma anche l'accessibilità, la performance e l'esperienza utente su diversi dispositivi.\n\nLa tipografia gioca un ruolo fondamentale nella gerarchia visiva. Scegliere i font giusti e creare una scala tipografica armoniosa può trasformare completamente la percezione di un progetto. Gli spazi bianchi non sono vuoti da riempire, ma elementi attivi che guidano l'occhio dell'utente.\n\nI colori trasmettono emozioni e significati culturali profondi. Una palette ben studiata può evocare fiducia, creatività o professionalità. Il contrasto appropriato garantisce leggibilità e accessibilità, rendendo il design inclusivo per tutti gli utenti."
+      },
+      tech: {
+        short: "L'innovazione distingue un leader da un seguace.",
+        medium: "La tecnologia sta ridefinendo il modo in cui viviamo e lavoriamo. Le startup più innovative stanno costruendo soluzioni che risolvono problemi reali, utilizzando intelligenza artificiale, blockchain e cloud computing per creare esperienze seamless e scalabili.",
+        long: "L'ecosistema startup sta vivendo una trasformazione senza precedenti. Le tecnologie emergenti come l'AI generativa, l'IoT e il machine learning stanno aprendo nuove possibilità per risolvere problemi complessi in modi innovativi.\n\nLa cultura agile e il mindset growth-oriented sono diventati pilastri fondamentali per le aziende tech di successo. Il fail fast, l'iterazione rapida e il feedback continuo permettono di adattarsi velocemente alle esigenze del mercato. Gli sviluppatori non sono più solo programmatori, ma problem solver creativi.\n\nLa cybersecurity e la privacy dei dati sono diventate priorità assolute. Con l'aumento degli attacchi informatici, le aziende devono investire in infrastrutture sicure e crittografia avanzata. Il cloud computing offre scalabilità, ma richiede strategie di sicurezza robuste e conformità alle normative internazionali."
+      },
+      fashion: {
+        short: "La moda è l'armatura per sopravvivere alla realtà quotidiana.",
+        medium: "Il lifestyle contemporaneo è un mix perfetto tra comfort e stile. I tessuti sostenibili e le produzioni etiche stanno ridefinendo l'industria della moda. Ogni capo racconta una storia, esprimendo personalità e valori attraverso tagli, colori e texture uniche.",
+        long: "La moda sostenibile non è più una tendenza, ma una necessità. I consumatori moderni cercano brand che riflettano i loro valori etici e ambientali. Tessuti organici, produzioni locali e supply chain trasparenti sono diventati fattori decisivi nelle scelte d'acquisto.\n\nLo streetwear ha rivoluzionato il concetto di lusso, mescolando high fashion con culture urbane e sportive. Le collaborazioni tra brand iconici e designer emergenti creano capsule collection che vendono in pochi minuti. Il vintage e il second-hand sono celebrati come scelte consapevoli e stilisticamente audaci.\n\nGli influencer e i social media hanno democratizzato la moda, dando voce a micro-trend e sottoculture. Instagram e TikTok sono diventati runway virtuali dove ogni utente può esprimere il proprio stile. Il personal branding attraverso l'abbigliamento è oggi più importante che mai."
+      },
+      food: {
+        short: "La cucina è un atto d'amore che si condivide a tavola.",
+        medium: "Il nostro menu celebra ingredienti freschi e stagionali, trasformati con passione in piatti che raccontano storie. Ogni ricetta è un viaggio attraverso sapori autentici, tecniche tradizionali e presentazioni moderne che sorprendono il palato.",
+        long: "La cultura gastronomica italiana è patrimonio dell'umanità. Ogni regione vanta tradizioni culinarie uniche, tramandate di generazione in generazione. La semplicità degli ingredienti di qualità è il segreto di piatti indimenticabili: pomodori maturi, olio extravergine, formaggi artigianali.\n\nLa farm-to-table philosophy sta rivoluzionando la ristorazione. I cuochi cercano produttori locali, creando menu che cambiano con le stagioni. La tracciabilità degli ingredienti garantisce freschezza e sostiene l'economia locale. Il chilometro zero non è solo sostenibile, ma esalta i sapori autentici del territorio.\n\nIl food design e il plating sono diventati forme d'arte. La presentazione visiva stimola l'appetito prima ancora del primo boccone. I colori, le texture e la composizione nel piatto creano esperienze multisensoriali. I ristoranti stellati sono teatri dove ogni portata è una performance culinaria."
+      },
+      travel: {
+        short: "Viaggiare è l'unico acquisto che ti rende più ricco.",
+        medium: "Scopri destinazioni autentiche lontane dal turismo di massa. I nostri itinerari sono pensati per chi cerca esperienze immersive, contatti con culture locali e paesaggi mozzafiato. Ogni viaggio è un'opportunità di crescita personale e scoperta.",
+        long: "Il viaggio consapevole sta cambiando il modo di esplorare il mondo. I viaggiatori moderni cercano esperienze autentiche, immergendosi nelle culture locali invece di limitarsi alle attrazioni turistiche. Dormire in agriturismi, mangiare nei mercati locali e parlare con gli abitanti crea ricordi indelebili.\n\nIl turismo sostenibile protegge ecosistemi fragili e supporta le comunità locali. Scegliere tour operator responsabili, ridurre l'impronta di carbonio e rispettare le tradizioni culturali sono azioni concrete per viaggiare eticamente. I parchi nazionali e le riserve naturali offrono avventure eco-friendly indimenticabili.\n\nLa fotografia di viaggio immortala momenti irripetibili. Albe sui templi antichi, tramonti sulle spiagge tropicali, ritratti di volti che raccontano storie. Ogni scatto è un ricordo tangibile di esperienze che trasformano. I social media ispirano nuove destinazioni, ma niente sostituisce l'emozione di essere fisicamente in un luogo magico."
+      }
+    };
+
+    function generateLoremText() {
+      const type = document.getElementById('loremType').value;
+      const length = document.getElementById('loremLength').value;
+      const text = loremTexts[type][length];
+      document.getElementById('loremResult').textContent = text;
+    }
+
+    document.getElementById('generateLorem').addEventListener('click', generateLoremText);
+    document.getElementById('copyLorem').addEventListener('click', () => {
+      const text = document.getElementById('loremResult').textContent;
+      copyToClipboard(text, document.getElementById('copyLorem'));
+    });
+
+    // Unit Converter
+    function updateConverter() {
+      const baseFont = parseFloat(document.getElementById('baseFontSize').value);
+      const px = parseFloat(document.getElementById('pxValue').value);
+      
+      const rem = (px / baseFont).toFixed(3);
+      const em = (px / baseFont).toFixed(3);
+      const vh = (px / 10).toFixed(2);
+      const vw = (px / 10).toFixed(2);
+      
+      document.getElementById('remResult').textContent = `${rem}rem`;
+      document.getElementById('emResult').textContent = `${em}em`;
+      document.getElementById('vhResult').textContent = `${vh}vh`;
+      document.getElementById('vwResult').textContent = `${vw}vw`;
+    }
+
+    document.getElementById('baseFontSize').addEventListener('input', updateConverter);
+    document.getElementById('pxValue').addEventListener('input', updateConverter);
+
+    // Grid Generator
+    function updateGrid() {
+      const cols = document.getElementById('gridCols').value;
+      const gap = document.getElementById('gridGap').value;
+      
+      document.getElementById('gridColsValue').textContent = cols;
+      document.getElementById('gridGapValue').textContent = gap;
+      
+      const preview = document.getElementById('gridPreview');
+      preview.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+      preview.style.gap = `${gap}rem`;
+      
+      preview.innerHTML = '';
+      for (let i = 1; i <= cols; i++) {
+        const col = document.createElement('div');
+        col.className = 'grid-column';
+        col.textContent = i;
+        preview.appendChild(col);
+      }
+      
+      const code = `.grid {\n  display: grid;\n  grid-template-columns: repeat(${cols}, 1fr);\n  gap: ${gap}rem;\n}`;
+      document.getElementById('gridCode').textContent = code;
+    }
+
+    document.getElementById('gridCols').addEventListener('input', updateGrid);
+    document.getElementById('gridGap').addEventListener('input', updateGrid);
+    document.getElementById('copyGrid').addEventListener('click', () => {
+      const code = document.getElementById('gridCode').textContent;
+      copyToClipboard(code, document.getElementById('copyGrid'));
+    });
+
+    // Typography Scale
+    function generateTypographyScale() {
+      const base = parseFloat(document.getElementById('typeBase').value);
+      const scale = parseFloat(document.getElementById('typeScale').value);
+      
+      const sizes = {
+        'small': base * 0.875,
+        'p': base,
+        'h6': base * scale,
+        'h5': base * Math.pow(scale, 2),
+        'h4': base * Math.pow(scale, 3),
+        'h3': base * Math.pow(scale, 4),
+        'h2': base * Math.pow(scale, 5),
+        'h1': base * Math.pow(scale, 6)
+      };
+      
+      const result = document.getElementById('typeResult');
+      result.innerHTML = '';
+      
+      Object.entries(sizes).reverse().forEach(([tag, size]) => {
+        const div = document.createElement('div');
+        div.className = 'rounded-lg p-4';
+        div.style.backgroundColor = '#f1f5f9';
+        div.innerHTML = `
+          <p style="font-size: ${size}px; font-weight: 700; color: #1e293b; margin-bottom: 0.5rem;">${tag.toUpperCase()}</p>
+          <p style="color: #64748b; font-size: 14px;">${Math.round(size)}px | ${(size / base).toFixed(3)}rem</p>
+        `;
+        result.appendChild(div);
+      });
+    }
+
+    document.getElementById('generateType').addEventListener('click', generateTypographyScale);
+
+    // Placeholder Generator
+    function generatePlaceholder() {
+      const width = document.getElementById('imgWidth').value;
+      const height = document.getElementById('imgHeight').value;
+      const bgColor = document.getElementById('imgBgColor').value.replace('#', '');
+      const textColor = document.getElementById('imgTextColor').value.replace('#', '');
+      const text = document.getElementById('imgText').value || `${width}x${height}`;
+      
+      const svg = `data:image/svg+xml,${encodeURIComponent(`<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg"><rect width="100%" height="100%" fill="#${bgColor}"/><text x="50%" y="50%" font-size="48" fill="#${textColor}" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif">${text}</text></svg>`)}`;
+      
+      const preview = document.getElementById('placeholderPreview');
+      preview.innerHTML = `<img src="${svg}" style="max-width: 100%; height: auto; border-radius: 0.5rem;" alt="Placeholder">`;
+      
+      document.getElementById('placeholderUrl').textContent = svg;
+    }
+
+    document.getElementById('generatePlaceholder').addEventListener('click', generatePlaceholder);
+    document.getElementById('copyPlaceholder').addEventListener('click', () => {
+      const url = document.getElementById('placeholderUrl').textContent;
+      copyToClipboard(url, document.getElementById('copyPlaceholder'));
+    });
+
+    // Color Blindness Simulator
+    function simulateColorBlindness(hex, type) {
+      const rgb = hexToRgb(hex);
+      let r = rgb.r, g = rgb.g, b = rgb.b;
+      
+      if (type === 'protanopia') {
+        r = 0.567 * r + 0.433 * g;
+        g = 0.558 * r + 0.442 * g;
+      } else if (type === 'deuteranopia') {
+        r = 0.625 * r + 0.375 * g;
+        g = 0.7 * r + 0.3 * g;
+      } else if (type === 'tritanopia') {
+        r = 0.95 * r + 0.05 * g;
+        b = 0.433 * g + 0.567 * b;
+      }
+      
+      return rgbToHex(Math.round(r), Math.round(g), Math.round(b));
+    }
+
+    function hexToRgb(hex) {
+      const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+      return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+      } : { r: 0, g: 0, b: 0 };
+    }
+
+    function rgbToHex(r, g, b) {
+      return '#' + [r, g, b].map(x => {
+        const hex = x.toString(16);
+        return hex.length === 1 ? '0' + hex : hex;
+      }).join('');
+    }
+
+    function updateColorBlindness() {
+      const color = document.getElementById('cbTestColor').value;
+      
+      document.getElementById('cbNormal').style.backgroundColor = color;
+      document.getElementById('cbNormalHex').textContent = color;
+      
+      const protanopia = simulateColorBlindness(color, 'protanopia');
+      document.getElementById('cbProtanopia').style.backgroundColor = protanopia;
+      document.getElementById('cbProtanopiaHex').textContent = protanopia;
+      
+      const deuteranopia = simulateColorBlindness(color, 'deuteranopia');
+      document.getElementById('cbDeuteranopia').style.backgroundColor = deuteranopia;
+      document.getElementById('cbDeuteranopiaHex').textContent = deuteranopia;
+      
+      const tritanopia = simulateColorBlindness(color, 'tritanopia');
+      document.getElementById('cbTritanopia').style.backgroundColor = tritanopia;
+      document.getElementById('cbTritanopiaHex').textContent = tritanopia;
+    }
+
+    document.getElementById('cbTestColor').addEventListener('input', updateColorBlindness);
+
+    // Copy to clipboard helper
+    function copyToClipboard(text, button) {
+      navigator.clipboard.writeText(text).then(() => {
+        const original = button.textContent;
+        button.textContent = '✓ Copiato!';
+        button.style.backgroundColor = '#10b981';
+        setTimeout(() => {
+          button.textContent = original;
+          button.style.backgroundColor = '#3b82f6';
+        }, 2000);
+      });
+    }
+      
+  // breadcrumbs
+const pageData = {
+  '/': {
+    label: 'Home',
+    icon: '🏠'
+  },
+  '/pro/': {
+    label: 'Pro',
+    icon: '🖌'
+  }
+  // Aggiungi qui altre lingue quando le crei:
+  // '/cinese/': { label: 'Cinese', icon: '🇨🇳' },
+  // '/coreano/': { label: 'Coreano', icon: '🇰🇷' },
+};
+
+function createBreadcrumbs(currentPath) {
+  const breadcrumbContainer = document.getElementById('breadcrumb');
+  if (!breadcrumbContainer) return;
+  
+  breadcrumbContainer.innerHTML = '';
+
+  const segments = getPathSegments(currentPath);
+
+  segments.forEach((segment, index) => {
+    const isLast = index === segments.length - 1;
+    const segmentData = pageData[segment.path];
+    if (!segmentData) return;
+
+    const li = document.createElement('li');
+
+    if (isLast) {
+      li.innerHTML = `
+        <span class="current">
+          <span>${segmentData.icon}</span>
+          <span>${segmentData.label}</span>
+        </span>
+      `;
+    } else {
+      li.innerHTML = `
+        <a href="${mapUrlToFile(segment.path)}">
+          <span>${segmentData.icon}</span>
+          <span>${segmentData.label}</span>
+        </a>
+      `;
+    }
+
+    breadcrumbContainer.appendChild(li);
+
+    if (!isLast) {
+      const separator = document.createElement('span');
+      separator.className = 'breadcrumb-separator';
+      separator.textContent = '›';
+      breadcrumbContainer.appendChild(separator);
+    }
+  });
+}
+
+function mapUrlToFile(path) {
+  switch (path) {
+    case '/': return 'index.html';
+    case '/pro/': return 'designer_pro.html';
+    default: return 'index.html';
+  }
+}
+
+function getPathSegments(path) {
+  if (path === '/') {
+    return [{ path: '/', label: 'Home' }];
+  }
+  const segments = [];
+  const parts = path.split('/').filter(part => part !== '');
+  let currentPath = '';
+  segments.push({ path: '/', label: 'Home' });
+  parts.forEach(part => {
+    currentPath += '/' + part;
+    segments.push({ path: currentPath + '/', label: part });
+  });
+  return segments;
+}
+
+// AVVIA breadcrumbs Home
+createBreadcrumbs('/pro');
+                                  </script>
+     <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a4a5c768704ba80',t:'MTc2NDE3MDMzNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

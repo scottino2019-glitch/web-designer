@@ -1,0 +1,580 @@
+<!doctype html>
+<html lang="it">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS Animation Hub</title>
+  <style>
+    body {
+      box-sizing: border-box;
+      
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #0f172a;
+      color: #f1f5f9;
+      font-family: system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+    }
+
+    @keyframes scaleUp {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+    }
+
+    @keyframes slideRight {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(30px); }
+    }
+
+    @keyframes rotate360 {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes fadeInOut {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-25px); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+      20%, 40%, 60%, 80% { transform: translateX(10px); }
+    }
+
+    @keyframes flip {
+      0% { transform: perspective(400px) rotateY(0); }
+      100% { transform: perspective(400px) rotateY(360deg); }
+    }
+
+    @keyframes swing {
+      0%, 100% { transform: rotate(0deg); }
+      20% { transform: rotate(15deg); }
+      40% { transform: rotate(-10deg); }
+      60% { transform: rotate(5deg); }
+      80% { transform: rotate(-5deg); }
+    }
+
+    @keyframes zoomInOut {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.5); }
+    }
+
+    @keyframes slideUp {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-30px); }
+    }
+
+    @keyframes slideDown {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(30px); }
+    }
+
+    @keyframes slideLeft {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(-30px); }
+    }
+
+    @keyframes rotateY {
+      from { transform: rotateY(0deg); }
+      to { transform: rotateY(360deg); }
+    }
+
+    @keyframes rotateX {
+      from { transform: rotateX(0deg); }
+      to { transform: rotateX(360deg); }
+    }
+
+    @keyframes wobble {
+      0%, 100% { transform: translateX(0) rotate(0deg); }
+      15% { transform: translateX(-25px) rotate(-5deg); }
+      30% { transform: translateX(20px) rotate(3deg); }
+      45% { transform: translateX(-15px) rotate(-3deg); }
+      60% { transform: translateX(10px) rotate(2deg); }
+      75% { transform: translateX(-5px) rotate(-1deg); }
+    }
+
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      10%, 30% { transform: scale(1.1); }
+      20%, 40% { transform: scale(0.9); }
+    }
+
+    @keyframes glow {
+      0%, 100% { box-shadow: 0 0 5px #667eea, 0 0 10px #667eea; }
+      50% { box-shadow: 0 0 20px #667eea, 0 0 30px #667eea, 0 0 40px #667eea; }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes jello {
+      0%, 100% { transform: skewX(0deg) skewY(0deg); }
+      30% { transform: skewX(25deg) skewY(25deg); }
+      40% { transform: skewX(-15deg) skewY(-15deg); }
+      50% { transform: skewX(15deg) skewY(15deg); }
+      65% { transform: skewX(-5deg) skewY(-5deg); }
+      75% { transform: skewX(5deg) skewY(5deg); }
+    }
+
+    .demo-box {
+      width: 100px;
+      height: 100px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      margin: 0 auto 20px;
+    }
+
+    .anim-scale { animation: scaleUp 2s ease-in-out infinite; }
+    .anim-slide { animation: slideRight 2s ease-in-out infinite; }
+    .anim-rotate { animation: rotate360 3s linear infinite; }
+    .anim-fade { animation: fadeInOut 2s ease-in-out infinite; }
+    .anim-bounce { animation: bounce 1.5s ease-in-out infinite; }
+    .anim-pulse { animation: pulse 2s ease-in-out infinite; }
+    .anim-shake { animation: shake 0.8s ease-in-out infinite; }
+    .anim-flip { animation: flip 2s ease-in-out infinite; }
+    .anim-swing { animation: swing 2s ease-in-out infinite; }
+    .anim-zoom { animation: zoomInOut 2s ease-in-out infinite; }
+    .anim-slide-up { animation: slideUp 2s ease-in-out infinite; }
+    .anim-slide-down { animation: slideDown 2s ease-in-out infinite; }
+    .anim-slide-left { animation: slideLeft 2s ease-in-out infinite; }
+    .anim-rotate-y { animation: rotateY 3s linear infinite; }
+    .anim-rotate-x { animation: rotateX 3s linear infinite; }
+    .anim-wobble { animation: wobble 2s ease-in-out infinite; }
+    .anim-heartbeat { animation: heartbeat 1.5s ease-in-out infinite; }
+    .anim-glow { animation: glow 2s ease-in-out infinite; }
+    .anim-float { animation: float 3s ease-in-out infinite; }
+    .anim-spin { animation: spin 2s linear infinite; }
+    .anim-jello { animation: jello 2s ease-in-out infinite; }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    h1 {
+      font-size: 40px;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .subtitle {
+      font-size: 18px;
+      opacity: 0.8;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+      gap: 32px;
+    }
+
+    .card {
+      background: #1e293b;
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .card h3 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .code-section {
+      background: #1e1e1e;
+      border-radius: 10px;
+      padding: 15px;
+      margin-top: 10px;
+    }
+
+    .code-label {
+      color: #4CAF50;
+      font-weight: bold;
+      font-size: 12px;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    code {
+      display: block;
+      color: #d4d4d4;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      line-height: 1.5;
+      overflow-x: auto;
+      white-space: pre;
+      user-select: all;
+      cursor: text;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 64px;
+      padding-top: 32px;
+      border-top: 2px solid #1e293b;
+    }
+
+    footer p {
+      font-size: 14px;
+      opacity: 0.7;
+    }
+       /* BREADCRUMBS */
+    .breadcrumb-container {
+      padding: 12px 24px;
+      background: #f9fafb;
+    }
+    .breadcrumb-nav {
+      display: flex;
+      align-items: center;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      font-size: 14px;
+    }
+    .breadcrumb-nav li {
+      display: flex;
+      align-items: center;
+    }
+    .breadcrumb-nav a {
+      color: #3b82f6;
+      text-decoration: none;
+      padding: 6px 10px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .breadcrumb-nav a:hover {
+      background: #eff6ff;
+      color: #1d4ed8;
+    }
+    .breadcrumb-nav .current {
+      color: #374151;
+      font-weight: 600;
+      padding: 6px 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .breadcrumb-separator {
+      margin: 0 8px;
+      color: #9ca3af;
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  <div class="container">
+   <header>
+    <h1>CSS Animation Hub</h1>
+    <p class="subtitle">Copia HTML + CSS completo per ogni animazione</p>
+            <nav class="navbar">
+    <div class="navbar-header">
+    <div class="breadcrumb-container">
+      <nav aria-label="Breadcrumb">
+        <ol id="breadcrumb" class="breadcrumb-nav"></ol>
+      </nav>
+    </div>
+  </nav>
+   </header>
+   <div class="grid"><!-- Scale Up -->
+    <div class="card">
+     <h3>⬆️ Scale Up</h3>
+     <div class="demo-box anim-scale">
+      ⬆️
+     </div>
+     <div class="code-section"><span class="code-label">HTML COMPLETO (copia tutto)</span> <code>&lt;!DOCTYPE html&gt; &lt;html&gt; &lt;head&gt; &lt;meta charset="UTF-8"&gt; &lt;title&gt;Scale Up Animation&lt;/title&gt; &lt;style&gt; body { margin: 0; height: 100vh; display: flex; align-items: center; justify-content: center; background: #0f172a; font-family: system-ui, sans-serif; } @keyframes scaleUp { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } } .animated-box { width: 200px; height: 200px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; border-radius: 20px; animation: scaleUp 2s ease-in-out infinite; } &lt;/style&gt; &lt;/head&gt; &lt;body&gt; &lt;div class="animated-box"&gt;Ciao! 👋&lt;/div&gt; &lt;/body&gt; &lt;/html&gt;</code>
+     </div>
+    </div><!-- Slide Right -->
+    <div class="card">
+     <h3>➡️ Slide Right</h3>
+     <div class="demo-box anim-slide">
+      ➡️
+     </div>
+     <div class="code-section"><span class="code-label">HTML COMPLETO (copia tutto)</span> <code>&lt;!DOCTYPE html&gt; &lt;html&gt; &lt;head&gt; &lt;meta charset="UTF-8"&gt; &lt;title&gt;Slide Right Animation&lt;/title&gt; &lt;style&gt; body { margin: 0; height: 100vh; display: flex; align-items: center; justify-content: center; background: #0f172a; font-family: system-ui, sans-serif; } @keyframes slideRight { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(30px); } } .slide-box { width: 200px; height: 200px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; border-radius: 20px; animation: slideRight 2s ease-in-out infinite; } &lt;/style&gt; &lt;/head&gt; &lt;body&gt; &lt;div class="slide-box"&gt;Scorri! →&lt;/div&gt; &lt;/body&gt; &lt;/html&gt;</code>
+     </div>
+    </div><!-- Rotate 360 -->
+    <div class="card">
+     <h3>🔄 Rotate 360°</h3>
+     <div class="demo-box anim-rotate">
+      🔄
+     </div>
+     <div class="code-section"><span class="code-label">HTML COMPLETO (copia tutto)</span> <code>&lt;!DOCTYPE html&gt; &lt;html&gt; &lt;head&gt; &lt;meta charset="UTF-8"&gt; &lt;title&gt;Rotate 360° Animation&lt;/title&gt; &lt;style&gt; body { margin: 0; height: 100vh; display: flex; align-items: center; justify-content: center; background: #0f172a; font-family: system-ui, sans-serif; } @keyframes rotate360 { from { transform: rotate(0deg); } to { transform: rotate(360deg); } } .rotate-box { width: 200px; height: 200px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; border-radius: 20px; animation: rotate360 3s linear infinite; } &lt;/style&gt; &lt;/head&gt; &lt;body&gt; &lt;div class="rotate-box"&gt;Gira! 🔄&lt;/div&gt; &lt;/body&gt; &lt;/html&gt;</code>
+     </div>
+    </div><!-- Fade In/Out -->
+    <div class="card">
+     <h3>👻 Fade In/Out</h3>
+     <div class="demo-box anim-fade">
+      👻
+     </div>
+     <div class="code-section"><span class="code-label">HTML COMPLETO (copia tutto)</span> <code>&lt;!DOCTYPE html&gt; &lt;html&gt; &lt;head&gt; &lt;meta charset="UTF-8"&gt; &lt;title&gt;Fade In/Out Animation&lt;/title&gt; &lt;style&gt; body { margin: 0; height: 100vh; display: flex; align-items: center; justify-content: center; background: #0f172a; font-family: system-ui, sans-serif; } @keyframes fadeInOut { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } } .fade-box { width: 200px; height: 200px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; border-radius: 20px; animation: fadeInOut 2s ease-in-out infinite; } &lt;/style&gt; &lt;/head&gt; &lt;body&gt; &lt;div class="fade-box"&gt;Svanisco! 👻&lt;/div&gt; &lt;/body&gt; &lt;/html&gt;</code>
+     </div>
+    </div><!-- Bounce -->
+    <div class="card">
+     <h3>⚽ Bounce</h3>
+     <div class="demo-box anim-bounce">
+      ⚽
+     </div>
+     <div class="code-section"><span class="code-label">HTML COMPLETO (copia tutto)</span> <code>&lt;!DOCTYPE html&gt; &lt;html&gt; &lt;head&gt; &lt;meta charset="UTF-8"&gt; &lt;title&gt;Bounce Animation&lt;/title&gt; &lt;style&gt; body { margin: 0; height: 100vh; display: flex; align-items: center; justify-content: center; background: #0f172a; font-family: system-ui, sans-serif; } @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-25px); } } .bounce-box { width: 200px; height: 200px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; border-radius: 20px; animation: bounce 1.5s ease-in-out infinite; } &lt;/style&gt; &lt;/head&gt; &lt;body&gt; &lt;div class="bounce-box"&gt;Rimbalzo! ⚽&lt;/div&gt; &lt;/body&gt; &lt;/html&gt;</code>
+     </div>
+    </div><!-- Pulse -->
+    <div class="card">
+     <h3>💓 Pulse</h3>
+     <div class="demo-box anim-pulse">
+      💓
+     </div>
+     <div class="code-section"><span class="code-label">HTML COMPLETO (copia tutto)</span> <code>&lt;!DOCTYPE html&gt; &lt;html&gt; &lt;head&gt; &lt;meta charset="UTF-8"&gt; &lt;title&gt;Pulse Animation&lt;/title&gt; &lt;style&gt; body { margin: 0; height: 100vh; display: flex; align-items: center; justify-content: center; background: #0f172a; font-family: system-ui, sans-serif; } @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } } .pulse-box { width: 200px; height: 200px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; border-radius: 20px; animation: pulse 2s ease-in-out infinite; } &lt;/style&gt; &lt;/head&gt; &lt;body&gt; &lt;div class="pulse-box"&gt;Pulso! 💓&lt;/div&gt; &lt;/body&gt; &lt;/html&gt;</code>
+     </div>
+    </div><!-- Shake -->
+    <div class="card">
+     <h3>📳 Shake</h3>
+     <div class="demo-box anim-shake">
+      📳
+     </div>
+     <div class="code-section"><span class="code-label">HTML COMPLETO (copia tutto)</span> <code>&lt;!DOCTYPE html&gt; &lt;html&gt; &lt;head&gt; &lt;meta charset="UTF-8"&gt; &lt;title&gt;Shake Animation&lt;/title&gt; &lt;style&gt; body { margin: 0; height: 100vh; display: flex; align-items: center; justify-content: center; background: #0f172a; font-family: system-ui, sans-serif; } @keyframes shake { 0%, 100% { transform: translateX(0); } 10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); } 20%, 40%, 60%, 80% { transform: translateX(10px); } } .shake-box { width: 200px; height: 200px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; border-radius: 20px; animation: shake 0.8s ease-in-out infinite; } &lt;/style&gt; &lt;/head&gt; &lt;body&gt; &lt;div class="shake-box"&gt;Tremo! 📳&lt;/div&gt; &lt;/body&gt; &lt;/html&gt;</code>
+     </div>
+    </div><!-- Flip -->
+    <div class="card">
+     <h3>🔄 Flip</h3>
+     <div class="demo-box anim-flip">
+      🔄
+     </div>
+     <div class="code-section"><span class="code-label">HTML COMPLETO (copia tutto)</span> <code>&lt;!DOCTYPE html&gt; &lt;html&gt; &lt;head&gt; &lt;meta charset="UTF-8"&gt; &lt;title&gt;Flip Animation&lt;/title&gt; &lt;style&gt; body { margin: 0; height: 100vh; display: flex; align-items: center; justify-content: center; background: #0f172a; font-family: system-ui, sans-serif; } @keyframes flip { 0% { transform: perspective(400px) rotateY(0); } 100% { transform: perspective(400px) rotateY(360deg); } } .flip-box { width: 200px; height: 200px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; border-radius: 20px; animation: flip 2s ease-in-out infinite; } &lt;/style&gt; &lt;/head&gt; &lt;body&gt; &lt;div class="flip-box"&gt;Flip! 🔄&lt;/div&gt; &lt;/body&gt; &lt;/html&gt;</code>
+     </div>
+    </div><!-- Swing -->
+    <div class="card">
+     <h3>🎪 Swing</h3>
+     <div class="demo-box anim-swing">
+      🎪
+     </div>
+     <div class="code-section"><span class="code-label">HTML COMPLETO (copia tutto)</span> <code>&lt;!DOCTYPE html&gt; &lt;html&gt; &lt;head&gt; &lt;meta charset="UTF-8"&gt; &lt;title&gt;Swing Animation&lt;/title&gt; &lt;style&gt; body { margin: 0; height: 100vh; display: flex; align-items: center; justify-content: center; background: #0f172a; font-family: system-ui, sans-serif; } @keyframes swing { 0%, 100% { transform: rotate(0deg); } 20% { transform: rotate(15deg); } 40% { transform: rotate(-10deg); } 60% { transform: rotate(5deg); } 80% { transform: rotate(-5deg); } } .swing-box { width: 200px; height: 200px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; border-radius: 20px; animation: swing 2s ease-in-out infinite; } &lt;/style&gt; &lt;/head&gt; &lt;body&gt; &lt;div class="swing-box"&gt;Oscillazione! 🎪&lt;/div&gt; &lt;/body&gt; &lt;/html&gt;</code>
+     </div>
+    </div><!-- Zoom In/Out -->
+    <div class="card">
+     <h3>🔍 Zoom In/Out</h3>
+     <div class="demo-box anim-zoom">
+      🔍
+     </div>
+     <div class="code-section"><span class="code-label">HTML COMPLETO (copia tutto)</span> <code>&lt;!DOCTYPE html&gt; &lt;html&gt; &lt;head&gt; &lt;meta charset="UTF-8"&gt; &lt;title&gt;Zoom Animation&lt;/title&gt; &lt;style&gt; body { margin: 0; height: 100vh; display: flex; align-items: center; justify-content: center; background: #0f172a; font-family: system-ui, sans-serif; } @keyframes zoomInOut { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.5); } } .zoom-box { width: 200px; height: 200px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; border-radius: 20px; animation: zoomInOut 2s ease-in-out infinite; } &lt;/style&gt; &lt;/head&gt; &lt;body&gt; &lt;div class="zoom-box"&gt;Zoom! 🔍&lt;/div&gt; &lt;/body&gt; &lt;/html&gt;</code>
+     </div>
+    </div><!-- Slide Up -->
+    <div class="card">
+     <h3>⬆️ Slide Up</h3>
+     <div class="demo-box anim-slide-up">
+      ⬆️
+     </div>
+     <div class="code-section"><span class="code-label">HTML COMPLETO (copia tutto)</span> <code>&lt;!DOCTYPE html&gt; &lt;html&gt; &lt;head&gt; &lt;meta charset="UTF-8"&gt; &lt;title&gt;Slide Up Animation&lt;/title&gt; &lt;style&gt; body { margin: 0; height: 100vh; display: flex; align-items: center; justify-content: center; background: #0f172a; font-family: system-ui, sans-serif; } @keyframes slideUp { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-30px); } } .slide-up-box { width: 200px; height: 200px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; border-radius: 20px; animation: slideUp 2s ease-in-out infinite; } &lt;/style&gt; &lt;/head&gt; &lt;body&gt; &lt;div class="slide-up-box"&gt;Su! ⬆️&lt;/div&gt; &lt;/body&gt; &lt;/html&gt;</code>
+     </div>
+    </div><!-- Slide Down -->
+    <div class="card">
+     <h3>⬇️ Slide Down</h3>
+     <div class="demo-box anim-slide-down">
+      ⬇️
+     </div>
+     <div class="code-section"><span class="code-label">HTML COMPLETO (copia tutto)</span> <code>&lt;!DOCTYPE html&gt; &lt;html&gt; &lt;head&gt; &lt;meta charset="UTF-8"&gt; &lt;title&gt;Slide Down Animation&lt;/title&gt; &lt;style&gt; body { margin: 0; height: 100vh; display: flex; align-items: center; justify-content: center; background: #0f172a; font-family: system-ui, sans-serif; } @keyframes slideDown { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(30px); } } .slide-down-box { width: 200px; height: 200px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; border-radius: 20px; animation: slideDown 2s ease-in-out infinite; } &lt;/style&gt; &lt;/head&gt; &lt;body&gt; &lt;div class="slide-down-box"&gt;Giù! ⬇️&lt;/div&gt; &lt;/body&gt; &lt;/html&gt;</code>
+     </div>
+    </div><!-- Slide Left -->
+    <div class="card">
+     <h3>⬅️ Slide Left</h3>
+     <div class="demo-box anim-slide-left">
+      ⬅️
+     </div>
+     <div class="code-section"><span class="code-label">HTML COMPLETO (copia tutto)</span> <code>&lt;!DOCTYPE html&gt; &lt;html&gt; &lt;head&gt; &lt;meta charset="UTF-8"&gt; &lt;title&gt;Slide Left Animation&lt;/title&gt; &lt;style&gt; body { margin: 0; height: 100vh; display: flex; align-items: center; justify-content: center; background: #0f172a; font-family: system-ui, sans-serif; } @keyframes slideLeft { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(-30px); } } .slide-left-box { width: 200px; height: 200px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; border-radius: 20px; animation: slideLeft 2s ease-in-out infinite; } &lt;/style&gt; &lt;/head&gt; &lt;body&gt; &lt;div class="slide-left-box"&gt;Sinistra! ⬅️&lt;/div&gt; &lt;/body&gt; &lt;/html&gt;</code>
+     </div>
+    </div><!-- Rotate Y -->
+    <div class="card">
+     <h3>🔃 Rotate Y</h3>
+     <div class="demo-box anim-rotate-y">
+      🔃
+     </div>
+     <div class="code-section"><span class="code-label">HTML COMPLETO (copia tutto)</span> <code>&lt;!DOCTYPE html&gt; &lt;html&gt; &lt;head&gt; &lt;meta charset="UTF-8"&gt; &lt;title&gt;Rotate Y Animation&lt;/title&gt; &lt;style&gt; body { margin: 0; height: 100vh; display: flex; align-items: center; justify-content: center; background: #0f172a; font-family: system-ui, sans-serif; } @keyframes rotateY { from { transform: rotateY(0deg); } to { transform: rotateY(360deg); } } .rotate-y-box { width: 200px; height: 200px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; border-radius: 20px; animation: rotateY 3s linear infinite; } &lt;/style&gt; &lt;/head&gt; &lt;body&gt; &lt;div class="rotate-y-box"&gt;Y Axis! 🔃&lt;/div&gt; &lt;/body&gt; &lt;/html&gt;</code>
+     </div>
+    </div><!-- Rotate X -->
+    <div class="card">
+     <h3>↕️ Rotate X</h3>
+     <div class="demo-box anim-rotate-x">
+      ↕️
+     </div>
+     <div class="code-section"><span class="code-label">HTML COMPLETO (copia tutto)</span> <code>&lt;!DOCTYPE html&gt; &lt;html&gt; &lt;head&gt; &lt;meta charset="UTF-8"&gt; &lt;title&gt;Rotate X Animation&lt;/title&gt; &lt;style&gt; body { margin: 0; height: 100vh; display: flex; align-items: center; justify-content: center; background: #0f172a; font-family: system-ui, sans-serif; } @keyframes rotateX { from { transform: rotateX(0deg); } to { transform: rotateX(360deg); } } .rotate-x-box { width: 200px; height: 200px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; border-radius: 20px; animation: rotateX 3s linear infinite; } &lt;/style&gt; &lt;/head&gt; &lt;body&gt; &lt;div class="rotate-x-box"&gt;X Axis! ↕️&lt;/div&gt; &lt;/body&gt; &lt;/html&gt;</code>
+     </div>
+    </div><!-- Wobble -->
+    <div class="card">
+     <h3>🌊 Wobble</h3>
+     <div class="demo-box anim-wobble">
+      🌊
+     </div>
+     <div class="code-section"><span class="code-label">HTML COMPLETO (copia tutto)</span> <code>&lt;!DOCTYPE html&gt; &lt;html&gt; &lt;head&gt; &lt;meta charset="UTF-8"&gt; &lt;title&gt;Wobble Animation&lt;/title&gt; &lt;style&gt; body { margin: 0; height: 100vh; display: flex; align-items: center; justify-content: center; background: #0f172a; font-family: system-ui, sans-serif; } @keyframes wobble { 0%, 100% { transform: translateX(0) rotate(0deg); } 15% { transform: translateX(-25px) rotate(-5deg); } 30% { transform: translateX(20px) rotate(3deg); } 45% { transform: translateX(-15px) rotate(-3deg); } 60% { transform: translateX(10px) rotate(2deg); } 75% { transform: translateX(-5px) rotate(-1deg); } } .wobble-box { width: 200px; height: 200px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; border-radius: 20px; animation: wobble 2s ease-in-out infinite; } &lt;/style&gt; &lt;/head&gt; &lt;body&gt; &lt;div class="wobble-box"&gt;Ondeggio! 🌊&lt;/div&gt; &lt;/body&gt; &lt;/html&gt;</code>
+     </div>
+    </div><!-- Heartbeat -->
+    <div class="card">
+     <h3>❤️ Heartbeat</h3>
+     <div class="demo-box anim-heartbeat">
+      ❤️
+     </div>
+     <div class="code-section"><span class="code-label">HTML COMPLETO (copia tutto)</span> <code>&lt;!DOCTYPE html&gt; &lt;html&gt; &lt;head&gt; &lt;meta charset="UTF-8"&gt; &lt;title&gt;Heartbeat Animation&lt;/title&gt; &lt;style&gt; body { margin: 0; height: 100vh; display: flex; align-items: center; justify-content: center; background: #0f172a; font-family: system-ui, sans-serif; } @keyframes heartbeat { 0%, 100% { transform: scale(1); } 10%, 30% { transform: scale(1.1); } 20%, 40% { transform: scale(0.9); } } .heartbeat-box { width: 200px; height: 200px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; border-radius: 20px; animation: heartbeat 1.5s ease-in-out infinite; } &lt;/style&gt; &lt;/head&gt; &lt;body&gt; &lt;div class="heartbeat-box"&gt;Battito! ❤️&lt;/div&gt; &lt;/body&gt; &lt;/html&gt;</code>
+     </div>
+    </div><!-- Glow -->
+    <div class="card">
+     <h3>✨ Glow</h3>
+     <div class="demo-box anim-glow">
+      ✨
+     </div>
+     <div class="code-section"><span class="code-label">HTML COMPLETO (copia tutto)</span> <code>&lt;!DOCTYPE html&gt; &lt;html&gt; &lt;head&gt; &lt;meta charset="UTF-8"&gt; &lt;title&gt;Glow Animation&lt;/title&gt; &lt;style&gt; body { margin: 0; height: 100vh; display: flex; align-items: center; justify-content: center; background: #0f172a; font-family: system-ui, sans-serif; } @keyframes glow { 0%, 100% { box-shadow: 0 0 5px #667eea, 0 0 10px #667eea; } 50% { box-shadow: 0 0 20px #667eea, 0 0 30px #667eea, 0 0 40px #667eea; } } .glow-box { width: 200px; height: 200px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; border-radius: 20px; animation: glow 2s ease-in-out infinite; } &lt;/style&gt; &lt;/head&gt; &lt;body&gt; &lt;div class="glow-box"&gt;Bagliore! ✨&lt;/div&gt; &lt;/body&gt; &lt;/html&gt;</code>
+     </div>
+    </div><!-- Float -->
+    <div class="card">
+     <h3>🎈 Float</h3>
+     <div class="demo-box anim-float">
+      🎈
+     </div>
+     <div class="code-section"><span class="code-label">HTML COMPLETO (copia tutto)</span> <code>&lt;!DOCTYPE html&gt; &lt;html&gt; &lt;head&gt; &lt;meta charset="UTF-8"&gt; &lt;title&gt;Float Animation&lt;/title&gt; &lt;style&gt; body { margin: 0; height: 100vh; display: flex; align-items: center; justify-content: center; background: #0f172a; font-family: system-ui, sans-serif; } @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-20px); } } .float-box { width: 200px; height: 200px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; border-radius: 20px; animation: float 3s ease-in-out infinite; } &lt;/style&gt; &lt;/head&gt; &lt;body&gt; &lt;div class="float-box"&gt;Fluttuo! 🎈&lt;/div&gt; &lt;/body&gt; &lt;/html&gt;</code>
+     </div>
+    </div><!-- Spin -->
+    <div class="card">
+     <h3>⚙️ Spin</h3>
+     <div class="demo-box anim-spin">
+      ⚙️
+     </div>
+     <div class="code-section"><span class="code-label">HTML COMPLETO (copia tutto)</span> <code>&lt;!DOCTYPE html&gt; &lt;html&gt; &lt;head&gt; &lt;meta charset="UTF-8"&gt; &lt;title&gt;Spin Animation&lt;/title&gt; &lt;style&gt; body { margin: 0; height: 100vh; display: flex; align-items: center; justify-content: center; background: #0f172a; font-family: system-ui, sans-serif; } @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } } .spin-box { width: 200px; height: 200px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; border-radius: 20px; animation: spin 2s linear infinite; } &lt;/style&gt; &lt;/head&gt; &lt;body&gt; &lt;div class="spin-box"&gt;Rotazione! ⚙️&lt;/div&gt; &lt;/body&gt; &lt;/html&gt;</code>
+     </div>
+    </div><!-- Jello -->
+    <div class="card">
+     <h3>🍮 Jello</h3>
+     <div class="demo-box anim-jello">
+      🍮
+     </div>
+     <div class="code-section"><span class="code-label">HTML COMPLETO (copia tutto)</span> <code>&lt;!DOCTYPE html&gt; &lt;html&gt; &lt;head&gt; &lt;meta charset="UTF-8"&gt; &lt;title&gt;Jello Animation&lt;/title&gt; &lt;style&gt; body { margin: 0; height: 100vh; display: flex; align-items: center; justify-content: center; background: #0f172a; font-family: system-ui, sans-serif; } @keyframes jello { 0%, 100% { transform: skewX(0deg) skewY(0deg); } 30% { transform: skewX(25deg) skewY(25deg); } 40% { transform: skewX(-15deg) skewY(-15deg); } 50% { transform: skewX(15deg) skewY(15deg); } 65% { transform: skewX(-5deg) skewY(-5deg); } 75% { transform: skewX(5deg) skewY(5deg); } } .jello-box { width: 200px; height: 200px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; border-radius: 20px; animation: jello 2s ease-in-out infinite; } &lt;/style&gt; &lt;/head&gt; &lt;body&gt; &lt;div class="jello-box"&gt;Gelatina! 🍮&lt;/div&gt; &lt;/body&gt; &lt;/html&gt;</code>
+     </div>
+    </div>
+   </div>
+   <footer>
+    <p>💡 Seleziona tutto il codice HTML e copialo (Ctrl+C o Cmd+C) → Incollalo in un file .html → Aprilo nel browser!</p>
+   </footer>
+      
+  </div>
+     <script>
+          // breadcrumbs
+const pageData = {
+  '/': {
+    label: 'Home',
+    icon: '🏠'
+  },
+  '/anime/': {
+    label: 'Anime',
+    icon: '🌀'
+  }
+  // Aggiungi qui altre lingue quando le crei:
+  // '/cinese/': { label: 'Cinese', icon: '🇨🇳' },
+  // '/coreano/': { label: 'Coreano', icon: '🇰🇷' },
+};
+
+function createBreadcrumbs(currentPath) {
+  const breadcrumbContainer = document.getElementById('breadcrumb');
+  if (!breadcrumbContainer) return;
+  
+  breadcrumbContainer.innerHTML = '';
+
+  const segments = getPathSegments(currentPath);
+
+  segments.forEach((segment, index) => {
+    const isLast = index === segments.length - 1;
+    const segmentData = pageData[segment.path];
+    if (!segmentData) return;
+
+    const li = document.createElement('li');
+
+    if (isLast) {
+      li.innerHTML = `
+        <span class="current">
+          <span>${segmentData.icon}</span>
+          <span>${segmentData.label}</span>
+        </span>
+      `;
+    } else {
+      li.innerHTML = `
+        <a href="${mapUrlToFile(segment.path)}">
+          <span>${segmentData.icon}</span>
+          <span>${segmentData.label}</span>
+        </a>
+      `;
+    }
+
+    breadcrumbContainer.appendChild(li);
+
+    if (!isLast) {
+      const separator = document.createElement('span');
+      separator.className = 'breadcrumb-separator';
+      separator.textContent = '›';
+      breadcrumbContainer.appendChild(separator);
+    }
+  });
+}
+
+function mapUrlToFile(path) {
+  switch (path) {
+    case '/': return 'index.html';
+    case '/anime/': return 'anime-complete.html';
+    default: return 'index.html';
+  }
+}
+
+function getPathSegments(path) {
+  if (path === '/') {
+    return [{ path: '/', label: 'Home' }];
+  }
+  const segments = [];
+  const parts = path.split('/').filter(part => part !== '');
+  let currentPath = '';
+  segments.push({ path: '/', label: 'Home' });
+  parts.forEach(part => {
+    currentPath += '/' + part;
+    segments.push({ path: currentPath + '/', label: part });
+  });
+  return segments;
+}
+
+// AVVIA breadcrumbs Home
+createBreadcrumbs('/anime');
+         </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9aadcc4370825267',t:'MTc2NTIxMzAwNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

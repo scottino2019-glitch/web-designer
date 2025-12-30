@@ -1,0 +1,821 @@
+<!doctype html>
+<html lang="it">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Designer Toolkit</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+      padding: 80px;
+    }
+    
+    * {
+      box-sizing: border-box;
+    }
+    
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .tool-card {
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .tool-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    
+    .gradient-preview {
+      transition: all 0.3s ease;
+    }
+    
+    .color-box {
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    
+    .color-box:hover {
+      transform: scale(1.05);
+    }
+    
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      background: transparent;
+      cursor: pointer;
+    }
+    
+    input[type="range"]::-webkit-slider-track {
+      background-color: #e2e8f0;
+      height: 0.5rem;
+      border-radius: 0.5rem;
+    }
+    
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      margin-top: -4px;
+      background-color: #3b82f6;
+      height: 1.25rem;
+      width: 1.25rem;
+      border-radius: 50%;
+    }
+    
+    input[type="range"]::-moz-range-track {
+      background-color: #e2e8f0;
+      height: 0.5rem;
+      border-radius: 0.5rem;
+    }
+    
+    input[type="range"]::-moz-range-thumb {
+      background-color: #3b82f6;
+      height: 1.25rem;
+      width: 1.25rem;
+      border-radius: 50%;
+      border: none;
+    }
+    
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      overflow-y: auto;
+    }
+    
+    .modal.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    
+    .modal-content {
+      background: white;
+      border-radius: 1rem;
+      max-width: 900px;
+      width: 100%;
+      max-height: 90%;
+      overflow-y: auto;
+    }
+    
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+    
+    .modal.active .modal-content {
+      animation: fadeIn 0.2s ease-out;
+    }
+      /* BREADCRUMBS */
+    .breadcrumb-container {
+      padding: 12px 24px;
+      background: #f9fafb;
+    }
+    .breadcrumb-nav {
+      display: flex;
+      align-items: center;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      font-size: 14px;
+    }
+    .breadcrumb-nav li {
+      display: flex;
+      align-items: center;
+    }
+    .breadcrumb-nav a {
+      color: #3b82f6;
+      text-decoration: none;
+      padding: 6px 10px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .breadcrumb-nav a:hover {
+      background: #eff6ff;
+      color: #1d4ed8;
+    }
+    .breadcrumb-nav .current {
+      color: #374151;
+      font-weight: 600;
+      padding: 6px 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .breadcrumb-separator {
+      margin: 0 8px;
+      color: #9ca3af;
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="w-full min-h-full" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+  <div class="w-full min-h-full p-8">
+        <nav class="navbar">
+    <div class="navbar-header">
+    <div class="breadcrumb-container">
+      <nav aria-label="Breadcrumb">
+        <ol id="breadcrumb" class="breadcrumb-nav"></ol>
+      </nav>
+    </div>
+  </nav>   <div class="w-full max-w-7xl mx-auto"><!-- Header -->
+    <header class="text-center mb-12">
+     <h1 id="mainTitle" class="text-5xl font-bold mb-4 text-white">Designer Toolkit</h1>
+     <p class="text-xl text-white opacity-90">Strumenti essenziali per web designer e grafici</p>
+    </header><!-- Tools Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"><!-- Color Palette Generator -->
+     <div class="tool-card rounded-2xl p-6 shadow-xl" style="background-color: #ffffff;" data-tool="color-palette">
+      <div class="w-16 h-16 rounded-xl mb-4 flex items-center justify-center" style="background-color: #ef4444;">
+       <svg width="32" height="32" viewbox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="10"></circle> <path d="M12 2a10 10 0 0 0 0 20 4 4 0 0 1 0-8h8"></path>
+       </svg>
+      </div>
+      <h3 class="text-xl font-bold mb-2" style="color: #1e293b;">Palette Colori</h3>
+      <p class="text-sm" style="color: #64748b;">Genera palette di colori armoniose con esadecimali</p>
+     </div><!-- Gradient Generator -->
+     <div class="tool-card rounded-2xl p-6 shadow-xl" style="background-color: #ffffff;" data-tool="gradient">
+      <div class="w-16 h-16 rounded-xl mb-4 flex items-center justify-center" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+       <svg width="32" height="32" viewbox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"></rect> <line x1="3" y1="9" x2="21" y2="9"></line> <line x1="9" y1="21" x2="9" y2="9"></line>
+       </svg>
+      </div>
+      <h3 class="text-xl font-bold mb-2" style="color: #1e293b;">Generatore Gradienti</h3>
+      <p class="text-sm" style="color: #64748b;">Crea gradienti CSS personalizzati</p>
+     </div><!-- Font Pairing -->
+     <div class="tool-card rounded-2xl p-6 shadow-xl" style="background-color: #ffffff;" data-tool="font-pairing">
+      <div class="w-16 h-16 rounded-xl mb-4 flex items-center justify-center" style="background-color: #8b5cf6;">
+       <svg width="32" height="32" viewbox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><polyline points="4 7 4 4 20 4 20 7"></polyline> <line x1="9" y1="20" x2="15" y2="20"></line> <line x1="12" y1="4" x2="12" y2="20"></line>
+       </svg>
+      </div>
+      <h3 class="text-xl font-bold mb-2" style="color: #1e293b;">Abbinamento Font</h3>
+      <p class="text-sm" style="color: #64748b;">Scopri abbinamenti perfetti di Google Fonts</p>
+     </div><!-- Shadow Generator -->
+     <div class="tool-card rounded-2xl p-6 shadow-xl" style="background-color: #ffffff;" data-tool="shadow">
+      <div class="w-16 h-16 rounded-xl mb-4 flex items-center justify-center" style="background-color: #06b6d4;">
+       <svg width="32" height="32" viewbox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect> <rect x="14" y="3" width="7" height="7"></rect> <rect x="14" y="14" width="7" height="7"></rect> <rect x="3" y="14" width="7" height="7"></rect>
+       </svg>
+      </div>
+      <h3 class="text-xl font-bold mb-2" style="color: #1e293b;">Generatore Ombre</h3>
+      <p class="text-sm" style="color: #64748b;">Crea ombre CSS realistiche</p>
+     </div><!-- Spacing Calculator -->
+     <div class="tool-card rounded-2xl p-6 shadow-xl" style="background-color: #ffffff;" data-tool="spacing">
+      <div class="w-16 h-16 rounded-xl mb-4 flex items-center justify-center" style="background-color: #10b981;">
+       <svg width="32" height="32" viewbox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><line x1="4" y1="12" x2="20" y2="12"></line> <polyline points="4 8 4 12 4 16"></polyline> <polyline points="20 8 20 12 20 16"></polyline>
+       </svg>
+      </div>
+      <h3 class="text-xl font-bold mb-2" style="color: #1e293b;">Scala Spaziatura</h3>
+      <p class="text-sm" style="color: #64748b;">Calcola scale di spaziatura armoniose</p>
+     </div><!-- Contrast Checker -->
+     <div class="tool-card rounded-2xl p-6 shadow-xl" style="background-color: #ffffff;" data-tool="contrast">
+      <div class="w-16 h-16 rounded-xl mb-4 flex items-center justify-center" style="background-color: #f59e0b;">
+       <svg width="32" height="32" viewbox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="10"></circle> <path d="M12 2a10 10 0 0 1 0 20z"></path>
+       </svg>
+      </div>
+      <h3 class="text-xl font-bold mb-2" style="color: #1e293b;">Verifica Contrasto</h3>
+      <p class="text-sm" style="color: #64748b;">Testa accessibilità WCAG dei colori</p>
+     </div>
+    </div>
+   </div>
+  </div><!-- Color Palette Modal -->
+  <div id="colorPaletteModal" class="modal">
+   <div class="modal-content p-8">
+    <div class="flex justify-between items-center mb-6">
+     <h2 class="text-3xl font-bold" style="color: #1e293b;">Generatore Palette Colori</h2><button class="close-modal text-4xl" style="color: #64748b;">×</button>
+    </div>
+    <div class="mb-6"><label class="block text-sm font-semibold mb-2" style="color: #475569;">Colore Base</label>
+     <div class="flex gap-4"><input type="color" id="baseColor" value="#3b82f6" class="w-20 h-12 rounded-lg cursor-pointer border-2" style="border-color: #e2e8f0;"> <button id="generatePalette" class="px-6 py-2 rounded-lg font-semibold text-white" style="background-color: #3b82f6;">Genera Palette</button>
+     </div>
+    </div>
+    <div id="paletteResult" class="grid grid-cols-5 gap-4"></div>
+   </div>
+  </div><!-- Gradient Modal -->
+  <div id="gradientModal" class="modal">
+   <div class="modal-content p-8">
+    <div class="flex justify-between items-center mb-6">
+     <h2 class="text-3xl font-bold" style="color: #1e293b;">Generatore Gradienti</h2><button class="close-modal text-4xl" style="color: #64748b;">×</button>
+    </div>
+    <div class="space-y-4 mb-6">
+     <div class="flex gap-4">
+      <div class="flex-1"><label class="block text-sm font-semibold mb-2" style="color: #475569;">Colore 1</label> <input type="color" id="gradColor1" value="#667eea" class="w-full h-12 rounded-lg cursor-pointer border-2" style="border-color: #e2e8f0;">
+      </div>
+      <div class="flex-1"><label class="block text-sm font-semibold mb-2" style="color: #475569;">Colore 2</label> <input type="color" id="gradColor2" value="#764ba2" class="w-full h-12 rounded-lg cursor-pointer border-2" style="border-color: #e2e8f0;">
+      </div>
+     </div>
+     <div><label class="block text-sm font-semibold mb-2" style="color: #475569;">Angolo: <span id="angleValue">135</span>°</label> <input type="range" id="gradAngle" min="0" max="360" value="135" class="w-full">
+     </div>
+    </div>
+    <div id="gradientPreview" class="w-full h-48 rounded-xl mb-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+    <div class="rounded-lg p-4" style="background-color: #f1f5f9;"><label class="block text-sm font-semibold mb-2" style="color: #475569;">Codice CSS</label> <code id="gradientCode" class="text-sm block" style="color: #1e293b;">background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);</code>
+    </div><button id="copyGradient" class="mt-4 w-full px-6 py-3 rounded-lg font-semibold text-white" style="background-color: #3b82f6;">Copia Codice</button>
+    <div id="gradientCopyMessage" class="mt-2 text-center text-sm font-semibold" style="color: #10b981; display: none;">
+     ✓ Copiato!
+    </div>
+   </div>
+  </div><!-- Font Pairing Modal -->
+  <div id="fontPairingModal" class="modal">
+   <div class="modal-content p-8">
+    <div class="flex justify-between items-center mb-6">
+     <h2 class="text-3xl font-bold" style="color: #1e293b;">Abbinamento Font</h2><button class="close-modal text-4xl" style="color: #64748b;">×</button>
+    </div>
+    <div id="fontPairingResult" class="space-y-6"></div><button id="randomFontPairing" class="mt-6 w-full px-6 py-3 rounded-lg font-semibold text-white" style="background-color: #8b5cf6;">Genera Nuova Combinazione</button>
+   </div>
+  </div><!-- Shadow Modal -->
+  <div id="shadowModal" class="modal">
+   <div class="modal-content p-8">
+    <div class="flex justify-between items-center mb-6">
+     <h2 class="text-3xl font-bold" style="color: #1e293b;">Generatore Ombre</h2><button class="close-modal text-4xl" style="color: #64748b;">×</button>
+    </div>
+    <div class="space-y-4 mb-6">
+     <div><label class="block text-sm font-semibold mb-2" style="color: #475569;">Offset X: <span id="shadowXValue">0</span>px</label> <input type="range" id="shadowX" min="-50" max="50" value="0" class="w-full">
+     </div>
+     <div><label class="block text-sm font-semibold mb-2" style="color: #475569;">Offset Y: <span id="shadowYValue">10</span>px</label> <input type="range" id="shadowY" min="-50" max="50" value="10" class="w-full">
+     </div>
+     <div><label class="block text-sm font-semibold mb-2" style="color: #475569;">Blur: <span id="shadowBlurValue">25</span>px</label> <input type="range" id="shadowBlur" min="0" max="100" value="25" class="w-full">
+     </div>
+     <div><label class="block text-sm font-semibold mb-2" style="color: #475569;">Spread: <span id="shadowSpreadValue">0</span>px</label> <input type="range" id="shadowSpread" min="-50" max="50" value="0" class="w-full">
+     </div>
+     <div><label class="block text-sm font-semibold mb-2" style="color: #475569;">Colore Ombra</label> <input type="color" id="shadowColor" value="#000000" class="w-20 h-12 rounded-lg cursor-pointer border-2" style="border-color: #e2e8f0;">
+     </div>
+     <div><label class="block text-sm font-semibold mb-2" style="color: #475569;">Opacità: <span id="shadowOpacityValue">20</span>%</label> <input type="range" id="shadowOpacity" min="0" max="100" value="20" class="w-full">
+     </div>
+    </div>
+    <div class="flex items-center justify-center p-12 rounded-xl mb-4" style="background-color: #f1f5f9;">
+     <div id="shadowPreview" class="w-48 h-48 rounded-xl" style="background-color: #ffffff; box-shadow: 0 10px 25px 0 rgba(0, 0, 0, 0.2);"></div>
+    </div>
+    <div class="rounded-lg p-4" style="background-color: #f1f5f9;"><label class="block text-sm font-semibold mb-2" style="color: #475569;">Codice CSS</label> <code id="shadowCode" class="text-sm block" style="color: #1e293b;">box-shadow: 0px 10px 25px 0px rgba(0, 0, 0, 0.2);</code>
+    </div><button id="copyShadow" class="mt-4 w-full px-6 py-3 rounded-lg font-semibold text-white" style="background-color: #06b6d4;">Copia Codice</button>
+    <div id="shadowCopyMessage" class="mt-2 text-center text-sm font-semibold" style="color: #10b981; display: none;">
+     ✓ Copiato!
+    </div>
+   </div>
+  </div><!-- Spacing Modal -->
+  <div id="spacingModal" class="modal">
+   <div class="modal-content p-8">
+    <div class="flex justify-between items-center mb-6">
+     <h2 class="text-3xl font-bold" style="color: #1e293b;">Scala Spaziatura</h2><button class="close-modal text-4xl" style="color: #64748b;">×</button>
+    </div>
+    <div class="mb-6"><label class="block text-sm font-semibold mb-2" style="color: #475569;">Base (px): <span id="spacingBaseValue">16</span></label> <input type="range" id="spacingBase" min="8" max="32" value="16" class="w-full">
+    </div>
+    <div id="spacingResult" class="space-y-3"></div>
+   </div>
+  </div><!-- Contrast Modal -->
+  <div id="contrastModal" class="modal">
+   <div class="modal-content p-8">
+    <div class="flex justify-between items-center mb-6">
+     <h2 class="text-3xl font-bold" style="color: #1e293b;">Verifica Contrasto</h2><button class="close-modal text-4xl" style="color: #64748b;">×</button>
+    </div>
+    <div class="grid grid-cols-2 gap-4 mb-6">
+     <div><label class="block text-sm font-semibold mb-2" style="color: #475569;">Colore Testo</label> <input type="color" id="contrastTextColor" value="#000000" class="w-full h-12 rounded-lg cursor-pointer border-2" style="border-color: #e2e8f0;">
+     </div>
+     <div><label class="block text-sm font-semibold mb-2" style="color: #475569;">Colore Sfondo</label> <input type="color" id="contrastBgColor" value="#ffffff" class="w-full h-12 rounded-lg cursor-pointer border-2" style="border-color: #e2e8f0;">
+     </div>
+    </div>
+    <div id="contrastPreview" class="p-8 rounded-xl mb-6 text-center" style="background-color: #ffffff; color: #000000;">
+     <p class="text-2xl font-bold mb-2">Esempio di Testo Grande</p>
+     <p class="text-base">Esempio di testo normale per verificare la leggibilità</p>
+    </div>
+    <div id="contrastResult" class="space-y-4"></div>
+   </div>
+  </div>
+  <script>
+    const defaultConfig = {
+      main_title: 'Designer Toolkit',
+      background_color: '#667eea',
+      secondary_color: '#764ba2',
+      text_color: '#ffffff',
+      card_color: '#ffffff',
+      accent_color: '#3b82f6',
+      font_family: 'ui-sans-serif, system-ui, sans-serif',
+      font_size: 16
+    };
+
+    async function onConfigChange(config) {
+      const customFont = config.font_family || defaultConfig.font_family;
+      const baseFontSize = config.font_size || defaultConfig.font_size;
+      const baseFontStack = 'ui-sans-serif, system-ui, sans-serif';
+      
+      document.getElementById('mainTitle').textContent = config.main_title || defaultConfig.main_title;
+      document.getElementById('mainTitle').style.fontFamily = `${customFont}, ${baseFontStack}`;
+      document.getElementById('mainTitle').style.fontSize = `${baseFontSize * 3.125}px`;
+      document.getElementById('mainTitle').style.color = config.text_color || defaultConfig.text_color;
+      
+      document.body.style.background = `linear-gradient(135deg, ${config.background_color || defaultConfig.background_color} 0%, ${config.secondary_color || defaultConfig.secondary_color} 100%)`;
+      
+      document.querySelectorAll('header p').forEach(el => {
+        el.style.fontFamily = `${customFont}, ${baseFontStack}`;
+        el.style.fontSize = `${baseFontSize * 1.25}px`;
+        el.style.color = config.text_color || defaultConfig.text_color;
+      });
+      
+      document.querySelectorAll('.tool-card').forEach(card => {
+        card.style.backgroundColor = config.card_color || defaultConfig.card_color;
+      });
+    }
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities: (config) => ({
+          recolorables: [
+            {
+              get: () => config.background_color || defaultConfig.background_color,
+              set: (value) => {
+                config.background_color = value;
+                window.elementSdk.setConfig({ background_color: value });
+              }
+            },
+            {
+              get: () => config.card_color || defaultConfig.card_color,
+              set: (value) => {
+                config.card_color = value;
+                window.elementSdk.setConfig({ card_color: value });
+              }
+            },
+            {
+              get: () => config.text_color || defaultConfig.text_color,
+              set: (value) => {
+                config.text_color = value;
+                window.elementSdk.setConfig({ text_color: value });
+              }
+            },
+            {
+              get: () => config.accent_color || defaultConfig.accent_color,
+              set: (value) => {
+                config.accent_color = value;
+                window.elementSdk.setConfig({ accent_color: value });
+              }
+            },
+            {
+              get: () => config.secondary_color || defaultConfig.secondary_color,
+              set: (value) => {
+                config.secondary_color = value;
+                window.elementSdk.setConfig({ secondary_color: value });
+              }
+            }
+          ],
+          borderables: [],
+          fontEditable: {
+            get: () => config.font_family || defaultConfig.font_family,
+            set: (value) => {
+              config.font_family = value;
+              window.elementSdk.setConfig({ font_family: value });
+            }
+          },
+          fontSizeable: {
+            get: () => config.font_size || defaultConfig.font_size,
+            set: (value) => {
+              config.font_size = value;
+              window.elementSdk.setConfig({ font_size: value });
+            }
+          }
+        }),
+        mapToEditPanelValues: (config) => new Map([
+          ['main_title', config.main_title || defaultConfig.main_title]
+        ])
+      });
+    }
+
+    // Modal functionality
+    document.querySelectorAll('.tool-card').forEach(card => {
+      card.addEventListener('click', (e) => {
+        const tool = e.currentTarget.getAttribute('data-tool');
+        const modalId = tool.split('-').map((word, i) => i === 0 ? word : word.charAt(0).toUpperCase() + word.slice(1)).join('') + 'Modal';
+        const modal = document.getElementById(modalId);
+        if (modal) {
+          modal.classList.add('active');
+          
+          // Initialize tool
+          if (tool === 'color-palette') initColorPalette();
+          if (tool === 'font-pairing') initFontPairing();
+          if (tool === 'spacing') updateSpacingScale();
+          if (tool === 'contrast') updateContrast();
+        }
+      });
+    });
+
+    document.querySelectorAll('.close-modal').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.target.closest('.modal').classList.remove('active');
+      });
+    });
+
+    document.querySelectorAll('.modal').forEach(modal => {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          modal.classList.remove('active');
+        }
+      });
+    });
+
+    // Color Palette Generator
+    function initColorPalette() {
+      generateColorPalette();
+    }
+
+    document.getElementById('generatePalette').addEventListener('click', generateColorPalette);
+
+    function generateColorPalette() {
+      const baseColor = document.getElementById('baseColor').value;
+      const result = document.getElementById('paletteResult');
+      result.innerHTML = '';
+      
+      const colors = [
+        { name: 'Base', color: baseColor },
+        { name: 'Chiaro', color: lightenColor(baseColor, 20) },
+        { name: 'Molto Chiaro', color: lightenColor(baseColor, 40) },
+        { name: 'Scuro', color: darkenColor(baseColor, 20) },
+        { name: 'Molto Scuro', color: darkenColor(baseColor, 40) }
+      ];
+      
+      colors.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'text-center';
+        div.innerHTML = `
+          <div class="color-box h-24 rounded-lg mb-2 shadow-md" style="background-color: ${item.color};"></div>
+          <p class="text-sm font-semibold" style="color: #1e293b;">${item.name}</p>
+          <p class="text-xs font-mono" style="color: #64748b;">${item.color}</p>
+        `;
+        div.querySelector('.color-box').addEventListener('click', () => {
+          copyToClipboard(item.color, div);
+        });
+        result.appendChild(div);
+      });
+    }
+
+    function lightenColor(hex, percent) {
+      const num = parseInt(hex.replace('#', ''), 16);
+      const amt = Math.round(2.55 * percent);
+      const R = Math.min(255, (num >> 16) + amt);
+      const G = Math.min(255, (num >> 8 & 0x00FF) + amt);
+      const B = Math.min(255, (num & 0x0000FF) + amt);
+      return '#' + (0x1000000 + R * 0x10000 + G * 0x100 + B).toString(16).slice(1);
+    }
+
+    function darkenColor(hex, percent) {
+      const num = parseInt(hex.replace('#', ''), 16);
+      const amt = Math.round(2.55 * percent);
+      const R = Math.max(0, (num >> 16) - amt);
+      const G = Math.max(0, (num >> 8 & 0x00FF) - amt);
+      const B = Math.max(0, (num & 0x0000FF) - amt);
+      return '#' + (0x1000000 + R * 0x10000 + G * 0x100 + B).toString(16).slice(1);
+    }
+
+    // Gradient Generator
+    function updateGradient() {
+      const color1 = document.getElementById('gradColor1').value;
+      const color2 = document.getElementById('gradColor2').value;
+      const angle = document.getElementById('gradAngle').value;
+      
+      document.getElementById('angleValue').textContent = angle;
+      
+      const gradient = `linear-gradient(${angle}deg, ${color1} 0%, ${color2} 100%)`;
+      document.getElementById('gradientPreview').style.background = gradient;
+      document.getElementById('gradientCode').textContent = `background: ${gradient};`;
+    }
+
+    document.getElementById('gradColor1').addEventListener('input', updateGradient);
+    document.getElementById('gradColor2').addEventListener('input', updateGradient);
+    document.getElementById('gradAngle').addEventListener('input', updateGradient);
+
+    document.getElementById('copyGradient').addEventListener('click', () => {
+      const code = document.getElementById('gradientCode').textContent;
+      copyToClipboard(code, document.getElementById('copyGradient'), 'gradientCopyMessage');
+    });
+
+    // Font Pairing
+    const fontPairs = [
+      { heading: 'Playfair Display', body: 'Source Sans Pro' },
+      { heading: 'Montserrat', body: 'Merriweather' },
+      { heading: 'Oswald', body: 'Lato' },
+      { heading: 'Raleway', body: 'Open Sans' },
+      { heading: 'Bebas Neue', body: 'Roboto' },
+      { heading: 'Abril Fatface', body: 'Poppins' }
+    ];
+
+    function initFontPairing() {
+      const pair = fontPairs[Math.floor(Math.random() * fontPairs.length)];
+      displayFontPair(pair);
+    }
+
+    function displayFontPair(pair) {
+      const result = document.getElementById('fontPairingResult');
+      result.innerHTML = `
+        <div class="rounded-xl p-8" style="background-color: #f1f5f9;">
+          <h3 class="text-4xl font-bold mb-4" style="font-family: '${pair.heading}', serif; color: #1e293b;">
+            ${pair.heading}
+          </h3>
+          <p class="text-lg mb-4" style="font-family: '${pair.body}', sans-serif; color: #64748b;">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          </p>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="rounded-lg p-4" style="background-color: #ffffff;">
+              <p class="text-sm font-semibold mb-1" style="color: #475569;">Heading</p>
+              <p class="text-sm font-mono" style="color: #1e293b;">${pair.heading}</p>
+            </div>
+            <div class="rounded-lg p-4" style="background-color: #ffffff;">
+              <p class="text-sm font-semibold mb-1" style="color: #475569;">Body</p>
+              <p class="text-sm font-mono" style="color: #1e293b;">${pair.body}</p>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      const link = document.createElement('link');
+      link.href = `https://fonts.googleapis.com/css2?family=${pair.heading.replace(' ', '+')}:wght@400;700&family=${pair.body.replace(' ', '+')}:wght@400;700&display=swap`;
+      link.rel = 'stylesheet';
+      document.head.appendChild(link);
+    }
+
+    document.getElementById('randomFontPairing').addEventListener('click', initFontPairing);
+
+    // Shadow Generator
+    function updateShadow() {
+      const x = document.getElementById('shadowX').value;
+      const y = document.getElementById('shadowY').value;
+      const blur = document.getElementById('shadowBlur').value;
+      const spread = document.getElementById('shadowSpread').value;
+      const color = document.getElementById('shadowColor').value;
+      const opacity = document.getElementById('shadowOpacity').value / 100;
+      
+      document.getElementById('shadowXValue').textContent = x;
+      document.getElementById('shadowYValue').textContent = y;
+      document.getElementById('shadowBlurValue').textContent = blur;
+      document.getElementById('shadowSpreadValue').textContent = spread;
+      document.getElementById('shadowOpacityValue').textContent = document.getElementById('shadowOpacity').value;
+      
+      const rgb = hexToRgb(color);
+      const shadow = `${x}px ${y}px ${blur}px ${spread}px rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${opacity})`;
+      
+      document.getElementById('shadowPreview').style.boxShadow = shadow;
+      document.getElementById('shadowCode').textContent = `box-shadow: ${shadow};`;
+    }
+
+    function hexToRgb(hex) {
+      const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+      return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+      } : { r: 0, g: 0, b: 0 };
+    }
+
+    document.getElementById('shadowX').addEventListener('input', updateShadow);
+    document.getElementById('shadowY').addEventListener('input', updateShadow);
+    document.getElementById('shadowBlur').addEventListener('input', updateShadow);
+    document.getElementById('shadowSpread').addEventListener('input', updateShadow);
+    document.getElementById('shadowColor').addEventListener('input', updateShadow);
+    document.getElementById('shadowOpacity').addEventListener('input', updateShadow);
+
+    document.getElementById('copyShadow').addEventListener('click', () => {
+      const code = document.getElementById('shadowCode').textContent;
+      copyToClipboard(code, document.getElementById('copyShadow'), 'shadowCopyMessage');
+    });
+
+    // Spacing Calculator
+    function updateSpacingScale() {
+      const base = document.getElementById('spacingBase').value;
+      document.getElementById('spacingBaseValue').textContent = base;
+      
+      const result = document.getElementById('spacingResult');
+      result.innerHTML = '';
+      
+      const multipliers = [0.25, 0.5, 0.75, 1, 1.5, 2, 3, 4, 6, 8];
+      
+      multipliers.forEach(mult => {
+        const value = Math.round(base * mult);
+        const div = document.createElement('div');
+        div.className = 'flex items-center gap-4 p-4 rounded-lg';
+        div.style.backgroundColor = '#f1f5f9';
+        div.innerHTML = `
+          <div style="width: ${value}px; height: 40px; background-color: #3b82f6; border-radius: 0.5rem;"></div>
+          <div class="flex-1">
+            <p class="font-semibold" style="color: #1e293b;">${value}px</p>
+            <p class="text-sm" style="color: #64748b;">Base × ${mult}</p>
+          </div>
+        `;
+        result.appendChild(div);
+      });
+    }
+
+    document.getElementById('spacingBase').addEventListener('input', updateSpacingScale);
+
+    // Contrast Checker
+    function updateContrast() {
+      const textColor = document.getElementById('contrastTextColor').value;
+      const bgColor = document.getElementById('contrastBgColor').value;
+      
+      const preview = document.getElementById('contrastPreview');
+      preview.style.color = textColor;
+      preview.style.backgroundColor = bgColor;
+      
+      const ratio = getContrastRatio(textColor, bgColor);
+      
+      const result = document.getElementById('contrastResult');
+      result.innerHTML = `
+        <div class="rounded-xl p-6" style="background-color: #f1f5f9;">
+          <h3 class="text-2xl font-bold mb-4" style="color: #1e293b;">Rapporto di Contrasto: ${ratio.toFixed(2)}:1</h3>
+          
+          <div class="space-y-3">
+            <div class="flex items-center justify-between p-3 rounded-lg" style="background-color: ${ratio >= 4.5 ? '#d1fae5' : '#fee2e2'};">
+              <span class="font-semibold" style="color: #1e293b;">Testo Normale (AA)</span>
+              <span class="font-bold" style="color: ${ratio >= 4.5 ? '#10b981' : '#ef4444'};">${ratio >= 4.5 ? '✓ Pass' : '✗ Fail'}</span>
+            </div>
+            
+            <div class="flex items-center justify-between p-3 rounded-lg" style="background-color: ${ratio >= 3 ? '#d1fae5' : '#fee2e2'};">
+              <span class="font-semibold" style="color: #1e293b;">Testo Grande (AA)</span>
+              <span class="font-bold" style="color: ${ratio >= 3 ? '#10b981' : '#ef4444'};">${ratio >= 3 ? '✓ Pass' : '✗ Fail'}</span>
+            </div>
+            
+            <div class="flex items-center justify-between p-3 rounded-lg" style="background-color: ${ratio >= 7 ? '#d1fae5' : '#fee2e2'};">
+              <span class="font-semibold" style="color: #1e293b;">Testo Normale (AAA)</span>
+              <span class="font-bold" style="color: ${ratio >= 7 ? '#10b981' : '#ef4444'};">${ratio >= 7 ? '✓ Pass' : '✗ Fail'}</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function getContrastRatio(color1, color2) {
+      const lum1 = getLuminance(color1);
+      const lum2 = getLuminance(color2);
+      const brightest = Math.max(lum1, lum2);
+      const darkest = Math.min(lum1, lum2);
+      return (brightest + 0.05) / (darkest + 0.05);
+    }
+
+    function getLuminance(hex) {
+      const rgb = hexToRgb(hex);
+      const a = [rgb.r, rgb.g, rgb.b].map(v => {
+        v /= 255;
+        return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+      });
+      return 0.2126 * a[0] + 0.7152 * a[1] + 0.0722 * a[2];
+    }
+
+    document.getElementById('contrastTextColor').addEventListener('input', updateContrast);
+    document.getElementById('contrastBgColor').addEventListener('input', updateContrast);
+
+    // Copy to clipboard helper
+    function copyToClipboard(text, button, messageId) {
+      navigator.clipboard.writeText(text).then(() => {
+        if (messageId) {
+          const message = document.getElementById(messageId);
+          message.style.display = 'block';
+          setTimeout(() => {
+            message.style.display = 'none';
+          }, 2000);
+        } else {
+          const original = button.innerHTML;
+          button.innerHTML = '✓ Copiato!';
+          setTimeout(() => {
+            button.innerHTML = original;
+          }, 2000);
+        }
+      });
+    }
+           // breadcrumbs
+const pageData = {
+  '/': {
+    label: 'Home',
+    icon: '🏠'
+  },
+  '/toolkit/': {
+    label: 'Toolkit',
+    icon: '📐'
+  }
+  // Aggiungi qui altre lingue quando le crei:
+  // '/cinese/': { label: 'Cinese', icon: '🇨🇳' },
+  // '/coreano/': { label: 'Coreano', icon: '🇰🇷' },
+};
+
+function createBreadcrumbs(currentPath) {
+  const breadcrumbContainer = document.getElementById('breadcrumb');
+  if (!breadcrumbContainer) return;
+  
+  breadcrumbContainer.innerHTML = '';
+
+  const segments = getPathSegments(currentPath);
+
+  segments.forEach((segment, index) => {
+    const isLast = index === segments.length - 1;
+    const segmentData = pageData[segment.path];
+    if (!segmentData) return;
+
+    const li = document.createElement('li');
+
+    if (isLast) {
+      li.innerHTML = `
+        <span class="current">
+          <span>${segmentData.icon}</span>
+          <span>${segmentData.label}</span>
+        </span>
+      `;
+    } else {
+      li.innerHTML = `
+        <a href="${mapUrlToFile(segment.path)}">
+          <span>${segmentData.icon}</span>
+          <span>${segmentData.label}</span>
+        </a>
+      `;
+    }
+
+    breadcrumbContainer.appendChild(li);
+
+    if (!isLast) {
+      const separator = document.createElement('span');
+      separator.className = 'breadcrumb-separator';
+      separator.textContent = '›';
+      breadcrumbContainer.appendChild(separator);
+    }
+  });
+}
+
+function mapUrlToFile(path) {
+  switch (path) {
+    case '/': return 'index.html';
+    case '/toolkit': return 'toolkit.html';
+    default: return 'index.html';
+  }
+}
+
+function getPathSegments(path) {
+  if (path === '/') {
+    return [{ path: '/', label: 'Home' }];
+  }
+  const segments = [];
+  const parts = path.split('/').filter(part => part !== '');
+  let currentPath = '';
+  segments.push({ path: '/', label: 'Home' });
+  parts.forEach(part => {
+    currentPath += '/' + part;
+    segments.push({ path: currentPath + '/', label: part });
+  });
+  return segments;
+}
+
+// AVVIA breadcrumbs Home
+createBreadcrumbs('/toolkit');
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a4a54ff86e64bf6',t:'MTc2NDE3MDAzMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

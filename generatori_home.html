@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Generatori Web - Tool per Web Design</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      margin: 0; padding: 0;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+      min-height: 100vh;
+      color: #1e293b;
+    }
+    
+    /* BREADCRUMBS */
+    .breadcrumb-container {
+      padding: 12px 24px;
+      background: #f9fafb;
+    }
+    .breadcrumb-nav {
+      display: flex;
+      align-items: center;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      font-size: 14px;
+    }
+    .breadcrumb-nav li {
+      display: flex;
+      align-items: center;
+    }
+    .breadcrumb-nav a {
+      color: #3b82f6;
+      text-decoration: none;
+      padding: 6px 10px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .breadcrumb-nav a:hover {
+      background: #eff6ff;
+      color: #1d4ed8;
+    }
+    .breadcrumb-nav .current {
+      color: #374151;
+      font-weight: 600;
+      padding: 6px 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .breadcrumb-separator {
+      margin: 0 8px;
+      color: #9ca3af;
+    }
+    
+    /* HERO SECTION */
+    .hero {
+      text-align: center; padding: 4rem 2rem; max-width: 1200px; margin: 0 auto;
+    }
+    .hero h1 {
+      font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 900;
+      background: linear-gradient(135deg, #f59e0b, #ef4444, #3b82f6, #10b981);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      margin-bottom: 1rem; animation: bounce 2s infinite;
+    }
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-10px); }
+      60% { transform: translateY(-5px); }
+    }
+    .hero p {
+      font-size: 1.3rem; color: #94a3b8; max-width: 600px; margin: 0 auto 3rem;
+    }
+    
+    /* GRID CARDS */
+    .cards-grid {
+      max-width: 1200px; margin: 0 auto; padding: 2rem;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+    .card {
+      background: rgba(255,255,255,0.95); backdrop-filter: blur(20px);
+      border-radius: 24px; padding: 2rem; text-align: center;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1px solid rgba(255,255,255,0.2);
+      position: relative; overflow: hidden;
+      height: 200px; display: flex; flex-direction: column; justify-content: center;
+    }
+    .card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+      background: linear-gradient(90deg, var(--card-accent), transparent);
+    }
+    .card:hover {
+      transform: translateY(-12px) scale(1.02); box-shadow: 0 30px 60px rgba(0,0,0,0.2);
+    }
+    .card-icon { font-size: 3rem; margin-bottom: 1rem; }
+    .card h3 { font-size: 1.4rem; font-weight: 700; margin: 0 0 0.5rem; color: #1e293b; }
+    .card p { color: #64748b; margin: 0 0 1.5rem; font-size: 0.95rem; }
+    .card a {
+      display: inline-block; padding: 0.75rem 2rem; background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      color: white; text-decoration: none; border-radius: 50px; font-weight: 600;
+      transition: all 0.3s; box-shadow: 0 4px 15px rgba(59,130,246,0.4);
+    }
+    .card a:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(59,130,246,0.6); }
+    
+    /* ACCENTS PER CARD */
+    .card:nth-child(1) { --card-accent: #3b82f6; }
+    .card:nth-child(2) { --card-accent: #10b981; }
+    .card:nth-child(3) { --card-accent: #f59e0b; }
+    .card:nth-child(4) { --card-accent: #ef4444; }
+    .card:nth-child(5) { --card-accent: #8b5cf6; }
+    .card:nth-child(6) { --card-accent: #ec4899; }
+    .card:nth-child(7) { --card-accent: #06b6d4; }
+    .card:nth-child(8) { --card-accent: #eab308; }
+    .card:nth-child(9) { --card-accent: #3b82f6; }
+    .card:nth-child(10) { --card-accent: #10b981; }
+    .card:nth-child(11) { --card-accent: #f59e0b; }
+    .card:nth-child(12) { --card-accent: #ef4444; }
+    .card:nth-child(13) { --card-accent: #8b5cf6; }
+    .card:nth-child(14) { --card-accent: #ec4899; }
+    .card:nth-child(15) { --card-accent: #06b6d4; }
+    .card:nth-child(16) { --card-accent: #eab308; }
+    .card:nth-child(17) { --card-accent: #ef4444; }
+    
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .nav-container, .cards-grid { padding-left: 1rem; padding-right: 1rem; }
+      .hero { padding-top: 2rem; padding-bottom: 2rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- NAVBAR + BREADCRUMBS -->
+     <nav class="navbar">
+    <div class="navbar-header">
+    <div class="breadcrumb-container">
+      <nav aria-label="Breadcrumb">
+        <ol id="breadcrumb" class="breadcrumb-nav"></ol>
+      </nav>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <h1>⚙️ Generatori Web</h1>
+    <p>Scopri i migliori tool online per creare siti perfetti. Da gradienti a QR code, tutto pronto per il tuo progetto web!</p>
+  </section>
+
+  <!-- CARDS GRID -->
+  <section class="cards-grid">
+    <div class="card">
+      <div class="card-icon">🎨</div>
+      <h3>Gradienti CSS</h3>
+      <p>Genera gradienti perfetti</p>
+      <a href="https://www.colorzilla.com/gradient-editor/" target="_blank">Vai al Tool</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">🧬</div>
+      <h3>QR Code</h3>
+      <p>QR personalizzati gratis</p>
+      <a href="https://www.qrcode-monkey.com/" target="_blank">Vai al Tool</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔗</div>
+      <h3>Favicon</h3>
+      <p>Icone sito multi-formato</p>
+      <a href="https://favicon.io/" target="_blank">Vai al Tool</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">🎬</div>
+      <h3>Animazioni SVG</h3>
+      <p>Animazioni vettoriali</p>
+      <a href="https://www.svgator.com/" target="_blank">Vai al Tool</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔘</div>
+      <h3>Bottoni CSS</h3>
+      <p>Genera pulsanti perfetti</p>
+      <a href="https://www.bestcssbuttongenerator.com/" target="_blank">Vai al Tool</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">📱</div>
+      <h3>CSS Grid</h3>
+      <p>Layout responsive facili</p>
+      <a href="https://cssgrid-generator.netlify.app/" target="_blank">Vai al Tool</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">💳</div>
+      <h3>Card UI</h3>
+      <p>Componenti card moderne</p>
+      <a href="https://uiartisan.vercel.app/generators/card" target="_blank">Vai al Tool</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">📐</div>
+      <h3>HTML/CSS Code</h3>
+      <p>Genera codice pulito</p>
+      <a href="https://musely.ai/tools/html-css-code-generator" target="_blank">Vai al Tool</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">🚀</div>
+      <h3>Website Builder</h3>
+      <p>Canva siti veloci</p>
+      <a href="https://www.canva.com/website-builder/" target="_blank">Vai al Tool</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">🎨</div>
+      <h3>CSS Gradient</h3>
+      <p>Gradienti avanzati</p>
+      <a href="https://css-gradient.com/" target="_blank">Vai al Tool</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">⚡</div>
+      <h3>Animazioni AI</h3>
+      <p>Video animati facili</p>
+      <a href="https://www.krikey.ai/" target="_blank">Vai al Tool</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">📊</div>
+      <h3>UI Generator</h3>
+      <p>Interfacce con AI</p>
+      <a href="https://uxpilot.ai/ai-ui-generator" target="_blank">Vai al Tool</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔧</div>
+      <h3>CSS Generator</h3>
+      <p>Tutti i generatori CSS</p>
+      <a href="https://html-css-js.com/css/generator/" target="_blank">Vai al Tool</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">🧩</div>
+      <h3>Free Generators</h3>
+      <p>100+ tool gratuiti</p>
+      <a href="https://designmodo.com/free-generators/" target="_blank">Vai al Tool</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">💎</div>
+      <h3>Button Generator</h3>
+      <p>Pulsanti hover perfetti</p>
+      <a href="https://front-end-tools.com/en/generateButton/" target="_blank">Vai al Tool</a>
+    </div>
+      <div class="card">
+      <div class="card-icon">🌐</div>
+      <h3>Figma AI Sites</h3>
+      <p>Siti da prompt AI</p>
+      <a href="https://www.figma.com/solutions/ai-website-generator/" target="_blank">Vai al Tool</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">🛠️</div>
+      <h3>I miei Generatori</h3>
+      <p>Tool personalizzati</p>
+       <a href="generatore/generatori_web_home.html">Vai al Tool</a>
+    </div>
+      
+  </section>
+<script>
+  // BREADCRUMBS DATA
+  const pageData = {
+    '/': { label: 'Home', icon: '🏠' },
+    '/generatori/': { 
+      label: 'Generatori', 
+      icon: '⚙️',
+      children: [
+        { url: '/generatori/tool/', label: 'I Miei Tool', icon: '🛠️' }
+      ]
+    }
+   
+  };
+
+  function createBreadcrumbs(currentPath) {
+    const breadcrumbContainer = document.getElementById('breadcrumb');
+    if (!breadcrumbContainer) return;
+    
+    breadcrumbContainer.innerHTML = '';
+
+    const segments = getPathSegments(currentPath);
+
+    segments.forEach((segment, index) => {
+      const isLast = index === segments.length - 1;
+      const segmentData = pageData[segment.path];
+      if (!segmentData) return;
+
+      const li = document.createElement('li');
+
+      if (isLast) {
+        li.innerHTML = `
+          <span class="current">
+            <span>${segmentData.icon}</span>
+            <span>${segmentData.label}</span>
+          </span>
+        `;
+      } else {
+        li.innerHTML = `
+          <a href="${mapUrlToFile(segment.path)}">
+            <span>${segmentData.icon}</span>
+            <span>${segmentData.label}</span>
+          </a>
+        `;
+      }
+
+      breadcrumbContainer.appendChild(li);
+
+      if (!isLast) {
+        const separator = document.createElement('span');
+        separator.className = 'breadcrumb-separator';
+        separator.textContent = '›';
+        breadcrumbContainer.appendChild(separator);
+      }
+    });
+  }
+
+  function mapUrlToFile(path) {
+    // Cerca nei children prima
+    for (let parentPath in pageData) {
+      if (pageData[parentPath].children) {
+        const child = pageData[parentPath].children.find(c => c.url === path);
+        if (child && child.file) return child.file;
+      }
+    }
+    
+    switch (path) {
+      case '/': return 'index.html';
+      case '/generatori/': return 'generatori_home.html';
+      case '/generatori/tool/': return 'generatori_web_home.html';
+      default: return 'index.html';
+    }
+  }
+
+  function getPathSegments(path) {
+    if (path === '/') {
+      return [{ path: '/', label: 'Home' }];
+    }
+    const segments = [];
+    const parts = path.split('/').filter(part => part !== '');
+    let currentPath = '';
+    segments.push({ path: '/', label: 'Home' });
+    parts.forEach(part => {
+      currentPath += '/' + part;
+      segments.push({ path: currentPath + '/', label: part });
+    });
+    return segments;
+  }
+
+  // AVVIA breadcrumbs per questa pagina
+  createBreadcrumbs('/generatori/');
+</script>
+</body>
+</html>

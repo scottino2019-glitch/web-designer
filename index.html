@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Home Page - App Web Designer</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #333;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+    header {
+      background: linear-gradient(135deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+      background-size: 400% 400%;
+      animation: gradientShift 15s ease infinite;
+      color: #fff;
+      padding: 40px 30px;
+      text-align: center;
+      font-size: 2.5rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    main {
+      max-width: 1200px;
+      margin: 50px auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      padding: 0 20px;
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      display: flex;
+      flex-direction: column;
+      padding: 30px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+      background-size: 300% 300%;
+      animation: borderShift 3s ease infinite;
+    }
+    @keyframes borderShift {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 300% 50%; }
+    }
+    .card:hover {
+      transform: translateY(-15px) scale(1.02);
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+    }
+    .card:nth-child(1) { border-left: 5px solid #ff6b6b; }
+    .card:nth-child(2) { border-left: 5px solid #feca57; }
+    .card:nth-child(3) { border-left: 5px solid #48dbfb; }
+    .card:nth-child(4) { border-left: 5px solid #ff9ff3; }
+    .card h3 {
+      margin-top: 0;
+      margin-bottom: 15px;
+      color: #2d3436;
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+    .card p {
+      flex-grow: 1;
+      font-size: 1.1rem;
+      line-height: 1.6;
+      color: #636e72;
+    }
+    .card a {
+      margin-top: 20px;
+      text-decoration: none;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      padding: 14px 24px;
+      border-radius: 50px;
+      font-weight: 700;
+      text-align: center;
+      display: inline-block;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+      position: relative;
+      overflow: hidden;
+    }
+    .card a:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.6);
+      background: linear-gradient(135deg, #764ba2, #667eea);
+    }
+    .card a::after {
+      content: '→';
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      transition: right 0.3s ease;
+    }
+    .card a:hover::after {
+      right: 10px;
+    }
+    footer {
+      text-align: center;
+      padding: 30px 0;
+      font-size: 1rem;
+      color: rgba(255, 255, 255, 0.9);
+      margin-top: 80px;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    }
+ /* NAVBAR */
+    .navbar {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      margin: 20px;
+    }
+    .navbar-header {
+      padding: 16px 24px;
+      border-bottom: 1px solid #e5e7eb;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .navbar-brand {
+      font-size: 20px;
+      font-weight: bold;
+      color: #111827;
+    }
+    .navbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .navbar-actions button {
+      background: none;
+      border: none;
+      color: #6b7280;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 6px;
+      transition: color 0.2s;
+    }
+    .navbar-actions button:hover {
+      color: #374151;
+    }
+    /* BREADCRUMBS */
+    .breadcrumb-container {
+      padding: 12px 24px;
+      background: #f9fafb;
+    }
+    .breadcrumb-nav {
+      display: flex;
+      align-items: center;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      font-size: 14px;
+    }
+    .breadcrumb-nav li {
+      display: flex;
+      align-items: center;
+    }
+    .breadcrumb-nav a {
+      color: #3b82f6;
+      text-decoration: none;
+      padding: 6px 10px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .breadcrumb-nav a:hover {
+      background: #eff6ff;
+      color: #1d4ed8;
+    }
+    .breadcrumb-nav .current {
+      color: #374151;
+      font-weight: 600;
+      padding: 6px 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .breadcrumb-separator {
+      margin: 0 8px;
+      color: #9ca3af;
+    }
+    /* DROPDOWN */
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+    .dropdown-trigger {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      padding: 6px 10px;
+      border-radius: 6px;
+      transition: all 0.2s;
+      color: #3b82f6;
+    }
+    .dropdown-trigger:hover {
+      background: #eff6ff;
+      color: #1d4ed8;
+    }
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background: white;
+      min-width: 200px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+      z-index: 1000;
+      top: 100%;
+      left: 0;
+      margin-top: 4px;
+      overflow: hidden;
+    }
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+    .dropdown-item {
+      color: #374151;
+      padding: 10px 16px;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background-color 0.2s;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .dropdown-item:last-child {
+      border-bottom: none;
+    }
+    .dropdown-item:hover {
+      background: #f9fafb;
+    }
+    .dropdown-arrow {
+      transition: transform 0.2s;
+    }
+    .dropdown:hover .dropdown-arrow {
+      transform: rotate(180deg);
+    }
+  </style>
+</head>
+<body>
+ <header>
+    🎨 App Web Designer 
+  </header>
+
+  <!-- BREADCRUMBS -->
+ <div class="breadcrumb-container" style="background:#f9fafb;padding:15px 25px;margin:20px;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,0.1);">
+  <div id="breadcrumb" style="display:flex;align-items:center;gap:8px;font-size:18px;flex-wrap:wrap;"></div>
+</div>
+
+<main>
+  <!-- le tue cards rimangono identiche -->
+  <main>
+    <div class="card">
+      <h3>🏗️ Progetta con Creatività</h3>
+      <p>Strumenti avanzati per dare vita alle tue idee con facilità e stile. Trasforma i concept in realtà interattive.</p>
+      <a href="builder/builder_home.html">Builder Web</a>
+    </div>
+    <div class="card">
+      <h3>📱 Interfacce Responsive</h3>
+      <p>Crea layout che si adattano perfettamente a qualsiasi dispositivo, dal mobile al desktop. Design fluido ovunque.</p>
+      <a href="layout/layout_home.html">Vai</a>
+    </div>
+    <div class="card">
+      <h3>⚡ Generatori Web</h3>
+      <p>Realizza snippets per ogni esigenza</p>
+      <a href="generatori_home.html">Scopri i genaratori</a>
+    </div>
+    <div class="card">
+      <h3>🎭 Animazioni CSS</h3>
+      <p>Dai vita ai tuoi progetti con animazioni fluide e moderne, senza codice complicato. Effetti wow garantiti.</p>
+      <a href="animazioni/animazioni_home.html">Esplora Animate.css</a>
+    </div>
+   <div class="card">
+      <h3> 🌈 Colori</h3>
+      <p>Sperimenta con i colori</p>
+      <a href="colori/colori_home.html">Esplora</a>
+    </div>
+   <div class="card">
+      <h3>🧩 template</h3>
+      <p>Tanti template da personalizzare e usare</p>
+      <a href="template.html">Esplora i template</a>
+    </div>
+      <div class="card">
+      <h3>🚀JavaScript</h3>
+      <p>Tanti snippets da personalizzare e usare</p>
+      <a href="javascript_esempi_pratici.html">Esplora gli esempi</a>
+          </div>
+     <div class="card">
+      <h3>🌀 Animazioni</h3>
+      <p>Copia HTML + CSS completo per ogni animazione</p>
+      <a href="anime-complete.html">Esplora gli esempi</a>
+         </div>
+         <div class="card">
+      <h3>🖌 Designer Pro</h3>
+      <p>Strumenti professionali che non trovi altrove</p>
+      <a href="designer_pro.html">Esplora gli strumenti</a>
+             </div>
+             <div class="card">
+      <h3>🖍 Editor Grafico</h3>
+      <p>Crea design professionali</p>
+      <a href="editor-grafico.html">Comincia a creare</a>
+                 </div>
+                   <div class="card">
+      <h3>🧬 Generatore snippet</h3>
+      <p>Spazio per raccogliere i propri snippet</p>
+      <a href="generatore_snippet.html">Comincia creare</a>
+                       
+    </div> 
+          <div class="card">
+      <h3>⚡ Strumenti di Sviluppo</h3>
+      <p>Toolkit completo per sviluppatori e programmatori</p>
+      <a href="sviluppo.html">Esplora gli strumenti</a>
+                       
+    </div> 
+      <div class="card">
+      <h3>📐 Designer Toolkit</h3>
+      <p>Strumenti essenziali per web designer e grafici</p>
+      <a href="toolkit.html">Esplora gli strumenti</a>
+                       
+    </div> 
+      <div class="card">
+      <h3>✏ Editor Html</h3>
+      <p>tanti esempi pronti</p>
+      <a href="editor-html.html">Esplora gli esempi</a>
+                       
+    </div> 
+  </main>
+  
+<script>
+const pageData = {
+  '/': {
+    label: 'Home',
+    icon: '🏠'
+  },
+  '/template/': {
+    label: 'Template',
+    icon: '🧩'
+  },
+
+  '/colori': {
+    label: 'Colori',
+    icon: '🌈',
+    children: [
+       { url: '/colori/gradienti', label: 'Gradienti', icon: '🌈' },
+          { url: '/colori/generatore', label: 'Generatore', icon: '🔴' },
+          { url: '/colori/generatore2', label: 'Generatore 2', icon: '🟢' },
+          { url: '/colori/picker', label: 'Color Picker', icon: '🎨' },
+          { url: '/colori/designer', label: 'Designer', icon: '🖌️' },
+          { url: '/colori/designer2', label: 'Designer 2', icon: '✏️' },
+          { url: '/colori/hub', label: 'Hub', icon: '📱' },
+          { url: '/colori/tools', label: 'tools', icon: '🛠️' },
+              { url: '/colori/elementi', label: 'Elementi', icon: '🎨' }
+    ]
+  },
+  '/animazioni': {
+    label: 'Animazioni',
+    icon: '🎬',
+    children: [
+      { url: '/animazioni/esempi', label: 'Esempi', icon: '✨' },
+      { url: '/animazioni/animecss', label: 'Anime Css', icon: '⚡' },
+      { url: '/animazioni/animazioni', label: 'Animazioni', icon: '☁️' },
+      { url: '/animazioni/generatore', label: 'Generatore ', icon: '💓' },
+      { url: '/animazioni/animecss2', label: 'Anime CSS 2', icon: '🌀' },
+      { url: '/animazioni/generatore2', label: 'Generatore 2', icon: '⚡' }
+    ]
+  },
+  '/javascript': {
+    label: 'Javascript',
+    icon: '🚀'
+  },
+  '/layout/': {
+    label: 'Layout',
+    icon: '📱',
+    children: [
+      { url: '/layout/pattern', label: 'Pattern', icon: '🌈' },
+      { url: '/layout/generatore', label: 'Generatore Grid', icon: '📱' },
+      { url: '/layout/generatore2', label: 'Generatore Grid-Flex', icon: '📱' },
+      { url: '/layout/generatore3', label: 'Generatore Flex-grid', icon: '📱' },
+      { url: '/layout/layout', label: 'layout', icon: '🖌️' },
+      { url: '/layout/glass', label: 'Glassmorphims', icon: '📱' },
+      { url: '/layout/parallax', label: 'Parallax', icon: '📱' }
+    ]
+  },
+  '/builder': { 
+    label: 'Builder', 
+    icon: '🏗️',
+    children: [
+      { url: '/builder/web', label: 'Web', icon: '🌐' },
+      { url: '/builder/siti', label: 'Siti', icon: '💻' },
+      { url: '/builder/library', label: 'Library', icon: '📚' },
+      { url: '/builder/dom', label: 'Dom', icon: '⚙️' },
+      { url: '/builder/studio', label: 'Codecraft', icon: '🖊️' },
+      { url: '/builder/web2', label: 'Web2', icon: '🖥️' },
+      { url: '/builder/mini', label: 'Mini', icon: '📱' },
+          { url: '/builder/web3', label: 'Web3', icon: '🌐' },
+           { url: '/builder/app', label: 'App', icon: '📱' }
+    ]
+  },   
+  '/generatori': {
+    label: 'Generatori',
+    icon: '⚙️',
+    children: [
+      {url: '/generatori/tool', label: 'I Miei Tool', icon: '🛠️' }
+    ]
+  },
+  '/tool': {
+    label: 'Tool',
+    icon: '🛠️'
+  },
+    '/anime': {
+      label: 'Anime',
+      icon: '🌀'
+   },
+    '/pro': {
+      label: 'Pro',
+      icon: '🖌'
+    },
+    '/grafico': {
+       label: 'Grafico',
+        icon: '🖍'
+    },
+    '/snippet': {
+       label: 'Snippet',
+        icon: '🧬'
+    },
+    '/sviluppo': {
+       label: 'Sviluppo',
+        icon: '🧬'
+    },
+    '/toolkit': {
+       label: 'Toolkit',
+        icon: '📐'
+    },
+     '/editor': {
+       label: 'Editor',
+        icon: '✏'
+    }
+    
+};
+
+function createBreadcrumbs(currentPath) {
+  const breadcrumbContainer = document.getElementById('breadcrumb');
+  if (!breadcrumbContainer) return;
+  
+  breadcrumbContainer.innerHTML = '';
+
+  const segments = getPathSegments(currentPath);
+
+  segments.forEach((segment, index) => {
+    const isLast = index === segments.length - 1;
+    const segmentData = pageData[segment.path];
+    if (!segmentData) return;
+
+    const li = document.createElement('li');
+
+    if (isLast) {
+      li.innerHTML = `
+        <span class="current">
+          <span>${segmentData.icon}</span>
+          <span>${segmentData.label}</span>
+        </span>
+      `;
+    } else {
+      li.innerHTML = `
+        <a href="${mapUrlToFile(segment.path)}">
+          <span>${segmentData.icon}</span>
+          <span>${segmentData.label}</span>
+        </a>
+      `;
+    }
+
+    breadcrumbContainer.appendChild(li);
+
+    if (!isLast) {
+      const separator = document.createElement('span');
+      separator.className = 'breadcrumb-separator';
+      separator.textContent = '›';
+      breadcrumbContainer.appendChild(separator);
+    }
+  });
+}
+
+function mapUrlToFile(path) {
+  switch (path) {
+    case '/': return 'index.html';
+    case '/template/': return 'template.html';
+    case '/colori': return 'colori/colori_home.html';
+   case '/colori/gradienti': return 'colori/generatore_gradienti.html';
+        case '/colori/generatore': return 'colori/generatore_colore.html';
+        case '/colori/generatore2': return 'colori/generatore_di_colore.html';
+        case '/colori/picker': return 'colori/color-picker.html';
+        case '/colori/designer': return 'colori/designer.html';
+        case '/colori/designer2': return 'colori/designer2.html';
+        case '/colori/hub': return 'colori/hub_app.html';
+        case '/colori/tools': return 'colori/color-tools-suite.html';
+        case '/colori/elementi': return 'colori/elementi-color.html';
+    case '/animazioni': return 'animazioni/animazioni_home.html';
+    case '/animazioni/esempi': return 'animazioni/animazioni_esempi.html';
+    case '/animazioni/animecss': return 'animazioni/animazioni-css.html';
+    case '/animazioni/animazioni': return 'animazioni/animaizoni1.html';
+    case '/animazioni/animecss2': return 'animazioni/cssanimation.html';
+    case '/animazioni/generatore': return 'animazioni/generatore_animazioni.html';
+    case '/animazioni/generatore2': return 'animazioni/generatore_anime.html';
+    case '/javascript': return 'javascript_esempi_pratici.html';
+    case '/builder': return 'builder/builder_home.html';
+    case '/builder/web': return 'builder/webBuilder.html';
+    case '/builder/siti': return 'builder/siteBuilder.html';
+    case '/builder/library': return 'builder/libraryEditor.html';
+    case '/builder/dom': return 'builder/Dom__.responsive.html';
+    case '/builder/studio': return 'builder/codecraft_studio.html';
+    case '/builder/web2': return 'builder/builder_web.html';
+    case '/builder/mini': return 'builder/miniBuilder.html';
+ case'/builder/web3': return 'generatore_siti_web.html';
+    case'/builder/app': return 'generatore-app.html';
+    case '/generatori': return 'generatori_home.html';
+    case '/generatori/tool': return 'generatori_web_home.html';
+    case '/layout/': return 'layout/layout_home.html';
+    case '/layout/pattern': return 'layout/patterngeneretor.html';
+    case '/layout/layout': return 'layout/layout.html';
+    case '/layout/generatore': return 'layout/gridlayoutgenerator.html';
+    case '/layout/generatore2': return 'layout/generatore_grid_flex.html';
+    case '/layout/generatore3': return 'layout/gen_grid_flex.html';
+    case '/layout/glass': return 'layout/glassmorphims-generator.html';
+    case '/layout/parallax': return 'layout/parallax-generator.html';
+      case '/anime': return 'anime-complete.html';
+           case '/pro': return 'deisgner_pro.html';
+           case '/grafico': return 'editor-grafico.html';
+           case '/snippet': return 'generatore_snippet.html';
+           case '/sviluppo': return 'sviluppo.html';
+           case '/toolkit': return 'toolkit.html';
+          case '/editor': return 'editor-html.html';
+    default: return 'index.html';      
+  }
+}
+
+function getPathSegments(path) {
+  if (path === '/') {
+    return [{ path: '/', label: 'Home' }];
+  }
+  const segments = [];
+  const parts = path.split('/').filter(part => part !== '');
+  let currentPath = '';
+  segments.push({ path: '/', label: 'Home' });
+  parts.forEach(part => {
+    currentPath += '/' + part;
+    segments.push({ path: currentPath, label: part });
+  });
+  return segments;
+}
+
+// AVVIA breadcrumbs Home
+createBreadcrumbs('/');
+</script>
+</body>
+</html>

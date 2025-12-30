@@ -1,0 +1,700 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generatore di Snippet per il Web</title>
+
+  <style>
+    body {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    html, body {
+      height: 100%;
+      width: 100%;
+    }
+    .app-wrapper {
+      width: 100%;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+    .main-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    h1 {
+      color: #ffffff;
+      font-size: 42px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 40px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .controls-section {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .add-snippet-btn {
+      background: #667eea;
+      color: #ffffff;
+      border: none;
+      padding: 14px 32px;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      width: 100%;
+    }
+    .add-snippet-btn:hover {
+      background: #5568d3;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(102,126,234,0.4);
+    }
+    .snippet-form {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-label {
+      display: block;
+      color: #333333;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .form-input,
+    .form-select {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 15px;
+      transition: border-color 0.2s;
+      font-family: inherit;
+    }
+    .form-input:focus,
+    .form-select:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+    .form-textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: "Courier New", monospace;
+      min-height: 200px;
+      resize: vertical;
+      transition: border-color 0.2s;
+    }
+    .form-textarea:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+    .form-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
+    .btn-save,
+    .btn-cancel {
+      flex: 1;
+      border: none;
+      padding: 14px 24px;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: #ffffff;
+    }
+    .btn-save {
+      background: #10b981;
+    }
+    .btn-save:hover:not(:disabled) {
+      background: #059669;
+      transform: translateY(-1px);
+    }
+    .btn-save:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+    }
+    .btn-cancel {
+      background: #6b7280;
+    }
+    .btn-cancel:hover {
+      background: #4b5563;
+      transform: translateY(-1px);
+    }
+    .snippets-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 24px;
+    }
+    .snippet-card {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      transition: all 0.3s;
+    }
+    .snippet-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+    }
+    .snippet-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+    .snippet-title {
+      color: #1f2937;
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .snippet-language {
+      display: inline-block;
+      background: #e0e7ff;
+      color: #4338ca;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .snippet-description {
+      color: #6b7280;
+      font-size: 14px;
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+    .snippet-code {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 12px;
+      font-family: "Courier New", monospace;
+      font-size: 13px;
+      color: #1f2937;
+      white-space: pre-wrap;
+      word-break: break-all;
+      margin-bottom: 16px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    .snippet-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .btn-copy,
+    .btn-edit,
+    .btn-delete {
+      flex: 1;
+      border: none;
+      padding: 10px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: #ffffff;
+    }
+    .btn-copy {
+      background: #667eea;
+    }
+    .btn-copy:hover {
+      background: #5568d3;
+    }
+    .btn-edit {
+      background: #f59e0b;
+    }
+    .btn-edit:hover {
+      background: #d97706;
+    }
+    .btn-delete {
+      background: #ef4444;
+    }
+    .btn-delete:hover {
+      background: #dc2626;
+    }
+    .empty-state {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 60px 40px;
+      text-align: center;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      margin-top: 24px;
+    }
+    .empty-state-text {
+      color: #6b7280;
+      font-size: 18px;
+      font-weight: 500;
+    }
+    .hidden {
+      display: none;
+    }
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #10b981;
+      color: #ffffff;
+      padding: 16px 24px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      font-size: 15px;
+      font-weight: 600;
+      z-index: 1000;
+    }
+       /* BREADCRUMBS */
+    .breadcrumb-container {
+      padding: 12px 24px;
+      background: #f9fafb;
+    }
+    .breadcrumb-nav {
+      display: flex;
+      align-items: center;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      font-size: 14px;
+    }
+    .breadcrumb-nav li {
+      display: flex;
+      align-items: center;
+    }
+    .breadcrumb-nav a {
+      color: #3b82f6;
+      text-decoration: none;
+      padding: 6px 10px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .breadcrumb-nav a:hover {
+      background: #eff6ff;
+      color: #1d4ed8;
+    }
+    .breadcrumb-nav .current {
+      color: #374151;
+      font-weight: 600;
+      padding: 6px 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .breadcrumb-separator {
+      margin: 0 8px;
+      color: #9ca3af;
+    }
+  </style>
+</head>
+<body>
+     
+  
+  <div class="app-wrapper">
+    <div class="main-container">
+      <h1>I Miei Snippet</h1>
+   <nav class="navbar">
+    <div class="navbar-header">
+    <div class="breadcrumb-container">
+      <nav aria-label="Breadcrumb">
+        <ol id="breadcrumb" class="breadcrumb-nav"></ol>
+      </nav>
+    </div>
+  </nav>     
+     <br>
+        <hr>
+        <br>
+        <div class="controls-section">
+        <button id="add-snippet-btn" class="add-snippet-btn">Nuovo Snippet</button>
+<div class="form-group" style="margin-top:16px;">
+  <label for="category-filter" class="form-label">Filtra per categoria</label>
+  <select id="category-filter" class="form-select">
+    <option value="all">Tutte le categorie</option>
+  </select>
+</div>
+      </div>
+
+      <div id="snippet-form" class="snippet-form hidden">
+        <form id="snippet-form-element">
+          <div class="form-group">
+            <label for="snippet-title" class="form-label">Titolo</label>
+            <input type="text" id="snippet-title" class="form-input" required placeholder="es. Animazione CSS Smooth">
+          </div>
+
+          <div class="form-group">
+            <label for="snippet-description" class="form-label">Descrizione</label>
+            <input type="text" id="snippet-description" class="form-input" placeholder="Breve descrizione dello snippet">
+          </div>
+<div class="form-group">
+  <label for="snippet-category" class="form-label">Categoria</label>
+  <input
+    type="text"
+    id="snippet-category"
+    class="form-input"
+    placeholder="es. Layout, Animazioni, Form, JS Utility"
+  >
+</div>
+          <div class="form-group">
+            <label for="snippet-language" class="form-label">Linguaggio</label>
+            <select id="snippet-language" class="form-select" required>
+              <option value="html">HTML</option>
+              <option value="css">CSS</option>
+              <option value="javascript">JavaScript</option>
+              <option value="mixed">Misto</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="snippet-code" class="form-label">Codice</label>
+            <textarea id="snippet-code" class="form-textarea" required placeholder="Incolla qui il tuo codice..."></textarea>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" id="save-btn" class="btn-save">Salva Snippet</button>
+            <button type="button" id="cancel-btn" class="btn-cancel">Annulla</button>
+          </div>
+        </form>
+      </div>
+
+      <div id="snippets-container" class="snippets-grid"></div>
+
+      <div id="empty-state" class="empty-state">
+        <div class="empty-state-text">Nessuno snippet ancora. Creane uno!</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  let snippets = JSON.parse(localStorage.getItem('snippets')) || [];
+  let editingSnippetId = null;
+  let currentCategoryFilter = 'all';
+
+  function saveSnippets() {
+    localStorage.setItem('snippets', JSON.stringify(snippets));
+    populateCategoryFilter();
+  }
+
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  function showToast(message, type = 'success') {
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = message;
+    if (type === 'error') {
+      toast.style.background = '#ef4444';
+    }
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+  }
+
+  function getFilteredSnippets() {
+    if (currentCategoryFilter === 'all') {
+      return snippets;
+    }
+    return snippets.filter(s => (s.category || '').toLowerCase() === currentCategoryFilter.toLowerCase());
+  }
+
+  function populateCategoryFilter() {
+    const select = document.getElementById('category-filter');
+    if (!select) return;
+
+    const previousValue = select.value;
+
+    const categories = Array.from(
+      new Set(
+        snippets
+          .map(s => s.category && s.category.trim())
+          .filter(Boolean)
+      )
+    ).sort((a, b) => a.localeCompare(b));
+
+    select.innerHTML = '<option value="all">Tutte le categorie</option>' +
+      categories.map(cat => `<option value="${escapeHtml(cat)}">${escapeHtml(cat)}</option>`).join('');
+
+    if (categories.includes(previousValue)) {
+      select.value = previousValue;
+      currentCategoryFilter = previousValue;
+    } else {
+      select.value = 'all';
+      currentCategoryFilter = 'all';
+    }
+  }
+
+  function renderSnippets() {
+    const container = document.getElementById('snippets-container');
+    const emptyState = document.getElementById('empty-state');
+
+    const visibleSnippets = getFilteredSnippets();
+
+    if (!visibleSnippets || visibleSnippets.length === 0) {
+      container.innerHTML = '';
+      emptyState.classList.remove('hidden');
+      return;
+    }
+
+    emptyState.classList.add('hidden');
+
+    container.innerHTML = visibleSnippets.map(snippet => `
+      <div class="snippet-card" data-id="${snippet.backendId}">
+        <div class="snippet-header">
+          <div>
+            <div class="snippet-title">${escapeHtml(snippet.title)}</div>
+            <span class="snippet-language">${escapeHtml(snippet.language)}</span>
+          </div>
+          ${snippet.category ? `<span class="snippet-language" style="background:#fef9c3;color:#92400e;margin-left:8px;">${escapeHtml(snippet.category)}</span>` : ''}
+        </div>
+        ${snippet.description ? `<div class="snippet-description">${escapeHtml(snippet.description)}</div>` : ''}
+        <div class="snippet-code">${escapeHtml(snippet.code)}</div>
+        <div class="snippet-actions">
+          <button class="btn-copy" onclick="copySnippet('${snippet.backendId}')">Copia</button>
+          <button class="btn-edit" onclick="editSnippet('${snippet.backendId}')">Modifica</button>
+          <button class="btn-delete" onclick="deleteSnippet('${snippet.backendId}')">Elimina</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  async function copySnippet(id) {
+  const snippet = snippets.find(s => s.backendId === id);
+  if (!snippet) return;
+
+  // Tentativo moderno
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    try {
+      await navigator.clipboard.writeText(snippet.code);
+      showToast('Codice copiato negli appunti!');
+      return;
+    } catch (err) {
+      // se fallisce, passo al fallback
+    }
+  }
+
+  // Fallback per file:// o permessi negati
+  try {
+    const textarea = document.createElement('textarea');
+    textarea.value = snippet.code;
+    textarea.style.position = 'fixed';
+    textarea.style.top = '-9999px';
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    const ok = document.execCommand('copy');
+    document.body.removeChild(textarea);
+
+    if (ok) {
+      showToast('Codice copiato negli appunti!');
+    } else {
+      showToast('Impossibile copiare il codice', 'error');
+    }
+  } catch (err) {
+    showToast('Impossibile copiare il codice', 'error');
+  }
+}
+
+  function editSnippet(id) {
+    const snippet = snippets.find(s => s.backendId === id);
+    if (!snippet) return;
+
+    editingSnippetId = id;
+    document.getElementById('snippet-title').value = snippet.title;
+    document.getElementById('snippet-description').value = snippet.description || '';
+    document.getElementById('snippet-language').value = snippet.language;
+    document.getElementById('snippet-code').value = snippet.code;
+    document.getElementById('snippet-category').value = snippet.category || '';
+    document.getElementById('snippet-form').classList.remove('hidden');
+    document.getElementById('snippet-title').focus();
+  }
+
+  function deleteSnippet(id) {
+    snippets = snippets.filter(s => s.backendId !== id);
+    saveSnippets();
+    renderSnippets();
+    showToast('Snippet eliminato!');
+  }
+
+  function initializeApp() {
+    populateCategoryFilter();
+    renderSnippets();
+
+    const addBtn = document.getElementById('add-snippet-btn');
+    const cancelBtn = document.getElementById('cancel-btn');
+    const formEl = document.getElementById('snippet-form-element');
+    const saveBtn = document.getElementById('save-btn');
+    const filterSelect = document.getElementById('category-filter');
+
+    addBtn.addEventListener('click', () => {
+      editingSnippetId = null;
+      document.getElementById('snippet-form').classList.remove('hidden');
+      formEl.reset();
+      document.getElementById('snippet-title').focus();
+    });
+
+    cancelBtn.addEventListener('click', () => {
+      document.getElementById('snippet-form').classList.add('hidden');
+      editingSnippetId = null;
+    });
+
+    if (filterSelect) {
+      filterSelect.addEventListener('change', () => {
+        currentCategoryFilter = filterSelect.value;
+        renderSnippets();
+      });
+    }
+
+    formEl.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const originalText = saveBtn.textContent;
+      saveBtn.disabled = true;
+      saveBtn.textContent = 'Salvataggio...';
+
+      const snippetData = {
+        title: document.getElementById('snippet-title').value,
+        description: document.getElementById('snippet-description').value,
+        language: document.getElementById('snippet-language').value,
+        code: document.getElementById('snippet-code').value,
+        category: document.getElementById('snippet-category').value.trim(),
+        createdAt: new Date().toISOString()
+      };
+
+      if (!editingSnippetId) {
+        const newSnippet = {
+          backendId: Date.now().toString(),
+          ...snippetData
+        };
+        snippets.unshift(newSnippet);
+      } else {
+        const index = snippets.findIndex(s => s.backendId === editingSnippetId);
+        if (index > -1) {
+          snippets[index] = { ...snippets[index], ...snippetData };
+        }
+      }
+
+      saveSnippets();
+      renderSnippets();
+
+      saveBtn.disabled = false;
+      saveBtn.textContent = originalText;
+      document.getElementById('snippet-form').classList.add('hidden');
+      formEl.reset();
+      const wasEditing = !!editingSnippetId;
+      editingSnippetId = null;
+      showToast(wasEditing ? 'Snippet aggiornato!' : 'Snippet salvato!');
+    });
+
+    window.copySnippet = copySnippet;
+    window.editSnippet = editSnippet;
+    window.deleteSnippet = deleteSnippet;
+  }
+
+  initializeApp();
+       // breadcrumbs
+const pageData = {
+  '/': {
+    label: 'Home',
+    icon: '🏠'
+  },
+  '/snippet/': {
+    label: 'Snippet',
+    icon: '🧬'
+  }
+  // Aggiungi qui altre lingue quando le crei:
+  // '/cinese/': { label: 'Cinese', icon: '🇨🇳' },
+  // '/coreano/': { label: 'Coreano', icon: '🇰🇷' },
+};
+
+function createBreadcrumbs(currentPath) {
+  const breadcrumbContainer = document.getElementById('breadcrumb');
+  if (!breadcrumbContainer) return;
+  
+  breadcrumbContainer.innerHTML = '';
+
+  const segments = getPathSegments(currentPath);
+
+  segments.forEach((segment, index) => {
+    const isLast = index === segments.length - 1;
+    const segmentData = pageData[segment.path];
+    if (!segmentData) return;
+
+    const li = document.createElement('li');
+
+    if (isLast) {
+      li.innerHTML = `
+        <span class="current">
+          <span>${segmentData.icon}</span>
+          <span>${segmentData.label}</span>
+        </span>
+      `;
+    } else {
+      li.innerHTML = `
+        <a href="${mapUrlToFile(segment.path)}">
+          <span>${segmentData.icon}</span>
+          <span>${segmentData.label}</span>
+        </a>
+      `;
+    }
+
+    breadcrumbContainer.appendChild(li);
+
+    if (!isLast) {
+      const separator = document.createElement('span');
+      separator.className = 'breadcrumb-separator';
+      separator.textContent = '›';
+      breadcrumbContainer.appendChild(separator);
+    }
+  });
+}
+
+function mapUrlToFile(path) {
+  switch (path) {
+    case '/': return 'index.html';
+    case '/snippet/': return 'generatore_snippet.html';
+    default: return 'index.html';
+  }
+}
+
+function getPathSegments(path) {
+  if (path === '/') {
+    return [{ path: '/', label: 'Home' }];
+  }
+  const segments = [];
+  const parts = path.split('/').filter(part => part !== '');
+  let currentPath = '';
+  segments.push({ path: '/', label: 'Home' });
+  parts.forEach(part => {
+    currentPath += '/' + part;
+    segments.push({ path: currentPath + '/', label: part });
+  });
+  return segments;
+}
+
+// AVVIA breadcrumbs Home
+createBreadcrumbs('/snippet');
+</script>
+    
+</body>
+</html>

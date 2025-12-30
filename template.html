@@ -1,0 +1,2000 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebCraft - Editor Completo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
+    <style>
+        .template-card {
+            transition: all 0.3s ease;
+        }
+        .template-card:hover {
+            transform: translateY(-5px);
+        }
+        .tab-button {
+            transition: all 0.2s ease;
+        }
+        .tab-button.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .editor-container {
+            height: 500px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+        }
+        .preview-frame {
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            height: 500px;
+            overflow: auto;
+        }
+        .sidebar {
+            transition: transform 0.3s ease;
+        }
+        .sidebar.collapsed {
+            transform: translateX(-100%);
+        }
+         /* NAVBAR */
+    .navbar {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      margin: 20px;
+    }
+    .navbar-header {
+      padding: 16px 24px;
+      border-bottom: 1px solid #e5e7eb;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .navbar-brand {
+      font-size: 20px;
+      font-weight: bold;
+      color: #111827;
+    }
+    .navbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .navbar-actions button {
+      background: none;
+      border: none;
+      color: #6b7280;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 6px;
+      transition: color 0.2s;
+    }
+    .navbar-actions button:hover {
+      color: #374151;
+    }
+    /* BREADCRUMBS */
+    .breadcrumb-container {
+      padding: 12px 24px;
+      background: #f9fafb;
+    }
+    .breadcrumb-nav {
+      display: flex;
+      align-items: center;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      font-size: 14px;
+    }
+    .breadcrumb-nav li {
+      display: flex;
+      align-items: center;
+    }
+    .breadcrumb-nav a {
+      color: #3b82f6;
+      text-decoration: none;
+      padding: 6px 10px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .breadcrumb-nav a:hover {
+      background: #eff6ff;
+      color: #1d4ed8;
+    }
+    .breadcrumb-nav .current {
+      color: #374151;
+      font-weight: 600;
+      padding: 6px 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .breadcrumb-separator {
+      margin: 0 8px;
+      color: #9ca3af;
+    }
+    /* DROPDOWN */
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+    .dropdown-trigger {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      padding: 6px 10px;
+      border-radius: 6px;
+      transition: all 0.2s;
+      color: #3b82f6;
+    }
+    .dropdown-trigger:hover {
+      background: #eff6ff;
+      color: #1d4ed8;
+    }
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background: white;
+      min-width: 200px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+      z-index: 1000;
+      top: 100%;
+      left: 0;
+      margin-top: 4px;
+      overflow: hidden;
+    }
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+    .dropdown-item {
+      color: #374151;
+      padding: 10px 16px;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background-color 0.2s;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .dropdown-item:last-child {
+      border-bottom: none;
+    }
+    .dropdown-item:hover {
+      background: #f9fafb;
+    }
+    .dropdown-arrow {
+      transition: transform 0.2s;
+    }
+    .dropdown:hover .dropdown-arrow {
+      transform: rotate(180deg);
+    }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-purple-50 to-blue-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold text-xl">W</span>
+                    </div>
+                    <h1 class="text-2xl font-bold text-gray-800">WebCraft</h1>
+                    <span id="projectName" class="text-gray-500 text-sm">- Nuovo Progetto</span>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <button id="homeBtn" class="bg-gradient-to-r from-gray-500 to-gray-600 text-white px-4 py-2 rounded-lg font-semibold hover:from-gray-600 hover:to-gray-700 transition-all">
+                        🏠 Home
+                    </button>
+                    <button id="newProjectBtn" class="bg-gradient-to-r from-green-500 to-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:from-green-600 hover:to-green-700 transition-all">
+                        📄 Nuovo
+                    </button>
+                    <button id="saveProjectBtn" class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:from-blue-600 hover:to-blue-700 transition-all">
+                        💾 Salva
+                    </button>
+                    <button id="exportBtn" class="bg-gradient-to-r from-purple-500 to-purple-600 text-white px-4 py-2 rounded-lg font-semibold hover:from-purple-600 hover:to-purple-700 transition-all">
+                        📤 Esporta
+                    </button>
+                </div>
+            </div>
+        </div>
+          <nav class="navbar">
+    <div class="navbar-header">
+    <div class="breadcrumb-container">
+      <nav aria-label="Breadcrumb">
+        <ol id="breadcrumb" class="breadcrumb-nav"></ol>
+      </nav>
+    </div>
+  </nav>
+    </header>
+
+    <!-- Template Gallery -->
+    <div id="templateGallery" class="max-w-7xl mx-auto px-4 py-8">
+        <div class="text-center mb-8">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4">Inizia il tuo progetto</h2>
+            <p class="text-gray-600">Scegli un template o inizia da zero</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
+            <!-- Blank Template -->
+            <div class="template-card bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer border-2 border-dashed border-gray-300" data-template="blank">
+                <div class="h-48 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                    <div class="text-gray-500 text-center">
+                        <div class="text-4xl mb-2">📝</div>
+                        <div class="text-lg font-semibold">Pagina Vuota</div>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-gray-800 mb-2">Inizia da Zero</h3>
+                    <p class="text-gray-600 text-sm">Crea il tuo sito completamente personalizzato</p>
+                </div>
+            </div>
+
+            <!-- Blog Template -->
+            <div class="template-card bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer" data-template="blog">
+                <div class="h-48 bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center">
+                    <div class="text-white text-center">
+                        <div class="text-4xl mb-2">📝</div>
+                        <div class="text-lg font-semibold">Blog</div>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-gray-800 mb-2">Blog Moderno</h3>
+                    <p class="text-gray-600 text-sm">Template per blog con layout pulito</p>
+                </div>
+            </div>
+
+            <!-- Portfolio Template -->
+            <div class="template-card bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer" data-template="portfolio">
+                <div class="h-48 bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center">
+                    <div class="text-white text-center">
+                        <div class="text-4xl mb-2">💼</div>
+                        <div class="text-lg font-semibold">Portfolio</div>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-gray-800 mb-2">Portfolio Creativo</h3>
+                    <p class="text-gray-600 text-sm">Mostra i tuoi lavori</p>
+                </div>
+            </div>
+
+            <!-- Business Template -->
+            <div class="template-card bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer" data-template="business">
+                <div class="h-48 bg-gradient-to-br from-blue-400 to-cyan-500 flex items-center justify-center">
+                    <div class="text-white text-center">
+                        <div class="text-4xl mb-2">🏢</div>
+                        <div class="text-lg font-semibold">Business</div>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-gray-800 mb-2">Sito Aziendale</h3>
+                    <p class="text-gray-600 text-sm">Template professionale</p>
+                </div>
+            </div>
+
+            <!-- E-commerce Template -->
+            <div class="template-card bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer" data-template="ecommerce">
+                <div class="h-48 bg-gradient-to-br from-green-400 to-teal-500 flex items-center justify-center">
+                    <div class="text-white text-center">
+                        <div class="text-4xl mb-2">🛒</div>
+                        <div class="text-lg font-semibold">E-commerce</div>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-gray-800 mb-2">Negozio Online</h3>
+                    <p class="text-gray-600 text-sm">Template per vendite</p>
+                </div>
+            </div>
+
+            <!-- Restaurant Template -->
+            <div class="template-card bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer" data-template="restaurant">
+                <div class="h-48 bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center">
+                    <div class="text-white text-center">
+                        <div class="text-4xl mb-2">🍕</div>
+                        <div class="text-lg font-semibold">Ristorante</div>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-gray-800 mb-2">Sito Ristorante</h3>
+                    <p class="text-gray-600 text-sm">Menu e prenotazioni</p>
+                </div>
+            </div>
+
+            <!-- Landing Page Template -->
+            <div class="template-card bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer" data-template="landing">
+                <div class="h-48 bg-gradient-to-br from-pink-400 to-red-500 flex items-center justify-center">
+                    <div class="text-white text-center">
+                        <div class="text-4xl mb-2">🚀</div>
+                        <div class="text-lg font-semibold">Landing</div>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-gray-800 mb-2">Landing Page</h3>
+                    <p class="text-gray-600 text-sm">Pagina di conversione</p>
+                </div>
+            </div>
+
+            <!-- Creative Template -->
+            <div class="template-card bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer" data-template="creative">
+                <div class="h-48 bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center">
+                    <div class="text-white text-center">
+                        <div class="text-4xl mb-2">🎨</div>
+                        <div class="text-lg font-semibold">Creativo</div>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-gray-800 mb-2">Design Creativo</h3>
+                    <p class="text-gray-600 text-sm">Layout artistico</p>
+                </div>
+            </div>
+
+            <!-- Language Course Template -->
+            <div class="template-card bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer" data-template="language">
+                <div class="h-48 bg-gradient-to-br from-emerald-400 to-blue-500 flex items-center justify-center">
+                    <div class="text-white text-center">
+                        <div class="text-4xl mb-2">🌍</div>
+                        <div class="text-lg font-semibold">Lingue</div>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-gray-800 mb-2">Corso di Lingue</h3>
+                    <p class="text-gray-600 text-sm">Piattaforma per apprendimento</p>
+                </div>
+            </div>
+
+            <!-- Library Template -->
+            <div class="template-card bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer" data-template="library">
+                <div class="h-48 bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
+                    <div class="text-white text-center">
+                        <div class="text-4xl mb-2">📚</div>
+                        <div class="text-lg font-semibold">Libreria</div>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-gray-800 mb-2">Biblioteca Online</h3>
+                    <p class="text-gray-600 text-sm">Catalogo libri digitale</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Editor Interface -->
+    <div id="editorInterface" class="hidden">
+        <div class="flex h-screen">
+            <!-- Sidebar -->
+            <div id="sidebar" class="sidebar w-80 bg-white shadow-lg border-r border-gray-200 flex flex-col">
+                <!-- Sidebar Header -->
+                <div class="p-4 border-b border-gray-200">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-bold text-gray-800">Strumenti</h3>
+                        <button id="toggleSidebar" class="p-2 hover:bg-gray-100 rounded-lg">
+                            <span class="text-gray-600">←</span>
+                        </button>
+                    </div>
+                    
+                    <!-- Quick Actions -->
+                    <div class="grid grid-cols-2 gap-2">
+                        <button id="undoBtn" class="bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-lg text-sm transition-colors">
+                            ↶ Annulla
+                        </button>
+                        <button id="redoBtn" class="bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-lg text-sm transition-colors">
+                            ↷ Ripeti
+                        </button>
+                    </div>
+                </div>
+
+                <!-- File Explorer -->
+                <div class="p-4 border-b border-gray-200">
+                    <h4 class="font-semibold text-gray-700 mb-3">File Progetto</h4>
+                    <div class="space-y-2">
+                        <div class="flex items-center space-x-2 p-2 hover:bg-gray-50 rounded-lg cursor-pointer file-item active" data-file="html">
+                            <span class="text-orange-500">📄</span>
+                            <span class="text-sm">index.html</span>
+                        </div>
+                        <div class="flex items-center space-x-2 p-2 hover:bg-gray-50 rounded-lg cursor-pointer file-item" data-file="css">
+                            <span class="text-blue-500">🎨</span>
+                            <span class="text-sm">styles.css</span>
+                        </div>
+                        <div class="flex items-center space-x-2 p-2 hover:bg-gray-50 rounded-lg cursor-pointer file-item" data-file="js">
+                            <span class="text-yellow-500">⚡</span>
+                            <span class="text-sm">script.js</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Element Inspector -->
+                <div class="p-4 border-b border-gray-200">
+                    <h4 class="font-semibold text-gray-700 mb-3">Elementi</h4>
+                    <div class="space-y-2">
+                        <button class="element-btn w-full text-left p-2 hover:bg-gray-50 rounded-lg text-sm" data-element="<h1>Titolo</h1>">
+                            📝 Titolo
+                        </button>
+                        <button class="element-btn w-full text-left p-2 hover:bg-gray-50 rounded-lg text-sm" data-element="<p>Paragrafo di testo</p>">
+                            📄 Paragrafo
+                        </button>
+                        <button class="element-btn w-full text-left p-2 hover:bg-gray-50 rounded-lg text-sm" data-element="<button class='bg-blue-500 text-white px-4 py-2 rounded'>Pulsante</button>">
+                            🔘 Pulsante
+                        </button>
+                        <button class="element-btn w-full text-left p-2 hover:bg-gray-50 rounded-lg text-sm" data-element="<div class='bg-gray-100 p-4 rounded'>Container</div>">
+                            📦 Container
+                        </button>
+                        <button class="element-btn w-full text-left p-2 hover:bg-gray-50 rounded-lg text-sm" data-element="<img src='https://via.placeholder.com/300x200' alt='Immagine' class='rounded'>">
+                            🖼️ Immagine
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Properties Panel -->
+                <div class="p-4 flex-1 overflow-y-auto">
+                    <h4 class="font-semibold text-gray-700 mb-3">Proprietà</h4>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Colore Principale</label>
+                            <input type="color" id="primaryColor" value="#3B82F6" class="w-full h-8 rounded border">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Font</label>
+                            <select id="fontFamily" class="w-full px-3 py-2 border rounded-lg text-sm">
+                                <option value="Inter">Inter</option>
+                                <option value="Roboto">Roboto</option>
+                                <option value="Open Sans">Open Sans</option>
+                                <option value="Poppins">Poppins</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Tema</label>
+                            <select id="theme" class="w-full px-3 py-2 border rounded-lg text-sm">
+                                <option value="light">Chiaro</option>
+                                <option value="dark">Scuro</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Editor Area -->
+            <div class="flex-1 flex flex-col">
+                <!-- Editor Tabs -->
+                <div class="bg-white border-b border-gray-200 px-4">
+                    <div class="flex space-x-1">
+                        <button class="tab-button active px-4 py-3 text-sm font-medium rounded-t-lg" data-tab="editor">
+                            💻 Editor
+                        </button>
+                        <button class="tab-button px-4 py-3 text-sm font-medium rounded-t-lg hover:bg-gray-100" data-tab="preview">
+                            👁️ Anteprima
+                        </button>
+                        <button class="tab-button px-4 py-3 text-sm font-medium rounded-t-lg hover:bg-gray-100" data-tab="split">
+                            ⚡ Split View
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Editor Content -->
+                <div class="flex-1 bg-gray-50">
+                    <!-- Code Editor View -->
+                    <div id="editorView" class="h-full p-4">
+                        <div class="bg-white rounded-lg shadow-sm h-full">
+                            <div id="monacoEditor" class="editor-container"></div>
+                        </div>
+                    </div>
+
+                    <!-- Preview View -->
+                    <div id="previewView" class="hidden h-full p-4">
+                        <div class="bg-white rounded-lg shadow-sm h-full">
+                            <iframe id="previewFrame" class="preview-frame w-full bg-white rounded-lg"></iframe>
+                        </div>
+                    </div>
+
+                    <!-- Split View -->
+                    <div id="splitView" class="hidden h-full p-4">
+                        <div class="grid grid-cols-2 gap-4 h-full">
+                            <div class="bg-white rounded-lg shadow-sm">
+                                <div id="monacoEditorSplit" class="editor-container"></div>
+                            </div>
+                            <div class="bg-white rounded-lg shadow-sm">
+                                <iframe id="previewFrameSplit" class="preview-frame w-full bg-white rounded-lg"></iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Project Name Modal -->
+    <div id="projectModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-6 w-96">
+            <h3 class="text-xl font-bold mb-4">Nome del Progetto</h3>
+            <input type="text" id="projectNameInput" placeholder="Il mio sito web" class="w-full px-3 py-2 border rounded-lg mb-4">
+            <div class="flex space-x-3">
+                <button id="confirmProject" class="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">Crea</button>
+                <button id="cancelProject" class="flex-1 bg-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-400">Annulla</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Templates
+        const templates = {
+            blank: {
+                name: "Pagina Vuota",
+                html: `<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Il Mio Sito</title>
+    <script src="https://cdn.tailwindcss.com"><\/script>
+</head>
+<body class="bg-gray-50">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-4xl font-bold text-center text-gray-800 mb-8">Benvenuto</h1>
+        <p class="text-center text-gray-600">Inizia a creare il tuo sito web!</p>
+    </div>
+</body>
+</html>`,
+                css: `/* Aggiungi i tuoi stili personalizzati qui */
+body {
+    font-family: 'Inter', sans-serif;
+}`,
+                js: `// Aggiungi la tua logica JavaScript qui
+console.log('Sito caricato!');`
+            },
+            blog: {
+                name: "Blog Moderno",
+                html: `<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Il Mio Blog</title>
+    <script src="https://cdn.tailwindcss.com"><\/script>
+</head>
+<body class="bg-gray-50">
+    <header class="bg-white shadow-sm">
+        <div class="container mx-auto px-4 py-6">
+            <h1 class="text-3xl font-bold text-gray-800">Il Mio Blog</h1>
+            <p class="text-gray-600">Condivido le mie passioni</p>
+        </div>
+    </header>
+    
+    <main class="container mx-auto px-4 py-8">
+        <article class="bg-white rounded-lg shadow-sm p-6 mb-6">
+            <h2 class="text-2xl font-bold mb-4">Il mio primo post</h2>
+            <p class="text-gray-600 mb-4">Benvenuti nel mio blog! Qui condividerò le mie esperienze e passioni...</p>
+            <a href="#" class="text-blue-600 hover:underline">Leggi tutto →</a>
+        </article>
+        
+        <article class="bg-white rounded-lg shadow-sm p-6">
+            <h2 class="text-2xl font-bold mb-4">Viaggi e avventure</h2>
+            <p class="text-gray-600 mb-4">Racconto dei miei viaggi più belli e delle avventure vissute...</p>
+            <a href="#" class="text-blue-600 hover:underline">Leggi tutto →</a>
+        </article>
+    </main>
+</body>
+</html>`,
+                css: `/* Stili per il blog */
+.article-hover:hover {
+    transform: translateY(-2px);
+    transition: transform 0.2s ease;
+}`,
+                js: `// Funzionalità del blog
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Blog caricato!');
+});`
+            },
+            portfolio: {
+                name: "Portfolio Creativo",
+                html: `<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Il Mio Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"><\/script>
+</head>
+<body class="bg-gray-900 text-white">
+    <header class="container mx-auto px-4 py-12 text-center">
+        <h1 class="text-5xl font-bold mb-4">Il Mio Portfolio</h1>
+        <p class="text-xl text-gray-300">Designer & Sviluppatore Creativo</p>
+    </header>
+    
+    <main class="container mx-auto px-4 py-8">
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="group cursor-pointer">
+                <div class="h-64 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg mb-4 flex items-center justify-center group-hover:scale-105 transition-transform">
+                    <span class="text-6xl">🎨</span>
+                </div>
+                <h3 class="text-xl font-bold mb-2">Progetto Design</h3>
+                <p class="text-gray-400">Branding completo per startup</p>
+            </div>
+            
+            <div class="group cursor-pointer">
+                <div class="h-64 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-lg mb-4 flex items-center justify-center group-hover:scale-105 transition-transform">
+                    <span class="text-6xl">💻</span>
+                </div>
+                <h3 class="text-xl font-bold mb-2">App Mobile</h3>
+                <p class="text-gray-400">Applicazione per fitness</p>
+            </div>
+            
+            <div class="group cursor-pointer">
+                <div class="h-64 bg-gradient-to-br from-green-500 to-teal-500 rounded-lg mb-4 flex items-center justify-center group-hover:scale-105 transition-transform">
+                    <span class="text-6xl">🌐</span>
+                </div>
+                <h3 class="text-xl font-bold mb-2">Sito Web</h3>
+                <p class="text-gray-400">E-commerce per fashion</p>
+            </div>
+        </div>
+    </main>
+</body>
+</html>`,
+                css: `/* Stili portfolio */
+.project-card {
+    transition: all 0.3s ease;
+}
+
+.project-card:hover {
+    transform: translateY(-10px);
+}`,
+                js: `// Animazioni portfolio
+document.addEventListener('DOMContentLoaded', function() {
+    const cards = document.querySelectorAll('.group');
+    cards.forEach(card => {
+        card.addEventListener('click', function() {
+            alert('Progetto selezionato!');
+        });
+    });
+});`
+            },
+            business: {
+                name: "Sito Aziendale",
+                html: `<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Mia Azienda</title>
+    <script src="https://cdn.tailwindcss.com"><\/script>
+</head>
+<body class="bg-white">
+    <nav class="bg-blue-600 text-white">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <h1 class="text-2xl font-bold">La Mia Azienda</h1>
+                <div class="space-x-6">
+                    <a href="#" class="hover:underline">Home</a>
+                    <a href="#" class="hover:underline">Servizi</a>
+                    <a href="#" class="hover:underline">Contatti</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <header class="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-20">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-5xl font-bold mb-6">Soluzioni Innovative</h2>
+            <p class="text-xl mb-8">Aiutiamo le aziende a crescere nel digitale</p>
+            <button class="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100">
+                Scopri di più
+            </button>
+        </div>
+    </header>
+    
+    <main class="container mx-auto px-4 py-16">
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="text-center">
+                <div class="text-4xl mb-4">💼</div>
+                <h3 class="text-xl font-bold mb-2">Consulenza</h3>
+                <p class="text-gray-600">Strategia digitale personalizzata</p>
+            </div>
+            <div class="text-center">
+                <div class="text-4xl mb-4">🚀</div>
+                <h3 class="text-xl font-bold mb-2">Sviluppo</h3>
+                <p class="text-gray-600">Soluzioni tecnologiche avanzate</p>
+            </div>
+            <div class="text-center">
+                <div class="text-4xl mb-4">📈</div>
+                <h3 class="text-xl font-bold mb-2">Marketing</h3>
+                <p class="text-gray-600">Crescita e visibilità online</p>
+            </div>
+        </div>
+    </main>
+</body>
+</html>`,
+                css: `/* Stili aziendali */
+.service-card {
+    transition: transform 0.3s ease;
+}
+
+.service-card:hover {
+    transform: translateY(-5px);
+}`,
+                js: `// Funzionalità business
+document.addEventListener('DOMContentLoaded', function() {
+    const button = document.querySelector('button');
+    button.addEventListener('click', function() {
+        alert('Contattaci per maggiori informazioni!');
+    });
+});`
+            },
+            ecommerce: {
+                name: "Negozio Online",
+                html: `<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fashion Store</title>
+    <script src="https://cdn.tailwindcss.com"><\/script>
+</head>
+<body class="bg-gray-50">
+    <nav class="bg-white shadow-sm">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <h1 class="text-2xl font-bold text-gray-800">Fashion Store</h1>
+                <div class="flex items-center space-x-4">
+                    <span class="text-gray-600">🛒 Carrello (0)</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <header class="bg-gradient-to-r from-pink-500 to-purple-600 text-white py-16">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-4xl font-bold mb-4">Moda Trendy</h2>
+            <p class="text-xl">Per ogni occasione</p>
+        </div>
+    </header>
+    
+    <main class="container mx-auto px-4 py-8">
+        <div class="grid md:grid-cols-4 gap-6">
+            <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                <div class="h-48 bg-gradient-to-br from-pink-400 to-red-500 flex items-center justify-center">
+                    <span class="text-white text-6xl">👗</span>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold mb-2">Vestito Elegante</h3>
+                    <p class="text-gray-600 mb-2">€89.99</p>
+                    <button class="w-full bg-pink-600 text-white py-2 rounded-lg hover:bg-pink-700">
+                        Aggiungi al Carrello
+                    </button>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                <div class="h-48 bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center">
+                    <span class="text-white text-6xl">👔</span>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold mb-2">Camicia Business</h3>
+                    <p class="text-gray-600 mb-2">€45.99</p>
+                    <button class="w-full bg-pink-600 text-white py-2 rounded-lg hover:bg-pink-700">
+                        Aggiungi al Carrello
+                    </button>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                <div class="h-48 bg-gradient-to-br from-green-400 to-teal-500 flex items-center justify-center">
+                    <span class="text-white text-6xl">👟</span>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold mb-2">Sneakers Sport</h3>
+                    <p class="text-gray-600 mb-2">€79.99</p>
+                    <button class="w-full bg-pink-600 text-white py-2 rounded-lg hover:bg-pink-700">
+                        Aggiungi al Carrello
+                    </button>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                <div class="h-48 bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center">
+                    <span class="text-white text-6xl">👜</span>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold mb-2">Borsa Designer</h3>
+                    <p class="text-gray-600 mb-2">€129.99</p>
+                    <button class="w-full bg-pink-600 text-white py-2 rounded-lg hover:bg-pink-700">
+                        Aggiungi al Carrello
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>`,
+                css: `/* Stili e-commerce */
+.product-card {
+    transition: transform 0.3s ease;
+}
+
+.product-card:hover {
+    transform: scale(1.05);
+}`,
+                js: `// Funzionalità e-commerce
+let cart = [];
+
+document.addEventListener('DOMContentLoaded', function() {
+    const buttons = document.querySelectorAll('button');
+    buttons.forEach(button => {
+        if (button.textContent.includes('Carrello')) {
+            button.addEventListener('click', function() {
+                cart.push('Prodotto');
+                alert('Prodotto aggiunto al carrello!');
+                updateCartCount();
+            });
+        }
+    });
+});
+
+function updateCartCount() {
+    const cartElement = document.querySelector('span');
+    if (cartElement) {
+        cartElement.textContent = \`🛒 Carrello (\${cart.length})\`;
+    }
+}`
+            },
+            restaurant: {
+                name: "Sito Ristorante",
+                html: `<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ristorante Bella Vista</title>
+    <script src="https://cdn.tailwindcss.com"><\/script>
+</head>
+<body class="bg-warm-50">
+    <header class="bg-gradient-to-r from-orange-500 to-red-600 text-white py-16">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-5xl font-bold mb-4">Ristorante Bella Vista</h1>
+            <p class="text-xl">Cucina italiana autentica dal 1985</p>
+        </div>
+    </header>
+    
+    <main class="container mx-auto px-4 py-12">
+        <div class="grid md:grid-cols-2 gap-12">
+            <div class="bg-white rounded-lg shadow-lg p-8">
+                <h2 class="text-3xl font-bold mb-6 text-center">Menu del Giorno</h2>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center border-b pb-2">
+                        <div>
+                            <h3 class="font-semibold">Spaghetti Carbonara</h3>
+                            <p class="text-gray-600 text-sm">Pasta fresca con guanciale e pecorino</p>
+                        </div>
+                        <span class="font-bold text-orange-600">€12</span>
+                    </div>
+                    <div class="flex justify-between items-center border-b pb-2">
+                        <div>
+                            <h3 class="font-semibold">Pizza Margherita</h3>
+                            <p class="text-gray-600 text-sm">Pomodoro, mozzarella e basilico</p>
+                        </div>
+                        <span class="font-bold text-orange-600">€8</span>
+                    </div>
+                    <div class="flex justify-between items-center border-b pb-2">
+                        <div>
+                            <h3 class="font-semibold">Tiramisù</h3>
+                            <p class="text-gray-600 text-sm">Dolce della casa</p>
+                        </div>
+                        <span class="font-bold text-orange-600">€6</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-lg p-8">
+                <h2 class="text-3xl font-bold mb-6 text-center">Prenota un Tavolo</h2>
+                <form class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Data</label>
+                        <input type="date" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Orario</label>
+                        <select class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500">
+                            <option>19:00</option>
+                            <option>20:00</option>
+                            <option>21:00</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Persone</label>
+                        <select class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500">
+                            <option>2 persone</option>
+                            <option>4 persone</option>
+                            <option>6 persone</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="w-full bg-orange-600 text-white py-3 rounded-lg font-semibold hover:bg-orange-700 transition-colors">
+                        Prenota Ora
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+</body>
+</html>`,
+                css: `/* Stili ristorante */
+.menu-item {
+    transition: background-color 0.2s ease;
+}
+
+.menu-item:hover {
+    background-color: #fef3e2;
+}`,
+                js: `// Funzionalità ristorante
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        alert('Prenotazione inviata! Ti contatteremo presto.');
+    });
+});`
+            },
+            landing: {
+                name: "Landing Page",
+                html: `<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prodotto Rivoluzionario</title>
+    <script src="https://cdn.tailwindcss.com"><\/script>
+</head>
+<body class="bg-white">
+    <header class="bg-gradient-to-r from-purple-600 to-pink-600 text-white py-20">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-6xl font-bold mb-6">Rivoluziona il tuo Business</h1>
+            <p class="text-2xl mb-8">La soluzione che stavi aspettando</p>
+            <button class="bg-white text-purple-600 px-12 py-4 rounded-full text-xl font-bold hover:bg-gray-100 transition-colors">
+                Inizia Gratis
+            </button>
+        </div>
+    </header>
+    
+    <section class="py-20">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center mb-16">Perché Sceglierci</h2>
+            <div class="grid md:grid-cols-3 gap-12">
+                <div class="text-center">
+                    <div class="text-6xl mb-6">⚡</div>
+                    <h3 class="text-2xl font-bold mb-4">Veloce</h3>
+                    <p class="text-gray-600">Risultati immediati con la nostra tecnologia avanzata</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-6xl mb-6">🔒</div>
+                    <h3 class="text-2xl font-bold mb-4">Sicuro</h3>
+                    <p class="text-gray-600">Massima sicurezza per i tuoi dati</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-6xl mb-6">📈</div>
+                    <h3 class="text-2xl font-bold mb-4">Efficace</h3>
+                    <p class="text-gray-600">Aumenta le tue performance del 300%</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="bg-gray-50 py-20">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-4xl font-bold mb-8">Pronto a Iniziare?</h2>
+            <p class="text-xl text-gray-600 mb-8">Unisciti a migliaia di clienti soddisfatti</p>
+            <button class="bg-purple-600 text-white px-12 py-4 rounded-full text-xl font-bold hover:bg-purple-700 transition-colors">
+                Prova Gratuita
+            </button>
+        </div>
+    </section>
+</body>
+</html>`,
+                css: `/* Stili landing page */
+.cta-button {
+    transform: scale(1);
+    transition: transform 0.2s ease;
+}
+
+.cta-button:hover {
+    transform: scale(1.05);
+}`,
+                js: `// Funzionalità landing page
+document.addEventListener('DOMContentLoaded', function() {
+    const buttons = document.querySelectorAll('button');
+    buttons.forEach(button => {
+        button.addEventListener('click', function() {
+            alert('Grazie per il tuo interesse! Ti contatteremo presto.');
+        });
+    });
+    
+    // Scroll smooth
+    window.addEventListener('scroll', function() {
+        const header = document.querySelector('header');
+        if (window.scrollY > 100) {
+            header.style.transform = 'translateY(-10px)';
+        } else {
+            header.style.transform = 'translateY(0)';
+        }
+    });
+});`
+            },
+            language: {
+                name: "Corso di Lingue",
+                html: `<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinguaFacile - Impara le Lingue</title>
+    <script src="https://cdn.tailwindcss.com"><\/script>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100">
+    <nav class="bg-white shadow-lg">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center">
+                        <span class="text-white font-bold">L</span>
+                    </div>
+                    <h1 class="text-2xl font-bold text-gray-800">LinguaFacile</h1>
+                </div>
+                <div class="flex items-center space-x-6">
+                    <a href="#" class="text-gray-600 hover:text-blue-600">Corsi</a>
+                    <a href="#" class="text-gray-600 hover:text-blue-600">Progressi</a>
+                    <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                        Accedi
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <header class="container mx-auto px-4 py-16 text-center">
+        <h2 class="text-5xl font-bold text-gray-800 mb-6">Impara una Nuova Lingua</h2>
+        <p class="text-xl text-gray-600 mb-8">Metodo interattivo e divertente per tutti i livelli</p>
+        <button class="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-8 py-4 rounded-full text-lg font-semibold hover:from-green-600 hover:to-emerald-700 transition-all">
+            🚀 Inizia Gratis
+        </button>
+    </header>
+
+    <main class="container mx-auto px-4 py-12">
+        <!-- Language Selection -->
+        <section class="mb-16">
+            <h3 class="text-3xl font-bold text-center mb-12">Scegli la Tua Lingua</h3>
+            <div class="grid md:grid-cols-4 gap-6">
+                <div class="bg-white rounded-xl shadow-lg p-6 text-center hover:shadow-xl transition-shadow cursor-pointer">
+                    <div class="text-4xl mb-4">🇬🇧</div>
+                    <h4 class="text-xl font-bold mb-2">Inglese</h4>
+                    <p class="text-gray-600 text-sm mb-4">Livello: Principiante - Avanzato</p>
+                    <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs">
+                        15 lezioni
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg p-6 text-center hover:shadow-xl transition-shadow cursor-pointer">
+                    <div class="text-4xl mb-4">🇪🇸</div>
+                    <h4 class="text-xl font-bold mb-2">Spagnolo</h4>
+                    <p class="text-gray-600 text-sm mb-4">Livello: Principiante - Intermedio</p>
+                    <div class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-xs">
+                        12 lezioni
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg p-6 text-center hover:shadow-xl transition-shadow cursor-pointer">
+                    <div class="text-4xl mb-4">🇫🇷</div>
+                    <h4 class="text-xl font-bold mb-2">Francese</h4>
+                    <p class="text-gray-600 text-sm mb-4">Livello: Principiante - Avanzato</p>
+                    <div class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-xs">
+                        18 lezioni
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg p-6 text-center hover:shadow-xl transition-shadow cursor-pointer">
+                    <div class="text-4xl mb-4">🇩🇪</div>
+                    <h4 class="text-xl font-bold mb-2">Tedesco</h4>
+                    <p class="text-gray-600 text-sm mb-4">Livello: Principiante - Intermedio</p>
+                    <div class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-xs">
+                        14 lezioni
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features -->
+        <section class="mb-16">
+            <h3 class="text-3xl font-bold text-center mb-12">Perché Scegliere LinguaFacile</h3>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-white text-2xl">🎯</span>
+                    </div>
+                    <h4 class="text-xl font-bold mb-3">Metodo Efficace</h4>
+                    <p class="text-gray-600">Apprendimento basato su conversazioni reali e situazioni pratiche</p>
+                </div>
+
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-white text-2xl">⚡</span>
+                    </div>
+                    <h4 class="text-xl font-bold mb-3">Risultati Rapidi</h4>
+                    <p class="text-gray-600">Parla fin dalla prima lezione con il nostro sistema interattivo</p>
+                </div>
+
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-white text-2xl">📱</span>
+                    </div>
+                    <h4 class="text-xl font-bold mb-3">Sempre con Te</h4>
+                    <p class="text-gray-600">Studia ovunque con la nostra app mobile e desktop</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Progress Demo -->
+        <section class="bg-white rounded-2xl shadow-xl p-8">
+            <h3 class="text-2xl font-bold mb-6">Il Tuo Progresso</h3>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div>
+                    <div class="mb-6">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="font-semibold">Inglese - Livello Base</span>
+                            <span class="text-sm text-gray-600">75%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-3">
+                            <div class="bg-gradient-to-r from-blue-500 to-indigo-600 h-3 rounded-full" style="width: 75%"></div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                                <span class="text-white text-sm">✓</span>
+                            </div>
+                            <span>Lezione 1: Saluti e Presentazioni</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                                <span class="text-white text-sm">✓</span>
+                            </div>
+                            <span>Lezione 2: Numeri e Colori</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                                <span class="text-white text-sm">3</span>
+                            </div>
+                            <span class="font-semibold">Lezione 3: La Famiglia (In corso)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-xl p-6">
+                    <h4 class="text-lg font-bold mb-4">Statistiche Settimanali</h4>
+                    <div class="space-y-3">
+                        <div class="flex justify-between">
+                            <span>Tempo di studio:</span>
+                            <span class="font-bold">2h 30m</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Parole apprese:</span>
+                            <span class="font-bold">47</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Streak giornaliero:</span>
+                            <span class="font-bold">🔥 5 giorni</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+</html>`,
+                css: `/* Stili corso lingue */
+.language-card {
+    transition: all 0.3s ease;
+}
+
+.language-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.progress-bar {
+    animation: fillProgress 2s ease-in-out;
+}
+
+@keyframes fillProgress {
+    from { width: 0%; }
+    to { width: 75%; }
+}`,
+                js: `// Funzionalità corso lingue
+document.addEventListener('DOMContentLoaded', function() {
+    // Language selection
+    const languageCards = document.querySelectorAll('.bg-white.rounded-xl.shadow-lg');
+    languageCards.forEach(card => {
+        card.addEventListener('click', function() {
+            const language = this.querySelector('h4').textContent;
+            alert(\`Hai selezionato il corso di \${language}! Iniziamo subito!\`);
+        });
+    });
+
+    // Start button
+    const startButton = document.querySelector('.bg-gradient-to-r.from-green-500');
+    if (startButton) {
+        startButton.addEventListener('click', function() {
+            alert('Benvenuto in LinguaFacile! Scegli una lingua per iniziare.');
+        });
+    }
+
+    // Progress animation
+    setTimeout(() => {
+        const progressBar = document.querySelector('.bg-gradient-to-r.from-blue-500.to-indigo-600');
+        if (progressBar) {
+            progressBar.style.animation = 'fillProgress 2s ease-in-out';
+        }
+    }, 500);
+});`
+            },
+            library: {
+                name: "Biblioteca Online",
+                html: `<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BiblioTech - Biblioteca Digitale</title>
+    <script src="https://cdn.tailwindcss.com"><\/script>
+</head>
+<body class="bg-gray-50">
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-r from-amber-500 to-orange-600 rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold">📚</span>
+                    </div>
+                    <h1 class="text-2xl font-bold text-gray-800">BiblioTech</h1>
+                </div>
+                <div class="flex items-center space-x-6">
+                    <div class="relative">
+                        <input type="text" placeholder="Cerca libri..." class="pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 w-64">
+                        <span class="absolute left-3 top-2.5 text-gray-400">🔍</span>
+                    </div>
+                    <button class="bg-amber-600 text-white px-4 py-2 rounded-lg hover:bg-amber-700">
+                        Il Mio Account
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <header class="bg-gradient-to-r from-amber-500 to-orange-600 text-white py-16">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-5xl font-bold mb-6">La Tua Biblioteca Digitale</h2>
+            <p class="text-xl mb-8">Migliaia di libri a portata di click</p>
+            <div class="flex justify-center space-x-4">
+                <button class="bg-white text-amber-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100">
+                    📖 Sfoglia Catalogo
+                </button>
+                <button class="border-2 border-white text-white px-6 py-3 rounded-lg font-semibold hover:bg-white hover:text-amber-600">
+                    ⭐ I Più Popolari
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-12">
+        <!-- Categories -->
+        <section class="mb-16">
+            <h3 class="text-3xl font-bold mb-8">Esplora per Categoria</h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                <div class="bg-white rounded-lg shadow-md p-4 text-center hover:shadow-lg transition-shadow cursor-pointer">
+                    <div class="text-3xl mb-2">📚</div>
+                    <span class="text-sm font-medium">Narrativa</span>
+                </div>
+                <div class="bg-white rounded-lg shadow-md p-4 text-center hover:shadow-lg transition-shadow cursor-pointer">
+                    <div class="text-3xl mb-2">🔬</div>
+                    <span class="text-sm font-medium">Scienza</span>
+                </div>
+                <div class="bg-white rounded-lg shadow-md p-4 text-center hover:shadow-lg transition-shadow cursor-pointer">
+                    <div class="text-3xl mb-2">🏛️</div>
+                    <span class="text-sm font-medium">Storia</span>
+                </div>
+                <div class="bg-white rounded-lg shadow-md p-4 text-center hover:shadow-lg transition-shadow cursor-pointer">
+                    <div class="text-3xl mb-2">💼</div>
+                    <span class="text-sm font-medium">Business</span>
+                </div>
+                <div class="bg-white rounded-lg shadow-md p-4 text-center hover:shadow-lg transition-shadow cursor-pointer">
+                    <div class="text-3xl mb-2">🎨</div>
+                    <span class="text-sm font-medium">Arte</span>
+                </div>
+                <div class="bg-white rounded-lg shadow-md p-4 text-center hover:shadow-lg transition-shadow cursor-pointer">
+                    <div class="text-3xl mb-2">🧠</div>
+                    <span class="text-sm font-medium">Psicologia</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Books -->
+        <section class="mb-16">
+            <h3 class="text-3xl font-bold mb-8">Libri in Evidenza</h3>
+            <div class="grid md:grid-cols-4 gap-6">
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+                    <div class="h-64 bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center">
+                        <span class="text-white text-6xl">📖</span>
+                    </div>
+                    <div class="p-4">
+                        <h4 class="font-bold text-lg mb-2">Il Grande Gatsby</h4>
+                        <p class="text-gray-600 text-sm mb-2">F. Scott Fitzgerald</p>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <span class="text-yellow-400">⭐⭐⭐⭐⭐</span>
+                                <span class="text-sm text-gray-600 ml-1">(4.5)</span>
+                            </div>
+                            <button class="bg-amber-600 text-white px-3 py-1 rounded text-sm hover:bg-amber-700">
+                                Leggi
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+                    <div class="h-64 bg-gradient-to-br from-green-400 to-teal-500 flex items-center justify-center">
+                        <span class="text-white text-6xl">📚</span>
+                    </div>
+                    <div class="p-4">
+                        <h4 class="font-bold text-lg mb-2">Sapiens</h4>
+                        <p class="text-gray-600 text-sm mb-2">Yuval Noah Harari</p>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <span class="text-yellow-400">⭐⭐⭐⭐⭐</span>
+                                <span class="text-sm text-gray-600 ml-1">(4.8)</span>
+                            </div>
+                            <button class="bg-amber-600 text-white px-3 py-1 rounded text-sm hover:bg-amber-700">
+                                Leggi
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+                    <div class="h-64 bg-gradient-to-br from-red-400 to-pink-500 flex items-center justify-center">
+                        <span class="text-white text-6xl">📘</span>
+                    </div>
+                    <div class="p-4">
+                        <h4 class="font-bold text-lg mb-2">1984</h4>
+                        <p class="text-gray-600 text-sm mb-2">George Orwell</p>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <span class="text-yellow-400">⭐⭐⭐⭐⭐</span>
+                                <span class="text-sm text-gray-600 ml-1">(4.7)</span>
+                            </div>
+                            <button class="bg-amber-600 text-white px-3 py-1 rounded text-sm hover:bg-amber-700">
+                                Leggi
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+                    <div class="h-64 bg-gradient-to-br from-indigo-400 to-blue-500 flex items-center justify-center">
+                        <span class="text-white text-6xl">📗</span>
+                    </div>
+                    <div class="p-4">
+                        <h4 class="font-bold text-lg mb-2">Atomic Habits</h4>
+                        <p class="text-gray-600 text-sm mb-2">James Clear</p>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <span class="text-yellow-400">⭐⭐⭐⭐⭐</span>
+                                <span class="text-sm text-gray-600 ml-1">(4.6)</span>
+                            </div>
+                            <button class="bg-amber-600 text-white px-3 py-1 rounded text-sm hover:bg-amber-700">
+                                Leggi
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Reading Stats -->
+        <section class="bg-white rounded-2xl shadow-xl p-8">
+            <h3 class="text-2xl font-bold mb-6">Le Tue Statistiche di Lettura</h3>
+            <div class="grid md:grid-cols-4 gap-6">
+                <div class="text-center">
+                    <div class="text-3xl font-bold text-amber-600 mb-2">23</div>
+                    <p class="text-gray-600">Libri Letti</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl font-bold text-green-600 mb-2">156h</div>
+                    <p class="text-gray-600">Tempo di Lettura</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl font-bold text-blue-600 mb-2">8</div>
+                    <p class="text-gray-600">Libri Salvati</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl font-bold text-purple-600 mb-2">4.2</div>
+                    <p class="text-gray-600">Valutazione Media</p>
+                </div>
+            </div>
+
+            <div class="mt-8">
+                <h4 class="text-lg font-bold mb-4">Obiettivo Annuale</h4>
+                <div class="flex items-center space-x-4">
+                    <div class="flex-1">
+                        <div class="flex justify-between text-sm mb-1">
+                            <span>23 di 50 libri</span>
+                            <span>46%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-3">
+                            <div class="bg-gradient-to-r from-amber-500 to-orange-600 h-3 rounded-full" style="width: 46%"></div>
+                        </div>
+                    </div>
+                    <span class="text-2xl">🎯</span>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+</html>`,
+                css: `/* Stili biblioteca */
+.book-card {
+    transition: all 0.3s ease;
+}
+
+.book-card:hover {
+    transform: translateY(-5px);
+}
+
+.category-card {
+    transition: all 0.2s ease;
+}
+
+.category-card:hover {
+    transform: scale(1.05);
+}
+
+.search-input:focus {
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+}`,
+                js: `// Funzionalità biblioteca
+document.addEventListener('DOMContentLoaded', function() {
+    // Search functionality
+    const searchInput = document.querySelector('input[placeholder="Cerca libri..."]');
+    searchInput.addEventListener('input', function() {
+        const query = this.value.toLowerCase();
+        if (query.length > 2) {
+            console.log('Ricerca per:', query);
+            // Qui implementeresti la logica di ricerca
+        }
+    });
+
+    // Category selection
+    const categoryCards = document.querySelectorAll('.bg-white.rounded-lg.shadow-md');
+    categoryCards.forEach(card => {
+        card.addEventListener('click', function() {
+            const category = this.querySelector('span').textContent;
+            alert(\`Hai selezionato la categoria: \${category}\`);
+        });
+    });
+
+    // Book reading
+    const readButtons = document.querySelectorAll('button');
+    readButtons.forEach(button => {
+        if (button.textContent.trim() === 'Leggi') {
+            button.addEventListener('click', function() {
+                const bookTitle = this.closest('.p-4').querySelector('h4').textContent;
+                alert(\`Apertura del libro: \${bookTitle}\`);
+            });
+        }
+    });
+
+    // Progress bar animation
+    setTimeout(() => {
+        const progressBar = document.querySelector('.bg-gradient-to-r.from-amber-500');
+        if (progressBar) {
+            progressBar.style.transition = 'width 2s ease-in-out';
+        }
+    }, 1000);
+});`
+            },
+            creative: {
+                name: "Design Creativo",
+                html: `<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Studio Creativo</title>
+    <script src="https://cdn.tailwindcss.com"><\/script>
+</head>
+<body class="bg-black text-white overflow-x-hidden">
+    <div class="min-h-screen flex items-center justify-center relative">
+        <div class="absolute inset-0 bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 opacity-50"></div>
+        
+        <div class="relative z-10 text-center">
+            <h1 class="text-8xl font-bold mb-8 bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
+                CREATIVE
+            </h1>
+            <p class="text-2xl mb-12 text-gray-300">Dove l'arte incontra la tecnologia</p>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
+                <div class="group cursor-pointer">
+                    <div class="w-32 h-32 bg-gradient-to-br from-pink-500 to-red-500 rounded-full mx-auto mb-4 group-hover:scale-110 transition-transform flex items-center justify-center">
+                        <span class="text-4xl">🎨</span>
+                    </div>
+                    <p class="text-sm">Design</p>
+                </div>
+                
+                <div class="group cursor-pointer">
+                    <div class="w-32 h-32 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full mx-auto mb-4 group-hover:scale-110 transition-transform flex items-center justify-center">
+                        <span class="text-4xl">📱</span>
+                    </div>
+                    <p class="text-sm">Mobile</p>
+                </div>
+                
+                <div class="group cursor-pointer">
+                    <div class="w-32 h-32 bg-gradient-to-br from-green-500 to-teal-500 rounded-full mx-auto mb-4 group-hover:scale-110 transition-transform flex items-center justify-center">
+                        <span class="text-4xl">🌐</span>
+                    </div>
+                    <p class="text-sm">Web</p>
+                </div>
+                
+                <div class="group cursor-pointer">
+                    <div class="w-32 h-32 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-full mx-auto mb-4 group-hover:scale-110 transition-transform flex items-center justify-center">
+                        <span class="text-4xl">⚡</span>
+                    </div>
+                    <p class="text-sm">Brand</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2">
+            <div class="animate-bounce">
+                <span class="text-2xl">↓</span>
+            </div>
+        </div>
+    </div>
+    
+    <section class="min-h-screen bg-white text-black p-8">
+        <div class="container mx-auto">
+            <h2 class="text-6xl font-bold text-center mb-16">I Nostri Progetti</h2>
+            <div class="grid md:grid-cols-2 gap-16">
+                <div class="space-y-8">
+                    <div class="h-64 bg-gradient-to-br from-purple-400 to-pink-500 rounded-lg"></div>
+                    <div class="h-64 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-lg"></div>
+                </div>
+                <div class="space-y-8">
+                    <div class="h-64 bg-gradient-to-br from-green-400 to-teal-500 rounded-lg"></div>
+                    <div class="h-64 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>`,
+                css: `/* Stili creativi */
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+}
+
+.floating {
+    animation: float 3s ease-in-out infinite;
+}
+
+.creative-card {
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.1);
+}`,
+                js: `// Animazioni creative
+document.addEventListener('DOMContentLoaded', function() {
+    // Parallax effect
+    window.addEventListener('scroll', function() {
+        const scrolled = window.pageYOffset;
+        const parallax = document.querySelector('.absolute.inset-0');
+        if (parallax) {
+            parallax.style.transform = \`translateY(\${scrolled * 0.5}px)\`;
+        }
+    });
+    
+    // Hover effects
+    const circles = document.querySelectorAll('.group');
+    circles.forEach(circle => {
+        circle.addEventListener('mouseenter', function() {
+            this.style.transform = 'scale(1.1)';
+        });
+        
+        circle.addEventListener('mouseleave', function() {
+            this.style.transform = 'scale(1)';
+        });
+    });
+});`
+            }
+        };
+
+        // Global variables
+        let currentProject = {
+            name: 'Nuovo Progetto',
+            template: 'blank',
+            files: {
+                html: '',
+                css: '',
+                js: ''
+            }
+        };
+        
+        let monacoEditor = null;
+        let monacoEditorSplit = null;
+        let currentFile = 'html';
+        let currentView = 'editor';
+
+        // Initialize Monaco Editor
+        function initializeMonaco() {
+            require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs' } });
+            require(['vs/editor/editor.main'], function () {
+                // Main editor
+                monacoEditor = monaco.editor.create(document.getElementById('monacoEditor'), {
+                    value: currentProject.files[currentFile],
+                    language: currentFile === 'html' ? 'html' : currentFile === 'css' ? 'css' : 'javascript',
+                    theme: 'vs-dark',
+                    automaticLayout: true,
+                    fontSize: 14,
+                    minimap: { enabled: false },
+                    scrollBeyondLastLine: false
+                });
+
+                // Split editor
+                monacoEditorSplit = monaco.editor.create(document.getElementById('monacoEditorSplit'), {
+                    value: currentProject.files[currentFile],
+                    language: currentFile === 'html' ? 'html' : currentFile === 'css' ? 'css' : 'javascript',
+                    theme: 'vs-dark',
+                    automaticLayout: true,
+                    fontSize: 14,
+                    minimap: { enabled: false },
+                    scrollBeyondLastLine: false
+                });
+
+                // Listen for changes
+                monacoEditor.onDidChangeModelContent(() => {
+                    currentProject.files[currentFile] = monacoEditor.getValue();
+                    updatePreview();
+                });
+
+                monacoEditorSplit.onDidChangeModelContent(() => {
+                    currentProject.files[currentFile] = monacoEditorSplit.getValue();
+                    updatePreview();
+                });
+            });
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Template selection
+            document.querySelectorAll('.template-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const templateType = this.dataset.template;
+                    showProjectModal(templateType);
+                });
+            });
+
+            // Home button
+            document.getElementById('homeBtn').addEventListener('click', function() {
+                document.getElementById('templateGallery').classList.remove('hidden');
+                document.getElementById('editorInterface').classList.add('hidden');
+                document.getElementById('projectName').textContent = '- Nuovo Progetto';
+            });
+
+            // New project button
+            document.getElementById('newProjectBtn').addEventListener('click', function() {
+                showProjectModal('blank');
+            });
+
+            // Project modal
+            document.getElementById('confirmProject').addEventListener('click', function() {
+                const projectName = document.getElementById('projectNameInput').value || 'Nuovo Progetto';
+                const templateType = document.getElementById('projectModal').dataset.template || 'blank';
+                createProject(projectName, templateType);
+                hideProjectModal();
+            });
+
+            document.getElementById('cancelProject').addEventListener('click', hideProjectModal);
+
+            // File switching
+            document.querySelectorAll('.file-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    switchFile(this.dataset.file);
+                });
+            });
+
+            // Tab switching
+            document.querySelectorAll('.tab-button').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    switchView(this.dataset.tab);
+                });
+            });
+
+            // Element insertion
+            document.querySelectorAll('.element-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    insertElement(this.dataset.element);
+                });
+            });
+
+            // Sidebar toggle
+            document.getElementById('toggleSidebar').addEventListener('click', function() {
+                const sidebar = document.getElementById('sidebar');
+                sidebar.classList.toggle('collapsed');
+            });
+
+            // Save project
+            document.getElementById('saveProjectBtn').addEventListener('click', saveProject);
+
+            // Export project
+            document.getElementById('exportBtn').addEventListener('click', exportProject);
+
+            // Initialize Monaco Editor
+            initializeMonaco();
+        });
+
+        function showProjectModal(templateType) {
+            document.getElementById('projectModal').classList.remove('hidden');
+            document.getElementById('projectModal').dataset.template = templateType;
+            document.getElementById('projectNameInput').focus();
+        }
+
+        function hideProjectModal() {
+            document.getElementById('projectModal').classList.add('hidden');
+            document.getElementById('projectNameInput').value = '';
+        }
+
+        function createProject(name, templateType) {
+            const template = templates[templateType];
+            
+            currentProject = {
+                name: name,
+                template: templateType,
+                files: {
+                    html: template.html,
+                    css: template.css,
+                    js: template.js
+                }
+            };
+
+            document.getElementById('projectName').textContent = `- ${name}`;
+            document.getElementById('templateGallery').classList.add('hidden');
+            document.getElementById('editorInterface').classList.remove('hidden');
+
+            // Update editor content
+            if (monacoEditor) {
+                monacoEditor.setValue(currentProject.files[currentFile]);
+            }
+            if (monacoEditorSplit) {
+                monacoEditorSplit.setValue(currentProject.files[currentFile]);
+            }
+
+            updatePreview();
+        }
+
+        function switchFile(fileType) {
+            // Save current file content
+            if (monacoEditor) {
+                currentProject.files[currentFile] = monacoEditor.getValue();
+            }
+
+            currentFile = fileType;
+
+            // Update active file indicator
+            document.querySelectorAll('.file-item').forEach(item => {
+                item.classList.remove('active', 'bg-blue-100');
+            });
+            document.querySelector(`[data-file="${fileType}"]`).classList.add('active', 'bg-blue-100');
+
+            // Update editor content and language
+            const language = fileType === 'html' ? 'html' : fileType === 'css' ? 'css' : 'javascript';
+            
+            if (monacoEditor) {
+                monaco.editor.setModelLanguage(monacoEditor.getModel(), language);
+                monacoEditor.setValue(currentProject.files[fileType]);
+            }
+            
+            if (monacoEditorSplit) {
+                monaco.editor.setModelLanguage(monacoEditorSplit.getModel(), language);
+                monacoEditorSplit.setValue(currentProject.files[fileType]);
+            }
+        }
+
+        function switchView(viewType) {
+            currentView = viewType;
+
+            // Update active tab
+            document.querySelectorAll('.tab-button').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector(`[data-tab="${viewType}"]`).classList.add('active');
+
+            // Show/hide views
+            document.getElementById('editorView').classList.add('hidden');
+            document.getElementById('previewView').classList.add('hidden');
+            document.getElementById('splitView').classList.add('hidden');
+
+            document.getElementById(`${viewType}View`).classList.remove('hidden');
+
+            updatePreview();
+        }
+
+        function insertElement(elementHtml) {
+            if (currentFile !== 'html') {
+                switchFile('html');
+            }
+
+            if (monacoEditor) {
+                const position = monacoEditor.getPosition();
+                monacoEditor.executeEdits('insert-element', [{
+                    range: new monaco.Range(position.lineNumber, position.column, position.lineNumber, position.column),
+                    text: elementHtml
+                }]);
+            }
+        }
+
+        function updatePreview() {
+            const fullHtml = generateFullHTML();
+            
+            // Update preview frames
+            const previewFrame = document.getElementById('previewFrame');
+            const previewFrameSplit = document.getElementById('previewFrameSplit');
+            
+            if (currentView === 'preview' || currentView === 'split') {
+                if (previewFrame && currentView === 'preview') {
+                    previewFrame.srcdoc = fullHtml;
+                }
+                if (previewFrameSplit && currentView === 'split') {
+                    previewFrameSplit.srcdoc = fullHtml;
+                }
+            }
+        }
+
+        function generateFullHTML() {
+            let html = currentProject.files.html;
+            
+            // Inject CSS
+            if (currentProject.files.css) {
+                const cssTag = `<style>${currentProject.files.css}</style>`;
+                if (html.includes('</head>')) {
+                    html = html.replace('</head>', cssTag + '</head>');
+                } else {
+                    html = cssTag + html;
+                }
+            }
+            
+            // Inject JS
+            if (currentProject.files.js) {
+                const jsTag = `<script>${currentProject.files.js}<\/script>`;
+                if (html.includes('</body>')) {
+                    html = html.replace('</body>', jsTag + '</body>');
+                } else {
+                    html = html + jsTag;
+                }
+            }
+            
+            return html;
+        }
+
+        function saveProject() {
+            const projectData = JSON.stringify(currentProject, null, 2);
+            localStorage.setItem(`webcraft_${currentProject.name}`, projectData);
+            
+            // Show success message
+            const button = document.getElementById('saveProjectBtn');
+            const originalText = button.textContent;
+            button.textContent = '✅ Salvato!';
+            button.classList.add('bg-green-500');
+            
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.classList.remove('bg-green-500');
+            }, 2000);
+        }
+
+        function exportProject() {
+            const fullHtml = generateFullHTML();
+            const blob = new Blob([fullHtml], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${currentProject.name.replace(/\s+/g, '_')}.html`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+        // breadcrumbs
+const pageData = {
+  '/': {
+    label: 'Home',
+    icon: '🏠'
+  },
+  '/template/': {
+    label: 'Template',
+    icon: '🧩'
+  }
+  // Aggiungi qui altre lingue quando le crei:
+  // '/cinese/': { label: 'Cinese', icon: '🇨🇳' },
+  // '/coreano/': { label: 'Coreano', icon: '🇰🇷' },
+};
+
+function createBreadcrumbs(currentPath) {
+  const breadcrumbContainer = document.getElementById('breadcrumb');
+  if (!breadcrumbContainer) return;
+  
+  breadcrumbContainer.innerHTML = '';
+
+  const segments = getPathSegments(currentPath);
+
+  segments.forEach((segment, index) => {
+    const isLast = index === segments.length - 1;
+    const segmentData = pageData[segment.path];
+    if (!segmentData) return;
+
+    const li = document.createElement('li');
+
+    if (isLast) {
+      li.innerHTML = `
+        <span class="current">
+          <span>${segmentData.icon}</span>
+          <span>${segmentData.label}</span>
+        </span>
+      `;
+    } else {
+      li.innerHTML = `
+        <a href="${mapUrlToFile(segment.path)}">
+          <span>${segmentData.icon}</span>
+          <span>${segmentData.label}</span>
+        </a>
+      `;
+    }
+
+    breadcrumbContainer.appendChild(li);
+
+    if (!isLast) {
+      const separator = document.createElement('span');
+      separator.className = 'breadcrumb-separator';
+      separator.textContent = '›';
+      breadcrumbContainer.appendChild(separator);
+    }
+  });
+}
+
+function mapUrlToFile(path) {
+  switch (path) {
+    case '/': return 'index.html';
+    case '/template/': return 'template.html';
+    default: return 'index.html';
+  }
+}
+
+function getPathSegments(path) {
+  if (path === '/') {
+    return [{ path: '/', label: 'Home' }];
+  }
+  const segments = [];
+  const parts = path.split('/').filter(part => part !== '');
+  let currentPath = '';
+  segments.push({ path: '/', label: 'Home' });
+  parts.forEach(part => {
+    currentPath += '/' + part;
+    segments.push({ path: currentPath + '/', label: part });
+  });
+  return segments;
+}
+
+// AVVIA breadcrumbs Home
+createBreadcrumbs('/template');
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'972bcffde506bae1',t:'MTc1NTc5Njk0NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

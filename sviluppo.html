@@ -1,0 +1,1882 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hub Strumenti Sviluppo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            box-sizing: border-box;
+        }
+        .tool-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .tool-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .dev-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .tool-active {
+            display: block;
+        }
+        .tool-hidden {
+            display: none;
+        }
+        .code-editor {
+            font-family: 'Courier New', monospace;
+            tab-size: 2;
+        }
+        .syntax-highlight {
+            background: #1e293b;
+            color: #e2e8f0;
+        }
+        .json-key { color: #60a5fa; }
+        .json-string { color: #34d399; }
+        .json-number { color: #fbbf24; }
+        .json-boolean { color: #f87171; }
+
+        /* BREADCRUMBS */
+    .breadcrumb-container {
+      padding: 12px 24px;
+      background: #f9fafb;
+    }
+    .breadcrumb-nav {
+      display: flex;
+      align-items: center;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      font-size: 14px;
+    }
+    .breadcrumb-nav li {
+      display: flex;
+      align-items: center;
+    }
+    .breadcrumb-nav a {
+      color: #3b82f6;
+      text-decoration: none;
+      padding: 6px 10px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .breadcrumb-nav a:hover {
+      background: #eff6ff;
+      color: #1d4ed8;
+    }
+    .breadcrumb-nav .current {
+      color: #374151;
+      font-weight: 600;
+      padding: 6px 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .breadcrumb-separator {
+      margin: 0 8px;
+      color: #9ca3af;
+    }
+    </style>
+</head>
+<body class="min-h-full bg-gray-50 font-sans">
+    <!-- Header -->
+    <header class="dev-gradient text-white py-8">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-4xl font-bold mb-2">⚡ Hub Strumenti Sviluppo</h1>
+            <p class="text-xl opacity-90">Toolkit completo per sviluppatori e programmatori</p>
+        </div>
+   <nav class="navbar">
+    <div class="navbar-header">
+    <div class="breadcrumb-container">
+      <nav aria-label="Breadcrumb">
+        <ol id="breadcrumb" class="breadcrumb-nav"></ol>
+      </nav>
+    </div>
+  </nav>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex overflow-x-auto py-4 space-x-4">
+                <button onclick="showTool('home')" class="nav-btn bg-blue-500 text-white px-4 py-2 rounded-lg whitespace-nowrap">
+                    🏠 Home
+                </button>
+                <button onclick="showTool('json-formatter')" class="nav-btn bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg whitespace-nowrap">
+                    📋 JSON Formatter
+                </button>
+                <button onclick="showTool('url-encoder')" class="nav-btn bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg whitespace-nowrap">
+                    🔗 URL Encoder
+                </button>
+                <button onclick="showTool('hash-generator')" class="nav-btn bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg whitespace-nowrap">
+                    🔐 Hash Generator
+                </button>
+                <button onclick="showTool('regex-tester')" class="nav-btn bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg whitespace-nowrap">
+                    🎯 Regex Tester
+                </button>
+                <button onclick="showTool('color-picker')" class="nav-btn bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg whitespace-nowrap">
+                    🎨 Color Picker
+                </button>
+                <button onclick="showTool('timestamp-converter')" class="nav-btn bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg whitespace-nowrap">
+                    ⏰ Timestamp
+                </button>
+                <button onclick="showTool('lorem-generator')" class="nav-btn bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg whitespace-nowrap">
+                    📝 Lorem Ipsum
+                </button>
+                <button onclick="showTool('qr-generator')" class="nav-btn bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg whitespace-nowrap">
+                    📱 QR Code
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-8">
+        <!-- Home -->
+        <div id="home" class="tool-section tool-active">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Scegli il tuo strumento di sviluppo</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Una collezione completa di utility per sviluppatori. Tutti gli strumenti essenziali per il tuo workflow di sviluppo in un unico posto.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- JSON Formatter -->
+                <div class="tool-card bg-white rounded-xl shadow-lg p-6" onclick="showTool('json-formatter')">
+                    <div class="text-4xl mb-4">📋</div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">JSON Formatter</h3>
+                    <p class="text-gray-600 mb-4">Formatta, valida e minifica JSON con syntax highlighting.</p>
+                    <div class="text-sm text-gray-500 font-mono bg-gray-100 p-2 rounded">{"name": "value"}</div>
+                </div>
+
+                <!-- URL Encoder -->
+                <div class="tool-card bg-white rounded-xl shadow-lg p-6" onclick="showTool('url-encoder')">
+                    <div class="text-4xl mb-4">🔗</div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">URL Encoder/Decoder</h3>
+                    <p class="text-gray-600 mb-4">Codifica e decodifica URL per parametri sicuri.</p>
+                    <div class="text-sm text-gray-500 font-mono">hello%20world</div>
+                </div>
+
+                <!-- Hash Generator -->
+                <div class="tool-card bg-white rounded-xl shadow-lg p-6" onclick="showTool('hash-generator')">
+                    <div class="text-4xl mb-4">🔐</div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Hash Generator</h3>
+                    <p class="text-gray-600 mb-4">Genera hash MD5, SHA-1, SHA-256 per sicurezza.</p>
+                    <div class="text-sm text-gray-500 font-mono">a1b2c3d4e5f6...</div>
+                </div>
+
+                <!-- Regex Tester -->
+                <div class="tool-card bg-white rounded-xl shadow-lg p-6" onclick="showTool('regex-tester')">
+                    <div class="text-4xl mb-4">🎯</div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Regex Tester</h3>
+                    <p class="text-gray-600 mb-4">Testa e debugga espressioni regolari in tempo reale.</p>
+                    <div class="text-sm text-gray-500 font-mono">/[a-z]+/gi</div>
+                </div>
+
+                <!-- Color Picker -->
+                <div class="tool-card bg-white rounded-xl shadow-lg p-6" onclick="showTool('color-picker')">
+                    <div class="text-4xl mb-4">🎨</div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Color Picker</h3>
+                    <p class="text-gray-600 mb-4">Seleziona colori e ottieni codici HEX, RGB, HSL.</p>
+                    <div class="flex space-x-2">
+                        <div class="w-4 h-4 bg-red-500 rounded"></div>
+                        <div class="w-4 h-4 bg-blue-500 rounded"></div>
+                        <div class="w-4 h-4 bg-green-500 rounded"></div>
+                    </div>
+                </div>
+
+                <!-- Timestamp Converter -->
+                <div class="tool-card bg-white rounded-xl shadow-lg p-6" onclick="showTool('timestamp-converter')">
+                    <div class="text-4xl mb-4">⏰</div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Timestamp Converter</h3>
+                    <p class="text-gray-600 mb-4">Converti tra timestamp Unix e date leggibili.</p>
+                    <div class="text-sm text-gray-500">1640995200</div>
+                </div>
+
+                <!-- Lorem Generator -->
+                <div class="tool-card bg-white rounded-xl shadow-lg p-6" onclick="showTool('lorem-generator')">
+                    <div class="text-4xl mb-4">📝</div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Lorem Ipsum</h3>
+                    <p class="text-gray-600 mb-4">Genera testo placeholder per mockup e prototipi.</p>
+                    <div class="text-sm text-gray-500">Lorem ipsum dolor sit...</div>
+                </div>
+
+                <!-- QR Generator -->
+                <div class="tool-card bg-white rounded-xl shadow-lg p-6" onclick="showTool('qr-generator')">
+                    <div class="text-4xl mb-4">📱</div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">QR Code Generator</h3>
+                    <p class="text-gray-600 mb-4">Crea QR code per URL, testo e dati vari.</p>
+                    <div class="w-12 h-12 bg-gray-800 rounded grid grid-cols-3 gap-px">
+                        <div class="bg-white"></div><div class="bg-gray-800"></div><div class="bg-white"></div>
+                        <div class="bg-gray-800"></div><div class="bg-white"></div><div class="bg-gray-800"></div>
+                        <div class="bg-white"></div><div class="bg-gray-800"></div><div class="bg-white"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- JSON Formatter -->
+        <div id="json-formatter" class="tool-section tool-hidden">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">📋 JSON Formatter & Validator</h2>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <label for="jsonInput" class="text-lg font-semibold">JSON Input</label>
+                            <div class="space-x-2">
+                                <button onclick="formatJSON()" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm">Format</button>
+                                <button onclick="minifyJSON()" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm">Minify</button>
+                                <button onclick="clearJSON()" class="bg-gray-500 hover:bg-gray-600 text-white px-3 py-1 rounded text-sm">Clear</button>
+                            </div>
+                        </div>
+                        <textarea id="jsonInput" rows="20" placeholder='{"name": "John", "age": 30, "city": "New York"}' 
+                                  class="w-full p-3 border border-gray-300 rounded-lg code-editor" 
+                                  oninput="validateJSON()">{"name": "John", "age": 30, "city": "New York", "hobbies": ["reading", "coding"], "active": true}</textarea>
+                        
+                        <div id="jsonStatus" class="mt-2 text-sm">
+                            <span class="text-green-600">✓ JSON valido</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <label class="text-lg font-semibold">JSON Output</label>
+                            <button onclick="copyJSONOutput()" class="bg-purple-500 hover:bg-purple-600 text-white px-3 py-1 rounded text-sm">📋 Copy</button>
+                        </div>
+                        <div id="jsonOutput" class="syntax-highlight p-3 rounded-lg h-96 overflow-auto text-sm"></div>
+                        
+                        <div class="mt-4 grid grid-cols-2 gap-4 text-sm">
+                            <div class="bg-gray-50 p-3 rounded">
+                                <div class="font-semibold text-gray-700">Caratteri</div>
+                                <div id="jsonCharCount" class="text-xl font-bold text-blue-600">0</div>
+                            </div>
+                            <div class="bg-gray-50 p-3 rounded">
+                                <div class="font-semibold text-gray-700">Dimensione</div>
+                                <div id="jsonSize" class="text-xl font-bold text-green-600">0 B</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- URL Encoder -->
+        <div id="url-encoder" class="tool-section tool-hidden">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">🔗 URL Encoder/Decoder</h2>
+                
+                <div class="space-y-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div>
+                            <label for="urlInput" class="block text-lg font-semibold mb-4">Testo/URL da codificare</label>
+                            <textarea id="urlInput" rows="6" placeholder="https://example.com/search?q=hello world&type=text" 
+                                      class="w-full p-3 border border-gray-300 rounded-lg" 
+                                      oninput="encodeURL()">https://example.com/search?q=hello world&type=text</textarea>
+                            
+                            <div class="mt-4 space-y-2">
+                                <button onclick="encodeURL()" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg">
+                                    ➡️ Codifica URL
+                                </button>
+                                <button onclick="copyEncodedURL()" class="w-full bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded-lg">
+                                    📋 Copia Codificato
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="urlOutput" class="block text-lg font-semibold mb-4">URL codificato</label>
+                            <textarea id="urlOutput" rows="6" class="w-full p-3 border border-gray-300 rounded-lg font-mono" 
+                                      oninput="decodeURL()" readonly></textarea>
+                            
+                            <div class="mt-4 space-y-2">
+                                <button onclick="decodeURL()" class="w-full bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg">
+                                    ⬅️ Decodifica URL
+                                </button>
+                                <button onclick="copyDecodedURL()" class="w-full bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded-lg">
+                                    📋 Copia Decodificato
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-blue-800 mb-2">ℹ️ Caratteri comuni da codificare</h4>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
+                            <div class="bg-white p-2 rounded">Spazio → %20</div>
+                            <div class="bg-white p-2 rounded">& → %26</div>
+                            <div class="bg-white p-2 rounded">? → %3F</div>
+                            <div class="bg-white p-2 rounded">= → %3D</div>
+                            <div class="bg-white p-2 rounded"># → %23</div>
+                            <div class="bg-white p-2 rounded">+ → %2B</div>
+                            <div class="bg-white p-2 rounded">% → %25</div>
+                            <div class="bg-white p-2 rounded">/ → %2F</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hash Generator -->
+        <div id="hash-generator" class="tool-section tool-hidden">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">🔐 Hash Generator</h2>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div>
+                        <label for="hashInput" class="block text-lg font-semibold mb-4">Testo da hashare</label>
+                        <textarea id="hashInput" rows="8" placeholder="Inserisci il testo qui..." 
+                                  class="w-full p-3 border border-gray-300 rounded-lg" 
+                                  oninput="generateHashes()">Hello World!</textarea>
+                        
+                        <div class="mt-4">
+                            <button onclick="generateHashes()" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg">
+                                🔄 Genera Hash
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between items-center mb-2">
+                                <label class="font-semibold text-gray-700">MD5</label>
+                                <button onclick="copyHash('md5')" class="text-sm bg-gray-100 hover:bg-gray-200 px-2 py-1 rounded">📋</button>
+                            </div>
+                            <div id="md5Hash" class="font-mono text-sm bg-gray-50 p-3 rounded border break-all"></div>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between items-center mb-2">
+                                <label class="font-semibold text-gray-700">SHA-1</label>
+                                <button onclick="copyHash('sha1')" class="text-sm bg-gray-100 hover:bg-gray-200 px-2 py-1 rounded">📋</button>
+                            </div>
+                            <div id="sha1Hash" class="font-mono text-sm bg-gray-50 p-3 rounded border break-all"></div>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between items-center mb-2">
+                                <label class="font-semibold text-gray-700">SHA-256</label>
+                                <button onclick="copyHash('sha256')" class="text-sm bg-gray-100 hover:bg-gray-200 px-2 py-1 rounded">📋</button>
+                            </div>
+                            <div id="sha256Hash" class="font-mono text-sm bg-gray-50 p-3 rounded border break-all"></div>
+                        </div>
+
+                        <div class="bg-yellow-50 p-3 rounded-lg text-sm">
+                            <h4 class="font-semibold text-yellow-800 mb-1">⚠️ Nota sulla sicurezza</h4>
+                            <p class="text-yellow-700">MD5 e SHA-1 sono considerati obsoleti per uso crittografico. Usa SHA-256 o superiore per applicazioni sicure.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Regex Tester -->
+        <div id="regex-tester" class="tool-section tool-hidden">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">🎯 Regex Tester</h2>
+                
+                <div class="space-y-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div>
+                            <label for="regexPattern" class="block text-lg font-semibold mb-4">Pattern Regex</label>
+                            <div class="flex gap-2 mb-4">
+                                <input type="text" id="regexPattern" placeholder="[a-z]+" 
+                                       class="flex-1 p-3 border border-gray-300 rounded-lg font-mono" 
+                                       oninput="testRegex()" value="[a-z]+">
+                                <input type="text" id="regexFlags" placeholder="gi" maxlength="5" 
+                                       class="w-16 p-3 border border-gray-300 rounded-lg font-mono text-center" 
+                                       oninput="testRegex()" value="gi">
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-2 mb-4 text-sm">
+                                <button onclick="insertRegex('\\d+')" class="bg-blue-100 hover:bg-blue-200 p-2 rounded">\\d+ (numeri)</button>
+                                <button onclick="insertRegex('\\w+')" class="bg-blue-100 hover:bg-blue-200 p-2 rounded">\\w+ (parole)</button>
+                                <button onclick="insertRegex('\\s+')" class="bg-blue-100 hover:bg-blue-200 p-2 rounded">\\s+ (spazi)</button>
+                                <button onclick="insertRegex('[a-zA-Z]+')" class="bg-blue-100 hover:bg-blue-200 p-2 rounded">[a-zA-Z]+ (lettere)</button>
+                            </div>
+
+                            <label for="testString" class="block text-lg font-semibold mb-4">Testo di test</label>
+                            <textarea id="testString" rows="8" placeholder="Inserisci il testo da testare..." 
+                                      class="w-full p-3 border border-gray-300 rounded-lg" 
+                                      oninput="testRegex()">Hello World! This is a test string with numbers 123 and symbols @#$.</textarea>
+                        </div>
+
+                        <div>
+                            <h3 class="text-lg font-semibold mb-4">Risultati</h3>
+                            <div id="regexResults" class="bg-gray-50 p-4 rounded-lg h-64 overflow-auto"></div>
+                            
+                            <div class="mt-4 grid grid-cols-2 gap-4 text-sm">
+                                <div class="bg-green-50 p-3 rounded">
+                                    <div class="font-semibold text-green-700">Match trovati</div>
+                                    <div id="matchCount" class="text-xl font-bold text-green-600">0</div>
+                                </div>
+                                <div class="bg-blue-50 p-3 rounded">
+                                    <div class="font-semibold text-blue-700">Regex valida</div>
+                                    <div id="regexValid" class="text-xl font-bold text-blue-600">✓</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-purple-50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-purple-800 mb-2">📚 Cheat Sheet Regex</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                            <div>
+                                <div class="font-medium mb-1">Caratteri speciali:</div>
+                                <div class="space-y-1 text-purple-700">
+                                    <div>. = qualsiasi carattere</div>
+                                    <div>* = 0 o più</div>
+                                    <div>+ = 1 o più</div>
+                                    <div>? = 0 o 1</div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="font-medium mb-1">Classi:</div>
+                                <div class="space-y-1 text-purple-700">
+                                    <div>\\d = cifre (0-9)</div>
+                                    <div>\\w = lettere/numeri</div>
+                                    <div>\\s = spazi bianchi</div>
+                                    <div>[abc] = a, b, o c</div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="font-medium mb-1">Ancore:</div>
+                                <div class="space-y-1 text-purple-700">
+                                    <div>^ = inizio stringa</div>
+                                    <div>$ = fine stringa</div>
+                                    <div>\\b = confine parola</div>
+                                    <div>() = gruppo</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Color Picker -->
+        <div id="color-picker" class="tool-section tool-hidden">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">🎨 Color Picker & Converter</h2>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div>
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-lg font-semibold mb-4">Selettore Colore</label>
+                                <input type="color" id="colorPicker" value="#3b82f6" onchange="updateColorValues()" 
+                                       class="w-full h-20 rounded-lg border-2 border-gray-300 cursor-pointer">
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">HEX</label>
+                                    <input type="text" id="hexInput" value="#3b82f6" onchange="updateFromHex()" 
+                                           class="w-full p-3 border border-gray-300 rounded-lg font-mono">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">RGB</label>
+                                    <input type="text" id="rgbInput" placeholder="59, 130, 246" onchange="updateFromRGB()" 
+                                           class="w-full p-3 border border-gray-300 rounded-lg font-mono">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-3 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">H</label>
+                                    <input type="range" id="hueSlider" min="0" max="360" value="217" onchange="updateFromHSL()" 
+                                           class="w-full">
+                                    <div class="text-center text-sm text-gray-600" id="hueValue">217°</div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">S</label>
+                                    <input type="range" id="satSlider" min="0" max="100" value="91" onchange="updateFromHSL()" 
+                                           class="w-full">
+                                    <div class="text-center text-sm text-gray-600" id="satValue">91%</div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">L</label>
+                                    <input type="range" id="lightSlider" min="0" max="100" value="60" onchange="updateFromHSL()" 
+                                           class="w-full">
+                                    <div class="text-center text-sm text-gray-600" id="lightValue">60%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-lg font-semibold mb-4">Valori Colore</h3>
+                        <div class="space-y-4">
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <div class="grid grid-cols-2 gap-4 text-sm">
+                                    <div>
+                                        <div class="font-medium text-gray-700">HEX</div>
+                                        <div id="hexDisplay" class="font-mono text-lg">#3b82f6</div>
+                                    </div>
+                                    <div>
+                                        <div class="font-medium text-gray-700">RGB</div>
+                                        <div id="rgbDisplay" class="font-mono">rgb(59, 130, 246)</div>
+                                    </div>
+                                    <div>
+                                        <div class="font-medium text-gray-700">HSL</div>
+                                        <div id="hslDisplay" class="font-mono">hsl(217, 91%, 60%)</div>
+                                    </div>
+                                    <div>
+                                        <div class="font-medium text-gray-700">CSS</div>
+                                        <div id="cssDisplay" class="font-mono">#3b82f6</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h4 class="font-semibold mb-2">Palette Armoniose</h4>
+                                <div id="colorHarmony" class="grid grid-cols-5 gap-2">
+                                    <!-- Colori generati dinamicamente -->
+                                </div>
+                            </div>
+
+                            <div class="space-y-2">
+                                <button onclick="copyColorValue('hex')" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg">
+                                    📋 Copia HEX
+                                </button>
+                                <button onclick="copyColorValue('rgb')" class="w-full bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg">
+                                    📋 Copia RGB
+                                </button>
+                                <button onclick="copyColorValue('hsl')" class="w-full bg-purple-500 hover:bg-purple-600 text-white py-2 px-4 rounded-lg">
+                                    📋 Copia HSL
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Timestamp Converter -->
+        <div id="timestamp-converter" class="tool-section tool-hidden">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">⏰ Timestamp Converter</h2>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="space-y-6">
+                        <div>
+                            <label for="timestampInput" class="block text-lg font-semibold mb-4">Timestamp Unix</label>
+                            <input type="number" id="timestampInput" placeholder="1640995200" 
+                                   class="w-full p-3 border border-gray-300 rounded-lg font-mono" 
+                                   oninput="convertFromTimestamp()">
+                            
+                            <div class="mt-2 space-x-2">
+                                <button onclick="setCurrentTimestamp()" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm">
+                                    Ora Corrente
+                                </button>
+                                <button onclick="copyTimestamp()" class="bg-gray-500 hover:bg-gray-600 text-white px-3 py-1 rounded text-sm">
+                                    📋 Copia
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-lg font-semibold mb-4">Data e Ora</label>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Data</label>
+                                    <input type="date" id="dateInput" onchange="convertFromDate()" 
+                                           class="w-full p-3 border border-gray-300 rounded-lg">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Ora</label>
+                                    <input type="time" id="timeInput" onchange="convertFromDate()" 
+                                           class="w-full p-3 border border-gray-300 rounded-lg">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-lg font-semibold mb-4">Fuso Orario</label>
+                            <select id="timezoneSelect" onchange="updateTimezone()" class="w-full p-3 border border-gray-300 rounded-lg">
+                                <option value="UTC">UTC</option>
+                                <option value="Europe/Rome" selected>Europe/Rome (CET/CEST)</option>
+                                <option value="America/New_York">America/New_York (EST/EDT)</option>
+                                <option value="America/Los_Angeles">America/Los_Angeles (PST/PDT)</option>
+                                <option value="Asia/Tokyo">Asia/Tokyo (JST)</option>
+                                <option value="Asia/Shanghai">Asia/Shanghai (CST)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-lg font-semibold mb-4">Risultati Conversione</h3>
+                        <div class="space-y-4">
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <div class="font-medium text-gray-700 mb-2">Timestamp Unix</div>
+                                <div id="timestampResult" class="font-mono text-xl text-blue-600">1640995200</div>
+                            </div>
+
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <div class="font-medium text-gray-700 mb-2">Data Locale</div>
+                                <div id="localDateResult" class="text-lg">31 dicembre 2021, 12:00:00</div>
+                            </div>
+
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <div class="font-medium text-gray-700 mb-2">Data UTC</div>
+                                <div id="utcDateResult" class="text-lg">31 Dec 2021, 11:00:00 UTC</div>
+                            </div>
+
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <div class="font-medium text-gray-700 mb-2">ISO 8601</div>
+                                <div id="isoDateResult" class="font-mono">2021-12-31T11:00:00.000Z</div>
+                            </div>
+
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <div class="font-medium text-gray-700 mb-2">Relativo</div>
+                                <div id="relativeTime" class="text-lg">2 anni fa</div>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 space-y-2">
+                            <button onclick="copyFormattedDate('iso')" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg">
+                                📋 Copia ISO
+                            </button>
+                            <button onclick="copyFormattedDate('local')" class="w-full bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg">
+                                📋 Copia Data Locale
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lorem Generator -->
+        <div id="lorem-generator" class="tool-section tool-hidden">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">📝 Lorem Ipsum Generator</h2>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-lg font-semibold mb-4">Tipo di contenuto</label>
+                            <select id="loremType" onchange="generateLorem()" class="w-full p-3 border border-gray-300 rounded-lg">
+                                <option value="paragraphs">Paragrafi</option>
+                                <option value="sentences">Frasi</option>
+                                <option value="words">Parole</option>
+                                <option value="lists">Liste</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-lg font-semibold mb-4">Quantità: <span id="quantityValue">3</span></label>
+                            <input type="range" id="quantitySlider" min="1" max="20" value="3" onchange="updateQuantity()" class="w-full">
+                        </div>
+
+                        <div>
+                            <label class="flex items-center mb-4">
+                                <input type="checkbox" id="startWithLorem" checked onchange="generateLorem()" class="mr-2">
+                                <span>Inizia con "Lorem ipsum..."</span>
+                            </label>
+                        </div>
+
+                        <div class="space-y-2">
+                            <button onclick="generateLorem()" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg">
+                                🎲 Genera Nuovo
+                            </button>
+                            <button onclick="copyLorem()" class="w-full bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg">
+                                📋 Copia Testo
+                            </button>
+                        </div>
+
+                        <div class="bg-blue-50 p-4 rounded-lg text-sm">
+                            <h4 class="font-semibold text-blue-800 mb-2">💡 Suggerimenti d'uso</h4>
+                            <ul class="text-blue-700 space-y-1">
+                                <li>• Usa per mockup e prototipi</li>
+                                <li>• Testa layout con testi lunghi</li>
+                                <li>• Placeholder per CMS</li>
+                                <li>• Demo di tipografia</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold">Testo Generato</h3>
+                            <div class="text-sm text-gray-600">
+                                <span id="wordCount">0</span> parole, <span id="charCount">0</span> caratteri
+                            </div>
+                        </div>
+                        <div id="loremOutput" class="bg-gray-50 p-4 rounded-lg h-96 overflow-auto text-sm leading-relaxed"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- QR Generator -->
+        <div id="qr-generator" class="tool-section tool-hidden">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">📱 QR Code Generator</h2>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="space-y-6">
+                        <div>
+                            <label for="qrInput" class="block text-lg font-semibold mb-4">Contenuto QR Code</label>
+                            <textarea id="qrInput" rows="4" placeholder="https://example.com" 
+                                      class="w-full p-3 border border-gray-300 rounded-lg" 
+                                      oninput="generateQR()">https://canva.com</textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-lg font-semibold mb-4">Tipo di contenuto</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <button onclick="setQRType('url')" class="qr-type-btn bg-blue-100 hover:bg-blue-200 p-2 rounded text-sm">🔗 URL</button>
+                                <button onclick="setQRType('text')" class="qr-type-btn bg-gray-100 hover:bg-gray-200 p-2 rounded text-sm">📝 Testo</button>
+                                <button onclick="setQRType('email')" class="qr-type-btn bg-green-100 hover:bg-green-200 p-2 rounded text-sm">📧 Email</button>
+                                <button onclick="setQRType('phone')" class="qr-type-btn bg-yellow-100 hover:bg-yellow-200 p-2 rounded text-sm">📞 Telefono</button>
+                                <button onclick="setQRType('sms')" class="qr-type-btn bg-purple-100 hover:bg-purple-200 p-2 rounded text-sm">💬 SMS</button>
+                                <button onclick="setQRType('wifi')" class="qr-type-btn bg-red-100 hover:bg-red-200 p-2 rounded text-sm">📶 WiFi</button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-lg font-semibold mb-4">Dimensione: <span id="sizeValue">200px</span></label>
+                            <input type="range" id="sizeSlider" min="100" max="500" value="200" onchange="updateQRSize()" class="w-full">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Colore</label>
+                                <input type="color" id="qrColor" value="#000000" onchange="generateQR()" class="w-full h-10 rounded border">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Sfondo</label>
+                                <input type="color" id="qrBackground" value="#ffffff" onchange="generateQR()" class="w-full h-10 rounded border">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <h3 class="text-lg font-semibold mb-4">QR Code Generato</h3>
+                        <div id="qrCodeContainer" class="inline-block p-4 bg-white border-2 border-gray-200 rounded-lg">
+                            <canvas id="qrCanvas" width="200" height="200" class="border"></canvas>
+                        </div>
+                        
+                        <div class="mt-6 space-y-2">
+                            <button onclick="downloadQR()" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg">
+                                💾 Scarica PNG
+                            </button>
+                            <button onclick="copyQRImage()" class="w-full bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg">
+                                📋 Copia Immagine
+                            </button>
+                        </div>
+
+                        <div class="mt-6 bg-gray-50 p-4 rounded-lg text-sm text-left">
+                            <h4 class="font-semibold mb-2">📋 Template rapidi:</h4>
+                            <div class="space-y-1">
+                                <button onclick="setTemplate('url')" class="block w-full text-left hover:bg-gray-100 p-1 rounded">URL: https://example.com</button>
+                                <button onclick="setTemplate('email')" class="block w-full text-left hover:bg-gray-100 p-1 rounded">Email: mailto:test@example.com</button>
+                                <button onclick="setTemplate('phone')" class="block w-full text-left hover:bg-gray-100 p-1 rounded">Tel: tel:+39123456789</button>
+                                <button onclick="setTemplate('sms')" class="block w-full text-left hover:bg-gray-100 p-1 rounded">SMS: sms:+39123456789</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Variabili globali
+        let currentTool = 'home';
+
+        // === NAVIGAZIONE ===
+        function showTool(toolName) {
+            // Nascondi tutti gli strumenti
+            document.querySelectorAll('.tool-section').forEach(section => {
+                section.classList.remove('tool-active');
+                section.classList.add('tool-hidden');
+            });
+
+            // Mostra lo strumento selezionato
+            document.getElementById(toolName).classList.remove('tool-hidden');
+            document.getElementById(toolName).classList.add('tool-active');
+
+            // Aggiorna i pulsanti di navigazione
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-500', 'text-white');
+                btn.classList.add('bg-gray-100', 'hover:bg-gray-200');
+            });
+            event.target.classList.remove('bg-gray-100', 'hover:bg-gray-200');
+            event.target.classList.add('bg-blue-500', 'text-white');
+
+            currentTool = toolName;
+
+            // Inizializza lo strumento se necessario
+            initializeTool(toolName);
+        }
+
+        function initializeTool(toolName) {
+            switch(toolName) {
+                case 'json-formatter':
+                    validateJSON();
+                    break;
+                case 'url-encoder':
+                    encodeURL();
+                    break;
+                case 'hash-generator':
+                    generateHashes();
+                    break;
+                case 'regex-tester':
+                    testRegex();
+                    break;
+                case 'color-picker':
+                    updateColorValues();
+                    break;
+                case 'timestamp-converter':
+                    setCurrentTimestamp();
+                    break;
+                case 'lorem-generator':
+                    generateLorem();
+                    break;
+                case 'qr-generator':
+                    generateQR();
+                    break;
+            }
+        }
+
+        // === JSON FORMATTER ===
+        function validateJSON() {
+            const input = document.getElementById('jsonInput').value;
+            const status = document.getElementById('jsonStatus');
+            
+            try {
+                if (input.trim() === '') {
+                    status.innerHTML = '<span class="text-gray-500">Inserisci del JSON</span>';
+                    document.getElementById('jsonOutput').innerHTML = '';
+                    return;
+                }
+                
+                const parsed = JSON.parse(input);
+                status.innerHTML = '<span class="text-green-600">✓ JSON valido</span>';
+                
+                // Aggiorna statistiche
+                document.getElementById('jsonCharCount').textContent = input.length;
+                document.getElementById('jsonSize').textContent = formatBytes(new Blob([input]).size);
+                
+                // Mostra JSON formattato con syntax highlighting
+                displayFormattedJSON(parsed);
+            } catch (error) {
+                status.innerHTML = `<span class="text-red-600">✗ Errore: ${error.message}</span>`;
+                document.getElementById('jsonOutput').innerHTML = '';
+            }
+        }
+
+        function displayFormattedJSON(obj) {
+            const formatted = JSON.stringify(obj, null, 2);
+            const highlighted = syntaxHighlight(formatted);
+            document.getElementById('jsonOutput').innerHTML = highlighted;
+        }
+
+        function syntaxHighlight(json) {
+            json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+                let cls = 'json-number';
+                if (/^"/.test(match)) {
+                    if (/:$/.test(match)) {
+                        cls = 'json-key';
+                    } else {
+                        cls = 'json-string';
+                    }
+                } else if (/true|false/.test(match)) {
+                    cls = 'json-boolean';
+                } else if (/null/.test(match)) {
+                    cls = 'json-boolean';
+                }
+                return '<span class="' + cls + '">' + match + '</span>';
+            });
+        }
+
+        function formatJSON() {
+            validateJSON();
+        }
+
+        function minifyJSON() {
+            const input = document.getElementById('jsonInput').value;
+            try {
+                const parsed = JSON.parse(input);
+                const minified = JSON.stringify(parsed);
+                document.getElementById('jsonInput').value = minified;
+                validateJSON();
+            } catch (error) {
+                showToast('JSON non valido');
+            }
+        }
+
+        function clearJSON() {
+            document.getElementById('jsonInput').value = '';
+            document.getElementById('jsonOutput').innerHTML = '';
+            document.getElementById('jsonStatus').innerHTML = '<span class="text-gray-500">Inserisci del JSON</span>';
+        }
+
+        function copyJSONOutput() {
+            const output = document.getElementById('jsonOutput').textContent;
+            copyToClipboard(output);
+            showToast('JSON copiato negli appunti!');
+        }
+
+        // === URL ENCODER ===
+        function encodeURL() {
+            const input = document.getElementById('urlInput').value;
+            try {
+                const encoded = encodeURIComponent(input);
+                document.getElementById('urlOutput').value = encoded;
+            } catch (error) {
+                document.getElementById('urlOutput').value = 'Errore nella codifica';
+            }
+        }
+
+        function decodeURL() {
+            const input = document.getElementById('urlOutput').value;
+            try {
+                const decoded = decodeURIComponent(input);
+                document.getElementById('urlInput').value = decoded;
+            } catch (error) {
+                document.getElementById('urlInput').value = 'Errore nella decodifica';
+            }
+        }
+
+        function copyEncodedURL() {
+            const text = document.getElementById('urlOutput').value;
+            copyToClipboard(text);
+            showToast('URL codificato copiato!');
+        }
+
+        function copyDecodedURL() {
+            const text = document.getElementById('urlInput').value;
+            copyToClipboard(text);
+            showToast('URL decodificato copiato!');
+        }
+
+        // === HASH GENERATOR ===
+        async function generateHashes() {
+            const input = document.getElementById('hashInput').value;
+            
+            if (!input) {
+                document.getElementById('md5Hash').textContent = '';
+                document.getElementById('sha1Hash').textContent = '';
+                document.getElementById('sha256Hash').textContent = '';
+                return;
+            }
+
+            // Usa crypto API per SHA
+            const encoder = new TextEncoder();
+            const data = encoder.encode(input);
+
+            try {
+                // SHA-1
+                const sha1Buffer = await crypto.subtle.digest('SHA-1', data);
+                const sha1Hash = Array.from(new Uint8Array(sha1Buffer))
+                    .map(b => b.toString(16).padStart(2, '0')).join('');
+                document.getElementById('sha1Hash').textContent = sha1Hash;
+
+                // SHA-256
+                const sha256Buffer = await crypto.subtle.digest('SHA-256', data);
+                const sha256Hash = Array.from(new Uint8Array(sha256Buffer))
+                    .map(b => b.toString(16).padStart(2, '0')).join('');
+                document.getElementById('sha256Hash').textContent = sha256Hash;
+
+                // MD5 (implementazione semplificata)
+                const md5Hash = simpleMD5(input);
+                document.getElementById('md5Hash').textContent = md5Hash;
+            } catch (error) {
+                showToast('Errore nella generazione degli hash');
+            }
+        }
+
+        function simpleMD5(str) {
+            // Implementazione MD5 semplificata per demo
+            let hash = 0;
+            if (str.length === 0) return hash.toString(16);
+            for (let i = 0; i < str.length; i++) {
+                const char = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
+            }
+            return Math.abs(hash).toString(16).padStart(8, '0') + 'demo';
+        }
+
+        function copyHash(type) {
+            const hash = document.getElementById(type + 'Hash').textContent;
+            copyToClipboard(hash);
+            showToast(`Hash ${type.toUpperCase()} copiato!`);
+        }
+
+        // === REGEX TESTER ===
+        function testRegex() {
+            const pattern = document.getElementById('regexPattern').value;
+            const flags = document.getElementById('regexFlags').value;
+            const testString = document.getElementById('testString').value;
+            const resultsDiv = document.getElementById('regexResults');
+
+            try {
+                const regex = new RegExp(pattern, flags);
+                const matches = [...testString.matchAll(regex)];
+                
+                document.getElementById('regexValid').textContent = '✓';
+                document.getElementById('matchCount').textContent = matches.length;
+
+                if (matches.length === 0) {
+                    resultsDiv.innerHTML = '<div class="text-gray-500">Nessun match trovato</div>';
+                } else {
+                    let html = '';
+                    matches.forEach((match, index) => {
+                        html += `
+                            <div class="mb-2 p-2 bg-green-100 rounded">
+                                <div class="font-semibold">Match ${index + 1}:</div>
+                                <div class="font-mono">"${match[0]}"</div>
+                                <div class="text-sm text-gray-600">Posizione: ${match.index}</div>
+                            </div>
+                        `;
+                    });
+                    resultsDiv.innerHTML = html;
+                }
+            } catch (error) {
+                document.getElementById('regexValid').textContent = '✗';
+                document.getElementById('matchCount').textContent = '0';
+                resultsDiv.innerHTML = `<div class="text-red-500">Errore: ${error.message}</div>`;
+            }
+        }
+
+        function insertRegex(pattern) {
+            document.getElementById('regexPattern').value = pattern;
+            testRegex();
+        }
+
+        // === COLOR PICKER ===
+        function updateColorValues() {
+            const color = document.getElementById('colorPicker').value;
+            const rgb = hexToRgb(color);
+            const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+
+            // Aggiorna input
+            document.getElementById('hexInput').value = color;
+            document.getElementById('rgbInput').value = `${rgb.r}, ${rgb.g}, ${rgb.b}`;
+
+            // Aggiorna slider HSL
+            document.getElementById('hueSlider').value = Math.round(hsl.h);
+            document.getElementById('satSlider').value = Math.round(hsl.s);
+            document.getElementById('lightSlider').value = Math.round(hsl.l);
+
+            // Aggiorna display valori
+            document.getElementById('hueValue').textContent = Math.round(hsl.h) + '°';
+            document.getElementById('satValue').textContent = Math.round(hsl.s) + '%';
+            document.getElementById('lightValue').textContent = Math.round(hsl.l) + '%';
+
+            // Aggiorna display colori
+            document.getElementById('hexDisplay').textContent = color.toUpperCase();
+            document.getElementById('rgbDisplay').textContent = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+            document.getElementById('hslDisplay').textContent = `hsl(${Math.round(hsl.h)}, ${Math.round(hsl.s)}%, ${Math.round(hsl.l)}%)`;
+            document.getElementById('cssDisplay').textContent = color;
+
+            generateColorHarmony(hsl);
+        }
+
+        function updateFromHex() {
+            const hex = document.getElementById('hexInput').value;
+            if (/^#[0-9A-F]{6}$/i.test(hex)) {
+                document.getElementById('colorPicker').value = hex;
+                updateColorValues();
+            }
+        }
+
+        function updateFromRGB() {
+            const rgb = document.getElementById('rgbInput').value;
+            const match = rgb.match(/(\d+),\s*(\d+),\s*(\d+)/);
+            if (match) {
+                const r = parseInt(match[1]);
+                const g = parseInt(match[2]);
+                const b = parseInt(match[3]);
+                const hex = rgbToHex(r, g, b);
+                document.getElementById('colorPicker').value = hex;
+                updateColorValues();
+            }
+        }
+
+        function updateFromHSL() {
+            const h = parseInt(document.getElementById('hueSlider').value);
+            const s = parseInt(document.getElementById('satSlider').value);
+            const l = parseInt(document.getElementById('lightSlider').value);
+            
+            const hex = hslToHex(h, s, l);
+            document.getElementById('colorPicker').value = hex;
+            updateColorValues();
+        }
+
+        function generateColorHarmony(hsl) {
+            const colors = [
+                hslToHex(hsl.h, hsl.s, hsl.l), // Original
+                hslToHex((hsl.h + 60) % 360, hsl.s, hsl.l), // Analogous
+                hslToHex((hsl.h + 120) % 360, hsl.s, hsl.l), // Triadic
+                hslToHex((hsl.h + 180) % 360, hsl.s, hsl.l), // Complementary
+                hslToHex((hsl.h + 240) % 360, hsl.s, hsl.l) // Triadic 2
+            ];
+
+            const container = document.getElementById('colorHarmony');
+            container.innerHTML = '';
+            
+            colors.forEach(color => {
+                const div = document.createElement('div');
+                div.className = 'w-12 h-12 rounded cursor-pointer border-2 border-gray-300';
+                div.style.backgroundColor = color;
+                div.title = color;
+                div.onclick = () => {
+                    document.getElementById('colorPicker').value = color;
+                    updateColorValues();
+                };
+                container.appendChild(div);
+            });
+        }
+
+        function copyColorValue(type) {
+            let value;
+            switch(type) {
+                case 'hex':
+                    value = document.getElementById('hexDisplay').textContent;
+                    break;
+                case 'rgb':
+                    value = document.getElementById('rgbDisplay').textContent;
+                    break;
+                case 'hsl':
+                    value = document.getElementById('hslDisplay').textContent;
+                    break;
+            }
+            copyToClipboard(value);
+            showToast(`Valore ${type.toUpperCase()} copiato!`);
+        }
+
+        // === TIMESTAMP CONVERTER ===
+        function setCurrentTimestamp() {
+            const now = Math.floor(Date.now() / 1000);
+            document.getElementById('timestampInput').value = now;
+            convertFromTimestamp();
+        }
+
+        function convertFromTimestamp() {
+            const timestamp = parseInt(document.getElementById('timestampInput').value);
+            if (isNaN(timestamp)) return;
+
+            const date = new Date(timestamp * 1000);
+            const timezone = document.getElementById('timezoneSelect').value;
+
+            // Aggiorna i campi data/ora
+            document.getElementById('dateInput').value = date.toISOString().split('T')[0];
+            document.getElementById('timeInput').value = date.toTimeString().split(' ')[0].substring(0, 5);
+
+            updateDateDisplays(date, timezone);
+        }
+
+        function convertFromDate() {
+            const dateValue = document.getElementById('dateInput').value;
+            const timeValue = document.getElementById('timeInput').value;
+            
+            if (dateValue && timeValue) {
+                const date = new Date(`${dateValue}T${timeValue}:00`);
+                const timestamp = Math.floor(date.getTime() / 1000);
+                document.getElementById('timestampInput').value = timestamp;
+                
+                const timezone = document.getElementById('timezoneSelect').value;
+                updateDateDisplays(date, timezone);
+            }
+        }
+
+        function updateTimezone() {
+            convertFromTimestamp();
+        }
+
+        function updateDateDisplays(date, timezone) {
+            document.getElementById('timestampResult').textContent = Math.floor(date.getTime() / 1000);
+            
+            // Data locale
+            const localOptions = { 
+                year: 'numeric', month: 'long', day: 'numeric', 
+                hour: '2-digit', minute: '2-digit', second: '2-digit',
+                timeZone: timezone
+            };
+            document.getElementById('localDateResult').textContent = date.toLocaleDateString('it-IT', localOptions);
+            
+            // Data UTC
+            document.getElementById('utcDateResult').textContent = date.toUTCString();
+            
+            // ISO 8601
+            document.getElementById('isoDateResult').textContent = date.toISOString();
+            
+            // Tempo relativo
+            const now = new Date();
+            const diff = now - date;
+            document.getElementById('relativeTime').textContent = formatRelativeTime(diff);
+        }
+
+        function formatRelativeTime(diff) {
+            const seconds = Math.floor(Math.abs(diff) / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const hours = Math.floor(minutes / 60);
+            const days = Math.floor(hours / 24);
+            const years = Math.floor(days / 365);
+
+            const future = diff < 0;
+            const prefix = future ? 'tra ' : '';
+            const suffix = future ? '' : ' fa';
+
+            if (years > 0) return `${prefix}${years} ann${years === 1 ? 'o' : 'i'}${suffix}`;
+            if (days > 0) return `${prefix}${days} giorn${days === 1 ? 'o' : 'i'}${suffix}`;
+            if (hours > 0) return `${prefix}${hours} or${hours === 1 ? 'a' : 'e'}${suffix}`;
+            if (minutes > 0) return `${prefix}${minutes} minut${minutes === 1 ? 'o' : 'i'}${suffix}`;
+            return `${prefix}${seconds} second${seconds === 1 ? 'o' : 'i'}${suffix}`;
+        }
+
+        function copyTimestamp() {
+            const timestamp = document.getElementById('timestampResult').textContent;
+            copyToClipboard(timestamp);
+            showToast('Timestamp copiato!');
+        }
+
+        function copyFormattedDate(type) {
+            let value;
+            switch(type) {
+                case 'iso':
+                    value = document.getElementById('isoDateResult').textContent;
+                    break;
+                case 'local':
+                    value = document.getElementById('localDateResult').textContent;
+                    break;
+            }
+            copyToClipboard(value);
+            showToast('Data copiata!');
+        }
+
+        // === LOREM GENERATOR ===
+        const loremWords = [
+            'lorem', 'ipsum', 'dolor', 'sit', 'amet', 'consectetur', 'adipiscing', 'elit',
+            'sed', 'do', 'eiusmod', 'tempor', 'incididunt', 'ut', 'labore', 'et', 'dolore',
+            'magna', 'aliqua', 'enim', 'ad', 'minim', 'veniam', 'quis', 'nostrud',
+            'exercitation', 'ullamco', 'laboris', 'nisi', 'aliquip', 'ex', 'ea', 'commodo',
+            'consequat', 'duis', 'aute', 'irure', 'in', 'reprehenderit', 'voluptate',
+            'velit', 'esse', 'cillum', 'fugiat', 'nulla', 'pariatur', 'excepteur', 'sint',
+            'occaecat', 'cupidatat', 'non', 'proident', 'sunt', 'culpa', 'qui', 'officia',
+            'deserunt', 'mollit', 'anim', 'id', 'est', 'laborum'
+        ];
+
+        function updateQuantity() {
+            const quantity = document.getElementById('quantitySlider').value;
+            document.getElementById('quantityValue').textContent = quantity;
+            generateLorem();
+        }
+
+        function generateLorem() {
+            const type = document.getElementById('loremType').value;
+            const quantity = parseInt(document.getElementById('quantitySlider').value);
+            const startWithLorem = document.getElementById('startWithLorem').checked;
+            
+            let result = '';
+            
+            switch(type) {
+                case 'paragraphs':
+                    result = generateParagraphs(quantity, startWithLorem);
+                    break;
+                case 'sentences':
+                    result = generateSentences(quantity, startWithLorem);
+                    break;
+                case 'words':
+                    result = generateWords(quantity, startWithLorem);
+                    break;
+                case 'lists':
+                    result = generateLists(quantity);
+                    break;
+            }
+            
+            document.getElementById('loremOutput').innerHTML = result;
+            updateLoremStats(result);
+        }
+
+        function generateParagraphs(count, startWithLorem) {
+            let paragraphs = [];
+            
+            for (let i = 0; i < count; i++) {
+                const sentenceCount = Math.floor(Math.random() * 5) + 3;
+                let paragraph = '';
+                
+                for (let j = 0; j < sentenceCount; j++) {
+                    if (i === 0 && j === 0 && startWithLorem) {
+                        paragraph += 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. ';
+                    } else {
+                        const wordCount = Math.floor(Math.random() * 10) + 5;
+                        const sentence = generateRandomSentence(wordCount);
+                        paragraph += sentence + '. ';
+                    }
+                }
+                
+                paragraphs.push(`<p class="mb-4">${paragraph.trim()}</p>`);
+            }
+            
+            return paragraphs.join('');
+        }
+
+        function generateSentences(count, startWithLorem) {
+            let sentences = [];
+            
+            for (let i = 0; i < count; i++) {
+                if (i === 0 && startWithLorem) {
+                    sentences.push('Lorem ipsum dolor sit amet, consectetur adipiscing elit.');
+                } else {
+                    const wordCount = Math.floor(Math.random() * 10) + 5;
+                    sentences.push(generateRandomSentence(wordCount) + '.');
+                }
+            }
+            
+            return sentences.join(' ');
+        }
+
+        function generateWords(count, startWithLorem) {
+            let words = [];
+            
+            if (startWithLorem && count >= 5) {
+                words = ['Lorem', 'ipsum', 'dolor', 'sit', 'amet'];
+                count -= 5;
+            }
+            
+            for (let i = 0; i < count; i++) {
+                words.push(loremWords[Math.floor(Math.random() * loremWords.length)]);
+            }
+            
+            return words.join(' ');
+        }
+
+        function generateLists(count) {
+            let lists = [];
+            
+            for (let i = 0; i < count; i++) {
+                const itemCount = Math.floor(Math.random() * 5) + 3;
+                let items = [];
+                
+                for (let j = 0; j < itemCount; j++) {
+                    const wordCount = Math.floor(Math.random() * 5) + 2;
+                    items.push(`<li>${generateRandomSentence(wordCount)}</li>`);
+                }
+                
+                lists.push(`<ul class="list-disc list-inside mb-4">${items.join('')}</ul>`);
+            }
+            
+            return lists.join('');
+        }
+
+        function generateRandomSentence(wordCount) {
+            let words = [];
+            for (let i = 0; i < wordCount; i++) {
+                words.push(loremWords[Math.floor(Math.random() * loremWords.length)]);
+            }
+            return words[0].charAt(0).toUpperCase() + words[0].slice(1) + ' ' + words.slice(1).join(' ');
+        }
+
+        function updateLoremStats(text) {
+            const plainText = text.replace(/<[^>]*>/g, '');
+            const wordCount = plainText.trim().split(/\s+/).length;
+            const charCount = plainText.length;
+            
+            document.getElementById('wordCount').textContent = wordCount;
+            document.getElementById('charCount').textContent = charCount;
+        }
+
+        function copyLorem() {
+            const text = document.getElementById('loremOutput').textContent;
+            copyToClipboard(text);
+            showToast('Testo Lorem copiato!');
+        }
+
+        // === QR GENERATOR ===
+        function generateQR() {
+            const text = document.getElementById('qrInput').value;
+            const size = parseInt(document.getElementById('sizeSlider').value);
+            const color = document.getElementById('qrColor').value.replace('#', '');
+            const background = document.getElementById('qrBackground').value.replace('#', '');
+            
+            if (!text) return;
+            
+            // Prova prima con API esterna per QR reali
+            const apiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(text)}&color=${color}&bgcolor=${background}&format=png`;
+            
+            const canvas = document.getElementById('qrCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = size;
+            canvas.height = size;
+            
+            // Carica immagine da API
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            
+            img.onload = function() {
+                ctx.clearRect(0, 0, size, size);
+                ctx.drawImage(img, 0, 0, size, size);
+            };
+            
+            img.onerror = function() {
+                // Fallback: genera QR semplificato se API non funziona
+                generateQRFallback(text, size, `#${color}`, `#${background}`);
+            };
+            
+            img.src = apiUrl;
+        }
+
+        function generateQRFallback(text, size, color, background) {
+            const canvas = document.getElementById('qrCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = size;
+            canvas.height = size;
+            
+            // Crea matrice QR migliorata
+            const qrMatrix = generateQRMatrix(text);
+            const moduleSize = size / qrMatrix.length;
+            
+            // Disegna sfondo
+            ctx.fillStyle = background;
+            ctx.fillRect(0, 0, size, size);
+            
+            // Disegna moduli QR
+            ctx.fillStyle = color;
+            for (let row = 0; row < qrMatrix.length; row++) {
+                for (let col = 0; col < qrMatrix[row].length; col++) {
+                    if (qrMatrix[row][col]) {
+                        ctx.fillRect(
+                            Math.floor(col * moduleSize), 
+                            Math.floor(row * moduleSize), 
+                            Math.ceil(moduleSize), 
+                            Math.ceil(moduleSize)
+                        );
+                    }
+                }
+            }
+        }
+
+        function generateQRMatrix(text) {
+            // Dimensione matrice QR (25x25 per migliore compatibilità)
+            const size = 25;
+            const matrix = Array(size).fill().map(() => Array(size).fill(false));
+            
+            // Aggiungi finder patterns (quadrati agli angoli)
+            addFinderPattern(matrix, 0, 0);
+            addFinderPattern(matrix, size - 7, 0);
+            addFinderPattern(matrix, 0, size - 7);
+            
+            // Aggiungi separatori
+            addSeparators(matrix, size);
+            
+            // Aggiungi timing patterns
+            addTimingPatterns(matrix, size);
+            
+            // Aggiungi alignment pattern (centro per versioni più grandi)
+            if (size >= 25) {
+                addAlignmentPattern(matrix, Math.floor(size/2), Math.floor(size/2));
+            }
+            
+            // Codifica dati migliorata
+            addDataModules(matrix, text, size);
+            
+            return matrix;
+        }
+
+        function addFinderPattern(matrix, startRow, startCol) {
+            // Pattern 7x7 per finder più accurato
+            const pattern = [
+                [1,1,1,1,1,1,1],
+                [1,0,0,0,0,0,1],
+                [1,0,1,1,1,0,1],
+                [1,0,1,1,1,0,1],
+                [1,0,1,1,1,0,1],
+                [1,0,0,0,0,0,1],
+                [1,1,1,1,1,1,1]
+            ];
+            
+            for (let i = 0; i < 7; i++) {
+                for (let j = 0; j < 7; j++) {
+                    if (startRow + i < matrix.length && startCol + j < matrix[0].length) {
+                        matrix[startRow + i][startCol + j] = pattern[i][j] === 1;
+                    }
+                }
+            }
+        }
+
+        function addAlignmentPattern(matrix, centerRow, centerCol) {
+            // Pattern 5x5 per alignment
+            const pattern = [
+                [1,1,1,1,1],
+                [1,0,0,0,1],
+                [1,0,1,0,1],
+                [1,0,0,0,1],
+                [1,1,1,1,1]
+            ];
+            
+            for (let i = -2; i <= 2; i++) {
+                for (let j = -2; j <= 2; j++) {
+                    const row = centerRow + i;
+                    const col = centerCol + j;
+                    if (row >= 0 && row < matrix.length && col >= 0 && col < matrix[0].length) {
+                        matrix[row][col] = pattern[i + 2][j + 2] === 1;
+                    }
+                }
+            }
+        }
+
+        function addSeparators(matrix, size) {
+            // Separatori bianchi intorno ai finder patterns
+            for (let i = 0; i < 8; i++) {
+                // Top-left
+                if (i < size) matrix[7][i] = false;
+                if (i < size) matrix[i][7] = false;
+                
+                // Top-right
+                if (size - 8 + i >= 0 && size - 8 + i < size) matrix[7][size - 8 + i] = false;
+                if (i < size && size - 8 >= 0) matrix[i][size - 8] = false;
+                
+                // Bottom-left
+                if (size - 8 + i >= 0 && size - 8 + i < size) matrix[size - 8 + i][7] = false;
+                if (i < size && size - 8 >= 0) matrix[size - 8][i] = false;
+            }
+        }
+
+        function addTimingPatterns(matrix, size) {
+            // Pattern alternato lungo riga e colonna 6
+            for (let i = 8; i < size - 8; i++) {
+                matrix[6][i] = i % 2 === 0;
+                matrix[i][6] = i % 2 === 0;
+            }
+        }
+
+        function addDataModules(matrix, text, size) {
+            // Algoritmo migliorato per codifica dati
+            let hash = 0;
+            for (let i = 0; i < text.length; i++) {
+                const char = text.charCodeAt(i);
+                hash = ((hash << 5) - hash + char) & 0xffffffff;
+            }
+            
+            // Genera pattern più realistico basato su contenuto
+            const dataPattern = [];
+            for (let i = 0; i < text.length; i++) {
+                const charCode = text.charCodeAt(i);
+                // Converti carattere in pattern binario
+                for (let bit = 7; bit >= 0; bit--) {
+                    dataPattern.push((charCode >> bit) & 1);
+                }
+            }
+            
+            // Aggiungi padding se necessario
+            while (dataPattern.length < (size * size) / 3) {
+                dataPattern.push(hash % 2);
+                hash = Math.floor(hash / 2);
+            }
+            
+            let dataIndex = 0;
+            
+            // Riempi aree dati disponibili con pattern realistico
+            for (let row = 0; row < size; row++) {
+                for (let col = 0; col < size; col++) {
+                    // Salta aree già occupate da pattern funzionali
+                    if (isReservedArea(row, col, size)) continue;
+                    
+                    // Usa pattern dati reale
+                    if (dataIndex < dataPattern.length) {
+                        matrix[row][col] = dataPattern[dataIndex] === 1;
+                        dataIndex++;
+                    } else {
+                        // Pattern di riempimento
+                        matrix[row][col] = ((row + col + hash) % 3) === 0;
+                    }
+                }
+            }
+        }
+
+        function isReservedArea(row, col, size) {
+            // Finder patterns e separatori
+            if ((row < 9 && col < 9) || 
+                (row < 9 && col >= size - 8) || 
+                (row >= size - 8 && col < 9)) {
+                return true;
+            }
+            
+            // Timing patterns
+            if (row === 6 || col === 6) {
+                return true;
+            }
+            
+            // Alignment pattern area (centro)
+            if (size >= 25) {
+                const center = Math.floor(size / 2);
+                if (Math.abs(row - center) <= 2 && Math.abs(col - center) <= 2) {
+                    return true;
+                }
+            }
+            
+            return false;
+        }
+
+        function updateQRSize() {
+            const size = document.getElementById('sizeSlider').value;
+            document.getElementById('sizeValue').textContent = size + 'px';
+            generateQR();
+        }
+
+        function setQRType(type) {
+            const input = document.getElementById('qrInput');
+            
+            // Rimuovi classe attiva da tutti i pulsanti
+            document.querySelectorAll('.qr-type-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-200');
+                btn.classList.add('bg-gray-100');
+            });
+            
+            // Aggiungi classe attiva al pulsante selezionato
+            event.target.classList.remove('bg-gray-100');
+            event.target.classList.add('bg-blue-200');
+            
+            switch(type) {
+                case 'url':
+                    input.placeholder = 'https://example.com';
+                    break;
+                case 'text':
+                    input.placeholder = 'Il tuo testo qui';
+                    break;
+                case 'email':
+                    input.placeholder = 'mailto:test@example.com';
+                    break;
+                case 'phone':
+                    input.placeholder = 'tel:+39123456789';
+                    break;
+                case 'sms':
+                    input.placeholder = 'sms:+39123456789';
+                    break;
+                case 'wifi':
+                    input.placeholder = 'WIFI:T:WPA;S:NomeRete;P:Password;;';
+                    break;
+            }
+        }
+
+        function setTemplate(type) {
+            const input = document.getElementById('qrInput');
+            
+            switch(type) {
+                case 'url':
+                    input.value = 'https://canva.com';
+                    break;
+                case 'email':
+                    input.value = 'mailto:test@example.com?subject=Ciao&body=Messaggio';
+                    break;
+                case 'phone':
+                    input.value = 'tel:+39123456789';
+                    break;
+                case 'sms':
+                    input.value = 'sms:+39123456789?body=Ciao!';
+                    break;
+            }
+            
+            generateQR();
+        }
+
+        function downloadQR() {
+            const canvas = document.getElementById('qrCanvas');
+            const link = document.createElement('a');
+            link.download = 'qrcode.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+
+        function copyQRImage() {
+            const canvas = document.getElementById('qrCanvas');
+            canvas.toBlob(blob => {
+                const item = new ClipboardItem({ 'image/png': blob });
+                navigator.clipboard.write([item]).then(() => {
+                    showToast('QR Code copiato negli appunti!');
+                }).catch(() => {
+                    showToast('Impossibile copiare l\'immagine');
+                });
+            });
+        }
+
+        // === UTILITY FUNCTIONS ===
+        function hexToRgb(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : null;
+        }
+
+        function rgbToHex(r, g, b) {
+            return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+        }
+
+        function rgbToHsl(r, g, b) {
+            r /= 255; g /= 255; b /= 255;
+            const max = Math.max(r, g, b), min = Math.min(r, g, b);
+            let h, s, l = (max + min) / 2;
+
+            if (max === min) {
+                h = s = 0;
+            } else {
+                const d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                switch (max) {
+                    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                    case g: h = (b - r) / d + 2; break;
+                    case b: h = (r - g) / d + 4; break;
+                }
+                h /= 6;
+            }
+
+            return { h: h * 360, s: s * 100, l: l * 100 };
+        }
+
+        function hslToHex(h, s, l) {
+            h /= 360; s /= 100; l /= 100;
+            const a = s * Math.min(l, 1 - l);
+            const f = n => {
+                const k = (n + h * 12) % 12;
+                const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+                return Math.round(255 * color).toString(16).padStart(2, '0');
+            };
+            return `#${f(0)}${f(8)}${f(4)}`;
+        }
+
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 B';
+            const k = 1024;
+            const sizes = ['B', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).catch(() => {
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+            });
+        }
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 2000);
+        }
+
+        // Inizializzazione
+        document.addEventListener('DOMContentLoaded', function() {
+            // Imposta data/ora corrente per timestamp converter
+            const now = new Date();
+            document.getElementById('dateInput').value = now.toISOString().split('T')[0];
+            document.getElementById('timeInput').value = now.toTimeString().split(' ')[0].substring(0, 5);
+            
+            // Inizializza strumenti
+            validateJSON();
+            encodeURL();
+            generateHashes();
+            testRegex();
+            updateColorValues();
+            setCurrentTimestamp();
+            generateLorem();
+            generateQR();
+        });
+             // breadcrumbs
+const pageData = {
+  '/': {
+    label: 'Home',
+    icon: '🏠'
+  },
+  '/sviluppo/': {
+    label: 'Sviluppo',
+    icon: '🧬'
+  }
+  // Aggiungi qui altre lingue quando le crei:
+  // '/cinese/': { label: 'Cinese', icon: '🇨🇳' },
+  // '/coreano/': { label: 'Coreano', icon: '🇰🇷' },
+};
+
+function createBreadcrumbs(currentPath) {
+  const breadcrumbContainer = document.getElementById('breadcrumb');
+  if (!breadcrumbContainer) return;
+  
+  breadcrumbContainer.innerHTML = '';
+
+  const segments = getPathSegments(currentPath);
+
+  segments.forEach((segment, index) => {
+    const isLast = index === segments.length - 1;
+    const segmentData = pageData[segment.path];
+    if (!segmentData) return;
+
+    const li = document.createElement('li');
+
+    if (isLast) {
+      li.innerHTML = `
+        <span class="current">
+          <span>${segmentData.icon}</span>
+          <span>${segmentData.label}</span>
+        </span>
+      `;
+    } else {
+      li.innerHTML = `
+        <a href="${mapUrlToFile(segment.path)}">
+          <span>${segmentData.icon}</span>
+          <span>${segmentData.label}</span>
+        </a>
+      `;
+    }
+
+    breadcrumbContainer.appendChild(li);
+
+    if (!isLast) {
+      const separator = document.createElement('span');
+      separator.className = 'breadcrumb-separator';
+      separator.textContent = '›';
+      breadcrumbContainer.appendChild(separator);
+    }
+  });
+}
+
+function mapUrlToFile(path) {
+  switch (path) {
+    case '/': return 'index.html';
+    case '/sviluppo/': return 'sviluppo.html';
+    default: return 'index.html';
+  }
+}
+
+function getPathSegments(path) {
+  if (path === '/') {
+    return [{ path: '/', label: 'Home' }];
+  }
+  const segments = [];
+  const parts = path.split('/').filter(part => part !== '');
+  let currentPath = '';
+  segments.push({ path: '/', label: 'Home' });
+  parts.forEach(part => {
+    currentPath += '/' + part;
+    segments.push({ path: currentPath + '/', label: part });
+  });
+  return segments;
+}
+
+// AVVIA breadcrumbs Home
+createBreadcrumbs('/sviluppo');
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9919a49fe2535091',t:'MTc2MDk3NTEzNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

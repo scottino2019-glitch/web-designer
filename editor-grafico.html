@@ -1,0 +1,1533 @@
+<!doctype html>
+<html lang="it">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editor Grafico Pro</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 80px;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100%;
+      padding: 20px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .header h1 {
+      font-size: 42px;
+      font-weight: 900;
+      color: #ffffff;
+      margin: 0 0 10px 0;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .header p {
+      font-size: 16px;
+      color: rgba(255,255,255,0.9);
+      margin: 0;
+    }
+
+    .toolbar {
+      background: white;
+      padding: 15px 20px;
+      margin-bottom: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .tool-btn {
+      padding: 10px 16px;
+      border: 2px solid #e2e8f0;
+      background: white;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-weight: 600;
+      font-size: 14px;
+      color: #4a5568;
+    }
+
+    .tool-btn:hover {
+      border-color: #667eea;
+      background: #f7fafc;
+    }
+
+    .tool-btn.active {
+      border-color: #667eea;
+      background: #eef2ff;
+      color: #667eea;
+    }
+
+    .toolbar-divider {
+      width: 2px;
+      height: 30px;
+      background: #e2e8f0;
+      margin: 0 5px;
+    }
+
+    .btn-download-toolbar {
+      background: #48bb78;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-left: auto;
+    }
+
+    .btn-download-toolbar:hover {
+      background: #38a169;
+    }
+
+    .editor-layout {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 20px;
+    }
+
+    .right-panel {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      max-height: 700px;
+      overflow-y: auto;
+    }
+
+    .panel-section {
+      margin-bottom: 25px;
+    }
+
+    .panel-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #2d3748;
+      margin: 0 0 12px 0;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #667eea;
+    }
+
+    .canvas-area {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .canvas-wrapper {
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+      border-radius: 8px;
+      overflow: hidden;
+      touch-action: none;
+    }
+
+    #design-canvas {
+      display: block;
+      cursor: default;
+      touch-action: none;
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #4a5568;
+      margin-bottom: 6px;
+    }
+
+    .form-input, .form-select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    .form-input:focus, .form-select:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .color-input-wrapper {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .color-input-wrapper input[type="color"] {
+      width: 50px;
+      height: 40px;
+      border: 2px solid #e2e8f0;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .size-selector {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .size-btn {
+      padding: 8px;
+      border: 2px solid #e2e8f0;
+      background: white;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+
+    .size-btn:hover {
+      border-color: #667eea;
+    }
+
+    .size-btn.active {
+      border-color: #667eea;
+      background: #eef2ff;
+      color: #667eea;
+    }
+
+    .quick-colors {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .quick-color {
+      width: 100%;
+      aspect-ratio: 1;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      border: 2px solid transparent;
+    }
+
+    .quick-color:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    .emoji-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
+
+    .emoji-btn {
+      font-size: 24px;
+      padding: 8px;
+      border: 2px solid #e2e8f0;
+      background: white;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .emoji-btn:hover {
+      border-color: #667eea;
+      transform: scale(1.1);
+    }
+
+    .template-btn {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 6px;
+      border: 2px solid #e2e8f0;
+      background: white;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: left;
+    }
+
+    .template-btn:hover {
+      border-color: #667eea;
+      background: #f7fafc;
+    }
+
+    .layers-container {
+      max-height: 250px;
+      overflow-y: auto;
+    }
+
+    .layer-item {
+      padding: 8px 10px;
+      margin-bottom: 4px;
+      background: #f7fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+    }
+
+    .layer-item:hover {
+      background: #edf2f7;
+    }
+
+    .layer-item.selected {
+      border-color: #667eea;
+      background: #eef2ff;
+    }
+
+    .layer-name {
+      font-weight: 600;
+      color: #2d3748;
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .layer-btn {
+      width: 24px;
+      height: 24px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      font-size: 16px;
+      margin-left: 4px;
+    }
+
+    .layer-btn:hover {
+      background: #cbd5e0;
+    }
+
+    .notification {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #48bb78;
+      color: white;
+      padding: 16px 24px;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      font-weight: 600;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s;
+      pointer-events: none;
+      z-index: 2000;
+    }
+
+    .notification.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .properties-empty {
+      color: #718096;
+      font-size: 13px;
+      text-align: center;
+      padding: 15px;
+    }
+
+    @media (max-width: 1200px) {
+      .editor-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .right-panel {
+        max-height: none;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 28px;
+      }
+
+      .header p {
+        font-size: 14px;
+      }
+
+      body {
+        padding: 10px;
+      }
+
+      .toolbar {
+        padding: 8px;
+        gap: 6px;
+      }
+
+      .tool-btn {
+        padding: 8px 12px;
+        font-size: 12px;
+      }
+
+      .toolbar-divider {
+        display: none;
+      }
+
+      .btn-download-toolbar {
+        width: 100%;
+        margin-top: 8px;
+        margin-left: 0;
+      }
+
+      .canvas-area {
+        padding: 15px;
+      }
+
+      .canvas-wrapper {
+        max-width: 100%;
+        overflow: auto;
+      }
+
+      #design-canvas {
+        max-width: 100%;
+        height: auto;
+      }
+
+      .notification {
+        bottom: 15px;
+        right: 15px;
+        left: 15px;
+        padding: 12px 16px;
+        font-size: 14px;
+      }
+    }
+        /* BREADCRUMBS */
+    .breadcrumb-container {
+      padding: 12px 24px;
+      background: #f9fafb;
+    }
+    .breadcrumb-nav {
+      display: flex;
+      align-items: center;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      font-size: 14px;
+    }
+    .breadcrumb-nav li {
+      display: flex;
+      align-items: center;
+    }
+    .breadcrumb-nav a {
+      color: #3b82f6;
+      text-decoration: none;
+      padding: 6px 10px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .breadcrumb-nav a:hover {
+      background: #eff6ff;
+      color: #1d4ed8;
+    }
+    .breadcrumb-nav .current {
+      color: #374151;
+      font-weight: 600;
+      padding: 6px 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .breadcrumb-separator {
+      margin: 0 8px;
+      color: #9ca3af;
+    }
+    /* DROPDOWN */
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+    .dropdown-trigger {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      padding: 6px 10px;
+      border-radius: 6px;
+      transition: all 0.2s;
+      color: #3b82f6;
+    }
+    .dropdown-trigger:hover {
+      background: #eff6ff;
+      color: #1d4ed8;
+    }
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background: white;
+      min-width: 200px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+      z-index: 1000;
+      top: 100%;
+      left: 0;
+      margin-top: 4px;
+      overflow: hidden;
+    }
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+    .dropdown-item {
+      color: #374151;
+      padding: 10px 16px;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background-color 0.2s;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .dropdown-item:last-child {
+      border-bottom: none;
+    }
+    .dropdown-item:hover {
+      background: #f9fafb;
+    }
+    .dropdown-arrow {
+      transition: transform 0.2s;
+    }
+    .dropdown:hover .dropdown-arrow {
+      transform: rotate(180deg);
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  <div class="container">
+      <nav class="navbar">
+    <div class="navbar-header">
+    <div class="breadcrumb-container">
+      <nav aria-label="Breadcrumb">
+        <ol id="breadcrumb" class="breadcrumb-nav"></ol>
+      </nav>
+    </div>
+  </nav>
+   <header class="header">
+    <h1 id="main-title">🎨 Editor Grafico Pro</h1>
+    <p>Trascina gli elementi facilmente - Crea design professionali</p>
+   </header>
+   <div class="toolbar"><button class="tool-btn active" data-tool="select" onclick="selectTool('select')">👆 Seleziona</button> <button class="tool-btn" data-tool="text" onclick="selectTool('text')">📝 Testo</button> <button class="tool-btn" data-tool="rect" onclick="selectTool('rect')">⬜ Rettangolo</button> <button class="tool-btn" data-tool="circle" onclick="selectTool('circle')">⚪ Cerchio</button> <button class="tool-btn" data-tool="line" onclick="selectTool('line')">📏 Linea</button>
+    <div class="toolbar-divider"></div><button class="tool-btn" onclick="alignElement('left')" title="Allinea a sinistra">⬅️</button> <button class="tool-btn" onclick="alignElement('center')" title="Centra orizzontalmente">↔️</button> <button class="tool-btn" onclick="alignElement('right')" title="Allinea a destra">➡️</button> <button class="tool-btn" onclick="alignElement('top')" title="Allinea in alto">⬆️</button> <button class="tool-btn" onclick="alignElement('middle')" title="Centra verticalmente">↕️</button> <button class="tool-btn" onclick="alignElement('bottom')" title="Allinea in basso">⬇️</button>
+    <div class="toolbar-divider"></div><button class="tool-btn" onclick="deleteSelected()">🗑️ Elimina</button> <button class="tool-btn" onclick="clearCanvas()">🧹 Pulisci</button> <button class="btn-download-toolbar" onclick="downloadDesign()">💾 Scarica PNG</button>
+   </div>
+   <div class="editor-layout"><!-- Canvas Area -->
+    <div class="canvas-area">
+     <div class="canvas-wrapper">
+      <canvas id="design-canvas" width="800" height="1000"></canvas>
+     </div>
+    </div><!-- Right Panel - Combined -->
+    <div class="right-panel">
+     <div class="panel-section">
+      <h3 class="section-title">📐 Canvas</h3>
+      <div class="size-selector"><button class="size-btn active" onclick="setCanvasSize(800, 1000, this)">Poster<br>
+        800×1000</button> <button class="size-btn" onclick="setCanvasSize(1080, 1080, this)">Social<br>
+        1080×1080</button> <button class="size-btn" onclick="setCanvasSize(1200, 630, this)">Banner<br>
+        1200×630</button>
+      </div>
+      <div class="form-group" style="margin-top: 12px;"><label class="form-label">Sfondo</label>
+       <div class="color-input-wrapper"><input type="color" id="canvas-bg" value="#ffffff" onchange="updateCanvasBg()"> <input type="text" class="form-input" id="canvas-bg-text" value="#ffffff" oninput="syncCanvasBg()">
+       </div>
+      </div>
+     </div>
+     <div class="panel-section">
+      <h3 class="section-title">🎨 Proprietà</h3>
+      <div id="element-properties">
+       <p class="properties-empty">Seleziona un elemento per modificarne le proprietà</p>
+      </div>
+     </div>
+     <div class="panel-section">
+      <h3 class="section-title">📚 Livelli</h3>
+      <div id="layers-list" class="layers-container"></div>
+     </div>
+     <div class="panel-section">
+      <h3 class="section-title">🎨 Colori Rapidi</h3>
+      <div class="quick-colors">
+       <div class="quick-color" style="background: #ef4444;" onclick="setQuickColor('#ef4444')"></div>
+       <div class="quick-color" style="background: #f59e0b;" onclick="setQuickColor('#f59e0b')"></div>
+       <div class="quick-color" style="background: #10b981;" onclick="setQuickColor('#10b981')"></div>
+       <div class="quick-color" style="background: #3b82f6;" onclick="setQuickColor('#3b82f6')"></div>
+       <div class="quick-color" style="background: #8b5cf6;" onclick="setQuickColor('#8b5cf6')"></div>
+       <div class="quick-color" style="background: #ec4899;" onclick="setQuickColor('#ec4899')"></div>
+       <div class="quick-color" style="background: #000000;" onclick="setQuickColor('#000000')"></div>
+       <div class="quick-color" style="background: #ffffff; border-color: #e2e8f0;" onclick="setQuickColor('#ffffff')"></div>
+      </div>
+     </div>
+     <div class="panel-section">
+      <h3 class="section-title">😊 Emoji</h3>
+      <div class="emoji-grid"><button class="emoji-btn" onclick="addEmojiToCanvas('🎸')">🎸</button> <button class="emoji-btn" onclick="addEmojiToCanvas('🎤')">🎤</button> <button class="emoji-btn" onclick="addEmojiToCanvas('🎵')">🎵</button> <button class="emoji-btn" onclick="addEmojiToCanvas('🎨')">🎨</button> <button class="emoji-btn" onclick="addEmojiToCanvas('⭐')">⭐</button> <button class="emoji-btn" onclick="addEmojiToCanvas('✨')">✨</button> <button class="emoji-btn" onclick="addEmojiToCanvas('❤️')">❤️</button> <button class="emoji-btn" onclick="addEmojiToCanvas('🔥')">🔥</button> <button class="emoji-btn" onclick="addEmojiToCanvas('👍')">👍</button> <button class="emoji-btn" onclick="addEmojiToCanvas('🎉')">🎉</button> <button class="emoji-btn" onclick="addEmojiToCanvas('🚀')">🚀</button> <button class="emoji-btn" onclick="addEmojiToCanvas('💡')">💡</button>
+      </div>
+     </div>
+     <div class="panel-section">
+      <h3 class="section-title">📝 Template Testo</h3><button class="template-btn" onclick="addTextTemplate('Titolo Grande', 60, '#000000', '900')">Titolo Grande</button> <button class="template-btn" onclick="addTextTemplate('Sottotitolo', 36, '#4a5568', '600')">Sottotitolo</button> <button class="template-btn" onclick="addTextTemplate('Testo Corpo', 24, '#718096', '400')">Testo Corpo</button>
+     </div>
+    </div>
+   </div>
+  </div>
+  <div id="notification" class="notification"></div>
+  <script>
+    const defaultConfig = {
+      main_title: "🎨 Editor Grafico Pro",
+      background_color: "#667eea",
+      primary_action_color: "#764ba2"
+    };
+
+    let canvas = document.getElementById('design-canvas');
+    let ctx = canvas.getContext('2d');
+    let canvasWidth = 800;
+    let canvasHeight = 1000;
+    let canvasBgColor = '#ffffff';
+    
+    let elements = [];
+    let selectedElement = null;
+    let currentTool = 'select';
+    let isDrawing = false;
+    let startX, startY;
+    let dragOffsetX = 0;
+    let dragOffsetY = 0;
+    let isDragging = false;
+    let nextId = 1;
+    let tempShape = null; // Temporary shape while drawing
+
+    // Set canvas size
+    window.setCanvasSize = function(width, height, btn) {
+      canvasWidth = width;
+      canvasHeight = height;
+      canvas.width = width;
+      canvas.height = height;
+      
+      document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      
+      render();
+    };
+
+    // Update canvas background
+    window.updateCanvasBg = function() {
+      canvasBgColor = document.getElementById('canvas-bg').value;
+      document.getElementById('canvas-bg-text').value = canvasBgColor;
+      render();
+    };
+
+    window.syncCanvasBg = function() {
+      const value = document.getElementById('canvas-bg-text').value;
+      if (/^#[0-9A-F]{6}$/i.test(value)) {
+        canvasBgColor = value;
+        document.getElementById('canvas-bg').value = value;
+        render();
+      }
+    };
+
+    // Select tool
+    window.selectTool = function(tool) {
+      currentTool = tool;
+      document.querySelectorAll('.tool-btn[data-tool]').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.tool === tool);
+      });
+      
+      if (tool === 'select') {
+        canvas.style.cursor = 'default';
+      } else {
+        canvas.style.cursor = 'crosshair';
+      }
+      
+      if (tool !== 'select') {
+        selectedElement = null;
+        updatePropertiesPanel();
+        updateLayersList();
+      }
+    };
+
+    // Add emoji to canvas
+    window.addEmojiToCanvas = function(emoji) {
+      const offsetY = (elements.length * 30) % 200;
+      const element = {
+        id: nextId++,
+        type: 'emoji',
+        emoji: emoji,
+        x: 100,
+        y: 100 + offsetY,
+        size: 80
+      };
+      elements.push(element);
+      selectedElement = element;
+      selectTool('select');
+      render();
+      updatePropertiesPanel();
+      updateLayersList();
+      showNotification('✓ Emoji aggiunto! Trascinalo per spostarlo');
+    };
+
+    // Add text template
+    window.addTextTemplate = function(text, size, color, weight) {
+      const offsetY = (elements.length * 40) % 250;
+      const element = {
+        id: nextId++,
+        type: 'text',
+        text: text,
+        x: canvasWidth / 2,
+        y: 150 + offsetY,
+        size: size,
+        color: color,
+        weight: weight
+      };
+      elements.push(element);
+      selectedElement = element;
+      selectTool('select');
+      render();
+      updatePropertiesPanel();
+      updateLayersList();
+      showNotification('✓ Testo aggiunto! Trascinalo o modifica le proprietà');
+    };
+
+    // Set quick color
+    window.setQuickColor = function(color) {
+      if (selectedElement) {
+        if (selectedElement.type === 'text' || selectedElement.type === 'emoji') {
+          selectedElement.color = color;
+        } else {
+          selectedElement.fillColor = color;
+        }
+        render();
+        updatePropertiesPanel();
+      }
+    };
+
+    // Align element
+    window.alignElement = function(alignment) {
+      if (!selectedElement) {
+        showNotification('⚠️ Seleziona prima un elemento');
+        return;
+      }
+
+      switch(alignment) {
+        case 'left':
+          if (selectedElement.type === 'rect') {
+            selectedElement.x = 50;
+          } else if (selectedElement.type === 'emoji') {
+            selectedElement.x = 50;
+          } else if (selectedElement.type === 'text') {
+            selectedElement.x = 100;
+          }
+          break;
+        case 'center':
+          if (selectedElement.type === 'rect') {
+            selectedElement.x = (canvasWidth - selectedElement.width) / 2;
+          } else if (selectedElement.type === 'circle') {
+            selectedElement.x = canvasWidth / 2;
+          } else {
+            selectedElement.x = canvasWidth / 2;
+          }
+          break;
+        case 'right':
+          if (selectedElement.type === 'rect') {
+            selectedElement.x = canvasWidth - selectedElement.width - 50;
+          } else if (selectedElement.type === 'emoji') {
+            selectedElement.x = canvasWidth - selectedElement.size - 50;
+          } else if (selectedElement.type === 'text') {
+            selectedElement.x = canvasWidth - 100;
+          }
+          break;
+        case 'top':
+          if (selectedElement.type === 'rect' || selectedElement.type === 'emoji') {
+            selectedElement.y = 50;
+          } else if (selectedElement.type === 'text') {
+            selectedElement.y = 100;
+          } else if (selectedElement.type === 'circle') {
+            selectedElement.y = selectedElement.radius + 50;
+          }
+          break;
+        case 'middle':
+          if (selectedElement.type === 'rect') {
+            selectedElement.y = (canvasHeight - selectedElement.height) / 2;
+          } else if (selectedElement.type === 'circle') {
+            selectedElement.y = canvasHeight / 2;
+          } else {
+            selectedElement.y = canvasHeight / 2;
+          }
+          break;
+        case 'bottom':
+          if (selectedElement.type === 'rect') {
+            selectedElement.y = canvasHeight - selectedElement.height - 50;
+          } else if (selectedElement.type === 'emoji') {
+            selectedElement.y = canvasHeight - selectedElement.size - 50;
+          } else if (selectedElement.type === 'text') {
+            selectedElement.y = canvasHeight - 100;
+          } else if (selectedElement.type === 'circle') {
+            selectedElement.y = canvasHeight - selectedElement.radius - 50;
+          }
+          break;
+      }
+
+      render();
+      showNotification('✓ Elemento allineato');
+    };
+
+    // Delete selected element
+    window.deleteSelected = function() {
+      if (selectedElement) {
+        elements = elements.filter(el => el.id !== selectedElement.id);
+        selectedElement = null;
+        render();
+        updatePropertiesPanel();
+        updateLayersList();
+        showNotification('✓ Elemento eliminato');
+      }
+    };
+
+    // Clear canvas
+    window.clearCanvas = function() {
+      elements = [];
+      selectedElement = null;
+      render();
+      updatePropertiesPanel();
+      updateLayersList();
+      showNotification('✓ Canvas pulito');
+    };
+
+    // Download design
+    window.downloadDesign = function() {
+      const link = document.createElement('a');
+      link.download = 'design-' + Date.now() + '.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+      showNotification('✓ Design scaricato!');
+    };
+
+    // Show notification
+    function showNotification(message) {
+      const notification = document.getElementById('notification');
+      notification.textContent = message;
+      notification.classList.add('show');
+      setTimeout(() => {
+        notification.classList.remove('show');
+      }, 3000);
+    }
+
+    // Get canvas coordinates from event
+    function getCanvasCoords(e) {
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      return {
+        x: (clientX - rect.left) * scaleX,
+        y: (clientY - rect.top) * scaleY
+      };
+    }
+
+    // Handle pointer down
+    function handlePointerDown(e) {
+      e.preventDefault();
+      const coords = getCanvasCoords(e);
+      const x = coords.x;
+      const y = coords.y;
+
+      if (currentTool === 'select') {
+        // Check if clicking on an element
+        for (let i = elements.length - 1; i >= 0; i--) {
+          const el = elements[i];
+          if (isPointInElement(x, y, el)) {
+            selectedElement = el;
+            isDragging = true;
+            canvas.style.cursor = 'grabbing';
+            if (el.type === 'line') {
+              dragOffsetX = x - el.x1;
+              dragOffsetY = y - el.y1;
+            } else {
+              dragOffsetX = x - el.x;
+              dragOffsetY = y - el.y;
+            }
+            render();
+            updatePropertiesPanel();
+            updateLayersList();
+            return;
+          }
+        }
+        selectedElement = null;
+        render();
+        updatePropertiesPanel();
+        updateLayersList();
+      } else if (currentTool === 'text') {
+        const element = {
+          id: nextId++,
+          type: 'text',
+          text: 'Modifica testo',
+          x: x,
+          y: y,
+          size: 32,
+          color: '#000000',
+          weight: '600'
+        };
+        elements.push(element);
+        selectedElement = element;
+        selectTool('select');
+        render();
+        updatePropertiesPanel();
+        updateLayersList();
+        showNotification('✓ Testo aggiunto!');
+      } else if (currentTool === 'rect' || currentTool === 'circle' || currentTool === 'line') {
+        // Start drawing a shape
+        isDrawing = true;
+        startX = x;
+        startY = y;
+        tempShape = null;
+      }
+    }
+
+    // Handle pointer move
+    function handlePointerMove(e) {
+      e.preventDefault();
+      const coords = getCanvasCoords(e);
+      const x = coords.x;
+      const y = coords.y;
+
+      // Update cursor on hover
+      if (currentTool === 'select' && !isDragging) {
+        let hovering = false;
+        for (let i = elements.length - 1; i >= 0; i--) {
+          if (isPointInElement(x, y, elements[i])) {
+            hovering = true;
+            break;
+          }
+        }
+        canvas.style.cursor = hovering ? 'grab' : 'default';
+      }
+
+      if (isDragging && selectedElement) {
+        if (selectedElement.type === 'line') {
+          const dx = x - dragOffsetX - selectedElement.x1;
+          const dy = y - dragOffsetY - selectedElement.y1;
+          selectedElement.x1 += dx;
+          selectedElement.y1 += dy;
+          selectedElement.x2 += dx;
+          selectedElement.y2 += dy;
+        } else {
+          selectedElement.x = x - dragOffsetX;
+          selectedElement.y = y - dragOffsetY;
+        }
+        render();
+      } else if (isDrawing) {
+        // Update temporary shape
+        if (currentTool === 'rect') {
+          const width = x - startX;
+          const height = y - startY;
+          tempShape = {
+            type: 'rect',
+            x: width > 0 ? startX : x,
+            y: height > 0 ? startY : y,
+            width: Math.abs(width),
+            height: Math.abs(height),
+            fillColor: '#3b82f6',
+            strokeColor: '#1e40af',
+            strokeWidth: 2
+          };
+        } else if (currentTool === 'circle') {
+          const radius = Math.sqrt(Math.pow(x - startX, 2) + Math.pow(y - startY, 2));
+          tempShape = {
+            type: 'circle',
+            x: startX,
+            y: startY,
+            radius: radius,
+            fillColor: '#ef4444',
+            strokeColor: '#b91c1c',
+            strokeWidth: 2
+          };
+        } else if (currentTool === 'line') {
+          tempShape = {
+            type: 'line',
+            x1: startX,
+            y1: startY,
+            x2: x,
+            y2: y,
+            strokeColor: '#000000',
+            strokeWidth: 4
+          };
+        }
+        render();
+      }
+    }
+
+    // Handle pointer up
+    function handlePointerUp(e) {
+      if (isDrawing && tempShape) {
+        // Finalize the shape
+        let shouldAdd = false;
+        
+        if (tempShape.type === 'rect' && tempShape.width > 20 && tempShape.height > 20) {
+          shouldAdd = true;
+        } else if (tempShape.type === 'circle' && tempShape.radius > 20) {
+          shouldAdd = true;
+        } else if (tempShape.type === 'line') {
+          const distance = Math.sqrt(Math.pow(tempShape.x2 - tempShape.x1, 2) + Math.pow(tempShape.y2 - tempShape.y1, 2));
+          if (distance > 20) {
+            shouldAdd = true;
+          }
+        }
+
+        if (shouldAdd) {
+          tempShape.id = nextId++;
+          elements.push(tempShape);
+          selectedElement = tempShape;
+          updatePropertiesPanel();
+          updateLayersList();
+          
+          if (tempShape.type === 'rect') {
+            showNotification('✓ Rettangolo creato!');
+          } else if (tempShape.type === 'circle') {
+            showNotification('✓ Cerchio creato!');
+          } else if (tempShape.type === 'line') {
+            showNotification('✓ Linea creata!');
+          }
+        }
+
+        tempShape = null;
+        isDrawing = false;
+        selectTool('select');
+        render();
+      }
+      
+      if (isDragging) {
+        canvas.style.cursor = 'grab';
+        isDragging = false;
+      }
+    }
+
+    // Mouse events
+    canvas.addEventListener('mousedown', handlePointerDown);
+    canvas.addEventListener('mousemove', handlePointerMove);
+    canvas.addEventListener('mouseup', handlePointerUp);
+    canvas.addEventListener('mouseleave', handlePointerUp);
+
+    // Touch events
+    canvas.addEventListener('touchstart', handlePointerDown, { passive: false });
+    canvas.addEventListener('touchmove', handlePointerMove, { passive: false });
+    canvas.addEventListener('touchend', handlePointerUp);
+    canvas.addEventListener('touchcancel', handlePointerUp);
+
+    // Check if point is in element
+    function isPointInElement(x, y, el) {
+      if (el.type === 'text') {
+        ctx.font = `${el.weight} ${el.size}px Arial`;
+        const metrics = ctx.measureText(el.text);
+        const width = metrics.width;
+        const height = el.size;
+        return x >= el.x - width/2 && x <= el.x + width/2 && 
+               y >= el.y - height/2 && y <= el.y + height/2;
+      } else if (el.type === 'emoji') {
+        return x >= el.x && x <= el.x + el.size && 
+               y >= el.y && y <= el.y + el.size;
+      } else if (el.type === 'rect') {
+        return x >= el.x && x <= el.x + el.width && 
+               y >= el.y && y <= el.y + el.height;
+      } else if (el.type === 'circle') {
+        const dist = Math.sqrt(Math.pow(x - el.x, 2) + Math.pow(y - el.y, 2));
+        return dist <= el.radius;
+      } else if (el.type === 'line') {
+        const dist = distanceToLine(x, y, el.x1, el.y1, el.x2, el.y2);
+        return dist <= el.strokeWidth + 5;
+      }
+      return false;
+    }
+
+    function distanceToLine(px, py, x1, y1, x2, y2) {
+      const A = px - x1;
+      const B = py - y1;
+      const C = x2 - x1;
+      const D = y2 - y1;
+      const dot = A * C + B * D;
+      const lenSq = C * C + D * D;
+      let param = -1;
+      if (lenSq !== 0) param = dot / lenSq;
+      let xx, yy;
+      if (param < 0) {
+        xx = x1;
+        yy = y1;
+      } else if (param > 1) {
+        xx = x2;
+        yy = y2;
+      } else {
+        xx = x1 + param * C;
+        yy = y1 + param * D;
+      }
+      const dx = px - xx;
+      const dy = py - yy;
+      return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    // Draw a single element
+    function drawElement(el) {
+      if (el.type === 'text') {
+        ctx.font = `${el.weight} ${el.size}px Arial`;
+        ctx.fillStyle = el.color;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(el.text, el.x, el.y);
+      } else if (el.type === 'emoji') {
+        ctx.font = `${el.size}px Arial`;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'top';
+        ctx.fillText(el.emoji, el.x, el.y);
+      } else if (el.type === 'rect') {
+        ctx.fillStyle = el.fillColor;
+        ctx.fillRect(el.x, el.y, el.width, el.height);
+        if (el.strokeWidth > 0) {
+          ctx.strokeStyle = el.strokeColor;
+          ctx.lineWidth = el.strokeWidth;
+          ctx.strokeRect(el.x, el.y, el.width, el.height);
+        }
+      } else if (el.type === 'circle') {
+        ctx.beginPath();
+        ctx.arc(el.x, el.y, el.radius, 0, Math.PI * 2);
+        ctx.fillStyle = el.fillColor;
+        ctx.fill();
+        if (el.strokeWidth > 0) {
+          ctx.strokeStyle = el.strokeColor;
+          ctx.lineWidth = el.strokeWidth;
+          ctx.stroke();
+        }
+      } else if (el.type === 'line') {
+        ctx.beginPath();
+        ctx.moveTo(el.x1, el.y1);
+        ctx.lineTo(el.x2, el.y2);
+        ctx.strokeStyle = el.strokeColor;
+        ctx.lineWidth = el.strokeWidth;
+        ctx.stroke();
+      }
+    }
+
+    // Render canvas
+    function render() {
+      // Clear and draw background
+      ctx.fillStyle = canvasBgColor;
+      ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+      // Draw grid
+      ctx.strokeStyle = 'rgba(0, 0, 0, 0.05)';
+      ctx.lineWidth = 1;
+      for (let x = 0; x < canvasWidth; x += 50) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, canvasHeight);
+        ctx.stroke();
+      }
+      for (let y = 0; y < canvasHeight; y += 50) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(canvasWidth, y);
+        ctx.stroke();
+      }
+
+      // Draw center guides
+      ctx.strokeStyle = 'rgba(102, 126, 234, 0.2)';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([10, 5]);
+      ctx.beginPath();
+      ctx.moveTo(canvasWidth / 2, 0);
+      ctx.lineTo(canvasWidth / 2, canvasHeight);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(0, canvasHeight / 2);
+      ctx.lineTo(canvasWidth, canvasHeight / 2);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Draw all elements
+      elements.forEach(el => {
+        drawElement(el);
+      });
+
+      // Draw temporary shape while drawing
+      if (tempShape) {
+        ctx.globalAlpha = 0.7;
+        drawElement(tempShape);
+        ctx.globalAlpha = 1.0;
+      }
+
+      // Draw selection
+      if (selectedElement) {
+        ctx.strokeStyle = '#667eea';
+        ctx.lineWidth = 3;
+        ctx.setLineDash([5, 5]);
+        
+        if (selectedElement.type === 'text') {
+          ctx.font = `${selectedElement.weight} ${selectedElement.size}px Arial`;
+          const metrics = ctx.measureText(selectedElement.text);
+          const width = metrics.width;
+          const height = selectedElement.size;
+          ctx.strokeRect(selectedElement.x - width/2 - 5, selectedElement.y - height/2 - 5, width + 10, height + 10);
+        } else if (selectedElement.type === 'emoji') {
+          ctx.strokeRect(selectedElement.x - 5, selectedElement.y - 5, selectedElement.size + 10, selectedElement.size + 10);
+        } else if (selectedElement.type === 'rect') {
+          ctx.strokeRect(selectedElement.x - 5, selectedElement.y - 5, selectedElement.width + 10, selectedElement.height + 10);
+        } else if (selectedElement.type === 'circle') {
+          ctx.beginPath();
+          ctx.arc(selectedElement.x, selectedElement.y, selectedElement.radius + 5, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+        
+        ctx.setLineDash([]);
+      }
+    }
+
+    // Update properties panel
+    function updatePropertiesPanel() {
+      const panel = document.getElementById('element-properties');
+      
+      if (!selectedElement) {
+        panel.innerHTML = '<p class="properties-empty">Seleziona un elemento per modificarne le proprietà</p>';
+        return;
+      }
+
+      let html = '';
+
+      if (selectedElement.type === 'text') {
+        html = `
+          <div class="form-group">
+            <label class="form-label">Testo</label>
+            <input type="text" class="form-input" value="${selectedElement.text}" onchange="updateElementProperty('text', this.value)">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Dimensione</label>
+            <input type="number" class="form-input" value="${selectedElement.size}" onchange="updateElementProperty('size', parseInt(this.value))">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Colore</label>
+            <div class="color-input-wrapper">
+              <input type="color" value="${selectedElement.color}" onchange="updateElementProperty('color', this.value)">
+              <input type="text" class="form-input" value="${selectedElement.color}" onchange="updateElementProperty('color', this.value)">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Peso</label>
+            <select class="form-select" onchange="updateElementProperty('weight', this.value)">
+              <option value="400" ${selectedElement.weight === '400' ? 'selected' : ''}>Normale</option>
+              <option value="600" ${selectedElement.weight === '600' ? 'selected' : ''}>Semi-Bold</option>
+              <option value="900" ${selectedElement.weight === '900' ? 'selected' : ''}>Bold</option>
+            </select>
+          </div>
+        `;
+      } else if (selectedElement.type === 'emoji') {
+        html = `
+          <div class="form-group">
+            <label class="form-label">Emoji</label>
+            <input type="text" class="form-input" value="${selectedElement.emoji}" onchange="updateElementProperty('emoji', this.value)">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Dimensione</label>
+            <input type="number" class="form-input" value="${selectedElement.size}" onchange="updateElementProperty('size', parseInt(this.value))">
+          </div>
+        `;
+      } else if (selectedElement.type === 'rect') {
+        html = `
+          <div class="form-group">
+            <label class="form-label">Larghezza</label>
+            <input type="number" class="form-input" value="${selectedElement.width}" onchange="updateElementProperty('width', parseInt(this.value))">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Altezza</label>
+            <input type="number" class="form-input" value="${selectedElement.height}" onchange="updateElementProperty('height', parseInt(this.value))">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Colore Riempimento</label>
+            <div class="color-input-wrapper">
+              <input type="color" value="${selectedElement.fillColor}" onchange="updateElementProperty('fillColor', this.value)">
+              <input type="text" class="form-input" value="${selectedElement.fillColor}" onchange="updateElementProperty('fillColor', this.value)">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Colore Bordo</label>
+            <div class="color-input-wrapper">
+              <input type="color" value="${selectedElement.strokeColor}" onchange="updateElementProperty('strokeColor', this.value)">
+              <input type="text" class="form-input" value="${selectedElement.strokeColor}" onchange="updateElementProperty('strokeColor', this.value)">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Spessore Bordo</label>
+            <input type="number" class="form-input" value="${selectedElement.strokeWidth}" onchange="updateElementProperty('strokeWidth', parseInt(this.value))">
+          </div>
+        `;
+      } else if (selectedElement.type === 'circle') {
+        html = `
+          <div class="form-group">
+            <label class="form-label">Raggio</label>
+            <input type="number" class="form-input" value="${selectedElement.radius}" onchange="updateElementProperty('radius', parseInt(this.value))">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Colore Riempimento</label>
+            <div class="color-input-wrapper">
+              <input type="color" value="${selectedElement.fillColor}" onchange="updateElementProperty('fillColor', this.value)">
+              <input type="text" class="form-input" value="${selectedElement.fillColor}" onchange="updateElementProperty('fillColor', this.value)">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Colore Bordo</label>
+            <div class="color-input-wrapper">
+              <input type="color" value="${selectedElement.strokeColor}" onchange="updateElementProperty('strokeColor', this.value)">
+              <input type="text" class="form-input" value="${selectedElement.strokeColor}" onchange="updateElementProperty('strokeColor', this.value)">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Spessore Bordo</label>
+            <input type="number" class="form-input" value="${selectedElement.strokeWidth}" onchange="updateElementProperty('strokeWidth', parseInt(this.value))">
+          </div>
+        `;
+      } else if (selectedElement.type === 'line') {
+        html = `
+          <div class="form-group">
+            <label class="form-label">Colore</label>
+            <div class="color-input-wrapper">
+              <input type="color" value="${selectedElement.strokeColor}" onchange="updateElementProperty('strokeColor', this.value)">
+              <input type="text" class="form-input" value="${selectedElement.strokeColor}" onchange="updateElementProperty('strokeColor', this.value)">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Spessore</label>
+            <input type="number" class="form-input" value="${selectedElement.strokeWidth}" onchange="updateElementProperty('strokeWidth', parseInt(this.value))">
+          </div>
+        `;
+      }
+
+      panel.innerHTML = html;
+    }
+
+    // Update element property
+    window.updateElementProperty = function(prop, value) {
+      if (selectedElement) {
+        selectedElement[prop] = value;
+        render();
+        updateLayersList();
+      }
+    };
+
+    // Update layers list
+    function updateLayersList() {
+      const list = document.getElementById('layers-list');
+      
+      if (elements.length === 0) {
+        list.innerHTML = '<p class="properties-empty">Nessun livello</p>';
+        return;
+      }
+
+      let html = '';
+      elements.slice().reverse().forEach(el => {
+        const isSelected = el === selectedElement;
+        let name = '';
+        if (el.type === 'text') name = `📝 ${el.text.substring(0, 15)}${el.text.length > 15 ? '...' : ''}`;
+        else if (el.type === 'emoji') name = `${el.emoji} Emoji`;
+        else if (el.type === 'rect') name = '⬜ Rettangolo';
+        else if (el.type === 'circle') name = '⚪ Cerchio';
+        else if (el.type === 'line') name = '📏 Linea';
+
+        html += `
+          <div class="layer-item ${isSelected ? 'selected' : ''}" onclick="selectLayer(${el.id})">
+            <span class="layer-name">${name}</span>
+            <button class="layer-btn" onclick="event.stopPropagation(); deleteLayer(${el.id})">🗑️</button>
+          </div>
+        `;
+      });
+
+      list.innerHTML = html;
+    }
+
+    // Select layer
+    window.selectLayer = function(id) {
+      selectedElement = elements.find(el => el.id === id);
+      render();
+      updatePropertiesPanel();
+      updateLayersList();
+    };
+
+    // Delete layer
+    window.deleteLayer = function(id) {
+      elements = elements.filter(el => el.id !== id);
+      if (selectedElement && selectedElement.id === id) {
+        selectedElement = null;
+        updatePropertiesPanel();
+      }
+      render();
+      updateLayersList();
+    };
+
+    // Element SDK
+    async function onConfigChange(config) {
+      document.getElementById('main-title').textContent = config.main_title || defaultConfig.main_title;
+
+      const backgroundColor = config.background_color || defaultConfig.background_color;
+      const primaryActionColor = config.primary_action_color || defaultConfig.primary_action_color;
+
+      document.body.style.background = `linear-gradient(135deg, ${backgroundColor} 0%, ${primaryActionColor} 100%)`;
+    }
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities: (config) => ({
+          recolorables: [
+            {
+              get: () => config.background_color || defaultConfig.background_color,
+              set: (value) => {
+                config.background_color = value;
+                window.elementSdk.setConfig({ background_color: value });
+              }
+            },
+            {
+              get: () => config.primary_action_color || defaultConfig.primary_action_color,
+              set: (value) => {
+                config.primary_action_color = value;
+                window.elementSdk.setConfig({ primary_action_color: value });
+              }
+            }
+          ],
+          borderables: [],
+          fontEditable: undefined,
+          fontSizeable: undefined
+        }),
+        mapToEditPanelValues: (config) => new Map([
+          ["main_title", config.main_title || defaultConfig.main_title]
+        ])
+      });
+    }
+
+    // Initial render
+    render();
+    updateLayersList();
+         // breadcrumbs
+const pageData = {
+  '/': {
+    label: 'Home',
+    icon: '🏠'
+  },
+  '/grafico/': {
+    label: 'Grafico',
+    icon: '🖍'
+  }
+  // Aggiungi qui altre lingue quando le crei:
+  // '/cinese/': { label: 'Cinese', icon: '🇨🇳' },
+  // '/coreano/': { label: 'Coreano', icon: '🇰🇷' },
+};
+
+function createBreadcrumbs(currentPath) {
+  const breadcrumbContainer = document.getElementById('breadcrumb');
+  if (!breadcrumbContainer) return;
+  
+  breadcrumbContainer.innerHTML = '';
+
+  const segments = getPathSegments(currentPath);
+
+  segments.forEach((segment, index) => {
+    const isLast = index === segments.length - 1;
+    const segmentData = pageData[segment.path];
+    if (!segmentData) return;
+
+    const li = document.createElement('li');
+
+    if (isLast) {
+      li.innerHTML = `
+        <span class="current">
+          <span>${segmentData.icon}</span>
+          <span>${segmentData.label}</span>
+        </span>
+      `;
+    } else {
+      li.innerHTML = `
+        <a href="${mapUrlToFile(segment.path)}">
+          <span>${segmentData.icon}</span>
+          <span>${segmentData.label}</span>
+        </a>
+      `;
+    }
+
+    breadcrumbContainer.appendChild(li);
+
+    if (!isLast) {
+      const separator = document.createElement('span');
+      separator.className = 'breadcrumb-separator';
+      separator.textContent = '›';
+      breadcrumbContainer.appendChild(separator);
+    }
+  });
+}
+
+function mapUrlToFile(path) {
+  switch (path) {
+    case '/': return 'index.html';
+    case '/grafico/': return 'grafico-editor.html';
+    default: return 'index.html';
+  }
+}
+
+function getPathSegments(path) {
+  if (path === '/') {
+    return [{ path: '/', label: 'Home' }];
+  }
+  const segments = [];
+  const parts = path.split('/').filter(part => part !== '');
+  let currentPath = '';
+  segments.push({ path: '/', label: 'Home' });
+  parts.forEach(part => {
+    currentPath += '/' + part;
+    segments.push({ path: currentPath + '/', label: part });
+  });
+  return segments;
+}
+
+// AVVIA breadcrumbs Home
+createBreadcrumbs('/grafico');
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99afd38b948aed57',t:'MTc2MjU0OTkyMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
