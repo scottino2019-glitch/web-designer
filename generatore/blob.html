@@ -1,0 +1,754 @@
+<!doctype html>
+<html lang="it" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blob Generator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <style>
+    body {
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    .blob-preview {
+      filter: drop-shadow(0 10px 30px rgba(0,0,0,0.2));
+      transition: transform 0.3s ease;
+    }
+    
+    .blob-preview:hover {
+      transform: scale(1.02);
+    }
+    
+    .slider-modern {
+      -webkit-appearance: none;
+      appearance: none;
+      height: 6px;
+      border-radius: 3px;
+      background: linear-gradient(90deg, #e0e7ff 0%, #c7d2fe 100%);
+    }
+    .slider-modern::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(99,102,241,0.4);
+      transition: transform 0.2s;
+    }
+    .slider-modern::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+    }
+    .slider-modern::-moz-range-thumb {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      cursor: pointer;
+      border: none;
+    }
+    
+    .color-swatch {
+      transition: transform 0.15s, box-shadow 0.15s;
+      cursor: pointer;
+    }
+    .color-swatch:hover {
+      transform: scale(1.2);
+    }
+    .color-swatch.active {
+      box-shadow: 0 0 0 3px white, 0 0 0 5px #6366f1;
+      transform: scale(1.15);
+    }
+    
+    .btn-action {
+      transition: all 0.2s;
+    }
+    .btn-action:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    }
+    .btn-action:active {
+      transform: translateY(0);
+    }
+    
+    .canvas-grid {
+      background-image: 
+        radial-gradient(circle, #ddd 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+    
+    .blob-on-canvas {
+      cursor: grab;
+      transition: filter 0.2s;
+    }
+    .blob-on-canvas:active {
+      cursor: grabbing;
+    }
+    .blob-on-canvas:hover {
+      filter: brightness(1.05) drop-shadow(0 8px 25px rgba(0,0,0,0.25));
+    }
+    
+    @keyframes morphing {
+      0%, 100% { d: path('M50,10 C70,10 90,30 90,50 C90,70 70,90 50,90 C30,90 10,70 10,50 C10,30 30,10 50,10 Z'); }
+      25% { d: path('M50,5 C75,15 95,35 85,55 C80,75 60,95 40,85 C20,80 5,60 15,40 C20,20 35,5 50,5 Z'); }
+      50% { d: path('M55,10 C80,20 90,40 85,60 C75,80 55,90 35,85 C15,75 10,50 20,30 C30,15 45,5 55,10 Z'); }
+      75% { d: path('M45,8 C65,12 88,28 92,48 C88,72 68,92 45,88 C22,85 8,65 12,42 C18,22 32,8 45,8 Z'); }
+    }
+    
+    .animate-morph path {
+      animation: blobMorph 4s ease-in-out infinite;
+    }
+    
+    @keyframes blobMorph {
+      0%, 100% { transform: scale(1) rotate(0deg); }
+      25% { transform: scale(1.02) rotate(2deg); }
+      50% { transform: scale(0.98) rotate(-1deg); }
+      75% { transform: scale(1.01) rotate(1deg); }
+    }
+    
+    @keyframes floatBlob {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-8px) scale(1.02); }
+    }
+    
+    .animate-float {
+      animation: floatBlob 3s ease-in-out infinite;
+    }
+    
+    .blob-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      font-weight: 600;
+      pointer-events: none;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full bg-gradient-to-br from-slate-100 to-indigo-100 overflow-auto">
+  <div class="h-full w-full flex flex-col p-4 md:p-6"><!-- Header -->
+   <header class="text-center mb-3">
+    <h1 id="app-title" class="text-2xl md:text-3xl font-bold bg-gradient-to-r from-pink-500 via-purple-600 to-indigo-600 bg-clip-text text-transparent">Blob Generator</h1>
+    <p class="text-slate-500 text-sm mt-1">Crea forme blob fluide e organiche</p>
+   </header><!-- Main - Layout Mobile First -->
+   <main class="flex-1 flex flex-col gap-3 min-h-0 overflow-auto pb-4"><!-- Layout Mobile: Anteprima sempre visibile in alto -->
+    <div class="flex flex-col lg:flex-row gap-3 min-h-0"><!-- Preview & Canvas Container -->
+     <div class="flex-1 flex flex-col gap-3"><!-- Blob Preview - Sempre visibile, compatto su mobile -->
+      <div id="panel-preview" class="bg-white rounded-2xl p-3 border border-slate-200 shadow-sm sticky top-0 z-10 lg:static">
+       <div class="flex justify-between items-center mb-2">
+        <h2 class="text-slate-700 font-semibold text-sm">🎨 Anteprima</h2><button onclick="addToCanvas()" class="btn-action px-3 py-1.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-xs font-semibold rounded-lg"> ➕ Aggiungi </button>
+       </div>
+       <div class="flex justify-center items-center py-1 overflow-auto" style="min-height: 120px;">
+        <div id="blob-preview" class="blob-preview" style="transform: scale(0.8); transform-origin: center;"></div>
+       </div>
+      </div><!-- Tab per Canvas/Controlli su mobile -->
+      <div class="lg:hidden flex gap-2"><button onclick="showMobilePanel('controls')" id="tab-controls" class="flex-1 py-2 bg-indigo-500 text-white text-xs font-semibold rounded-lg">⚙️ Controlli</button> <button onclick="showMobilePanel('canvas')" id="tab-canvas" class="flex-1 py-2 bg-white text-slate-600 text-xs font-semibold rounded-lg border border-slate-200">🖼️ Canvas</button>
+      </div><!-- Canvas -->
+      <div id="panel-canvas" class="hidden lg:block flex-1 bg-white rounded-2xl p-3 border border-slate-200 shadow-sm min-h-[180px]">
+       <div class="flex justify-between items-center mb-2">
+        <h2 class="text-slate-700 font-semibold text-sm">Canvas <span id="blob-count" class="text-slate-400 font-normal text-xs">(0 blob)</span></h2>
+        <div class="flex gap-1"><button onclick="undoBlob()" class="btn-action px-2 py-1 bg-slate-200 text-slate-600 text-xs font-medium rounded hover:bg-slate-300">↩️</button> <button onclick="clearCanvas()" class="btn-action px-2 py-1 bg-red-100 text-red-600 text-xs font-medium rounded hover:bg-red-200">🗑️</button> <button onclick="exportCanvas()" class="btn-action px-2 py-1 bg-indigo-100 text-indigo-600 text-xs font-medium rounded hover:bg-indigo-200">💾</button>
+        </div>
+       </div>
+       <div id="canvas" class="canvas-grid w-full bg-white rounded-xl relative overflow-hidden" style="height: 160px;"></div>
+      </div>
+     </div><!-- Controls -->
+     <aside id="panel-controls" class="hidden lg:block lg:w-64 bg-white rounded-2xl p-3 border border-slate-200 shadow-sm overflow-auto max-h-[500px] lg:max-h-none"><!-- Complessità -->
+      <section class="mb-3"><label class="flex justify-between items-center mb-1"> <span class="text-slate-700 text-xs font-semibold">🔮 Complessità</span> <span id="complexity-val" class="text-indigo-600 font-mono text-xs">5</span> </label> <input type="range" id="complexity" min="3" max="10" value="5" class="slider-modern w-full" oninput="updateBlob()">
+      </section><!-- Rotondità -->
+      <section class="mb-3"><label class="flex justify-between items-center mb-1"> <span class="text-slate-700 text-xs font-semibold">🫧 Rotondità</span> <span id="roundness-val" class="text-indigo-600 font-mono text-xs">50%</span> </label> <input type="range" id="roundness" min="10" max="100" value="50" class="slider-modern w-full" oninput="updateBlob()">
+      </section><!-- Irregolarità -->
+      <section class="mb-3"><label class="flex justify-between items-center mb-1"> <span class="text-slate-700 text-xs font-semibold">🌊 Irregolarità</span> <span id="irregularity-val" class="text-indigo-600 font-mono text-xs">30%</span> </label> <input type="range" id="irregularity" min="0" max="80" value="30" class="slider-modern w-full" oninput="updateBlob()">
+      </section><!-- Dimensione -->
+      <section class="mb-3"><label class="flex justify-between items-center mb-1"> <span class="text-slate-700 text-xs font-semibold">📐 Dimensione</span> <span id="size-val" class="text-indigo-600 font-mono text-xs">180px</span> </label> <input type="range" id="size" min="80" max="300" value="180" class="slider-modern w-full" oninput="updateBlob()">
+      </section><!-- Colore -->
+      <section class="mb-3"><label class="text-slate-700 text-xs font-semibold mb-1 block">🎨 Colore</label> <!-- Tipo colore -->
+       <div class="flex gap-1 mb-2"><button onclick="setColorType('solid')" id="type-solid" class="flex-1 py-1 bg-indigo-500 text-white text-xs font-semibold rounded">Solido</button> <button onclick="setColorType('gradient')" id="type-gradient" class="flex-1 py-1 bg-slate-200 text-slate-600 text-xs font-semibold rounded hover:bg-slate-300">Gradiente</button>
+       </div><!-- Palette -->
+       <div class="flex flex-wrap gap-1.5 mb-2"><button onclick="setColor('#FF6B6B')" class="color-swatch active w-7 h-7 rounded-full border border-white/40" style="background: #FF6B6B;" data-color="#FF6B6B"></button> <button onclick="setColor('#845EC2')" class="color-swatch w-7 h-7 rounded-full border border-white/40" style="background: #845EC2;" data-color="#845EC2"></button> <button onclick="setColor('#00C9A7')" class="color-swatch w-7 h-7 rounded-full border border-white/40" style="background: #00C9A7;" data-color="#00C9A7"></button> <button onclick="setColor('#4D8076')" class="color-swatch w-7 h-7 rounded-full border border-white/40" style="background: #4D8076;" data-color="#4D8076"></button> <button onclick="setColor('#FFC75F')" class="color-swatch w-7 h-7 rounded-full border border-white/40" style="background: #FFC75F;" data-color="#FFC75F"></button> <button onclick="setColor('#F9F871')" class="color-swatch w-7 h-7 rounded-full border border-white/40" style="background: #F9F871;" data-color="#F9F871"></button> <button onclick="setColor('#FF9671')" class="color-swatch w-7 h-7 rounded-full border border-white/40" style="background: #FF9671;" data-color="#FF9671"></button> <button onclick="setColor('#D65DB1')" class="color-swatch w-7 h-7 rounded-full border border-white/40" style="background: #D65DB1;" data-color="#D65DB1"></button>
+       </div><!-- Colore custom -->
+       <div class="flex gap-2 items-center"><input type="color" id="color1" value="#FF6B6B" class="w-10 h-7 rounded cursor-pointer border border-slate-300" onchange="updateBlob()">
+        <div id="color2-wrap" class="hidden"><input type="color" id="color2" value="#845EC2" class="w-10 h-7 rounded cursor-pointer border border-slate-300" onchange="updateBlob()">
+        </div>
+       </div>
+      </section><!-- Opacità -->
+      <section class="mb-3"><label class="flex justify-between items-center mb-1"> <span class="text-slate-700 text-xs font-semibold">💧 Opacità</span> <span id="opacity-val" class="text-indigo-600 font-mono text-xs">100%</span> </label> <input type="range" id="opacity" min="30" max="100" value="100" class="slider-modern w-full" oninput="updateBlob()">
+      </section><!-- Testo sul Blob -->
+      <section class="mb-3"><label class="text-slate-700 text-xs font-semibold mb-1 block">✍️ Testo</label> <input type="text" id="blob-text" placeholder="Scrivi qui..." class="w-full px-2 py-1.5 text-xs border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-400" oninput="updateBlob()" maxlength="20">
+       <div class="flex gap-2 mt-1.5"><input type="color" id="text-color" value="#FFFFFF" class="w-8 h-6 rounded cursor-pointer border border-slate-300" onchange="updateBlob()"> <select id="text-size" class="flex-1 px-1 py-1 text-xs border border-slate-300 rounded" onchange="updateBlob()"> <option value="12">Piccolo</option> <option value="16" selected>Medio</option> <option value="22">Grande</option> </select>
+       </div>
+      </section><!-- Animazione -->
+      <section class="mb-3"><label class="text-slate-700 text-xs font-semibold mb-1 block">✨ Animazione</label>
+       <div class="flex gap-3"><label class="flex items-center gap-1 cursor-pointer"> <input type="radio" name="animation" value="none" checked class="accent-indigo-500 w-3 h-3" onchange="updateBlob()"> <span class="text-slate-600 text-xs">No</span> </label> <label class="flex items-center gap-1 cursor-pointer"> <input type="radio" name="animation" value="morph" class="accent-indigo-500 w-3 h-3" onchange="updateBlob()"> <span class="text-slate-600 text-xs">Morph</span> </label> <label class="flex items-center gap-1 cursor-pointer"> <input type="radio" name="animation" value="float" class="accent-indigo-500 w-3 h-3" onchange="updateBlob()"> <span class="text-slate-600 text-xs">Float</span> </label>
+       </div>
+      </section><!-- Azioni -->
+      <section class="flex gap-2"><button onclick="randomize()" class="btn-action flex-1 py-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white text-xs font-semibold rounded-lg"> ���� Random </button> <button onclick="copyCSS()" class="btn-action flex-1 py-2 bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg hover:bg-slate-300"> 📋 CSS </button>
+      </section>
+     </aside>
+    </div><!-- Toast -->
+    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 px-5 py-3 bg-emerald-500 text-white font-semibold rounded-xl shadow-lg opacity-0 pointer-events-none transition-opacity duration-300"></div>
+    <script>
+    // Stato
+    const state = {
+      complexity: 5,
+      roundness: 50,
+      irregularity: 30,
+      size: 180,
+      colorType: 'solid',
+      color1: '#FF6B6B',
+      color2: '#845EC2',
+      opacity: 100,
+      animation: 'none',
+      blobText: '',
+      textColor: '#FFFFFF',
+      textSize: 16,
+      currentPath: '',
+      blobs: []
+    };
+
+    const defaultConfig = { app_title: 'Blob Generator' };
+    let config = { ...defaultConfig };
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange: async (newConfig) => {
+          config = { ...defaultConfig, ...newConfig };
+          document.getElementById('app-title').textContent = config.app_title || defaultConfig.app_title;
+        },
+        mapToCapabilities: () => ({ recolorables: [], borderables: [], fontEditable: undefined, fontSizeable: undefined }),
+        mapToEditPanelValues: (cfg) => new Map([['app_title', cfg.app_title || defaultConfig.app_title]])
+      });
+    }
+
+    // Genera path blob con curve di Bezier fluide
+    function generateBlobPath(cx, cy, radius, complexity, roundness, irregularity) {
+      const points = [];
+      const angleStep = (Math.PI * 2) / complexity;
+      
+      // Genera punti con variazione
+      for (let i = 0; i < complexity; i++) {
+        const angle = i * angleStep - Math.PI / 2;
+        const variation = 1 - (irregularity / 100) * (0.5 - Math.random());
+        const r = radius * variation;
+        points.push({
+          x: cx + Math.cos(angle) * r,
+          y: cy + Math.sin(angle) * r,
+          angle: angle
+        });
+      }
+      
+      // Costruisci path con curve di Bezier cubiche
+      const smoothness = roundness / 100;
+      let path = '';
+      
+      for (let i = 0; i < points.length; i++) {
+        const p0 = points[(i - 1 + points.length) % points.length];
+        const p1 = points[i];
+        const p2 = points[(i + 1) % points.length];
+        const p3 = points[(i + 2) % points.length];
+        
+        if (i === 0) {
+          path = `M ${p1.x.toFixed(2)} ${p1.y.toFixed(2)}`;
+        }
+        
+        // Calcola punti di controllo per curve fluide
+        const tension = 0.3 + smoothness * 0.4;
+        
+        const cp1x = p1.x + (p2.x - p0.x) * tension;
+        const cp1y = p1.y + (p2.y - p0.y) * tension;
+        const cp2x = p2.x - (p3.x - p1.x) * tension;
+        const cp2y = p2.y - (p3.y - p1.y) * tension;
+        
+        path += ` C ${cp1x.toFixed(2)} ${cp1y.toFixed(2)}, ${cp2x.toFixed(2)} ${cp2y.toFixed(2)}, ${p2.x.toFixed(2)} ${p2.y.toFixed(2)}`;
+      }
+      
+      path += ' Z';
+      return path;
+    }
+
+    // Genera gradiente ID unico
+    let gradientId = 0;
+    function getGradientId() {
+      return `blob-gradient-${++gradientId}`;
+    }
+
+    // Aggiorna anteprima blob
+    function updateBlob() {
+      state.complexity = parseInt(document.getElementById('complexity').value);
+      state.roundness = parseInt(document.getElementById('roundness').value);
+      state.irregularity = parseInt(document.getElementById('irregularity').value);
+      state.size = parseInt(document.getElementById('size').value);
+      state.color1 = document.getElementById('color1').value;
+      state.color2 = document.getElementById('color2').value;
+      state.opacity = parseInt(document.getElementById('opacity').value);
+      state.blobText = document.getElementById('blob-text').value;
+      state.textColor = document.getElementById('text-color').value;
+      state.textSize = parseInt(document.getElementById('text-size').value);
+      
+      const animRadio = document.querySelector('input[name="animation"]:checked');
+      state.animation = animRadio ? animRadio.value : 'none';
+
+      // Aggiorna labels
+      document.getElementById('complexity-val').textContent = state.complexity;
+      document.getElementById('roundness-val').textContent = state.roundness + '%';
+      document.getElementById('irregularity-val').textContent = state.irregularity + '%';
+      document.getElementById('size-val').textContent = state.size + 'px';
+      document.getElementById('opacity-val').textContent = state.opacity + '%';
+
+      renderPreview();
+    }
+
+    // Render anteprima
+    function renderPreview() {
+      const container = document.getElementById('blob-preview');
+      const size = state.size;
+      const radius = size / 2 - 10;
+      const center = size / 2;
+      
+      state.currentPath = generateBlobPath(center, center, radius, state.complexity, state.roundness, state.irregularity);
+      
+      const gId = getGradientId();
+      let fill = state.color1;
+      let defs = '';
+      
+      if (state.colorType === 'gradient') {
+        defs = `
+          <defs>
+            <linearGradient id="${gId}" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="${state.color1}"/>
+              <stop offset="100%" stop-color="${state.color2}"/>
+            </linearGradient>
+          </defs>
+        `;
+        fill = `url(#${gId})`;
+      }
+      
+      let animClass = '';
+      if (state.animation === 'morph') animClass = 'animate-morph';
+      if (state.animation === 'float') animClass = 'animate-float';
+      
+      const textHtml = state.blobText ? `<span class="blob-text" style="color: ${state.textColor}; font-size: ${state.textSize}px; max-width: ${size * 0.8}px;">${state.blobText}</span>` : '';
+      
+      container.innerHTML = `
+        <div style="position: relative; width: ${size}px; height: ${size}px;" class="${animClass}">
+          <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+            ${defs}
+            <path 
+              d="${state.currentPath}" 
+              fill="${fill}" 
+              fill-opacity="${state.opacity / 100}"
+            />
+          </svg>
+          ${textHtml}
+        </div>
+      `;
+    }
+
+    // Tipo colore
+    function setColorType(type) {
+      state.colorType = type;
+      document.getElementById('type-solid').className = type === 'solid' 
+        ? 'flex-1 py-1 bg-indigo-500 text-white text-xs font-semibold rounded'
+        : 'flex-1 py-1 bg-slate-200 text-slate-600 text-xs font-semibold rounded hover:bg-slate-300';
+      document.getElementById('type-gradient').className = type === 'gradient'
+        ? 'flex-1 py-1 bg-indigo-500 text-white text-xs font-semibold rounded'
+        : 'flex-1 py-1 bg-slate-200 text-slate-600 text-xs font-semibold rounded hover:bg-slate-300';
+      document.getElementById('color2-wrap').classList.toggle('hidden', type !== 'gradient');
+      updateBlob();
+    }
+
+    // Seleziona colore dalla palette
+    function setColor(color) {
+      state.color1 = color;
+      document.getElementById('color1').value = color;
+      document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+      const btn = document.querySelector(`.color-swatch[data-color="${color}"]`);
+      if (btn) btn.classList.add('active');
+      updateBlob();
+    }
+
+    // Randomizza
+    function randomize() {
+      document.getElementById('complexity').value = 3 + Math.floor(Math.random() * 8);
+      document.getElementById('roundness').value = 20 + Math.floor(Math.random() * 80);
+      document.getElementById('irregularity').value = Math.floor(Math.random() * 60);
+      document.getElementById('size').value = 120 + Math.floor(Math.random() * 150);
+      document.getElementById('opacity').value = 70 + Math.floor(Math.random() * 30);
+      
+      const colors = ['#FF6B6B', '#845EC2', '#00C9A7', '#4D8076', '#FFC75F', '#F9F871', '#FF9671', '#D65DB1'];
+      const c1 = colors[Math.floor(Math.random() * colors.length)];
+      let c2 = colors[Math.floor(Math.random() * colors.length)];
+      while (c2 === c1) c2 = colors[Math.floor(Math.random() * colors.length)];
+      
+      document.getElementById('color1').value = c1;
+      document.getElementById('color2').value = c2;
+      
+      if (Math.random() > 0.5) {
+        setColorType('gradient');
+      } else {
+        setColorType('solid');
+      }
+      
+      updateBlob();
+    }
+
+    // Aggiungi al canvas
+    function addToCanvas() {
+      const canvas = document.getElementById('canvas');
+      const rect = canvas.getBoundingClientRect();
+      
+      // Posizione casuale
+      const maxX = rect.width - state.size;
+      const maxY = rect.height - state.size;
+      const x = Math.max(10, Math.random() * maxX);
+      const y = Math.max(10, Math.random() * maxY);
+      
+      const blobEl = document.createElement('div');
+      blobEl.className = 'blob-on-canvas absolute';
+      blobEl.style.left = x + 'px';
+      blobEl.style.top = y + 'px';
+      blobEl.style.width = state.size + 'px';
+      blobEl.style.height = state.size + 'px';
+      
+      let animClass = '';
+      if (state.animation === 'morph') animClass = 'animate-morph';
+      if (state.animation === 'float') animClass = 'animate-float';
+      if (animClass) blobEl.classList.add(animClass);
+      
+      const gId = getGradientId();
+      let fill = state.color1;
+      let defs = '';
+      
+      if (state.colorType === 'gradient') {
+        defs = `
+          <defs>
+            <linearGradient id="${gId}" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="${state.color1}"/>
+              <stop offset="100%" stop-color="${state.color2}"/>
+            </linearGradient>
+          </defs>
+        `;
+        fill = `url(#${gId})`;
+      }
+      
+      const newPath = generateBlobPath(state.size/2, state.size/2, state.size/2 - 10, state.complexity, state.roundness, state.irregularity);
+      
+      const textHtml = state.blobText ? `<span class="blob-text" style="color: ${state.textColor}; font-size: ${state.textSize}px; max-width: ${state.size * 0.8}px;">${state.blobText}</span>` : '';
+      
+      blobEl.innerHTML = `
+        <svg width="100%" height="100%" viewBox="0 0 ${state.size} ${state.size}">
+          ${defs}
+          <path d="${newPath}" fill="${fill}" fill-opacity="${state.opacity / 100}"/>
+        </svg>
+        ${textHtml}
+      `;
+      
+      // Drag
+      blobEl.onmousedown = startDrag;
+      blobEl.ontouchstart = startDrag;
+      
+      canvas.appendChild(blobEl);
+      state.blobs.push(blobEl);
+      updateCount();
+      
+      showToast('Blob aggiunto! 🎉');
+    }
+
+    // Drag & Drop
+    let dragEl = null;
+    let dragOffset = { x: 0, y: 0 };
+
+    function startDrag(e) {
+      e.preventDefault();
+      dragEl = e.currentTarget;
+      const rect = dragEl.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      dragOffset.x = clientX - rect.left;
+      dragOffset.y = clientY - rect.top;
+      
+      document.addEventListener('mousemove', onDrag);
+      document.addEventListener('mouseup', stopDrag);
+      document.addEventListener('touchmove', onDrag, { passive: false });
+      document.addEventListener('touchend', stopDrag);
+    }
+
+    function onDrag(e) {
+      if (!dragEl) return;
+      e.preventDefault();
+      const canvas = document.getElementById('canvas');
+      const canvasRect = canvas.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      
+      let newX = clientX - canvasRect.left - dragOffset.x;
+      let newY = clientY - canvasRect.top - dragOffset.y;
+      
+      newX = Math.max(0, Math.min(newX, canvasRect.width - dragEl.offsetWidth));
+      newY = Math.max(0, Math.min(newY, canvasRect.height - dragEl.offsetHeight));
+      
+      dragEl.style.left = newX + 'px';
+      dragEl.style.top = newY + 'px';
+    }
+
+    function stopDrag() {
+      dragEl = null;
+      document.removeEventListener('mousemove', onDrag);
+      document.removeEventListener('mouseup', stopDrag);
+      document.removeEventListener('touchmove', onDrag);
+      document.removeEventListener('touchend', stopDrag);
+    }
+
+    // Annulla
+    function undoBlob() {
+      if (state.blobs.length === 0) return;
+      const last = state.blobs.pop();
+      last.remove();
+      updateCount();
+    }
+
+    // Pulisci
+    function clearCanvas() {
+      state.blobs.forEach(b => b.remove());
+      state.blobs = [];
+      updateCount();
+    }
+
+    // Contatore
+    function updateCount() {
+      document.getElementById('blob-count').textContent = `(${state.blobs.length} blob)`;
+    }
+
+    // Esporta
+    function exportCanvas() {
+      const canvas = document.getElementById('canvas');
+      const rect = canvas.getBoundingClientRect();
+      
+      // CSS animations per SVG
+      const animationStyles = `
+        <style>
+          @keyframes blobMorph {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(1.02) rotate(2deg); }
+            50% { transform: scale(0.98) rotate(-1deg); }
+            75% { transform: scale(1.01) rotate(1deg); }
+          }
+          @keyframes blobFloat {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-8px) scale(1.02); }
+          }
+          .anim-morph { animation: blobMorph 4s ease-in-out infinite; transform-origin: center; }
+          .anim-float { animation: blobFloat 3s ease-in-out infinite; transform-origin: center; }
+        </style>
+      `;
+      
+      let svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="${rect.width}" height="${rect.height}" viewBox="0 0 ${rect.width} ${rect.height}">`;
+      svgContent += animationStyles;
+      svgContent += `<rect width="100%" height="100%" fill="white"/>`;
+      
+      state.blobs.forEach(blob => {
+        const x = parseFloat(blob.style.left);
+        const y = parseFloat(blob.style.top);
+        const w = parseFloat(blob.style.width);
+        const h = parseFloat(blob.style.height);
+        const innerSvg = blob.querySelector('svg');
+        
+        // Controlla se ha animazione
+        let animClass = '';
+        if (blob.classList.contains('animate-morph')) animClass = 'anim-morph';
+        if (blob.classList.contains('animate-float')) animClass = 'anim-float';
+        
+        // Estrai testo se presente
+        const textSpan = blob.querySelector('.blob-text');
+        let textSvg = '';
+        if (textSpan) {
+          const textColor = textSpan.style.color || '#FFFFFF';
+          const fontSize = parseInt(textSpan.style.fontSize) || 16;
+          const textContent = textSpan.textContent;
+          textSvg = `<text x="${w/2}" y="${h/2}" fill="${textColor}" font-size="${fontSize}" font-family="Poppins, sans-serif" font-weight="600" text-anchor="middle" dominant-baseline="middle" style="text-shadow: 0 1px 3px rgba(0,0,0,0.3);">${textContent}</text>`;
+        }
+        
+        if (innerSvg) {
+          svgContent += `<g transform="translate(${x}, ${y})" class="${animClass}">${innerSvg.innerHTML}${textSvg}</g>`;
+        }
+      });
+      
+      svgContent += '</svg>';
+      
+      const dataUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgContent);
+      const link = document.createElement('a');
+      link.href = dataUrl;
+      link.download = 'blobs.svg';
+      link.click();
+      
+      showToast('Esportato con animazioni! 💾');
+    }
+
+    // Copia CSS
+    function copyCSS() {
+      const size = state.size;
+      const color = state.colorType === 'gradient' 
+        ? `linear-gradient(135deg, ${state.color1}, ${state.color2})`
+        : state.color1;
+      
+      let css = `.blob {\n  width: ${size}px;\n  height: ${size}px;\n  background: ${color};\n  border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;\n  opacity: ${state.opacity / 100};`;
+      
+      if (state.animate) {
+        css += `\n  animation: blob-morph 8s ease-in-out infinite;\n}\n\n@keyframes blob-morph {\n  0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }\n  25% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }\n  50% { border-radius: 50% 60% 30% 60% / 30% 40% 70% 50%; }\n  75% { border-radius: 40% 30% 60% 50% / 60% 50% 40% 60%; }\n}`;
+      } else {
+        css += `\n}`;
+      }
+      
+      // Fallback per clipboard
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(css).then(() => {
+          showToast('CSS copiato! 📋');
+        }).catch(() => {
+          fallbackCopy(css);
+        });
+      } else {
+        fallbackCopy(css);
+      }
+    }
+    
+    function fallbackCopy(text) {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand('copy');
+        showToast('CSS copiato! 📋');
+      } catch (e) {
+        showToast('Copia manuale: seleziona il testo');
+      }
+      document.body.removeChild(textarea);
+    }
+
+    // Toast
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.style.opacity = '1';
+      setTimeout(() => {
+        toast.style.opacity = '0';
+      }, 2000);
+    }
+
+    // Click sul canvas per aggiungere blob
+    document.getElementById('canvas').addEventListener('click', function(e) {
+      if (e.target === this) {
+        const rect = this.getBoundingClientRect();
+        const x = e.clientX - rect.left - state.size / 2;
+        const y = e.clientY - rect.top - state.size / 2;
+        
+        addBlobAt(Math.max(0, x), Math.max(0, y));
+      }
+    });
+
+    function addBlobAt(x, y) {
+      const canvas = document.getElementById('canvas');
+      
+      const blobEl = document.createElement('div');
+      blobEl.className = 'blob-on-canvas absolute';
+      blobEl.style.left = x + 'px';
+      blobEl.style.top = y + 'px';
+      blobEl.style.width = state.size + 'px';
+      blobEl.style.height = state.size + 'px';
+      
+      let animClass = '';
+      if (state.animation === 'morph') animClass = 'animate-morph';
+      if (state.animation === 'float') animClass = 'animate-float';
+      if (animClass) blobEl.classList.add(animClass);
+      
+      const gId = getGradientId();
+      let fill = state.color1;
+      let defs = '';
+      
+      if (state.colorType === 'gradient') {
+        defs = `
+          <defs>
+            <linearGradient id="${gId}" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="${state.color1}"/>
+              <stop offset="100%" stop-color="${state.color2}"/>
+            </linearGradient>
+          </defs>
+        `;
+        fill = `url(#${gId})`;
+      }
+      
+      const newPath = generateBlobPath(state.size/2, state.size/2, state.size/2 - 10, state.complexity, state.roundness, state.irregularity);
+      
+      const textHtml = state.blobText ? `<span class="blob-text" style="color: ${state.textColor}; font-size: ${state.textSize}px; max-width: ${state.size * 0.8}px;">${state.blobText}</span>` : '';
+      
+      blobEl.innerHTML = `
+        <svg width="100%" height="100%" viewBox="0 0 ${state.size} ${state.size}">
+          ${defs}
+          <path d="${newPath}" fill="${fill}" fill-opacity="${state.opacity / 100}"/>
+        </svg>
+        ${textHtml}
+      `;
+      
+      blobEl.onmousedown = startDrag;
+      blobEl.ontouchstart = startDrag;
+      
+      canvas.appendChild(blobEl);
+      state.blobs.push(blobEl);
+      updateCount();
+    }
+
+    // Tab mobile - solo per controlli/canvas, anteprima sempre visibile
+    function showMobilePanel(panel) {
+      const controlsPanel = document.getElementById('panel-controls');
+      const canvasPanel = document.getElementById('panel-canvas');
+      const tabControls = document.getElementById('tab-controls');
+      const tabCanvas = document.getElementById('tab-canvas');
+      
+      // Reset classi per entrambi i pannelli
+      controlsPanel.className = 'lg:block lg:w-64 bg-white rounded-2xl p-3 border border-slate-200 shadow-sm overflow-auto max-h-[500px] lg:max-h-none';
+      canvasPanel.className = 'lg:block flex-1 bg-white rounded-2xl p-3 border border-slate-200 shadow-sm min-h-[180px]';
+      
+      if (panel === 'controls') {
+        controlsPanel.classList.remove('hidden');
+        canvasPanel.classList.add('hidden');
+        tabControls.className = 'flex-1 py-2 bg-indigo-500 text-white text-xs font-semibold rounded-lg';
+        tabCanvas.className = 'flex-1 py-2 bg-white text-slate-600 text-xs font-semibold rounded-lg border border-slate-200';
+      } else {
+        canvasPanel.classList.remove('hidden');
+        controlsPanel.classList.add('hidden');
+        tabCanvas.className = 'flex-1 py-2 bg-indigo-500 text-white text-xs font-semibold rounded-lg';
+        tabControls.className = 'flex-1 py-2 bg-white text-slate-600 text-xs font-semibold rounded-lg border border-slate-200';
+      }
+    }
+    
+    // Resize handler
+    window.addEventListener('resize', () => {
+      if (window.innerWidth >= 1024) {
+        document.getElementById('panel-preview').classList.remove('hidden');
+        document.getElementById('panel-controls').classList.remove('hidden');
+        document.getElementById('panel-canvas').classList.remove('hidden');
+      }
+    });
+
+    // Init
+    updateBlob();
+    
+    // Mobile: mostra controlli di default
+    if (window.innerWidth < 1024) {
+      showMobilePanel('controls');
+    }
+  </script>
+   </main>
+  </div>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9b713c40f7c4e898',t:'MTc2NzI2MjMxNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
