@@ -264,23 +264,108 @@ h2 {
 
   <!-- CONTENUTO -->
   <main class="content">
-<section class="bg-zinc-50 overflow-hidden">
- <div class="max-w-screen-xl 2xl:max-w-screen-3xl px-8 md:px-12 mx-auto py-12 lg:py-24 space-y-24 h-svh flex flex-col justify-center">
-  <div class="flex flex-col sm:flex-row mx-auto">
-   <!--- Starts component --> 
-      <a href="patterngeneretor.html"> <img src="https://images.unsplash.com/photo-1605011365301-03970fa610ee?w=1000&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fGxheW91dHxlbnwwfHwwfHx8MA%3D%3D" class="rounded-xl  rotate-6 hover:rotate-0 duration-500 hover:-translate-y-12 h-full w-full object-cover hover:scale-150 transform origin-bottom" alt="Pattern">Pattern </a>
-      <a href="gridlayoutgenerator.html"> <img src="https://images.unsplash.com/photo-1629752187687-3d3c7ea3a21b?w=1000&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8bGF5b3V0fGVufDB8fDB8fHww" class="rounded-xl  -rotate-12 hover:rotate-0 duration-500 hover:-translate-y-12 h-full w-full object-cover hover:scale-150 transform origin-bottom" alt="Generatore">Generatore</a>
-      <a href="generatore_grid_flex.html"> <img src="https://images.unsplash.com/photo-1522542550221-31fd19575a2d?w=1000&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8bGF5b3V0fGVufDB8fDB8fHww" class="rounded-xl  rotate-6 hover:rotate-0 duration-500 hover:-translate-y-12 h-full w-full object-cover hover:scale-150 transform origin-bottom" alt="generatore2">Generatore 2 </a>
-      <a href="gen_grid_flex.html"> <img src="https://images.unsplash.com/photo-1573867639040-6dd25fa5f597?w=1000&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bGF5b3V0fGVufDB8fDB8fHww" class="rounded-xl  -rotate-12 hover:rotate-0 duration-500 hover:-translate-y-12 h-full w-full object-cover hover:scale-150 transform origin-bottom" alt="generatore3">Generatore 3 </a>
-           <a href="layout.html"> <img src="https://images.unsplash.com/photo-1605011369457-1d1d4e37cbc1?w=1000&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MzJ8fGxheW91dHxlbnwwfHwwfHx8MA%3D%3D" class="rounded-xl  -rotate-12 hover:rotate-0 duration-500 hover:-translate-y-12 h-full w-full object-cover hover:scale-150 transform origin-bottom" alt="layout">Layout</a>
-        <a href="parallax-generator.html"> <img src="https://plus.unsplash.com/premium_photo-1671209794135-81a40aa4171e?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" class="rounded-xl  -rotate-12 hover:rotate-0 duration-500 hover:-translate-y-12 h-full w-full object-cover hover:scale-150 transform origin-bottom"alt="layout">Parallax</a>
-      <a href="Glassmorphism.html"> <img src="https://images.unsplash.com/photo-1684569547016-d0bdc13d2c50?q=80&w=627&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" class="rounded-xl  -rotate-12 hover:rotate-0 duration-500 hover:-translate-y-12 h-full w-full object-cover hover:scale-150 transform origin-bottom" alt="layout">Glassmorph</a>
-    
-  </div> 
-</section>    
+  <section class="bg-transparent">
+    <div class="max-w-screen-xl 2xl:max-w-screen-3xl px-4 md:px-8 mx-auto py-8 md:py-16">
+      <h1>Interfacce Responsive</h1>
+      <p>Esplora generatori di layout, pattern, parallax e glassmorphism ottimizzati per mobile.</p>
 
-    
-  </main>
+      <!-- GRIGLIA RESPONSIVE -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+        <!-- Card -->
+        <a href="patterngeneretor.html" class="group block overflow-hidden rounded-xl bg-white/5">
+          <div class="aspect-[4/5] overflow-hidden">
+            <img
+              src="https://images.unsplash.com/photo-1605011365301-03970fa610ee?w=600&auto=format&fit=crop&q=60"
+              alt="Pattern"
+              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 group-hover:-translate-y-2"
+            />
+          </div>
+          <div class="p-2 text-center text-sm font-semibold text-white/90">
+            Pattern
+          </div>
+        </a>
+
+        <a href="gridlayoutgenerator.html" class="group block overflow-hidden rounded-xl bg-white/5">
+          <div class="aspect-[4/5] overflow-hidden">
+            <img
+              src="https://images.unsplash.com/photo-1629752187687-3d3c7ea3a21b?w=600&auto=format&fit=crop&q=60"
+              alt="Generatore"
+              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 group-hover:-translate-y-2"
+            />
+          </div>
+          <div class="p-2 text-center text-sm font-semibold text-white/90">
+            Generatore
+          </div>
+        </a>
+
+        <a href="generatore_grid_flex.html" class="group block overflow-hidden rounded-xl bg-white/5">
+          <div class="aspect-[4/5] overflow-hidden">
+            <img
+              src="https://images.unsplash.com/photo-1522542550221-31fd19575a2d?w=600&auto=format&fit=crop&q=60"
+              alt="Generatore 2"
+              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 group-hover:-translate-y-2"
+            />
+          </div>
+          <div class="p-2 text-center text-sm font-semibold text-white/90">
+            Generatore 2
+          </div>
+        </a>
+
+        <a href="gen_grid_flex.html" class="group block overflow-hidden rounded-xl bg-white/5">
+          <div class="aspect-[4/5] overflow-hidden">
+            <img
+              src="https://images.unsplash.com/photo-1573867639040-6dd25fa5f597?w=600&auto=format&fit=crop&q=60"
+              alt="Generatore 3"
+              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 group-hover:-translate-y-2"
+            />
+          </div>
+          <div class="p-2 text-center text-sm font-semibold text-white/90">
+            Generatore 3
+          </div>
+        </a>
+
+        <a href="layout.html" class="group block overflow-hidden rounded-xl bg-white/5">
+          <div class="aspect-[4/5] overflow-hidden">
+            <img
+              src="https://images.unsplash.com/photo-1605011369457-1d1d4e37cbc1?w=600&auto=format&fit=crop&q=60"
+              alt="Layout"
+              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 group-hover:-translate-y-2"
+            />
+          </div>
+          <div class="p-2 text-center text-sm font-semibold text-white/90">
+            Layout
+          </div>
+        </a>
+
+        <a href="parallax-generator.html" class="group block overflow-hidden rounded-xl bg-white/5">
+          <div class="aspect-[4/5] overflow-hidden">
+            <img
+              src="https://plus.unsplash.com/premium_photo-1671209794135-81a40aa4171e?q=80&w=687&auto=format&fit=crop"
+              alt="Parallax"
+              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 group-hover:-translate-y-2"
+            />
+          </div>
+          <div class="p-2 text-center text-sm font-semibold text-white/90">
+            Parallax
+          </div>
+        </a>
+
+        <a href="Glassmorphism.html" class="group block overflow-hidden rounded-xl bg-white/5">
+          <div class="aspect-[4/5] overflow-hidden">
+            <img
+              src="https://images.unsplash.com/photo-1684569547016-d0bdc13d2c50?q=80&w=627&auto=format&fit=crop"
+              alt="Glassmorph"
+              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 group-hover:-translate-y-2"
+            />
+          </div>
+          <div class="p-2 text-center text-sm font-semibold text-white/90">
+            Glassmorph
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+</main>
 
   <script>
        // breadcrumbs
@@ -297,7 +382,7 @@ const pageData = {
           { url: '/layout/generatore', label: 'Generatore Grid', icon: '📱' },
           { url: '/layout/generatore2', label: 'Generatore Grid-Flex', icon: '📱' },
           { url: '/layout/generatore3', label: 'Generatore Flex-grid', icon: '📱' },
-          { url: '/layout/layout', label: 'layout', icon: Layout'🖌️' },
+          { url: '/layout/layout', label: 'layout', icon: '🖌️' },
           { url: '/layout/parallax', label: 'parallax', icon: Layout'🏄' },
                  { url: '/layout/glassmorph', label: 'glassmorph', icon: Layout'🔮' },
         
@@ -354,12 +439,12 @@ function mapUrlToFile(path) {
     case '/': return 'https://scottino2019-glitch.github.io/web-designer/index.html';
     case '/template/': return 'template.html';
     case '/layout': return 'layout_home.html';
-    case '/layout/pattern': return 'patterngeneretor.html.html';
+    case '/layout/pattern': return 'patterngeneretor.html';
     case '/layout/generatore': return 'gridlayoutgenerator.html';
     case '/layout/generatore2': return 'generatore_grid_flex.html';
     case '/layout/generatore3': return 'gen_grid_flex.html';
    case '/layout/parallax': return 'parallax-generator.html';
-    case '/layout/glassmorph': return 'Glassmorphims.html';
+    case '/layout/glassmorph': return 'Glassmorphism.html';
     case '/layout/layout': return 'layout.html';   
     default: return 'https://scottino2019-glitch.github.io/web-designer/index.html';
   }
