@@ -362,10 +362,23 @@ h2 {
             Glassmorph
           </div>
         </a>
+<a href="generatore-pattern.html" class="group block overflow-hidden rounded-xl bg-white/5">
+          <div class="aspect-[4/5] overflow-hidden">
+            <img
+              src="https://images.unsplash.com/photo-1581345331960-d1b0a223ef96?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4MDc1Mjd8MHwxfHNlYXJjaHwyfHxQYXR0ZXJufGVufDB8fHx8MTc2NzU1NDI0NXww&ixlib=rb-4.1.0&q=85"
+              alt="Pattern2"
+              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 group-hover:-translate-y-2"
+            />
+          </div>
+          <div class="p-2 text-center text-sm font-semibold text-white/90">
+            Pattern 2
+          </div>
+        </a>
       </div>
     </div>
   </section>
 </main>
+
 
   <script>
        // breadcrumbs
@@ -385,7 +398,7 @@ const pageData = {
           { url: '/layout/layout', label: 'layout', icon: '🖌️' },
           { url: '/layout/parallax', label: 'parallax', icon: Layout'🏄' },
                  { url: '/layout/glassmorph', label: 'glassmorph', icon: Layout'🔮' },
-        
+        { url: '/layout/pattern2', label: 'Pattern2', icon: '🌈' },
         ]  }
   // Aggiungi qui altre lingue quando le crei:
   // '/cinese/': { label: 'Cinese', icon: '🇨🇳' },
@@ -446,6 +459,7 @@ function mapUrlToFile(path) {
    case '/layout/parallax': return 'parallax-generator.html';
     case '/layout/glassmorph': return 'Glassmorphism.html';
     case '/layout/layout': return 'layout.html';   
+case '/layout/pattern2': return 'generatore-pattern.html';
     default: return 'https://scottino2019-glitch.github.io/web-designer/index.html';
   }
 }
