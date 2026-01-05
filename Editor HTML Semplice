@@ -1,0 +1,133 @@
+From: <Saved by Blink>
+Snapshot-Content-Location: https://ppl-ai-code-interpreter-files.s3.amazonaws.com/web/direct-files/e63e4f4b8ab0cc977ff283e9d5c07f39/05052879-ac4c-4e9c-9b8b-7e7eb93358b1/ba252973.html?AWSAccessKeyId=ASIA2F3EMEYEYU2XCF3U&Signature=DKYv1%2FOWaUzfqPnZtoc2vb5aDS0%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEHoaCXVzLWVhc3QtMSJHMEUCIBQ0XEuVQWVM5cYw5ax5DFxpVseuRukhGcvADEnuUZ39AiEAoZO9jQsUSmCkvsp7AQ2WzAMRbnaf8rQa3HeTXbPyDD8q8wQIQxABGgw2OTk3NTMzMDk3MDUiDLpEFJhI%2BJpLawy4iSrQBMSUL4HX53dKNWO4hvtpi0k648%2BLPn%2Fk9grcLqgkMB4sSHCwECV6LGk8cpPXtw42HvqqSZwzioIFDZVLLHeGd4U7B1P4wbAG4682pCqb%2FeUX1xxN356Ln56MISTh%2BQiMdYe7edd99r4u6EVAZhB1s4I14rlynqGT6XIP6xmIM2Gyc54s8RRvAwoEWtFNs%2BbAgp4a3Di5NgAG0HJ6rRlEpo%2Fx6wn51LVyPINcO9NFdpczVG%2Fbpgu%2FXp%2BAufnN8GQrnGHfjR%2B3byxKotuzHMYblN7tagmT75z0JCSTx1dzDI1WtXuxWnLO9VEjMsqjRnojUPB424S%2FfLgALd5fqacht8E5q3%2B9fHFFl4E%2FWobOdXAy%2B251hZCmLLKWyBd6kqSlktfygCEenQgSBLFkVLtYHMDVU39D0vOLAfyR5P7S1L9IXbWPMl3gVwFJWqfWlXP0wpR6UWj4slhKAsXj8uBa%2FVcbLtYC43X2mhTwjhib02YI87l2iAFH8eMiPanTnzN9l6Hfu6le2iOQz9DkX6CS87ObwqP6Ldd9HOSHOj%2FiBGFxLs5Dj2UFt%2BYsQpBBPB3vySfBPYR3SUhzkQtC2KhCssd6%2Bo4qEQd%2Fvz9N6BUjkf2XXKQ%2FDsuRALl16ZhkgK7ABUyIfag2KizwIgFW%2FtE0UDyvJPeuhcsXEjrOeOWbZpcFyzuETaVf1e4NsRpPXj8T6miN3IbKvamdiITxILhTyu6ZIL1jUv0OkB8E7%2FT6eLck3qbM1%2Bf0C1zMnZsE63G81HiUlu%2BCSjLVKhfpzU1RR1Qw1InuygY6mAEHCshL%2BcLzuwI1rQ50MvEC7XRhmefxYgOw0f%2BYLW6yZGKqusP6n7OzIqt0w1tf0t3bBqXpJXBkHPpHgB%2FzXJLgQo9lgOLGTotUTb%2Fyopv9qMtLLMg%2BxoqqIiHronGOBIj4SVLD6eld1yv1fdGJDs71PNxlL6GV2LKO9coUOHFTCK1dhpSrkWkJFafeQIWIRH1KKhh8nAmWxw%3D%3D&Expires=1767606271&rnd=1767605690809&utm_source=perplexity
+Subject: Editor HTML Semplice
+Date: Mon, 5 Jan 2026 10:35:46 +0100
+MIME-Version: 1.0
+Content-Type: multipart/related;
+	type="text/html";
+	boundary="----MultipartBoundary--PJn1zdoaXCzLgwS9eCdZfVUftyd5GzRCZXTMzmXP4i----"
+
+
+------MultipartBoundary--PJn1zdoaXCzLgwS9eCdZfVUftyd5GzRCZXTMzmXP4i----
+Content-Type: text/html
+Content-ID: <frame-4308E25D058EA59109E4037882E0801D@mhtml.blink>
+Content-Transfer-Encoding: binary
+Content-Location: https://ppl-ai-code-interpreter-files.s3.amazonaws.com/web/direct-files/e63e4f4b8ab0cc977ff283e9d5c07f39/05052879-ac4c-4e9c-9b8b-7e7eb93358b1/ba252973.html?AWSAccessKeyId=ASIA2F3EMEYEYU2XCF3U&Signature=DKYv1%2FOWaUzfqPnZtoc2vb5aDS0%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEHoaCXVzLWVhc3QtMSJHMEUCIBQ0XEuVQWVM5cYw5ax5DFxpVseuRukhGcvADEnuUZ39AiEAoZO9jQsUSmCkvsp7AQ2WzAMRbnaf8rQa3HeTXbPyDD8q8wQIQxABGgw2OTk3NTMzMDk3MDUiDLpEFJhI%2BJpLawy4iSrQBMSUL4HX53dKNWO4hvtpi0k648%2BLPn%2Fk9grcLqgkMB4sSHCwECV6LGk8cpPXtw42HvqqSZwzioIFDZVLLHeGd4U7B1P4wbAG4682pCqb%2FeUX1xxN356Ln56MISTh%2BQiMdYe7edd99r4u6EVAZhB1s4I14rlynqGT6XIP6xmIM2Gyc54s8RRvAwoEWtFNs%2BbAgp4a3Di5NgAG0HJ6rRlEpo%2Fx6wn51LVyPINcO9NFdpczVG%2Fbpgu%2FXp%2BAufnN8GQrnGHfjR%2B3byxKotuzHMYblN7tagmT75z0JCSTx1dzDI1WtXuxWnLO9VEjMsqjRnojUPB424S%2FfLgALd5fqacht8E5q3%2B9fHFFl4E%2FWobOdXAy%2B251hZCmLLKWyBd6kqSlktfygCEenQgSBLFkVLtYHMDVU39D0vOLAfyR5P7S1L9IXbWPMl3gVwFJWqfWlXP0wpR6UWj4slhKAsXj8uBa%2FVcbLtYC43X2mhTwjhib02YI87l2iAFH8eMiPanTnzN9l6Hfu6le2iOQz9DkX6CS87ObwqP6Ldd9HOSHOj%2FiBGFxLs5Dj2UFt%2BYsQpBBPB3vySfBPYR3SUhzkQtC2KhCssd6%2Bo4qEQd%2Fvz9N6BUjkf2XXKQ%2FDsuRALl16ZhkgK7ABUyIfag2KizwIgFW%2FtE0UDyvJPeuhcsXEjrOeOWbZpcFyzuETaVf1e4NsRpPXj8T6miN3IbKvamdiITxILhTyu6ZIL1jUv0OkB8E7%2FT6eLck3qbM1%2Bf0C1zMnZsE63G81HiUlu%2BCSjLVKhfpzU1RR1Qw1InuygY6mAEHCshL%2BcLzuwI1rQ50MvEC7XRhmefxYgOw0f%2BYLW6yZGKqusP6n7OzIqt0w1tf0t3bBqXpJXBkHPpHgB%2FzXJLgQo9lgOLGTotUTb%2Fyopv9qMtLLMg%2BxoqqIiHronGOBIj4SVLD6eld1yv1fdGJDs71PNxlL6GV2LKO9coUOHFTCK1dhpSrkWkJFafeQIWIRH1KKhh8nAmWxw%3D%3D&Expires=1767606271&rnd=1767605690809&utm_source=perplexity
+
+<!DOCTYPE html><html lang="it"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><link rel="stylesheet" type="text/css" href="cid:css-bd823045-bdb3-4342-a9b1-39e2762f25ac@mhtml.blink" />
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Editor HTML Semplice</title>
+    
+</head>
+<body>
+    <div class="header">
+        <button class="btn">📄 Nuovo</button>
+        <button class="btn">📁 Carica</button>
+        <button class="btn success">💾 Salva</button>
+        <button class="btn">⬇️ Download</button>
+        <button class="btn danger">🗑️ Reset</button>
+        <button class="btn">🕒 Versioni</button>
+        <button class="btn">📋 Copia</button>
+        <input type="file" id="fileInput" class="file-input" accept=".html,.htm">
+    </div>
+
+    <div class="main-container">
+        <div class="editor-container">
+            <div class="editor-header">📝 Editor HTML</div>
+            <textarea id="htmlEditor" class="editor" placeholder="Scrivi il tuo codice HTML qui..."></textarea>
+        </div>
+
+        <div class="preview-container">
+            <div class="preview-header">
+                👁️ Anteprima
+                <button class="btn">🔄 Aggiorna</button>
+            </div>
+            <iframe id="previewFrame" class="preview-frame"></iframe>
+        </div>
+    </div>
+
+    <div class="status">
+        <span id="fileInfo">documento_senza_titolo.html (modificato)</span>
+        <span id="stats">520 caratteri, 21 righe</span>
+    </div>
+
+    
+
+</body></html>
+------MultipartBoundary--PJn1zdoaXCzLgwS9eCdZfVUftyd5GzRCZXTMzmXP4i----
+Content-Type: text/css
+Content-Transfer-Encoding: binary
+Content-Location: cid:css-bd823045-bdb3-4342-a9b1-39e2762f25ac@mhtml.blink
+
+@charset "utf-8";
+
+* { margin: 0px; padding: 0px; box-sizing: border-box; }
+
+body { font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; background: rgb(26, 26, 26); color: white; height: 100vh; display: flex; flex-direction: column; }
+
+.header { background: rgb(45, 45, 45); padding: 15px 20px; border-bottom: 1px solid rgb(68, 68, 68); display: flex; gap: 10px; flex-wrap: wrap; }
+
+.btn { background: rgb(0, 122, 204); color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; transition: background 0.2s; }
+
+.btn:hover { background: rgb(0, 90, 158); }
+
+.btn.danger { background: rgb(220, 53, 69); }
+
+.btn.danger:hover { background: rgb(200, 35, 51); }
+
+.btn.success { background: rgb(40, 167, 69); }
+
+.btn.success:hover { background: rgb(33, 136, 56); }
+
+.main-container { flex: 1 1 0%; display: flex; height: calc(-70px + 100vh); }
+
+.editor-container { flex: 1 1 0%; display: flex; flex-direction: column; border-right: 1px solid rgb(68, 68, 68); }
+
+.editor-header { background: rgb(45, 45, 45); padding: 10px 15px; border-bottom: 1px solid rgb(68, 68, 68); font-size: 14px; color: rgb(204, 204, 204); }
+
+.editor { flex: 1 1 0%; background: rgb(30, 30, 30); color: rgb(212, 212, 212); border: none; outline: none; padding: 15px; font-family: Consolas, Monaco, "Courier New", monospace; font-size: 14px; line-height: 1.5; resize: none; tab-size: 2; }
+
+.preview-container { flex: 1 1 0%; display: flex; flex-direction: column; }
+
+.preview-header { background: rgb(45, 45, 45); padding: 10px 15px; border-bottom: 1px solid rgb(68, 68, 68); font-size: 14px; color: rgb(204, 204, 204); display: flex; justify-content: space-between; align-items: center; }
+
+.preview-frame { flex: 1 1 0%; border: none; background: white; }
+
+.file-input { display: none; }
+
+.status { background: rgb(45, 45, 45); padding: 8px 15px; border-top: 1px solid rgb(68, 68, 68); font-size: 12px; color: rgb(136, 136, 136); display: flex; justify-content: space-between; }
+
+@media (max-width: 768px) {
+  .main-container { flex-direction: column; }
+  .editor-container { border-right: none; border-bottom: 1px solid rgb(68, 68, 68); height: 50%; }
+  .preview-container { height: 50%; }
+  .header { padding: 10px; gap: 8px; }
+  .btn { padding: 6px 12px; font-size: 12px; }
+}
+------MultipartBoundary--PJn1zdoaXCzLgwS9eCdZfVUftyd5GzRCZXTMzmXP4i----
+Content-Type: text/html
+Content-ID: <frame-03C85B2EE5531474E667EE7F08F3C3F2@mhtml.blink>
+Content-Transfer-Encoding: binary
+Content-Location: https://ppl-ai-code-interpreter-files.s3.amazonaws.com/web/direct-files/e63e4f4b8ab0cc977ff283e9d5c07f39/05052879-ac4c-4e9c-9b8b-7e7eb93358b1/ba252973.html?AWSAccessKeyId=ASIA2F3EMEYEYU2XCF3U&Signature=DKYv1%2FOWaUzfqPnZtoc2vb5aDS0%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEHoaCXVzLWVhc3QtMSJHMEUCIBQ0XEuVQWVM5cYw5ax5DFxpVseuRukhGcvADEnuUZ39AiEAoZO9jQsUSmCkvsp7AQ2WzAMRbnaf8rQa3HeTXbPyDD8q8wQIQxABGgw2OTk3NTMzMDk3MDUiDLpEFJhI%2BJpLawy4iSrQBMSUL4HX53dKNWO4hvtpi0k648%2BLPn%2Fk9grcLqgkMB4sSHCwECV6LGk8cpPXtw42HvqqSZwzioIFDZVLLHeGd4U7B1P4wbAG4682pCqb%2FeUX1xxN356Ln56MISTh%2BQiMdYe7edd99r4u6EVAZhB1s4I14rlynqGT6XIP6xmIM2Gyc54s8RRvAwoEWtFNs%2BbAgp4a3Di5NgAG0HJ6rRlEpo%2Fx6wn51LVyPINcO9NFdpczVG%2Fbpgu%2FXp%2BAufnN8GQrnGHfjR%2B3byxKotuzHMYblN7tagmT75z0JCSTx1dzDI1WtXuxWnLO9VEjMsqjRnojUPB424S%2FfLgALd5fqacht8E5q3%2B9fHFFl4E%2FWobOdXAy%2B251hZCmLLKWyBd6kqSlktfygCEenQgSBLFkVLtYHMDVU39D0vOLAfyR5P7S1L9IXbWPMl3gVwFJWqfWlXP0wpR6UWj4slhKAsXj8uBa%2FVcbLtYC43X2mhTwjhib02YI87l2iAFH8eMiPanTnzN9l6Hfu6le2iOQz9DkX6CS87ObwqP6Ldd9HOSHOj%2FiBGFxLs5Dj2UFt%2BYsQpBBPB3vySfBPYR3SUhzkQtC2KhCssd6%2Bo4qEQd%2Fvz9N6BUjkf2XXKQ%2FDsuRALl16ZhkgK7ABUyIfag2KizwIgFW%2FtE0UDyvJPeuhcsXEjrOeOWbZpcFyzuETaVf1e4NsRpPXj8T6miN3IbKvamdiITxILhTyu6ZIL1jUv0OkB8E7%2FT6eLck3qbM1%2Bf0C1zMnZsE63G81HiUlu%2BCSjLVKhfpzU1RR1Qw1InuygY6mAEHCshL%2BcLzuwI1rQ50MvEC7XRhmefxYgOw0f%2BYLW6yZGKqusP6n7OzIqt0w1tf0t3bBqXpJXBkHPpHgB%2FzXJLgQo9lgOLGTotUTb%2Fyopv9qMtLLMg%2BxoqqIiHronGOBIj4SVLD6eld1yv1fdGJDs71PNxlL6GV2LKO9coUOHFTCK1dhpSrkWkJFafeQIWIRH1KKhh8nAmWxw%3D%3D&Expires=1767606271&rnd=1767605690809&utm_source=perplexity
+
+<!DOCTYPE html><html lang="it"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><link rel="stylesheet" type="text/css" href="cid:css-3d4f5d5b-87b4-4baf-a484-e85d111182af@mhtml.blink" />
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documento senza titolo</title>
+    
+</head>
+<body>
+    <h1>Benvenuto nel tuo editor HTML</h1>
+    <p>Inizia a scrivere il tuo codice qui...</p>
+
+</body></html>
+------MultipartBoundary--PJn1zdoaXCzLgwS9eCdZfVUftyd5GzRCZXTMzmXP4i----
+Content-Type: text/css
+Content-Transfer-Encoding: binary
+Content-Location: cid:css-3d4f5d5b-87b4-4baf-a484-e85d111182af@mhtml.blink
+
+@charset "utf-8";
+
+body { font-family: Arial, sans-serif; line-height: 1.6; margin: 0px; padding: 20px; background-color: rgb(244, 244, 244); }
+------MultipartBoundary--PJn1zdoaXCzLgwS9eCdZfVUftyd5GzRCZXTMzmXP4i------
