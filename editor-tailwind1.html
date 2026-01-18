@@ -1,0 +1,2051 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Il Mio Sito</title>
+  <style>
+<!doctype html>
+<html lang="it" style="height: 100%;">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTML Editor</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+    
+    #app-wrapper {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      background-color: #1a1a2e;
+    }
+    
+    .code-editor {
+      font-family: 'Courier New', monospace;
+      line-height: 1.5;
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
+ </head>
+ <body style="height: 100%;">
+  <div id="app-wrapper">
+   <header style="padding: 24px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+    <h1 style="color: #eef2f3; font-family: 'Courier New', monospace; font-size: 28px; font-weight: bold; margin: 0;">Editor HTML &amp; Tailwind</h1>
+    <p style="color: #eef2f3; opacity: 0.7; font-family: 'Courier New', monospace; font-size: 14px; margin-top: 8px;">Modifica il codice e vedi l'anteprima dal vivo</p>
+   </header>
+   <div style="flex: 1; display: flex; flex-direction: column; gap: 16px; padding: 16px; overflow: auto;">
+<!-- Editor -->
+    <div id="editor-panel" style="background-color: #16213e; border-radius: 12px; display: flex; flex-direction: column; min-height: 400px;">
+     <div style="padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+<select id="comp-select" style="padding: 8px 12px; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 14px; background: white; border: none; min-width: 120px;">
+ <option value="button">Button</option> 
+<option value="card">Card</option> 
+<option value="alert">Alert</option> 
+<option value="input">Input</option> 
+<option value="hero">Hero</option>
+ <option value="menu">Menu</option> 
+<option value="accordion">Accordion</option>
+<option value="flashcard">Flashcard</option> 
+<option value="header">Header</option>  
+<option value="sidebar">Sidebar</option>  
+<option value="slide">Slide</option>  
+<option value="sito">Sito</option> 
+<option value="tab">Tab</option> 
+<option value="button2">Button2</option> 
+<option value="layout">layout</option> 
+<option value="footer">Footer</option> 
+<option value="hero2">Hero2</option> 
+<option value="timeline">Timeline</option>
+<option value="colonne">Colonne</option>
+<option value="cerchio">Cerchio</option>
+<option value="modal">Modal</option>
+<option value="tab2">Tab2</option>
+<option value="vertical">Vertical</option>
+<option value="faq">Faq</option>
+<option value="collapse">Collapse</option>
+<option value="cardtab">CardTab</option>
+<option value="buttonicon">ButtonIcon</option>
+<option value="social">ButtonSocial</option>
+<option value="navbar">Navbar</option>
+<option value="collapse2">Collapse2</option>
+<option value="modal1">Modal1</option>
+<option value="modal2">Modal2</option>
+<option value="modal3">Modal3</option>
+<option value="modal4">Modal4</option>
+<option value="modal5">Modal5</option>
+</select>
+ <button id="add-btn" style="background-color: #0f4c75; color: white; padding: 8px 16px; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 14px; font-weight: bold; border: none; cursor: pointer;"> + Aggiungi </button> <button id="copy-btn" style="background-color: #3282b8; color: white; padding: 8px 16px; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 14px; font-weight: bold; border: none; cursor: pointer;"> 📋 Copia </button> <button id="clear-btn" style="background-color: #d97706; color: white; padding: 8px 16px; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 14px; font-weight: bold; border: none; cursor: pointer;"> 🗑️ Ripulisci </button>
+     </div><textarea id="code-area" class="code-editor" style="flex: 1; min-height: 300px; background: transparent; color: #a3e635; padding: 16px; border: none; resize: none; font-family: 'Courier New', monospace; font-size: 14px; outline: none; overflow: auto;" spellcheck="false"></textarea>
+    </div><!-- Anteprima -->
+    <div id="preview-panel" style="background-color: #16213e; border-radius: 12px; display: flex; flex-direction: column; min-height: 400px;">
+     <div style="padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+      <h3 style="color: #eef2f3; font-family: 'Courier New', monospace; font-size: 18px; font-weight: bold; margin: 0;">👁️ Anteprima Live</h3>
+     </div>
+     <div style="flex: 1; min-height: 450px; overflow: auto; background: white;"><iframe id="preview-iframe" style="width: 100%; height: 100%; min-height: 450px; border: none;"></iframe>
+     </div>
+    </div>
+   </div>
+  </div>
+  <script>
+    const componentsLibrary = {
+      button: `<button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+  Clicca qui
+</button>`,
+      card: `<div class="max-w-sm rounded overflow-hidden shadow-lg bg-white p-6">
+  <h2 class="font-bold text-xl mb-2">Titolo Card</h2>
+  <p class="text-gray-700 text-base">Contenuto della card.</p>
+</div>`,
+      alert: `<div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4" role="alert">
+  <p class="font-bold">Info</p>
+  <p>Messaggio informativo</p>
+</div>`,
+      input: `<div class="mb-4">
+  <label for="input-field" class="block text-gray-700 text-sm font-bold mb-2">Etichetta</label>
+  <input type="text" id="input-field" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" placeholder="Inserisci testo">
+</div>`,
+      hero: `<div class="bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 text-white p-12 text-center rounded-lg">
+  <h1 class="text-5xl font-bold mb-4">Benvenuto!</h1>
+  <p class="text-xl">Crea qualcosa di straordinario</p>
+</div>`,
+    menu:`<nav class="bg-indigo-600 rounded-lg shadow-lg">
+  <div class="max-w-6xl mx-auto px-4">
+    <div class="flex justify-between items-center py-4">
+      <div class="text-white text-xl font-bold">🚀 MioSito</div>
+      
+      <!-- Desktop Menu -->
+      <div class="hidden md:flex space-x-6">
+        <a href="#" class="text-white hover:text-indigo-200 transition-colors">Home</a>
+        <a href="#" class="text-white hover:text-indigo-200 transition-colors">Servizi</a>
+        <a href="#" class="text-white hover:text-indigo-200 transition-colors">Chi Siamo</a>
+        <a href="#" class="text-white hover:text-indigo-200 transition-colors">Contatti</a>
+      </div>
+      
+      <!-- Mobile Menu Button -->
+      <button onclick="toggleMenu()" class="md:hidden text-white focus:outline-none" id="menu-btn">
+        <span id="menu-icon">☰</span>
+      </button>
+    </div>
+    
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="md:hidden hidden pb-4">
+      <a href="#" class="block text-white hover:text-indigo-200 py-2 transition-colors">Home</a>
+      <a href="#" class="block text-white hover:text-indigo-200 py-2 transition-colors">Servizi</a>
+      <a href="#" class="block text-white hover:text-indigo-200 py-2 transition-colors">Chi Siamo</a>
+      <a href="#" class="block text-white hover:text-indigo-200 py-2 transition-colors">Contatti</a>
+    </div>
+  </div>
+</nav>
+
+&lt;script&gt;
+function toggleMenu() {
+  const menu = document.getElementById('mobile-menu');
+  const icon = document.getElementById('menu-icon');
+  
+  if (menu.classList.contains('hidden')) {
+    menu.classList.remove('hidden');
+    icon.textContent = '✕';
+  } else {
+    menu.classList.add('hidden');
+    icon.textContent = '☰';
+  }
+}
+glt;/script6gt;`,
+accordion: ` <div class="max-w-xl mx-auto space-y-3">
+    <details class="bg-white rounded-2xl shadow p-4"><summary class="cursor-pointer font-semibold">Cos'è questo progetto?</summary><p class="mt-2 text-sm text-gray-600">Un semplice accordion HTML + CSS.</p></details>
+    <details class="bg-white rounded-2xl shadow p-4"><summary class="cursor-pointer font-semibold">Come funziona?</summary><p class="mt-2 text-sm text-gray-600">Usa il tag &lt;details&gt; con &lt;summary&gt;.</p></details>
+    <details class="bg-white rounded-2xl shadow p-4"><summary class="cursor-pointer font-semibold">Posso personalizzarlo?</summary><p class="mt-2 text-sm text-gray-600">Certo, aggiungi classi Tailwind.</p></details> `,
+flashcard: `<style>
+.scene { perspective: 800px; }
+.card { width: 280px; height: 180px; position: relative; transform-style: preserve-3d; transition: transform .6s; }
+.card:hover { transform: rotateY(180deg); }
+.face { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; border-radius:1rem; box-shadow:0 10px 20px rgba(0,0,0,.1); }
+.front { background: white; }
+.back { background: #111; color:white; transform: rotateY(180deg); }
+</style>
+</head>
+<body class="min-h-screen grid place-items-center bg-gray-100 p-8">
+  <div class="scene">
+    <div class="card">
+      <div class="face front">FRONT</div>
+      <div class="face back">BACK</div>
+    </div>
+  </div> `,
+header:`<nav class="bg-slate-900 text-white px-6 py-4 flex items-center justify-between">
+    <div class="font-bold">Logo</div>
+    <button id="btn" class="md:hidden">☰</button>
+    <ul id="menu" class="hidden md:flex gap-6">
+      <li><a href="#">Home</a></li>
+      <li class="relative group">
+        <button>Servizi ▾</button>
+        <ul class="absolute hidden group-hover:block bg-white text-black p-2 rounded shadow mt-2">
+          <li><a class="block px-3 py-1 hover:bg-gray-100" href="#">Web</a></li>
+          <li><a class="block px-3 py-1 hover:bg-gray-100" href="#">SEO</a></li>
+        </ul>
+      </li>
+      <li><a href="#">Contatti</a></li>
+    </ul>
+  </nav>
+&lt;script&gt;
+  document.getElementById('btn').onclick=()=>document.getElementById('menu').classList.toggle('hidden');
+&lt;/script&gt;`,
+ sidebar: `  <div class="h-full flex">
+    <aside class="w-64 bg-slate-900 text-white p-6 space-y-2">
+      <h3 class="font-bold text-lg mb-3">Sezioni</h3>
+      <button class="link block w-full text-left px-3 py-2 rounded hover:bg-white/10" data-k="intro">Introduzione</button>
+      <button class="link block w-full text-left px-3 py-2 rounded hover:bg-white/10" data-k="docs">Documentazione</button>
+      <button class="link block w-full text-left px-3 py-2 rounded hover:bg-white/10" data-k="faq">FAQ</button>
+    </aside>
+    <main id="pane" class="flex-1 p-8 overflow-auto">
+      <h2 class="text-2xl font-bold">Benvenuto</h2>
+      <p>Seleziona una sezione dalla sidebar.</p>
+    </main>
+  </div>
+&lt;script&gt;
+  const pages = {
+    intro: "<h2 class='text-2xl font-bold'>Introduzione</h2><p class='mt-2'>Questo contenuto viene cambiato a destra senza reload.</p>",
+    docs: "<h2 class='text-2xl font-bold'>Documentazione</h2><ul class='list-disc pl-5'><li>Installazione</li><li>API</li></ul>",
+    faq: "<h2 class='text-2xl font-bold'>FAQ</h2><p>Domande frequenti con risposte sintetiche.</p>"
+  };
+  const pane = document.getElementById('pane');
+  document.querySelectorAll('.link').forEach(b=>b.addEventListener('click', ()=>{ pane.innerHTML = pages[b.dataset.k] }));
+&lt;/script&gt;`,
+slide: ` <style>
+    .slider-container {
+      position: relative;
+      width: 100%;
+      height: 16rem; /* h-64 */
+      overflow: hidden;
+      border-radius: 1rem; /* rounded-2xl/2 */
+    }
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 0.7s ease-in-out;
+    }
+    .slide.active {
+      opacity: 1;
+    }
+</style>
+  <body class="bg-gray-100 p-8">
+  <div class="max-w-xl mx-auto bg-white shadow-xl rounded-2xl overflow-hidden">
+    <div class="slider-container">
+      <img class="slide active" src="https://picsum.photos/seed/one/800/400" alt="Slide 1">
+      <img class="slide" src="https://picsum.photos/seed/two/800/400" alt="Slide 2">
+      <img class="slide" src="https://picsum.photos/seed/three/800/400" alt="Slide 3">
+    </div>
+    <div class="flex justify-between p-4">
+      <button id="prev" class="px-4 py-2 bg-slate-900 text-white rounded-lg hover:bg-slate-800 transition-all duration-200">← Precedente</button>
+      <button id="next" class="px-4 py-2 bg-slate-900 text-white rounded-lg hover:bg-slate-800 transition-all duration-200">Successivo →</button>
+    </div>
+  </div>
+
+script
+  const slides = [...document.querySelectorAll('.slide')]; 
+  let i = 0;
+  function show(n) {
+    slides[i].classList.remove('active'); 
+    i = (n + slides.length) % slides.length; 
+    slides[i].classList.add('active'); 
+  }
+  document.getElementById('prev').onclick = () => show(i - 1);
+  document.getElementById('next').onclick = () => show(i + 1);
+  setInterval(() => show(i + 1), 4000);
+/script`,
+sito: ` <nav class="max-w-3xl mx-auto bg-white rounded-2xl shadow p-4 flex gap-4">
+    <button data-page="home" class="tab px-3 py-2 rounded bg-slate-900 text-white">Home</button>
+    <button data-page="news" class="tab px-3 py-2 rounded">Notizie</button>
+    <button data-page="books" class="tab px-3 py-2 rounded">Libri</button>
+    <button data-page="movies" class="tab px-3 py-2 rounded">Cinema</button>
+  </nav>
+  <section id="view" class="max-w-3xl mx-auto mt-6 bg-white rounded-2xl shadow p-6">Caricamento…</section>
+script
+  const routes = {
+    home: "<h2 class='text-xl font-bold'>Benvenuto</h2><p>Questa è una mini SPA senza ricaricare la pagina.</p>",
+    news: "<h2 class='text-xl font-bold'>Notizie</h2><ul class='list-disc pl-5'><li>Breaking 1</li><li>Breaking 2</li></ul>",
+    books: "<h2 class='text-xl font-bold'>Libri</h2><p>Elenco libri consigliati…</p>",
+    movies: "<h2 class='text-xl font-bold'>Cinema</h2><p>Trailer e recensioni…</p>"
+  };
+  const view = document.getElementById('view');
+  function navigate(hash){ const page = (hash||'#home').slice(1); view.innerHTML = routes[page]||"<h2>404</h2>"; document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('bg-slate-900', b.dataset.page===page)); document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('text-white', b.dataset.page===page)); }
+  window.addEventListener('hashchange', ()=>navigate(location.hash));
+  document.querySelectorAll('.tab').forEach(btn=>btn.addEventListener('click', ()=>location.hash = btn.dataset.page));
+  navigate(location.hash);
+/script `,
+tab: `   <div class="max-w-xl mx-auto bg-white rounded-2xl shadow p-6">
+    <div class="flex gap-2 mb-4">
+      <button class="t px-3 py-2 rounded bg-slate-900 text-white" data-k="a">Tab A</button>
+      <button class="t px-3 py-2 rounded" data-k="b">Tab B</button>
+      <button class="t px-3 py-2 rounded" data-k="c">Tab C</button>
+    </div>
+    <div id="tabContent">Contenuto A</div>
+  </div>
+script
+  const content={a:"Contenuto A", b:"Contenuto B", c:"Contenuto C"};
+  const view=document.getElementById('tabContent');
+  document.querySelectorAll('.t').forEach(b=>b.addEventListener('click',()=>{ 
+    view.textContent=content[b.dataset.k]; 
+    document.querySelectorAll('.t').forEach(x=>x.classList.remove('bg-slate-900','text-white'));
+    b.classList.add('bg-slate-900','text-white');
+  }));
+/script`,
+button2: `<button class="bg-purple-500 hover:bg-purple-600 text-white px-6 py-3 rounded-lg font-medium flex items-center gap-2"> 📧 Invia Email </button> <button class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-lg font-medium flex items-center gap-2"> 📥 Download </button>`,
+layout: `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"> <!-- Prodotto 1 --> <div class="bg-white rounded-lg shadow-md overflow-hidden"> <div class="h-48 bg-gradient-to-r from-pink-400 to-red-500 flex items-center justify-center"> <span class="text-white text-4xl">📱</span> </div> <div class="p-4"> <h3 class="font-bold text-lg mb-2">Smartphone</h3> <p class="text-gray-600 text-sm mb-3">Ultimo modello con fotocamera avanzata</p> <div class="flex justify-between items-center"> <span class="text-xl font-bold text-green-600">€599</span> <button class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm"> Compra </button> </div> </div> </div> <!-- Ripeti per altri prodotti... --> </div>`,
+footer: ` <footer class="bg-gray-800 text-white py-12"> <div class="container mx-auto px-6"> <div class="grid grid-cols-1 md:grid-cols-4 gap-8"> <!-- Colonna 1 --> <div> <h3 class="text-xl font-bold mb-4">🚀 MioSito</h3> <p class="text-gray-300">La migliore soluzione per le tue esigenze digitali.</p> </div> <!-- Colonna 2 --> <div> <h4 class="font-bold mb-4">Servizi</h4> <ul class="space-y-2 text-gray-300"> <li><a href="#" class="hover:text-white">Web Design</a></li> <li><a href="#" class="hover:text-white">Sviluppo</a></li> <li><a href="#" class="hover:text-white">Consulenza</a></li> </ul> </div> <!-- Colonna 3 --> <div> <h4 class="font-bold mb-4">Azienda</h4> <ul class="space-y-2 text-gray-300"> <li><a href="#" class="hover:text-white">Chi Siamo</a></li> <li><a href="#" class="hover:text-white">Carriere</a></li> <li><a href="#" class="hover:text-white">Contatti</a></li> </ul> </div> <!-- Colonna 4 --> <div> <h4 class="font-bold mb-4">Seguici</h4> <div class="flex space-x-4"> <a href="#" class="text-2xl hover:text-blue-400">📘</a> <a href="#" class="text-2xl hover:text-blue-400">🐦</a> <a href="#" class="text-2xl hover:text-pink-400">📷</a> </div> </div> </div> <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-300"> <p>&copy; 2024 MioSito. Tutti i diritti riservati.</p> </div> </div> </footer> `,
+hero2: `  <!-- Immagine di sfondo -->
+  <div class="absolute inset-0">
+    <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb" alt="Background" class="w-full h-full object-cover opacity-50">
+  </div>
+  
+  <!-- Overlay scuro -->
+  <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+  
+  <!-- Contenuto -->
+  <div class="relative max-w-7xl mx-auto px-4 py-24 md:py-32 flex flex-col md:flex-row items-center md:justify-between z-10">
+    <!-- Testo -->
+    <div class="md:w-1/2 mb-8 md:mb-0 text-center md:text-left">
+      <h1 class="text-4xl md:text-5xl font-bold mb-4 leading-tight">
+        Trasforma il tuo <span class="text-indigo-400">Business</span> oggi
+      </h1>
+      <p class="text-lg mb-6">
+        Offriamo soluzioni digitali innovative per portare la tua azienda al livello successivo. Inizia subito con il nostro team di esperti.
+      </p>
+      <div class="flex justify-center md:justify-start space-x-4">
+        <a href="#" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-300">
+          Scopri di più
+        </a>
+        <a href="#" class="border border-white hover:bg-white hover:text-gray-900 text-white font-semibold py-3 px-6 rounded-lg transition duration-300">
+          Contattaci
+        </a>
+      </div>
+    </div>
+    <!-- Immagine di lato -->
+    <div class="md:w-1/2 flex justify-center">
+      <img src="https://images.unsplash.com/photo-1549924231-f129b911e442" alt="Person working" class="w-80 md:w-96 rounded-lg shadow-lg hover:scale-105 transform transition duration-300">
+    </div>
+  </div>
+</section>`,
+timeline:  `<div class="max-w-2xl mx-auto p-4">
+  <h3 class="text-xl font-bold text-center mb-6">Il Nostro Processo</h3>
+  <div class="relative">
+    <div class="absolute left-4 top-0 bottom-0 w-1 bg-gray-200" id="progress-line"></div>
+    
+    <div class="timeline-step relative flex items-start mb-8 cursor-pointer" onclick="activateStep(0)">
+      <div class="step-circle flex-shrink-0 w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center transition-colors" id="circle-0">
+        <span class="text-white text-sm font-bold">1</span>
+      </div>
+      <div class="ml-6">
+        <h4 class="text-lg font-semibold text-gray-900">Analisi</h4>
+        <p class="text-gray-600 step-content hidden" id="content-0">Studiamo le tue esigenze e definiamo gli obiettivi del progetto.</p>
+      </div>
+    </div>
+    
+    <div class="timeline-step relative flex items-start mb-8 cursor-pointer" onclick="activateStep(1)">
+      <div class="step-circle flex-shrink-0 w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center transition-colors" id="circle-1">
+        <span class="text-white text-sm font-bold">2</span>
+      </div>
+      <div class="ml-6">
+        <h4 class="text-lg font-semibold text-gray-900">Design</h4>
+        <p class="text-gray-600 step-content hidden" id="content-1">Creiamo mockup e prototipi per visualizzare la soluzione.</p>
+      </div>
+    </div>
+    
+    <div class="timeline-step relative flex items-start mb-8 cursor-pointer" onclick="activateStep(2)">
+      <div class="step-circle flex-shrink-0 w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center transition-colors" id="circle-2">
+        <span class="text-white text-sm font-bold">3</span>
+      </div>
+      <div class="ml-6">
+        <h4 class="text-lg font-semibold text-gray-900">Sviluppo</h4>
+        <p class="text-gray-600 step-content hidden" id="content-2">Implementiamo la soluzione con le migliori tecnologie.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+script
+let currentStep = -1;
+
+function activateStep(stepIndex) {
+  // Reset all steps
+  for (let i = 0; i <= 2; i++) {
+    document.getElementById('circle-' + i).className = 'step-circle flex-shrink-0 w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center transition-colors';
+    document.getElementById('content-' + i).classList.add('hidden');
+  }
+  
+  // Activate clicked step
+  if (currentStep !== stepIndex) {
+    document.getElementById('circle-' + stepIndex).className = 'step-circle flex-shrink-0 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center transition-colors';
+    document.getElementById('content-' + stepIndex).classList.remove('hidden');
+    currentStep = stepIndex;
+  } else {
+    currentStep = -1;
+  }
+}
+/script  `,
+colonne: `<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <div class="bg-white p-4 rounded shadow">
+    <h3 class="font-semibold mb-2">Colonna 1</h3>
+    <p>Contenuto della prima colonna.</p>
+  </div>
+  <div class="bg-white p-4 rounded shadow">
+    <h3 class="font-semibold mb-2">Colonna 2</h3>
+    <p>Contenuto della seconda colonna.</p>
+  </div>
+</div>`,
+cerchio: `<style>h1 {
+            text-align: center;
+            font-size: 2.5em;
+        }
+        p {
+            line-height: 1.6;
+            font-size: 1.1em;
+        }
+        .button {
+            display: inline-block;
+            padding: 12px 24px;
+            background: white;
+            color: #667eea;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .button:hover {
+            background: #f0f0f0;
+        }
+
+      .card h3 {
+      font-size: 1.8em;
+      color: #14b8a6;
+      margin-bottom: 15px;
+    }
+    
+    .card p {
+      color: #666;
+      font-size: 1.1em;
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+    
+    .cta {
+      background: #14b8a6;
+      color: white;
+      padding: 15px 35px;
+      border: none;
+      border-radius: 5px;
+      font-size: 1.1em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-transform: uppercase; letter-spacing: 1px;
+    }
+    
+    .cta:hover {
+      background: #0f766e;
+      transform: scale(1.05);
+    }
+.card {
+      background: white;
+      border-radius: 50%;
+      aspect-ratio: 1;
+      padding: 50px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+      transition: all 0.4s;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .card:hover {
+      transform: rotate(5deg) scale(1.1);
+      box-shadow: 0 15px 50px rgba(0,0,0,0.25);
+    }
+    
+    .circle-bg {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      opacity: 0.1;
+    }
+    
+    .music-content {
+      position: relative;
+      z-index: 1;
+    }
+    
+    .card h3 {
+      font-size: 1.4em;
+      margin-bottom: 15px;
+    }
+    
+    .card p {
+      font-size: 0.95em;
+      margin-bottom: 20px;
+    }
+    
+    .card .cta {
+      padding: 12px 30px;
+      font-size: 1em;
+    }
+        
+    
+    @media (max-width: 768px) {
+      header h1 { font-size: 2.2em; }
+      section h2 { font-size: 2em; }
+      nav ul { gap: 20px; }
+      
+      .grid {
+        grid-template-columns: 1fr !important;
+      }
+      
+      .card {
+        flex-direction: column !important;
+      }
+      
+      .card:nth-child(even) {
+        flex-direction: column !important;
+      }
+    }
+</style>
+<div class="card">
+          <div class="circle-bg" style="background: linear-gradient(135deg, #14b8a6, #0f766e);"></div>
+          <div class="music-content">
+            <h3>Rock Legends</h3>
+            <p>I più grandi successi rock di sempre.</p>
+            <button class="cta">Ascolta</button>
+          </div>
+        </div> `,
+modal: ` <div class="flex flex-col justify-center items-center">
+    <button 
+      type="button" 
+      id="openModalButton" 
+      class="inline-flex items-center justify-center border align-middle select-none font-sans font-medium text-center duration-300 ease-in disabled:opacity-50 disabled:shadow-none disabled:cursor-not-allowed focus:shadow-none text-sm py-2 px-4 shadow-sm hover:shadow-md bg-stone-800 hover:bg-stone-700 relative bg-gradient-to-b from-stone-700 to-stone-800 border-stone-900 text-stone-50 rounded-lg hover:bg-gradient-to-b hover:from-stone-800 hover:to-stone-800 hover:border-stone-900 after:absolute after:inset-0 after:rounded-[inherit] after:box-shadow after:shadow-[inset_0_1px_0px_rgba(255,255,255,0.25),inset_0_-2px_0px_rgba(0,0,0,0.35)] after:pointer-events-none transition antialiased"
+    >
+      Open
+    </button>
+    <p class="font-sans text-xs text-gray-500 mt-2 text-center"> Inspired by 
+      <a href="https://www.creative-tim.com/david-ui/docs/html/modal" target="_blank" class="underline text-blue-500 hover:text-blue-700">
+        David UI
+      </a>
+    </p>
+  </div>
+
+  <!-- Modal -->
+  <div 
+    class="fixed antialiased inset-0 bg-stone-800 bg-opacity-75 flex justify-center items-center opacity-0 pointer-events-none transition-opacity duration-300 ease-out z-[9999]" 
+    id="exampleModalWeb3" 
+    aria-hidden="true"
+  >
+    <div class="bg-white rounded-lg w-9/12 sm:w-7/12 md:w-5/12 lg:w-3/12 scale-95 transition-transform duration-300 ease-out">
+      <!-- Modal Header -->
+      <div class="border-b border-stone-200 p-4 flex justify-between items-start">
+        <div class="flex flex-col">
+          <h1 class="text-lg text-stone-800 font-semibold">Connect a Wallet</h1>
+          <p class="font-sans text-base text-stone-500">Choose which card you want to connect</p>
+        </div>
+        <button 
+          type="button" 
+          id="closeModalButton" 
+          aria-label="Close" 
+          class="text-stone-500 hover:text-stone-800"
+        >
+          &times;
+        </button>
+      </div>
+
+  
+
+
+      <!-- Modal Body -->
+      <div class="p-4 text-stone-500">
+        <p class="font-sans text-base text-stone-800 dark:text-white mb-2 font-semibold">Popular</p>
+        <div class="space-y-2">
+          <button class="inline-flex w-full gap-2 items-center justify-center border align-middle select-none font-sans font-medium text-center duration-300 ease-in disabled:opacity-50 disabled:shadow-none disabled:cursor-not-allowed focus:shadow-none text-sm py-2 px-4 shadow-sm hover:shadow-md bg-stone-200 hover:bg-stone-100 relative bg-gradient-to-b from-white to-white border-stone-200 text-stone-700 rounded-lg hover:bg-gradient-to-b hover:from-stone-50 hover:to-stone-50 hover:border-stone-200 after:absolute after:inset-0 after:rounded-[inherit] after:box-shadow after:shadow-[inset_0_1px_0px_rgba(255,255,255,0.35),inset_0_-1px_0px_rgba(0,0,0,0.20)] after:pointer-events-none transition">
+            <img alt="metamask" src="https://docs.material-tailwind.com/icons/metamask.svg" class="h-5 w-5">
+            <p class="font-sans text-base text-inherit font-semibold">Connect with MetaMask</p>
+          </button>
+          <button class="inline-flex w-full gap-2 items-center justify-center border align-middle select-none font-sans font-medium text-center duration-300 ease-in disabled:opacity-50 disabled:shadow-none disabled:cursor-not-allowed focus:shadow-none text-sm py-2 px-4 shadow-sm hover:shadow-md bg-stone-200 hover:bg-stone-100 relative bg-gradient-to-b from-white to-white border-stone-200 text-stone-700 rounded-lg hover:bg-gradient-to-b hover:from-stone-50 hover:to-stone-50 hover:border-stone-200 after:absolute after:inset-0 after:rounded-[inherit] after:box-shadow after:shadow-[inset_0_1px_0px_rgba(255,255,255,0.35),inset_0_-1px_0px_rgba(0,0,0,0.20)] after:pointer-events-none transition">
+            <img alt="coinbase" src="https://docs.material-tailwind.com/icons/coinbase.svg" class="h-6 w-6 rounded">
+            <p class="font-sans text-base text-inherit font-semibold">Connect with Coinbase</p>
+          </button>
+        </div>
+        <p class="font-sans text-base text-stone-800 dark:text-white mb-2 mt-6 font-semibold">Other</p>
+        <button class="inline-flex w-full gap-2 items-center justify-center border align-middle select-none font-sans font-medium text-center duration-300 ease-in disabled:opacity-50 disabled:shadow-none disabled:cursor-not-allowed focus:shadow-none text-sm py-2 px-4 shadow-sm hover:shadow-md bg-stone-200 hover:bg-stone-100 relative bg-gradient-to-b from-white to-white border-stone-200 text-stone-700 rounded-lg hover:bg-gradient-to-b hover:from-stone-50 hover:to-stone-50 hover:border-stone-200 after:absolute after:inset-0 after:rounded-[inherit] after:box-shadow after:shadow-[inset_0_1px_0px_rgba(255,255,255,0.35),inset_0_-1px_0px_rgba(0,0,0,0.20)] after:pointer-events-none transition">
+          <img alt="trustwallet" src="https://docs.material-tailwind.com/icons/trust-wallet.svg" class="h-6 w-6 rounded">
+          <p class="font-sans text-base text-inherit font-semibold">Connect with Trust Wallet</p>
+        </button>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="border-t border-stone-200 p-4 flex flex-col items-center gap-2">
+        <small class="font-sans antialiased text-sm text-stone-800 text-center">
+          New to Ethereum wallets?
+        </small>
+        <button class="inline-flex gap-2 items-center justify-center border align-middle select-none font-sans font-medium text-center duration-300 ease-in disabled:opacity-50 disabled:shadow-none disabled:cursor-not-allowed focus:shadow-none text-sm py-2 px-4 shadow-sm hover:shadow-md bg-stone-200 hover:bg-stone-100 relative bg-gradient-to-b from-white to-white border-stone-200 text-stone-700 rounded-lg hover:bg-gradient-to-b hover:from-stone-50 hover:to-stone-50 hover:border-stone-200 after:absolute after:inset-0 after:rounded-[inherit] after:box-shadow after:shadow-[inset_0_1px_0px_rgba(255,255,255,0.35),inset_0_-1px_0px_rgba(0,0,0,0.20)] after:pointer-events-none transition">
+          Learn More
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  script
+    const modal = document.getElementById("exampleModalWeb3");
+    const openModalButton = document.getElementById("openModalButton");
+    const closeModalButton = document.getElementById("closeModalButton");
+
+    openModalButton.addEventListener("click", () => {
+      modal.classList.remove("opacity-0", "pointer-events-none");
+      modal.classList.add("opacity-100");
+    });
+
+    closeModalButton.addEventListener("click", () => {
+      modal.classList.add("opacity-0", "pointer-events-none");
+      modal.classList.remove("opacity-100");
+    });
+  /script`,
+tab2: `
+  <div class="-mb-px border-b border-gray-200">
+    <div role="tablist" class="flex gap-1">
+      <button
+        role="tab"
+        aria-selected="true"
+        aria-controls="panel-profile"
+        id="tab-profile"
+        class="border-b-2 border-blue-600 px-4 py-2 text-sm font-medium text-blue-600 transition-colors hover:text-blue-700"
+        tabindex="0"
+      >
+        Profile
+      </button>
+
+      <button
+        role="tab"
+        aria-selected="false"
+        aria-controls="panel-account"
+        id="tab-account"
+        class="border-b-2 border-transparent px-4 py-2 text-sm font-medium text-gray-600 transition-colors hover:text-gray-700"
+        tabindex="-1"
+      >
+        Account
+      </button>
+
+      <button
+        role="tab"
+        aria-selected="false"
+        aria-controls="panel-notifications"
+        id="tab-notifications"
+        class="border-b-2 border-transparent px-4 py-2 text-sm font-medium text-gray-600 transition-colors hover:text-gray-700"
+        tabindex="-1"
+      >
+        Notifications
+      </button>
+    </div>
+  </div>
+
+  <div role="tabpanel" id="panel-profile" class="mt-4" tabindex="0">
+    <p class="text-gray-700">
+      Lorem, ipsum dolor sit amet consectetur adipisicing elit. Deserunt similique, quae hic dicta
+      quo facere facilis praesentium a sunt, est quia pariatur nam, modi aut minus iste odio
+      consectetur molestias iusto cupiditate ullam laborum veniam quos officia. Quos, temporibus
+      perspiciatis!
+    </p>
+  </div>
+
+  <div role="tabpanel" id="panel-account" class="mt-4 hidden" tabindex="0">
+    <p class="text-gray-700">Contenuto Account qui...</p>
+  </div>
+
+  <div role="tabpanel" id="panel-notifications" class="mt-4 hidden" tabindex="0">
+    <p class="text-gray-700">Notifiche qui...</p>
+  </div>
+
+  script
+    document.addEventListener('DOMContentLoaded', () => {
+  const tablist = document.querySelector('[role="tablist"]');
+  const tabs = tablist.querySelectorAll('[role="tab"]');
+  const panels = document.querySelectorAll('[role="tabpanel"]');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', activateTab);
+    tab.addEventListener('keydown', handleKeyboard);
+  });
+
+  function activateTab(event) {
+    const tab = event.currentTarget;
+    const targetId = tab.getAttribute('aria-controls');
+    const targetPanel = document.getElementById(targetId);
+
+    // Reset tutti
+    tabs.forEach(t => {
+      t.setAttribute('aria-selected', 'false');
+      t.setAttribute('tabindex', '-1');
+      t.classList.remove('border-blue-600', 'text-blue-600');
+      t.classList.add('border-transparent', 'text-gray-600');
+    });
+    panels.forEach(p => {
+      p.classList.add('hidden');
+    });
+
+    // Attiva selezionato
+    tab.setAttribute('aria-selected', 'true');
+    tab.setAttribute('tabindex', '0');
+    tab.classList.remove('border-transparent', 'text-gray-600');
+    tab.classList.add('border-blue-600', 'text-blue-600');
+    targetPanel.classList.remove('hidden');
+    targetPanel.focus();
+  }
+
+  function handleKeyboard(event) {
+    const tab = event.currentTarget;
+    const tabsArray = Array.from(tabs);
+    const currentIndex = tabsArray.indexOf(tab);
+
+    if (event.key === 'ArrowRight') {
+      const nextIndex = (currentIndex + 1) % tabsArray.length;
+      tabsArray[nextIndex].focus();
+    } else if (event.key === 'ArrowLeft') {
+      const prevIndex = (currentIndex - 1 + tabsArray.length) % tabsArray.length;
+      tabsArray[prevIndex].focus();
+    } else if (event.key === 'Home') {
+      tabsArray[0].focus();
+    } else if (event.key === 'End') {
+      tabsArray[tabsArray.length - 1].focus();
+    }
+  }
+});
+  /script`,
+vertical:` <div class="flex gap-4">
+  <!-- Sidebar tabs VERTICALI -->
+  <div class="border-r border-gray-200 dark:border-gray-700 w-48">
+    <div role="tablist" class="-mr-px flex flex-col gap-1">
+      <button role="tab" aria-selected="true" class="border-r-2 border-blue-600 px-4 py-2 text-left text-sm font-medium text-blue-600 transition-colors hover:text-blue-700 dark:hover:text-blue-500">
+        General
+      </button>
+      <button role="tab" aria-selected="false" class="border-r-2 border-transparent px-4 py-2 text-left text-sm font-medium text-gray-600 transition-colors hover:text-gray-700 dark:text-gray-300 dark:hover:text-gray-200">
+        Privacy
+      </button>
+      <button role="tab" aria-selected="false" class="border-r-2 border-transparent px-4 py-2 text-left text-sm font-medium text-gray-600 transition-colors hover:text-gray-700 dark:text-gray-300 dark:hover:text-gray-200">
+        Security
+      </button>
+    </div>
+  </div>
+
+  <!-- CONTENUTO VERTICALE - UN SOLO SLOT -->
+  <div class="flex-1 min-h-[400px]">
+    <!-- General (visibile) -->
+    <div role="tabpanel" class="p-6">
+      <h3 class="text-lg font-semibold text-gray-900 mb-2">General Settings</h3>
+      <p class="text-gray-700 dark:text-gray-200">
+        Lorem, ipsum dolor sit amet consectetur adipisicing elit...
+      </p>
+    </div>
+
+    <!-- Privacy (nascosto) -->
+    <div role="tabpanel" class="p-6 hidden">
+      <h3 class="text-lg font-semibold text-gray-900 mb-2">Privacy Settings</h3>
+      <p class="text-gray-700 dark:text-gray-200">
+        Controlla visibilità profilo, cookie, dati condivisi.
+      </p>
+    </div>
+
+    <!-- Security (nascosto) -->
+    <div role="tabpanel" class="p-6 hidden">
+      <h3 class="text-lg font-semibold text-gray-900 mb-2">Security Settings</h3>
+      <p class="text-gray-700 dark:text-gray-200">
+        2FA, gestione password, sessioni attive, backup account.
+      </p>
+    </div>
+  </div>
+</div>
+script 
+    document.addEventListener('DOMContentLoaded', () => {
+  const tablist = document.querySelector('[role="tablist"]');
+  const tabs = tablist.querySelectorAll('[role="tab"]');
+  const panels = document.querySelectorAll('[role="tabpanel"]');
+
+  // Mostra primo panel all'avvio
+  panels[0].classList.remove('hidden');
+
+  tabs.forEach((tab, index) => {
+    tab.addEventListener('click', () => activateTab(index));
+    tab.addEventListener('keydown', (e) => handleKeyboard(e, index));
+  });
+
+  function activateTab(activeIndex) {
+    // Reset tabs
+    tabs.forEach((t, i) => {
+      t.setAttribute('aria-selected', (i === activeIndex).toString());
+      t.setAttribute('tabindex', i === activeIndex ? '0' : '-1');
+      if (i === activeIndex) {
+        t.classList.remove('border-transparent');
+        t.classList.add('border-blue-600', 'text-blue-600');
+      } else {
+        t.classList.remove('border-blue-600', 'text-blue-600');
+        t.classList.add('border-transparent');
+      }
+    });
+
+    // Reset panels
+    panels.forEach((p, i) => {
+      p.classList.toggle('hidden', i !== activeIndex);
+    });
+  }
+
+  function handleKeyboard(event, currentIndex) {
+    const tabsArray = Array.from(tabs);
+    let newIndex;
+    
+    switch(event.key) {
+      case 'ArrowDown': newIndex = (currentIndex + 1) % tabsArray.length; break;
+      case 'ArrowUp': newIndex = (currentIndex - 1 + tabsArray.length) % tabsArray.length; break;
+      case 'Home': newIndex = 0; break;
+      case 'End': newIndex = tabsArray.length - 1; break;
+      default: return;
+    }
+    
+    tabsArray[newIndex].focus();
+    activateTab(newIndex);
+    event.preventDefault();
+  }
+});
+/script`,
+faq: `
+    <!-- component -->
+<div class="max-w-screen-xl mx-auto px-5 bg-white min-h-sceen">
+	<div class="flex flex-col items-center">
+		<h2 class="font-bold text-5xl mt-5 tracking-tight">
+			FAQ
+		</h2>
+		<p class="text-neutral-500 text-xl mt-3">
+			Frequenty asked questions
+		</p>
+	</div>
+	<div class="grid divide-y divide-neutral-200 max-w-xl mx-auto mt-8">
+		<div class="py-5">
+			<details class="group">
+				<summary class="flex justify-between items-center font-medium cursor-pointer list-none">
+					<span> What is a SAAS platform?</span>
+					<span class="transition group-open:rotate-180">
+                <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path>
+</svg>
+              </span>
+				</summary>
+				<p class="text-neutral-600 mt-3 group-open:animate-fadeIn">
+					 SAAS platform is a cloud-based software service that allows users to access
+					and use a variety of tools and functionality.
+				</p>
+			</details>
+		</div>
+		<div class="py-5">
+			<details class="group">
+				<summary class="flex justify-between items-center font-medium cursor-pointer list-none">
+					<span> How does  billing work?</span>
+					<span class="transition group-open:rotate-180">
+                <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path>
+</svg>
+              </span>
+				</summary>
+				<p class="text-neutral-600 mt-3 group-open:animate-fadeIn">
+					We offers a variety of billing options, including monthly and annual subscription plans,
+					as well as pay-as-you-go pricing for certain services. Payment is typically made through a credit
+					card or other secure online payment method.
+				</p>
+			</details>
+		</div>
+		<div class="py-5">
+			<details class="group">
+				<summary class="flex justify-between items-center font-medium cursor-pointer list-none">
+					<span> Can I get a refund for my subscription?</span>
+					<span class="transition group-open:rotate-180">
+                <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path>
+</svg>
+              </span>
+				</summary>
+				<p class="text-neutral-600 mt-3 group-open:animate-fadeIn">
+					We offers a 30-day money-back guarantee for most of its subscription plans. If you are not
+					satisfied with your subscription within the first 30 days, you can request a full refund. Refunds
+					for subscriptions that have been active for longer than 30 days may be considered on a case-by-case
+					basis.
+				</p>
+			</details>
+		</div>
+		<div class="py-5">
+			<details class="group">
+				<summary class="flex justify-between items-center font-medium cursor-pointer list-none">
+					<span> How do I cancel my subscription?</span>
+					<span class="transition group-open:rotate-180">
+                <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path>
+</svg>
+              </span>
+				</summary>
+				<p class="text-neutral-600 mt-3 group-open:animate-fadeIn">
+					To cancel your We subscription, you can log in to your account and navigate to the
+					subscription management page. From there, you should be able to cancel your subscription and stop
+					future billing.
+				</p>
+			</details>
+		</div>
+		<div class="py-5">
+			<details class="group">
+				<summary class="flex justify-between items-center font-medium cursor-pointer list-none">
+					<span> Can I try this platform for free?</span>
+					<span class="transition group-open:rotate-180">
+                <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path>
+</svg>
+              </span>
+				</summary>
+				<p class="text-neutral-600 mt-3 group-open:animate-fadeIn">
+					We offers a free trial of its  platform for a limited time. During the trial period,
+					you will have access to a limited set of features and functionality, but you will not be charged.
+				</p>
+			</details>
+		</div>
+		<div class="py-5">
+			<details class="group">
+				<summary class="flex justify-between items-center font-medium cursor-pointer list-none">
+					<span> How do I access   documentation?</span>
+					<span class="transition group-open:rotate-180">
+                <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path>
+</svg>
+              </span>
+				</summary>
+				<p class="text-neutral-600 mt-3 group-open:animate-fadeIn">
+					  Documentation is available on the company's website and can be accessed by
+					logging in to your account. The documentation provides detailed information on how to use the ,
+					as well as code examples and other resources.
+				</p>
+			</details>
+		</div>
+		<div class="py-5">
+			<details class="group">
+				<summary class="flex justify-between items-center font-medium cursor-pointer list-none">
+					<span> How do I contact support?</span>
+					<span class="transition group-open:rotate-180">
+                <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path>
+</svg>
+              </span>
+				</summary>
+				<p class="text-neutral-600 mt-3 group-open:animate-fadeIn">
+					If you need help with the platform or have any other questions, you can contact the
+					company's support team by submitting a support request through the website or by emailing
+					support@We.com.
+				</p>
+			</details>
+		</div>
+		<div class="py-5">
+			<details class="group">
+				<summary class="flex justify-between items-center font-medium cursor-pointer list-none">
+					<span> Do you offer any discounts or promotions?</span>
+					<span class="transition group-open:rotate-180">
+                <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path>
+</svg>
+              </span>
+				</summary>
+				<p class="text-neutral-600 mt-3 group-open:animate-fadeIn">
+					We may offer discounts or promotions from time to time. To stay up-to-date on the latest
+					deals and special offers, you can sign up for the company's newsletter or follow it on social media.
+				</p>
+			</details>
+		</div>
+		<div class="py-5">
+			<details class="group">
+				<summary class="flex justify-between items-center font-medium cursor-pointer list-none">
+					<span> How do we compare to other similar services?</span>
+					<span class="transition group-open:rotate-180">
+                <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path>
+</svg>
+              </span>
+				</summary>
+				<p class="text-neutral-600 mt-3 group-open:animate-fadeIn">
+					 This platform is a highly reliable and feature-rich service that offers a wide range
+					of tools and functionality. It is competitively priced and offers a variety of billing options to
+					suit different needs and budgets.
+				</p>
+			</details>
+		</div>
+	</div>
+</div>
+
+script
+	// ...
+	// extend: {
+    //   keyframes: {
+    //     fadeIn: {
+    //       "0%": { opacity: 0 },
+    //       "100%": { opacity: 100 },
+    //     },
+    //   },
+    //   animation: {
+    //     fadeIn: "fadeIn 0.2s ease-in-out forwards",
+    //   },
+    // },
+    // ...
+/script`,
+
+collapse: `
+  script src="https://cdn.jsdelivr.net/gh/creativetimofficial/david-ai@1.0.6/packages/dist/david-ai.min.js" defer>/script
+  <style>
+    /* Optional styles for better appearance */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+      color: #333;
+      margin: 2rem;
+    }
+    .dark-mode {
+      background-color: #1f2937;
+      color: #f3f4f6;
+    }
+  </style>
+
+
+  <div data-dui-toggle="collapse" 
+       data-dui-target="#collapseExample" 
+       aria-expanded="false" 
+       aria-controls="collapseExample" 
+       class="cursor-pointer flex items-center justify-between min-w-[15rem] py-2 px-4 rounded-md bg-white shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700">
+    Components
+    <span data-dui-icon class="grid place-items-center transition-transform transform duration-300">
+      <svg width="1.5em" height="1.5em" stroke-width="1.5" viewBox="0 0 24 24" fill="none"
+           xmlns="http://www.w3.org/2000/svg" color="currentColor" class="h-5 w-5 stroke-gray-700 dark:stroke-gray-300">
+        <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+    </span>
+  </div>
+
+  <div id="collapseExample" 
+       class="collapse-element overflow-hidden max-h-0 transition-all duration-300 ease-in-out">
+    <ul class="flex flex-col gap-2 mt-2 p-4 border rounded-md bg-white dark:bg-gray-800">
+      <li class="py-2 px-4 rounded-md bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 cursor-pointer">
+        Inbox
+      </li>
+      <li class="py-2 px-4 rounded-md bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 cursor-pointer">
+        Trash
+      </li>
+      <li class="py-2 px-4 rounded-md bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 cursor-pointer">
+        Settings
+      </li>
+    </ul>
+  </div>
+
+  <p class="text-sm mt-4 text-gray-600 dark:text-gray-400">
+    Inspired by <a href="https://www.creative-tim.com/david-ui/docs/html/collapse" target="_blank" class="text-blue-600 dark:text-blue-400 underline hover:no-underline">David UI</a>.
+  </p>
+
+  script
+    // Ensure the script is loaded before initializing
+    document.addEventListener("DOMContentLoaded", () => {
+      // Automatically initialize collapses
+      if (window.DavidAI) {
+        DavidAI.initCollapse();
+      } else {
+        console.error("DavidAI library is not loaded. Ensure the CDN script is included.");
+      }
+    });
+  /script`,
+
+
+    
+cardtab: `
+<div class="w-full bg-neutral-primary border border-default rounded-base shadow-xs">
+    <ul class="flex flex-wrap text-sm font-medium text-center text-body bg-neutral-secondary-soft border-b border-default rounded-t-base" id="defaultTab" data-tabs-toggle="#defaultTabContent" role="tablist">
+        <li class="me-2">
+            <button id="about-tab" data-tabs-target="#about" type="button" role="tab" aria-controls="about" aria-selected="true" class="inline-block p-4 text-fg-brand rounded-ss-base hover:bg-neutral-tertiary">About</button>
+        </li>
+        <li class="me-2">
+            <button id="services-tab" data-tabs-target="#services" type="button" role="tab" aria-controls="services" aria-selected="false" class="inline-block p-4 hover:text-heading hover:bg-neutral-tertiary">Services</button>
+        </li>
+        <li class="me-2">
+            <button id="statistics-tab" data-tabs-target="#statistics" type="button" role="tab" aria-controls="statistics" aria-selected="false" class="inline-block p-4 hover:text-heading hover:bg-neutral-tertiary">Facts</button>
+        </li>
+    </ul>
+    <div id="defaultTabContent">
+        <div class="hidden p-4 rounded-b-base md:p-8" id="about" role="tabpanel" aria-labelledby="about-tab">
+            <h2 class="mb-2 text-2xl font-semibold tracking-tight text-heading">Powering innovation at <span class="font-extrabold">200,000+</span> companies worldwide</h2>
+            <p class="mb-4 text-body">Empower Developers, IT Ops, and business teams to collaborate at high velocity. Respond to changes and deliver great customer and employee service experiences fast.</p>
+            <a href="#" class="inline-flex items-center font-medium text-fg-brand hover:underline">
+                Learn more
+                <svg class="w-5 h-5 ms-1 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5m14 0-4 4m4-4-4-4"/></svg>
+            </a>
+        </div>
+        <div class="hidden p-4 rounded-b-base md:p-8" id="services" role="tabpanel" aria-labelledby="services-tab">
+            <h2 class="mb-5 text-2xl font-semibold tracking-tight text-heading">We invest in the world’s potential</h2>
+            <!-- List -->
+            <ul role="list" class="space-y-4 text-body">
+                <li class="flex space-x-1.5 rtl:space-x-reverse items-center">
+                    <svg class="w-4 h-4 text-fg-brand shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.5 11.5 11 14l4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+                    <span class="leading-tight">Dynamic reports and dashboards</span>
+                </li>
+                <li class="flex space-x-2 rtl:space-x-reverse items-center">
+                    <svg class="w-4 h-4 text-fg-brand shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.5 11.5 11 14l4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+                    <span class="leading-tight">Templates for everyone</span>
+                </li>
+                <li class="flex space-x-2 rtl:space-x-reverse items-center">
+                    <svg class="w-4 h-4 text-fg-brand shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.5 11.5 11 14l4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+                    <span class="leading-tight">Development workflow</span>
+                </li>
+                <li class="flex space-x-2 rtl:space-x-reverse items-center">
+                    <svg class="w-4 h-4 text-fg-brand shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.5 11.5 11 14l4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+                    <span class="leading-tight">Limitless business automation</span>
+                </li>
+            </ul>
+        </div>
+        <div class="hidden p-4 rrounded-b-base md:p-8" id="statistics" role="tabpanel" aria-labelledby="statistics-tab">
+            <dl class="grid max-w-screen-xl grid-cols-2 gap-8 p-4 mx-auto text-heading sm:grid-cols-3 xl:grid-cols-6 sm:p-8">
+                <div class="flex flex-col">
+                    <dt class="mb-2 text-2xl font-semibold tracking-tight text-heading">73M+</dt>
+                    <dd class="text-body">Developers</dd>
+                </div>
+                <div class="flex flex-col">
+                    <dt class="mb-2 text-2xl font-semibold tracking-tight text-heading">100M+</dt>
+                    <dd class="text-body">Public repositories</dd>
+                </div>
+                <div class="flex flex-col">
+                    <dt class="mb-2 text-2xl font-semibold tracking-tight text-heading">1000s</dt>
+                    <dd class="text-body">Open source projects</dd>
+                </div>
+            </dl>
+        </div>
+    </div>
+</div>
+
+script
+  document.addEventListener('DOMContentLoaded', function () {
+    const tabButtons = document.querySelectorAll('#defaultTab [data-tabs-target]');
+    const tabPanels  = document.querySelectorAll('#defaultTabContent [role="tabpanel"]');
+
+    function activateTab(button) {
+      const targetSelector = button.getAttribute('data-tabs-target');
+      const targetPanel = document.querySelector(targetSelector);
+
+      // reset all buttons
+      tabButtons.forEach((btn) => {
+        btn.classList.remove('text-fg-brand', 'bg-neutral-tertiary');
+        btn.setAttribute('aria-selected', 'false');
+      });
+
+      // hide all panels
+      tabPanels.forEach((panel) => {
+        panel.classList.add('hidden');
+      });
+
+      // activate current button
+      button.classList.add('text-fg-brand');
+      button.setAttribute('aria-selected', 'true');
+
+      // show current panel
+      if (targetPanel) {
+        targetPanel.classList.remove('hidden');
+      }
+    }
+
+    // click handler
+    tabButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        activateTab(button);
+      });
+    });
+
+    // tab iniziale (About)
+    const defaultTabButton = document.querySelector('#about-tab');
+    if (defaultTabButton) {
+      activateTab(defaultTabButton);
+    }
+  });
+/script`,
+
+buttonicon:`
+<div class="flex gap-4">
+  <button
+    class="middle none relative h-10 max-h-[40px] w-10 max-w-[40px] rounded-lg bg-pink-500 text-center font-sans text-xs font-medium uppercase text-white shadow-md shadow-pink-500/20 transition-all hover:shadow-lg hover:shadow-pink-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+    type="button"
+    data-ripple-light="true"
+  >
+    <span class="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 transform">
+      <i class="fas fa-heart text-lg leading-none" aria-hidden="true"></i>
+    </span>
+  </button>
+  <button
+    class="middle none relative h-10 max-h-[40px] w-10 max-w-[40px] rounded-lg bg-red-500 text-center font-sans text-xs font-medium uppercase text-white shadow-md shadow-red-500/20 transition-all hover:shadow-lg hover:shadow-red-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+    type="button"
+    data-ripple-light="true"
+  >
+    <span class="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 transform">
+      <i class="fas fa-heart text-lg leading-none" aria-hidden="true"></i>
+    </span>
+  </button>
+  <button
+    class="middle none relative h-10 max-h-[40px] w-10 max-w-[40px] rounded-lg bg-green-500 text-center font-sans text-xs font-medium uppercase text-white shadow-md shadow-green-500/20 transition-all hover:shadow-lg hover:shadow-green-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+    type="button"
+    data-ripple-light="true"
+  >
+    <span class="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 transform">
+      <i class="fas fa-heart text-lg leading-none" aria-hidden="true"></i>
+    </span>
+  </button>
+  <button
+    class="middle none relative h-10 max-h-[40px] w-10 max-w-[40px] rounded-lg bg-amber-500 text-center font-sans text-xs font-medium uppercase text-black shadow-md shadow-amber-500/20 transition-all hover:shadow-lg hover:shadow-amber-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+    type="button"
+    data-ripple-light="true"
+  >
+    <span class="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 transform">
+      <i class="fas fa-heart text-lg leading-none" aria-hidden="true"></i>
+    </span>
+  </button>
+</div>
+<div class="w-full pt-5 px-4 mb-8 mx-auto ">
+    <div class="text-sm text-gray-700 py-1">
+        Made with <a class="text-gray-700 font-semibold" href="https://www.material-tailwind.com/docs/html/icon-button?ref=tailwindcomponents" target="_blank">Material Tailwind</a> by <a href="https://www.creative-tim.com?ref=tailwindcomponents" class="text-gray-700 font-semibold" target="_blank"> Creative Tim</a>.
+    </div>
+</div>
+
+<!-- stylesheet -->
+
+
+<!-- Font Awesome Link -->
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"
+  integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w=="crossorigin="anonymous"/>`,
+
+social: `
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+        <link rel="stylesheet" href="style.css">
+    
+    <button class="rounded-md bg-[#ea4335] py-2 px-2.5 border border-transparent text-center text-sm text-white transition-all shadow-sm hover:shadow-lg focus:bg-[#ea4335]/90 focus:shadow-none active:bg-[#ea4335]/90 hover:bg-[#ea4335]/90 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" type="button">
+  <i class="fab fa-google w-4 h-4" aria-hidden="true"></i>
+</button>
+ 
+<button class="rounded-md bg-[#1DA1F2] py-2 px-2.5 border border-transparent text-center text-sm text-white transition-all shadow-sm hover:shadow-lg focus:bg-[#1DA1F2]/90 focus:shadow-none active:bg-[#1DA1F2]/90 hover:bg-[#1DA1F2]/90 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" type="button">
+  <i class="fab fa-twitter w-4 h-4" aria-hidden="true"></i>
+</button>
+ 
+<button class="rounded-md bg-[#ea4c89] py-2 px-2.5 border border-transparent text-center text-sm text-white transition-all shadow-sm hover:shadow-lg focus:bg-[#ea4c89]/90 focus:shadow-none active:bg-[#ea4c89]/90 hover:bg-[#ea4c89]/90 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" type="button">
+  <i class="fab fa-dribbble w-4 h-4" aria-hidden="true"></i>
+</button>
+ 
+<button class="rounded-md bg-[#333333] py-2 px-2.5 border border-transparent text-center text-sm text-white transition-all shadow-sm hover:shadow-lg focus:bg-[#333333]/90 focus:shadow-none active:bg-[#333333]/90 hover:bg-[#333333]/90 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" type="button">
+  <i class="fab fa-github w-4 h-4" aria-hidden="true"></i>
+</button>
+<button class="btn-con-icona">
+        <i class="fas fa-download"></i> Scarica ora
+        </button> `,
+
+navbar:`
+<div id="content-home" class="p-8 min-h-screen bg-gray-50">Contenuto HOME</div>
+<div id="content-upload" class="p-8 min-h-screen bg-green-50 hidden">Contenuto UPLOAD</div>
+<div id="content-chat" class="p-8 min-h-screen bg-purple-50 hidden">Contenuto CHAT</div>
+<div id="content-search" class="p-8 min-h-screen bg-yellow-50 hidden">Contenuto SEARCH</div>
+<div id="content-profile" class="p-8 min-h-screen bg-pink-50 hidden">Contenuto PROFILE</div>
+    <!-- component -->
+<div class="fixed bottom-4 left-1/2 transform -translate-x-1/2 inline-flex left-0 mx-auto justify-between bg-blue-600 w-11/12 rounded-3xl">
+      <a
+        aria-current="page"
+        class="inline-flex flex-col items-center text-xs font-medium py-3 px-4 text-white flex-grow"
+        href="#"
+      >
+        <svg
+          class="w-7 h-7"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
+        </svg>
+        <span class="sr-only">Home</span>
+      </a>
+      <a
+        class="inline-flex flex-col items-center text-xs font-medium text-blue-400 py-3 px-4 flex-grow"
+        href="#"
+      >
+        <svg
+          class="w-7 h-7"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z"
+            clip-rule="evenodd"
+          ></path>
+        </svg>
+      </a>
+      <span class="sr-only">Upload</span>
+      <button class="relative inline-flex flex-col items-center text-xs font-medium text-white py-3 px-6 flex-grow">
+        <div class="absolute bottom-5 p-3 rounded-full border-4 border-white bg-blue-600">
+          <svg
+            class="w-8 h-8"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z"
+              clip-rule="evenodd"
+            ></path>
+          </svg>
+        </div>
+        <span class="sr-only">Chat</span>
+      </button>
+      <a
+        class="inline-flex flex-col items-center text-xs font-medium text-blue-400 py-3 px-4 flex-grow"
+        href="#"
+      >
+        <svg
+          class="w-7 h-7"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+            clip-rule="evenodd"
+          ></path>
+        </svg>
+        <span class="sr-only">Search</span>
+      </a>
+      <a
+        class="inline-flex flex-col items-center text-xs font-medium text-blue-400 py-3 px-4 flex-grow"
+        href="#"
+      >
+        <svg
+          class="w-7 h-7"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z"
+            clip-rule="evenodd"
+          ></path>
+        </svg>
+        <span class="sr-only">Profile</span>
+      </a>
+    </div>
+
+script
+document.addEventListener('DOMContentLoaded', function() {
+  const contents = {
+    0: 'content-home',
+    1: 'content-upload', 
+    2: 'content-chat',
+    3: 'content-search',
+    4: 'content-profile'
+  };
+  
+  const navItems = document.querySelectorAll('.inline-flex.flex-col.items-center');
+  
+  navItems.forEach((nav, index) => {
+    nav.addEventListener('click', function(e) {
+      e.preventDefault();
+      
+      // Reset visuale nav
+      navItems.forEach(n => {
+        n.classList.remove('text-white','bg-blue-700/50','shadow-lg');
+        n.classList.add('text-blue-300');
+        const svg = n.querySelector('svg');
+        if(svg) svg.classList.remove('scale-110');
+      });
+      
+      // Attiva nav cliccato
+      this.classList.remove('text-blue-300');
+      this.classList.add('text-white','bg-blue-700/50','shadow-lg');
+      const svg = this.querySelector('svg');
+      if(svg) svg.classList.add('scale-110');
+      
+      // Nascondi TUTTI contenuti
+      Object.values(contents).forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.classList.add('hidden');
+      });
+      
+      // Mostra contenuto CORRISPONDENTE
+      const targetId = contents[index];
+      const targetContent = document.getElementById(targetId);
+      if(targetContent) {
+        targetContent.classList.remove('hidden');
+      }
+    });
+  });
+  
+  // Home attivo all'avvio
+  navItems[0]?.click();
+});
+/script`,
+
+  collapse2:`
+<section class="grid place-items-center bg-emerald-800 p-16 min-h-screen">
+  <label>
+    <input class="peer/showLabel absolute scale-0" type="checkbox" />
+    <span class="block max-h-14 max-w-xs overflow-hidden rounded-lg bg-emerald-100 px-4 py-0 text-cyan-800 shadow-lg transition-all duration-300 peer-checked/showLabel:max-h-52">
+      <h3 class="flex h-14 cursor-pointer items-center font-bold">Expand & Collapse Me</h3>
+      <p class="mb-2">You've crafted a sleek collapsible panel using Tailwind CSS without the need for JavaScript. Impressive! 😎</p>
+    </span>
+  </label>
+</section>`,
+modal1: `<button onclick="openModal('modal-table')" class="card-hover bg-gradient-to-br from-blue-500 via-purple-500 to-indigo-600 pattern-dots rounded-3xl p-6 text-left shadow-2xl border-2 border-white/30 backdrop-blur-sm bg-opacity-95 hover:bg-opacity-100 hover:shadow-3xl hover:scale-105 transition-all duration-300 cursor-pointer group">
+      <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
+      </svg>
+     </div><h3 id="card-1-title" class="text-xl font-bold text-white mb-2">Statistiche</h3><p class="text-white/70 text-sm">Visualizza dati in tabella</p>
+     <div class="mt-4 flex items-center text-white/80 text-sm font-medium"><span>Esplora</span>
+      <svg class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
+     </div></button> 
+<div id="modal-table" class="fixed inset-0 z-50 hidden items-center justify-center p-4" style="background-color: rgba(0,0,0,0.7);">
+   <div class="modal-backdrop absolute inset-0" onclick="closeModal('modal-table')"></div>
+   <div class="modal-content relative w-full max-w-2xl rounded-3xl p-8 shadow-2xl max-h-[90%] overflow-auto" style="background-color: #1a1a2e;"><button onclick="closeModal('modal-table')" class="absolute top-4 right-4 w-10 h-10 rounded-full flex items-center justify-center transition-colors" style="background-color: #2d2d44; color: #a0aec0;">
+     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+     </svg></button>
+    <div class="flex items-center gap-4 mb-6">
+     <div class="w-12 h-12 rounded-xl gradient-1 flex items-center justify-center">
+      <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
+      </svg>
+     </div>
+     <h2 class="text-2xl font-bold" style="color: #ffffff;">Statistiche Vendite</h2>
+    </div>
+    <div class="overflow-x-auto rounded-2xl" style="background-color: #2d2d44;">
+     <table class="w-full">
+      <thead>
+       <tr style="background-color: #3d3d5c;">
+        <th class="px-6 py-4 text-left text-sm font-semibold" style="color: #a0aec0;">Prodotto</th>
+        <th class="px-6 py-4 text-left text-sm font-semibold" style="color: #a0aec0;">Vendite</th>
+        <th class="px-6 py-4 text-left text-sm font-semibold" style="color: #a0aec0;">Ricavo</th>
+        <th class="px-6 py-4 text-left text-sm font-semibold" style="color: #a0aec0;">Trend</th>
+       </tr>
+      </thead>
+      <tbody>
+       <tr class="border-b" style="border-color: #3d3d5c;">
+        <td class="px-6 py-4 font-medium" style="color: #ffffff;">📱 Smartphone</td>
+        <td class="px-6 py-4" style="color: #a0aec0;">1,234</td>
+        <td class="px-6 py-4" style="color: #43e97b;">€45,600</td>
+        <td class="px-6 py-4"><span class="px-3 py-1 rounded-full text-xs font-medium" style="background-color: rgba(67,233,123,0.2); color: #43e97b;">+12%</span></td>
+       </tr>
+       <tr class="border-b" style="border-color: #3d3d5c;">
+        <td class="px-6 py-4 font-medium" style="color: #ffffff;">💻 Laptop</td>
+        <td class="px-6 py-4" style="color: #a0aec0;">856</td>
+        <td class="px-6 py-4" style="color: #43e97b;">€89,200</td>
+        <td class="px-6 py-4"><span class="px-3 py-1 rounded-full text-xs font-medium" style="background-color: rgba(67,233,123,0.2); color: #43e97b;">+8%</span></td>
+       </tr>
+       <tr class="border-b" style="border-color: #3d3d5c;">
+        <td class="px-6 py-4 font-medium" style="color: #ffffff;">🎧 Cuffie</td>
+        <td class="px-6 py-4" style="color: #a0aec0;">2,456</td>
+        <td class="px-6 py-4" style="color: #43e97b;">€24,560</td>
+        <td class="px-6 py-4"><span class="px-3 py-1 rounded-full text-xs font-medium" style="background-color: rgba(245,87,108,0.2); color: #f5576c;">-3%</span></td>
+       </tr>
+       <tr>
+        <td class="px-6 py-4 font-medium" style="color: #ffffff;">⌚ Smartwatch</td>
+        <td class="px-6 py-4" style="color: #a0aec0;">987</td>
+        <td class="px-6 py-4" style="color: #43e97b;">€34,545</td>
+        <td class="px-6 py-4"><span class="px-3 py-1 rounded-full text-xs font-medium" style="background-color: rgba(67,233,123,0.2); color: #43e97b;">+15%</span></td>
+       </tr>
+      </tbody>
+     </table>
+    </div>
+   </div>
+  </div> 
+script 
+function openModal(modalId) {
+      const modal = document.getElementById(modalId);
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal(modalId) {
+      const modal = document.getElementById(modalId);
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      document.body.style.overflow = 'auto';
+    }
+
+    // Close modal on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('[id^="modal-"]').forEach(modal => {
+          if (!modal.classList.contains('hidden')) {
+            closeModal(modal.id);
+          }
+        });
+      }
+    });
+/script`,
+modal2: `<button onclick="openModal('modal-list')" class="card-hover bg-gradient-to-br from-blue-500 via-purple-500 to-indigo-600 pattern-dots rounded-3xl p-6 text-left shadow-2xl border-2 border-white/30 backdrop-blur-sm bg-opacity-95 hover:bg-opacity-100 hover:shadow-3xl hover:scale-105 transition-all duration-300 cursor-pointer group">
+
+<div class="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+      <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+      </svg>
+     </div><h3 id="card-2-title" class="text-xl font-bold text-white mb-2">Lista Attività</h3><p class="text-white/70 text-sm">Gestisci le tue attività</p>
+     <div class="mt-4 flex items-center text-white/80 text-sm font-medium"><span>Esplora</span>
+      <svg class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
+     </div></button> 
+<div id="modal-list" class="fixed inset-0 z-50 hidden items-center justify-center p-4" style="background-color: rgba(0,0,0,0.7);">
+   <div class="modal-backdrop absolute inset-0" onclick="closeModal('modal-list')"></div>
+   <div class="modal-content relative w-full max-w-md rounded-3xl p-8 shadow-2xl max-h-[90%] overflow-auto" style="background-color: #1a1a2e;"><button onclick="closeModal('modal-list')" class="absolute top-4 right-4 w-10 h-10 rounded-full flex items-center justify-center transition-colors" style="background-color: #2d2d44; color: #a0aec0;">
+     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+     </svg></button>
+    <div class="flex items-center gap-4 mb-6">
+     <div class="w-12 h-12 rounded-xl gradient-2 flex items-center justify-center">
+      <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+      </svg>
+     </div>
+     <h2 class="text-2xl font-bold" style="color: #ffffff;">Lista Attività</h2>
+    </div>
+    <ul class="space-y-3">
+     <li class="flex items-center gap-4 p-4 rounded-2xl" style="background-color: #2d2d44;">
+      <div class="w-6 h-6 rounded-full flex items-center justify-center" style="background-color: #43e97b;">
+       <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+       </svg>
+      </div><span class="flex-1 line-through" style="color: #6b7280;">Completare il report mensile</span> <span class="text-xs px-2 py-1 rounded-full" style="background-color: rgba(67,233,123,0.2); color: #43e97b;">Fatto</span></li>
+     <li class="flex items-center gap-4 p-4 rounded-2xl" style="background-color: #2d2d44;">
+      <div class="w-6 h-6 rounded-full border-2" style="border-color: #f093fb;"></div><span class="flex-1" style="color: #ffffff;">Riunione con il team design</span> <span class="text-xs px-2 py-1 rounded-full" style="background-color: rgba(240,147,251,0.2); color: #f093fb;">Oggi</span></li>
+     <li class="flex items-center gap-4 p-4 rounded-2xl" style="background-color: #2d2d44;">
+      <div class="w-6 h-6 rounded-full border-2" style="border-color: #4facfe;"></div><span class="flex-1" style="color: #ffffff;">Revisione codice frontend</span> <span class="text-xs px-2 py-1 rounded-full" style="background-color: rgba(79,172,254,0.2); color: #4facfe;">Domani</span></li>
+     <li class="flex items-center gap-4 p-4 rounded-2xl" style="background-color: #2d2d44;">
+      <div class="w-6 h-6 rounded-full border-2" style="border-color: #667eea;"></div><span class="flex-1" style="color: #ffffff;">Preparare presentazione Q4</span> <span class="text-xs px-2 py-1 rounded-full" style="background-color: rgba(102,126,234,0.2); color: #667eea;">Questa settimana</span></li>
+     <li class="flex items-center gap-4 p-4 rounded-2xl" style="background-color: #2d2d44;">
+      <div class="w-6 h-6 rounded-full border-2" style="border-color: #f5576c;"></div><span class="flex-1" style="color: #ffffff;">Aggiornare documentazione API</span> <span class="text-xs px-2 py-1 rounded-full" style="background-color: rgba(245,87,108,0.2); color: #f5576c;">Urgente</span></li>
+    </ul>
+   </div>
+</div>
+
+script 
+function openModal(modalId) {
+      const modal = document.getElementById(modalId);
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal(modalId) {
+      const modal = document.getElementById(modalId);
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      document.body.style.overflow = 'auto';
+    }
+
+    // Close modal on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('[id^="modal-"]').forEach(modal => {
+          if (!modal.classList.contains('hidden')) {
+            closeModal(modal.id);
+          }
+        });
+      }
+    });
+/script`,
+modal3: `<button onclick="openModal('modal-gallery')" class="card-hover bg-gradient-to-br from-blue-500 via-purple-500 to-indigo-600 pattern-dots rounded-3xl p-6 text-left shadow-2xl border-2 border-white/30 backdrop-blur-sm bg-opacity-95 hover:bg-opacity-100 hover:shadow-3xl hover:scale-105 transition-all duration-300 cursor-pointer group">
+    <div class="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+      <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+      </svg>
+     </div><h3 id="card-3-title" class="text-xl font-bold text-white mb-2">Galleria</h3><p class="text-white/70 text-sm">Scopri le immagini</p>
+     <div class="mt-4 flex items-center text-white/80 text-sm font-medium"><span>Esplora</span>
+      <svg class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
+     </div></button> 
+  <div id="modal-gallery" class="fixed inset-0 z-50 hidden items-center justify-center p-4" style="background-color: rgba(0,0,0,0.7);">
+    <div class="modal-backdrop absolute inset-0" onclick="closeModal('modal-gallery')"></div>
+    <div class="modal-content relative w-full max-w-3xl rounded-3xl p-8 shadow-2xl max-h-[90vh] overflow-auto bg-[#1a1a2e]">
+      <button onclick="closeModal('modal-gallery')" class="absolute top-4 right-4 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 hover:bg-[#2d2d44] z-10 shadow-lg" style="background-color: rgba(45,45,68,0.8); color: #a0aec0; border: none;">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+      <div class="flex items-center gap-4 mb-6">
+        <div class="w-12 h-12 rounded-xl gradient-3 flex items-center justify-center flex-shrink-0">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+        </div>
+        <h2 class="text-2xl font-bold text-white">Galleria Progetti</h2>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <div class="aspect-square rounded-2xl gradient-1 pattern-dots flex items-center justify-center group cursor-pointer hover:scale-105 transition-all duration-300">
+          <span class="text-6xl group-hover:scale-125 transition-transform duration-300">🎨</span>
+        </div>
+        <div class="aspect-square rounded-2xl gradient-2 pattern-dots flex items-center justify-center group cursor-pointer hover:scale-105 transition-all duration-300">
+          <span class="text-6xl group-hover:scale-125 transition-transform duration-300">🚀</span>
+        </div>
+        <div class="aspect-square rounded-2xl gradient-3 pattern-dots flex items-center justify-center group cursor-pointer hover:scale-105 transition-all duration-300">
+          <span class="text-6xl group-hover:scale-125 transition-transform duration-300">💡</span>
+        </div>
+        <div class="aspect-square rounded-2xl gradient-4 pattern-dots flex items-center justify-center group cursor-pointer hover:scale-105 transition-all duration-300">
+          <span class="text-6xl group-hover:scale-125 transition-transform duration-300">⚡</span>
+        </div>
+        <div class="aspect-square rounded-2xl flex items-center justify-center group cursor-pointer hover:scale-105 transition-all duration-300" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+          <span class="text-6xl group-hover:scale-125 transition-transform duration-300">🎯</span>
+        </div>
+        <div class="aspect-square rounded-2xl flex items-center justify-center group cursor-pointer hover:scale-105 transition-all duration-300" style="background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);">
+          <span class="text-6xl group-hover:scale-125 transition-transform duration-300">✨</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+
+  script
+    function openModal(modalId) {
+      const modal = document.getElementById(modalId);
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal(modalId) {
+      const modal = document.getElementById(modalId);
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      document.body.style.overflow = 'auto';
+    }
+
+    // Close modal on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('[id^="modal-"]').forEach(modal => {
+          if (!modal.classList.contains('hidden')) {
+            closeModal(modal.id);
+          }
+        });
+      }
+    });
+  /script`,
+
+modal4: `<style>
+      #app {
+      overflow-auto;
+    }
+     .card {
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+    
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      z-index: 1000;
+    }
+    
+    .modal.active {
+      display: flex;
+    }
+.modal-content {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      max-width: 600px;
+      width: 100%;
+      max-height: 80%;
+      overflow-y: auto;
+      position: relative;
+    }
+    
+    .close-btn {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: none;
+      border: none;
+      font-size: 28px;
+      cursor: pointer;
+      color: #666;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+    }
+    
+    .close-btn:hover {
+      background: #f0f0f0;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    
+    th {
+      font-weight: 600;
+      background: #f8f8f8;
+    }
+   </style>
+  <div id="app">
+   <div style="max-width: 1200px; margin: 0 auto; padding: 40px 20px;"><!-- Titolo Pagina -->
+    <h1 id="page-title" style="font-size: 36px; font-weight: 700; margin-bottom: 10px; text-align: center;">Le Mie Card</h1>
+    <p style="text-align: center; color: #666; margin-bottom: 40px;">Clicca su una card per aprire il contenuto</p><!-- Griglia Card -->
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;"><!-- Card 1 - Tabella -->
+     <div class="card" onclick="openModal('modal1')" style="background: #6366f1; color: white; padding: 30px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+      <div style="font-size: 40px; margin-bottom: 16px;">
+       📊
+      </div>
+      <h2 id="card-1-title" style="font-size: 24px; font-weight: 700; margin: 0 0 8px 0;">Dati</h2>
+      <p id="card-1-desc" style="margin: 0;">Visualizza tabella</p>
+     </div>
+<div id="modal1" class="modal" onclick="closeModalClick(event, 'modal1')">
+   <div class="modal-content" onclick="event.stopPropagation()"><button class="close-btn" onclick="closeModal('modal1')" aria-label="Chiudi">×</button>
+    <h2 style="margin: 0 0 20px 0; font-size: 28px; font-weight: 700;">Tabella Dati Vendite</h2>
+    <table>
+     <thead>
+      <tr>
+       <th>Prodotto</th>
+       <th>Quantità</th>
+       <th>Prezzo</th>
+      </tr>
+     </thead>
+     <tbody>
+      <tr>
+       <td>Laptop</td>
+       <td>25</td>
+       <td>€1,250</td>
+      </tr>
+      <tr>
+       <td>Mouse</td>
+       <td>150</td>
+       <td>€450</td>
+      </tr>
+      <tr>
+       <td>Tastiera</td>
+       <td>80</td>
+       <td>€800</td>
+      </tr>
+      <tr>
+       <td>Monitor</td>
+       <td>40</td>
+       <td>€2,000</td>
+      </tr>
+     </tbody>
+    </table>
+   </div>
+  </div>
+script
+function openModal(id) {
+      document.getElementById(id).classList.add('active');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('active');
+    }
+
+    function closeModalClick(event, id) {
+      if (event.target.classList.contains('modal')) {
+        closeModal(id);
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));
+      }
+    });
+
+/script`,
+modal5: `
+<style>
+    body {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+    }
+    
+    html, body, #app {
+      height: 100%;
+      width: 100%;
+    }
+    
+    #app {
+      overflow-auto;
+    }
+    
+    .card {
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+    
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      z-index: 1000;
+    }
+    
+    .modal.active {
+      display: flex;
+    }
+.modal-content {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      max-width: 600px;
+      width: 100%;
+      max-height: 80%;
+      overflow-y: auto;
+      position: relative;
+    }
+    
+    .close-btn {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: none;
+      border: none;
+      font-size: 28px;
+      cursor: pointer;
+      color: #666;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+    }
+    
+    .close-btn:hover {
+      background: #f0f0f0;
+    }
+    
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-top: 20px;
+    }
+    
+    .gallery-item {
+      aspect-ratio: 1;
+      background: #f0f0f0;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+    }
+    
+  </style>
+  
+<div id="app">
+   <div style="max-width: 1200px; margin: 0 auto; padding: 40px 20px;"><!-- Titolo Pagina -->
+    <h1 id="page-title" style="font-size: 36px; font-weight: 700; margin-bottom: 10px; text-align: center;">Le Mie Card</h1>
+    <p style="text-align: center; color: #666; margin-bottom: 40px;">Clicca su una card per aprire il contenuto</p><!-- Griglia Card -->
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;"><!-- Card 1 - Tabella -->
+     <div class="card" onclick="openModal('modal3')" style="background: #14b8a6; color: white; padding: 30px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+      <div style="font-size: 40px; margin-bottom: 16px;">
+       🖼️
+      </div>
+      <h2 id="card-3-title" style="font-size: 24px; font-weight: 700; margin: 0 0 8px 0;">Immagini</h2>
+      <p id="card-3-desc" style="margin: 0; opacity: 0.9;">Galleria foto</p>
+     </div>
+    </div>
+   </div>
+  </div>
+<div id="modal3" class="modal" onclick="closeModalClick(event, 'modal3')">
+   <div class="modal-content" onclick="event.stopPropagation()"><button class="close-btn" onclick="closeModal('modal3')" aria-label="Chiudi">×</button>
+    <h2 style="margin: 0 0 20px 0; font-size: 28px; font-weight: 700;">Galleria Immagini</h2>
+    <div class="gallery">
+     <div class="gallery-item">
+      🌄
+     </div>
+     <div class="gallery-item">
+      🌅
+     </div>
+     <div class="gallery-item">
+      🌆
+     </div>
+     <div class="gallery-item">
+      🌇
+     </div>
+     <div class="gallery-item">
+      🌉
+     </div>
+     <div class="gallery-item">
+      🌃
+     </div>
+    </div>
+   </div>
+  </div>
+script
+function openModal(id) {
+      document.getElementById(id).classList.add('active');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('active');
+    }
+
+    function closeModalClick(event, id) {
+      if (event.target.classList.contains('modal')) {
+        closeModal(id);
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));
+      }
+    });
+
+/script`
+
+
+}; 
+
+    let currentHTML = `<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pagina</title>
+  <script src="https://cdn.tailwindcss.com"><\/script>
+</head>
+<body class="bg-gray-100 p-8">
+  
+  <h1 class="text-3xl font-bold text-gray-800">Ciao Mondo!</h1>
+  
+</body>
+</html>`;
+
+    const codeArea = document.getElementById('code-area');
+    const addBtn = document.getElementById('add-btn');
+    const copyBtn = document.getElementById('copy-btn');
+    const clearBtn = document.getElementById('clear-btn');
+    const compSelect = document.getElementById('comp-select');
+    const previewIframe = document.getElementById('preview-iframe');
+    
+    // Inizializza l'editor
+    codeArea.value = currentHTML;
+    updatePreview();
+    
+    // Event listeners
+    codeArea.addEventListener('input', (e) => {
+      currentHTML = e.target.value;
+      updatePreview();
+    });
+    
+    addBtn.addEventListener('click', () => {
+      const selected = compSelect.value;
+      const component = componentsLibrary[selected];
+      
+      const bodyIndex = currentHTML.lastIndexOf('</body>');
+      if (bodyIndex !== -1) {
+        currentHTML = currentHTML.substring(0, bodyIndex) + 
+                     '\n  ' + component + '\n  \n' + 
+                     currentHTML.substring(bodyIndex);
+      }
+      
+      codeArea.value = currentHTML;
+      updatePreview();
+    });
+    
+    copyBtn.addEventListener('click', () => {
+      const textArea = document.createElement('textarea');
+      textArea.value = currentHTML;
+      textArea.style.position = 'fixed';
+      textArea.style.left = '-999999px';
+      document.body.appendChild(textArea);
+      textArea.select();
+      try {
+        document.execCommand('copy');
+        copyBtn.textContent = '✓ Copiato!';
+        copyBtn.style.backgroundColor = '#10b981';
+        setTimeout(() => {
+          copyBtn.textContent = '📋 Copia';
+          copyBtn.style.backgroundColor = '#3282b8';
+        }, 2000);
+      } catch (err) {
+        console.error('Errore nella copia');
+      }
+      document.body.removeChild(textArea);
+    });
+    
+    clearBtn.addEventListener('click', () => {
+      currentHTML = `<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pagina</title>
+  <script src="https://cdn.tailwindcss.com"><\\/script>
+</head>
+<body class="bg-gray-100 p-8">
+  
+  <!-- Il tuo contenuto qui -->
+  
+</body>
+</html>`;
+      codeArea.value = currentHTML;
+      updatePreview();
+    });
+    
+    function updatePreview() {
+      if (previewIframe) {
+        previewIframe.srcdoc = currentHTML;
+      }
+    }
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9bad606e938b1f0c',t:'MTc2Nzg5Mjk0My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
+  </style>
+</head>
+<body>
+
+  <script>
+console.log('Ciao da JavaScript!');
+  </script>
+</body>
+</html>
