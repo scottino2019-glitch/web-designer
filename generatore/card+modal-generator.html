@@ -1,0 +1,590 @@
+<!doctype html>
+<html lang="it" style="height: 100%;">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generatore Card con Modal</title>
+  <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            height: 100%;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        #app-wrapper {
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            padding: 40px 20px;
+        }
+        
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 50px;
+            color: white;
+        }
+        
+        .page-title {
+            font-size: 48px;
+            font-weight: 900;
+            margin-bottom: 12px;
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .page-subtitle {
+            font-size: 18px;
+            opacity: 0.95;
+            margin-bottom: 32px;
+        }
+        
+        .btn-create {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 16px 36px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 17px;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s;
+        }
+        
+        .btn-create:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+        }
+        
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 28px;
+        }
+        
+        .card-item {
+            background: white;
+            border-radius: 20px;
+            padding: 32px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            position: relative;
+        }
+        
+        .card-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+        }
+        
+        .card-emoji {
+            font-size: 56px;
+            margin-bottom: 16px;
+            display: block;
+        }
+        
+        .card-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: #1a202c;
+            margin-bottom: 12px;
+        }
+        
+        .card-preview {
+            font-size: 15px;
+            color: #718096;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            max-height: 45px;
+            overflow: hidden;
+        }
+        
+        .card-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .btn-action {
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-delete {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .btn-delete:hover {
+            background: #dc2626;
+        }
+        
+        .btn-copy {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .btn-copy:hover {
+            background: #2563eb;
+        }
+        
+        .btn-download {
+            background: #10b981;
+            color: white;
+        }
+        
+        .btn-download:hover {
+            background: #059669;
+        }
+        
+        .backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        
+        .backdrop.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        .modal-box {
+            background: white;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 750px;
+            max-height: 85%;
+            display: flex;
+            flex-direction: column;
+            transform: scale(0.9);
+            transition: transform 0.3s;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        
+        .backdrop.show .modal-box {
+            transform: scale(1);
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px 36px;
+            border-radius: 24px 24px 0 0;
+            color: white;
+            position: relative;
+        }
+        
+        .modal-emoji {
+            font-size: 64px;
+            margin-bottom: 12px;
+            display: block;
+        }
+        
+        .modal-title {
+            font-size: 36px;
+            font-weight: 900;
+        }
+        
+        .btn-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            font-size: 24px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        
+        .btn-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+        
+        .modal-body {
+            padding: 36px;
+            overflow-y: auto;
+            flex: 1;
+        }
+        
+        .modal-body * {
+            max-width: 100%;
+        }
+        
+        .form-field {
+            margin-bottom: 24px;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #1a202c;
+            font-size: 15px;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 15px;
+            transition: all 0.2s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .form-textarea {
+            min-height: 180px;
+            resize: vertical;
+            font-family: 'Courier New', monospace;
+            line-height: 1.6;
+        }
+        
+        .btn-submit {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 17px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+        }
+        
+        .empty-message {
+            text-align: center;
+            padding: 80px 20px;
+            color: white;
+            grid-column: 1 / -1;
+        }
+        
+        .empty-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+        
+        .empty-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .empty-text {
+            font-size: 17px;
+            opacity: 0.85;
+        }
+        
+        .notification {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            padding: 18px 28px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 700;
+            font-size: 15px;
+            z-index: 2000;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transform: translateX(100px);
+            transition: all 0.3s;
+        }
+        
+        .notification.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 36px;
+            }
+            
+            .cards-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  <div id="app-wrapper">
+   <div class="main-container">
+    <header class="page-header">
+     <h1 class="page-title">🚀 Generatore Card + Modal</h1>
+     <p class="page-subtitle">Crea card con contenuto HTML - Visualizza, Copia o Scarica la card completa</p><button class="btn-create" onclick="openCreateForm()">+ Crea Card</button>
+    </header>
+    <div id="cards-grid" class="cards-container"></div>
+   </div>
+  </div>
+  <div id="modal-backdrop" class="backdrop" onclick="handleBackdropClick(event)"></div>
+  <script>
+        let cardsData = [];
+        
+        const CARD_TEMPLATE_START = '<!DOCTYPE html><html lang="it" style="height: 100%;"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>';
+        const CARD_TEMPLATE_STYLES = '</title><style>* { margin: 0; padding: 0; box-sizing: border-box; }html, body { height: 100%; box-sizing: border-box; }body {font-family: \'Segoe UI\', Tahoma, Geneva, Verdana, sans-serif;background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);display: flex;align-items: center;justify-content: center;padding: 40px 20px;}.card-standalone {background: white;border-radius: 24px;padding: 48px;max-width: 500px;width: 100%;cursor: pointer;transition: all 0.3s;box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);}.card-standalone:hover {transform: translateY(-8px) scale(1.02);box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);}.card-emoji { font-size: 80px; margin-bottom: 24px; display: block; text-align: center; }.card-title { font-size: 32px; font-weight: 900; color: #1a202c; margin-bottom: 16px; text-align: center; }.card-hint { font-size: 16px; color: #667eea; font-weight: 600; text-align: center; }.backdrop {position: fixed; top: 0; left: 0; right: 0; bottom: 0;background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px);display: none; align-items: center; justify-content: center;padding: 20px; z-index: 1000;}.backdrop.active { display: flex; }.modal-box {background: white; border-radius: 24px;width: 100%; max-width: 800px; max-height: 90%;display: flex; flex-direction: column;box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);animation: modalAppear 0.3s ease-out;}@keyframes modalAppear {from { opacity: 0; transform: scale(0.9); }to { opacity: 1; transform: scale(1); }}.modal-header {background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);padding: 48px 40px; border-radius: 24px 24px 0 0;color: white; position: relative;}.modal-emoji { font-size: 72px; margin-bottom: 16px; display: block; }.modal-title { font-size: 40px; font-weight: 900; }.btn-close {position: absolute; top: 24px; right: 24px;background: rgba(255, 255, 255, 0.2); border: none;width: 48px; height: 48px; border-radius: 50%;font-size: 28px; color: white; cursor: pointer;display: flex; align-items: center; justify-content: center;transition: all 0.2s;}.btn-close:hover { background: rgba(255, 255, 255, 0.3); transform: rotate(90deg); }.modal-body { padding: 40px; overflow-y: auto; flex: 1; }.modal-body * { max-width: 100%; }</style></head><body><div class="card-standalone" onclick="openModal()"><span class="card-emoji">';
+        const CARD_TEMPLATE_MIDDLE = '</span><h1 class="card-title">';
+        const CARD_TEMPLATE_MODAL_START = '</h1><p class="card-hint">👆 Clicca per aprire</p></div><div id="modal" class="backdrop" onclick="closeModal(event)"><div class="modal-box" onclick="event.stopPropagation()"><div class="modal-header"><span class="modal-emoji">';
+        const CARD_TEMPLATE_MODAL_MIDDLE = '</span><h2 class="modal-title">';
+        const CARD_TEMPLATE_CONTENT = '</h2><button class="btn-close" onclick="closeModal()">×</button></div><div class="modal-body" id="content"></div></div></div><script>function openModal() {const modal = document.getElementById(\'modal\');const content = document.getElementById(\'content\');content.innerHTML = atob(\'';
+        const CARD_TEMPLATE_END = '\');const scripts = content.querySelectorAll(\'script\');scripts.forEach(oldScript => {const newScript = document.createElement(\'script\');if (oldScript.src) {newScript.src = oldScript.src;} else {newScript.textContent = oldScript.textContent;}oldScript.parentNode.replaceChild(newScript, oldScript);});modal.classList.add(\'active\');}function closeModal(event) {if (!event || event.target.id === \'modal\') {document.getElementById(\'modal\').classList.remove(\'active\');}}document.addEventListener(\'keydown\', (e) => {if (e.key === \'Escape\') closeModal();});<\/script></body></html>';
+
+        function loadData() {
+            const saved = localStorage.getItem('htmlCards');
+            if (saved) {
+                try {
+                    cardsData = JSON.parse(saved);
+                } catch (e) {
+                    cardsData = [];
+                }
+            }
+        }
+
+        function saveData() {
+            localStorage.setItem('htmlCards', JSON.stringify(cardsData));
+        }
+
+        function generateId() {
+            return 'card_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        function stripHtml(html) {
+            const tmp = document.createElement('div');
+            tmp.innerHTML = html;
+            return tmp.textContent || tmp.innerText || '';
+        }
+
+        function showNotification(message, color) {
+            const notif = document.createElement('div');
+            notif.className = 'notification';
+            notif.style.background = color;
+            notif.textContent = message;
+            document.body.appendChild(notif);
+            
+            setTimeout(() => notif.classList.add('show'), 10);
+            
+            setTimeout(() => {
+                notif.classList.remove('show');
+                setTimeout(() => notif.remove(), 300);
+            }, 3000);
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function fallbackCopy(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                showNotification('📋 Card completa copiata!', '#3b82f6');
+            } catch (err) {
+                showNotification('❌ Errore nella copia', '#ef4444');
+            }
+            document.body.removeChild(textarea);
+        }
+
+        function copyCardCode(cardId, event) {
+            event.stopPropagation();
+            const card = cardsData.find(c => c.id === cardId);
+            if (!card) return;
+            
+            const fullHTML = generateFullCardHTML(card);
+            
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(fullHTML).then(() => {
+                    showNotification('📋 Card completa copiata!', '#3b82f6');
+                }).catch((err) => {
+                    fallbackCopy(fullHTML);
+                });
+            } else {
+                fallbackCopy(fullHTML);
+            }
+        }
+
+        function downloadCard(cardId, event) {
+            event.stopPropagation();
+            const card = cardsData.find(c => c.id === cardId);
+            if (!card) return;
+            
+            const fullHTML = generateFullCardHTML(card);
+            
+            const blob = new Blob([fullHTML], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = card.title.replace(/[^a-z0-9]/gi, '_').toLowerCase() + '_card.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showNotification('💾 Card scaricata!', '#10b981');
+        }
+
+        function generateFullCardHTML(card) {
+            const escapedEmoji = escapeHtml(card.emoji);
+            const escapedTitle = escapeHtml(card.title);
+            const encodedContent = btoa(unescape(encodeURIComponent(card.content)));
+            
+            return CARD_TEMPLATE_START + escapedTitle + CARD_TEMPLATE_STYLES + escapedEmoji + CARD_TEMPLATE_MIDDLE + escapedTitle + CARD_TEMPLATE_MODAL_START + escapedEmoji + CARD_TEMPLATE_MODAL_MIDDLE + escapedTitle + CARD_TEMPLATE_CONTENT + encodedContent + CARD_TEMPLATE_END;
+        }
+
+        function openCreateForm() {
+            const backdrop = document.getElementById('modal-backdrop');
+            backdrop.innerHTML = '<div class="modal-box" onclick="event.stopPropagation()"><div class="modal-header"><span class="modal-emoji">✨</span><h2 class="modal-title">Crea Nuova Card</h2><button class="btn-close" onclick="closeModalBackdrop()">×</button></div><div class="modal-body"><form onsubmit="handleFormSubmit(event)"><div class="form-field"><label class="form-label" for="input-emoji">Emoji</label><input type="text" id="input-emoji" class="form-control" maxlength="2" placeholder="🎨" required></div><div class="form-field"><label class="form-label" for="input-title">Titolo</label><input type="text" id="input-title" class="form-control" placeholder="Nome della card" required></div><div class="form-field"><label class="form-label" for="input-content">Contenuto HTML</label><textarea id="input-content" class="form-control form-textarea" placeholder="<h1>Benvenuto! 🎉</h1>&#10;<p>Scrivi qui il tuo <strong>HTML</strong></p>&#10;<button>Clicca qui</button>&#10;&#10;<style>&#10;  h1 { color: #667eea; }&#10;</style>" required></textarea></div><button type="submit" class="btn-submit">Crea Card</button></form></div></div>';
+            backdrop.classList.add('show');
+        }
+
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            
+            const emoji = document.getElementById('input-emoji').value;
+            const title = document.getElementById('input-title').value;
+            const content = document.getElementById('input-content').value;
+            
+            const newCard = {
+                id: generateId(),
+                emoji: emoji,
+                title: title,
+                content: content,
+                created: new Date().toISOString()
+            };
+            
+            cardsData.push(newCard);
+            saveData();
+            renderCards();
+            closeModalBackdrop();
+            showNotification('✅ Card creata!', '#10b981');
+        }
+
+        function openCardModal(cardId) {
+            const card = cardsData.find(c => c.id === cardId);
+            if (!card) return;
+            
+            const backdrop = document.getElementById('modal-backdrop');
+            backdrop.innerHTML = '<div class="modal-box" onclick="event.stopPropagation()"><div class="modal-header"><span class="modal-emoji">' + card.emoji + '</span><h2 class="modal-title">' + card.title + '</h2><button class="btn-close" onclick="closeModalBackdrop()">×</button></div><div class="modal-body" id="html-content"></div></div>';
+            backdrop.classList.add('show');
+            
+            const contentDiv = document.getElementById('html-content');
+            contentDiv.innerHTML = card.content;
+            
+            const scripts = contentDiv.querySelectorAll('script');
+            scripts.forEach(oldScript => {
+                const newScript = document.createElement('script');
+                if (oldScript.src) {
+                    newScript.src = oldScript.src;
+                } else {
+                    newScript.textContent = oldScript.textContent;
+                }
+                oldScript.parentNode.replaceChild(newScript, oldScript);
+            });
+        }
+
+        function deleteCard(cardId, event) {
+            event.stopPropagation();
+            cardsData = cardsData.filter(c => c.id !== cardId);
+            saveData();
+            renderCards();
+            showNotification('🗑️ Card eliminata', '#ef4444');
+        }
+
+        function handleBackdropClick(event) {
+            if (event.target.id === 'modal-backdrop') {
+                closeModalBackdrop();
+            }
+        }
+
+        function closeModalBackdrop() {
+            const backdrop = document.getElementById('modal-backdrop');
+            backdrop.classList.remove('show');
+            setTimeout(() => {
+                backdrop.innerHTML = '';
+            }, 300);
+        }
+
+        function renderCards() {
+            const container = document.getElementById('cards-grid');
+            
+            if (cardsData.length === 0) {
+                container.innerHTML = '<div class="empty-message"><div class="empty-icon">📝</div><h3 class="empty-title">Nessuna card ancora</h3><p class="empty-text">Clicca su "Crea Card" per iniziare!</p></div>';
+                return;
+            }
+            
+            container.innerHTML = cardsData.map(card => {
+                const preview = stripHtml(card.content).substring(0, 80);
+                return '<article class="card-item" onclick="openCardModal(\'' + card.id + '\')"><span class="card-emoji">' + card.emoji + '</span><h2 class="card-title">' + card.title + '</h2><p class="card-preview">' + preview + '...</p><div class="card-actions"><button class="btn-action btn-copy" onclick="copyCardCode(\'' + card.id + '\', event)" title="Copia card completa">📋 Copia</button><button class="btn-action btn-download" onclick="downloadCard(\'' + card.id + '\', event)" title="Scarica card completa">💾 Scarica</button><button class="btn-action btn-delete" onclick="deleteCard(\'' + card.id + '\', event)">🗑️ Elimina</button></div></article>';
+            }).join('');
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModalBackdrop();
+            }
+        });
+
+        loadData();
+        renderCards();
+    </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9ba6b6c673530e49',t:'MTc2NzgyMzA3OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

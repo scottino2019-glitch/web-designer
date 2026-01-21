@@ -1,0 +1,606 @@
+<!doctype html>
+<html lang="it" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Card Creator Studio</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Playfair+Display:wght@700&amp;display=swap" rel="stylesheet">
+  <style>
+    body {
+      box-sizing: border-box;
+    }
+    * {
+      font-family: 'Inter', sans-serif;
+    }
+    .fancy-title {
+      font-family: 'Playfair Display', serif;
+    }
+    .card-preview {
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .card-preview:hover {
+      transform: translateY(-4px);
+    }
+    .stacked-card {
+      transition: all 0.4s ease;
+    }
+    .stacked-container:hover .stacked-card:nth-child(1) {
+      transform: translateY(-16px) rotate(-4deg);
+    }
+    .stacked-container:hover .stacked-card:nth-child(2) {
+      transform: translateY(-8px) rotate(2deg);
+    }
+    .glass-card {
+      backdrop-filter: blur(16px);
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    .flip-card {
+      perspective: 1000px;
+    }
+    .flip-card-inner {
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+    }
+    .flip-card:hover .flip-card-inner {
+      transform: rotateY(180deg);
+    }
+    .flip-card-front, .flip-card-back {
+      backface-visibility: hidden;
+    }
+    .flip-card-back {
+      transform: rotateY(180deg);
+    }
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    .shimmer-card {
+      background: linear-gradient(90deg, #f0f0f0 25%, #ffffff 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: shimmer 2s infinite;
+    }
+    .neon-card {
+      box-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+    }
+    .btn-press:active {
+      transform: scale(0.98);
+    }
+    .toast {
+      animation: slideIn 0.3s ease-out;
+    }
+    @keyframes slideIn {
+      from {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+    .code-block {
+      font-family: 'Monaco', 'Courier New', monospace;
+      font-size: 11px;
+      line-height: 1.4;
+    }
+    .minimal-card {
+      border: 2px solid #e5e7eb;
+      transition: all 0.3s ease;
+    }
+    .minimal-card:hover {
+      border-color: #8b5cf6;
+      box-shadow: 0 10px 30px rgba(139, 92, 246, 0.1);
+    }
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+    .pulse-anim {
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full overflow-auto bg-gradient-to-br from-gray-50 to-gray-100">
+  <div id="app-container" class="min-h-full w-full"><!-- Header -->
+   <header class="bg-white border-b border-gray-200 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-5">
+     <div class="flex items-center justify-between">
+      <div>
+       <h1 class="fancy-title text-3xl md:text-4xl font-bold text-gray-900">Card Creator Studio</h1>
+       <p class="text-gray-500 text-sm mt-1">Crea, personalizza ed esporta le tue card</p>
+      </div>
+      <div class="flex items-center gap-2"><span class="badge bg-purple-100 text-purple-700">✨ Nuovo</span>
+      </div>
+     </div>
+    </div>
+   </header><!-- Main Content -->
+   <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8"><!-- Card Type Selector -->
+    <section class="mb-10">
+     <h2 class="text-xl font-semibold text-gray-900 mb-5 flex items-center gap-2"><span class="w-9 h-9 rounded-xl bg-purple-500 text-white flex items-center justify-center text-sm">🎨</span> Scegli il Tipo di Card</h2>
+     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-3"><button onclick="selectCardType('classic')" id="btn-classic" class="card-type-btn active-type px-4 py-3 rounded-xl bg-purple-600 text-white font-medium text-sm transition-all hover:bg-purple-700 shadow-md btn-press"> 📄 Classica </button> <button onclick="selectCardType('circle')" id="btn-circle" class="card-type-btn px-4 py-3 rounded-xl bg-white text-gray-700 font-medium text-sm transition-all hover:bg-gray-50 border-2 border-gray-200 btn-press"> ⭕ Cerchio </button> <button onclick="selectCardType('stacked')" id="btn-stacked" class="card-type-btn px-4 py-3 rounded-xl bg-white text-gray-700 font-medium text-sm transition-all hover:bg-gray-50 border-2 border-gray-200 btn-press"> 📚 Stack </button> <button onclick="selectCardType('glass')" id="btn-glass" class="card-type-btn px-4 py-3 rounded-xl bg-white text-gray-700 font-medium text-sm transition-all hover:bg-gray-50 border-2 border-gray-200 btn-press"> 💎 Glass </button> <button onclick="selectCardType('gradient')" id="btn-gradient" class="card-type-btn px-4 py-3 rounded-xl bg-white text-gray-700 font-medium text-sm transition-all hover:bg-gray-50 border-2 border-gray-200 btn-press"> 🌈 Gradient </button> <button onclick="selectCardType('flip')" id="btn-flip" class="card-type-btn px-4 py-3 rounded-xl bg-white text-gray-700 font-medium text-sm transition-all hover:bg-gray-50 border-2 border-gray-200 btn-press"> 🔄 Flip </button> <button onclick="selectCardType('minimal')" id="btn-minimal" class="card-type-btn px-4 py-3 rounded-xl bg-white text-gray-700 font-medium text-sm transition-all hover:bg-gray-50 border-2 border-gray-200 btn-press"> ⚪ Minimal </button> <button onclick="selectCardType('neon')" id="btn-neon" class="card-type-btn px-4 py-3 rounded-xl bg-white text-gray-700 font-medium text-sm transition-all hover:bg-gray-50 border-2 border-gray-200 btn-press"> ⚡ Neon </button>
+     </div>
+    </section><!-- Customization Panel -->
+    <section class="mb-10 bg-white rounded-2xl p-6 border-2 border-gray-200 shadow-sm">
+     <h2 class="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2"><span class="w-9 h-9 rounded-xl bg-pink-500 text-white flex items-center justify-center text-sm">⚙️</span> Personalizza la Card</h2>
+     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div><label for="card-title-input" class="block text-gray-700 text-sm font-medium mb-2">Titolo Card</label> <input type="text" id="card-title-input" value="La Mia Card" oninput="updatePreview()" class="w-full px-4 py-2.5 rounded-xl bg-gray-50 border-2 border-gray-200 text-gray-900 focus:outline-none focus:border-purple-500 transition-colors">
+      </div>
+      <div><label for="card-desc-input" class="block text-gray-700 text-sm font-medium mb-2">Descrizione</label> <input type="text" id="card-desc-input" value="Una descrizione fantastica" oninput="updatePreview()" class="w-full px-4 py-2.5 rounded-xl bg-gray-50 border-2 border-gray-200 text-gray-900 focus:outline-none focus:border-purple-500 transition-colors">
+      </div>
+      <div><label for="card-emoji-input" class="block text-gray-700 text-sm font-medium mb-2">Emoji/Icona</label> <input type="text" id="card-emoji-input" value="✨" oninput="updatePreview()" class="w-full px-4 py-2.5 rounded-xl bg-gray-50 border-2 border-gray-200 text-gray-900 focus:outline-none focus:border-purple-500 transition-colors">
+      </div>
+      <div><label for="card-color-input" class="block text-gray-700 text-sm font-medium mb-2">Colore Primario</label> <input type="color" id="card-color-input" value="#8b5cf6" oninput="updatePreview()" class="w-full h-11 rounded-xl bg-gray-50 border-2 border-gray-200 cursor-pointer">
+      </div>
+     </div>
+    </section><!-- Preview Section -->
+    <section class="mb-10">
+     <div class="flex items-center justify-between mb-5">
+      <h2 class="text-xl font-semibold text-gray-900 flex items-center gap-2"><span class="w-9 h-9 rounded-xl bg-cyan-500 text-white flex items-center justify-center text-sm">👁️</span> Anteprima</h2>
+     </div>
+     <div id="preview-container" class="flex justify-center items-center min-h-96 bg-gradient-to-br from-white to-gray-50 rounded-2xl p-8 border-2 border-gray-200 mb-5"><!-- Preview will be rendered here -->
+     </div><!-- HTML Code Box -->
+     <div class="bg-gray-900 rounded-2xl overflow-hidden border-2 border-gray-700">
+      <div class="flex items-center justify-between px-5 py-3 bg-gray-800 border-b border-gray-700"><span class="text-white font-medium text-sm flex items-center gap-2"> <span class="w-3 h-3 rounded-full bg-green-400"></span> HTML Generato </span> <button onclick="copyCurrentHTML()" class="px-4 py-2 rounded-lg bg-purple-600 text-white font-medium text-sm transition-all hover:bg-purple-700 btn-press flex items-center gap-2"> 📋 Copia Codice </button>
+      </div>
+      <div class="p-5 overflow-x-auto max-h-80">
+       <pre id="code-display" class="code-block text-green-400 whitespace-pre-wrap break-words"></pre>
+      </div>
+     </div>
+    </section><!-- Gallery Section -->
+    <section>
+     <div class="flex items-center justify-between mb-6">
+      <h2 class="text-xl font-semibold text-gray-900 flex items-center gap-2"><span class="w-9 h-9 rounded-xl bg-emerald-500 text-white flex items-center justify-center text-sm">🖼️</span> Galleria Card <span class="text-gray-400 text-base ml-2" id="gallery-count">(0)</span></h2><button onclick="addToGallery()" class="px-6 py-2.5 rounded-xl bg-purple-600 text-white font-semibold text-sm transition-all hover:bg-purple-700 shadow-md btn-press flex items-center gap-2"> ➕ Aggiungi alla Galleria </button>
+     </div>
+     <div id="gallery" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"><!-- Gallery items will be added here -->
+     </div>
+    </section>
+   </main><!-- Footer -->
+   <footer class="mt-16 py-8 border-t border-gray-200 text-center">
+    <p class="text-gray-400 text-sm">Creato con 💜 in Italia | Card Creator Studio</p>
+   </footer><!-- Toast Container -->
+   <div id="toast-container" class="fixed top-20 right-4 z-50 space-y-3"></div>
+  </div>
+  <script>
+    let currentCardType = 'classic';
+    let galleryItems = [];
+    let galleryIdCounter = 0;
+
+    function selectCardType(type) {
+      currentCardType = type;
+      
+      // Update button styles
+      document.querySelectorAll('.card-type-btn').forEach(btn => {
+        btn.classList.remove('active-type', 'bg-purple-600', 'text-white', 'shadow-md');
+        btn.classList.add('bg-white', 'text-gray-700', 'border-2', 'border-gray-200');
+      });
+      
+      const activeBtn = document.getElementById(`btn-${type}`);
+      if (activeBtn) {
+        activeBtn.classList.add('active-type', 'bg-purple-600', 'text-white', 'shadow-md');
+        activeBtn.classList.remove('bg-white', 'text-gray-700', 'border-2', 'border-gray-200');
+      }
+      
+      updatePreview();
+    }
+
+    function getCardData() {
+      return {
+        title: document.getElementById('card-title-input').value || 'La Mia Card',
+        description: document.getElementById('card-desc-input').value || 'Una descrizione fantastica',
+        emoji: document.getElementById('card-emoji-input').value || '✨',
+        color: document.getElementById('card-color-input').value || '#8b5cf6'
+      };
+    }
+
+    function generateCardPreview(type, data) {
+      switch(type) {
+        case 'classic':
+          return `<div class="card-preview" style="width: 100%; max-width: 400px; background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);">
+  <div style="height: 180px; display: flex; align-items: center; justify-content: center; font-size: 72px; background: linear-gradient(135deg, ${data.color}, ${adjustColor(data.color, -30)})">
+    ${data.emoji}
+  </div>
+  <div style="padding: 32px;">
+    <h3 style="font-size: 24px; font-weight: bold; color: #111827; margin-bottom: 12px;">${data.title}</h3>
+    <p style="color: #4b5563; font-size: 16px; margin-bottom: 24px; line-height: 1.6;">${data.description}</p>
+    <button style="width: 100%; padding: 14px; border-radius: 12px; color: white; font-weight: 600; transition: all 0.3s; background-color: ${data.color}; border: none; cursor: pointer; font-size: 16px;">
+      Scopri di più
+    </button>
+  </div>
+</div>`;
+          
+        case 'circle':
+          return `<div class="card-preview" style="width: 100%; max-width: 320px; height: 320px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); border: 6px solid white; background: linear-gradient(135deg, ${data.color}, ${adjustColor(data.color, -40)})">
+  <span style="font-size: 64px; margin-bottom: 20px;">${data.emoji}</span>
+  <h3 style="font-size: 26px; font-weight: bold; color: white; margin-bottom: 8px;">${data.title}</h3>
+  <p style="color: rgba(255, 255, 255, 0.95); font-size: 15px; line-height: 1.5;">${data.description}</p>
+</div>`;
+          
+        case 'stacked':
+          return `<div class="stacked-container" style="position: relative; width: 100%; max-width: 380px; height: 440px;">
+  <div class="stacked-card" style="position: absolute; inset: 0; border-radius: 16px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); background: ${adjustColor(data.color, -40)}; transform: rotate(-6deg);"></div>
+  <div class="stacked-card" style="position: absolute; inset: 0; border-radius: 16px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); background: ${adjustColor(data.color, -20)}; transform: rotate(-3deg);"></div>
+  <div class="stacked-card" style="position: absolute; inset: 0; background: white; border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); padding: 32px; display: flex; flex-direction: column;">
+    <span style="font-size: 64px; margin-bottom: 24px;">${data.emoji}</span>
+    <h3 style="font-size: 26px; font-weight: bold; color: #111827; margin-bottom: 12px;">${data.title}</h3>
+    <p style="color: #4b5563; font-size: 16px; flex: 1; line-height: 1.6;">${data.description}</p>
+    <div style="height: 10px; border-radius: 9999px; margin-top: 24px; background: linear-gradient(90deg, ${data.color}, ${adjustColor(data.color, 30)})"></div>
+  </div>
+</div>`;
+          
+        case 'glass':
+          return `<div class="card-preview" style="position: relative; width: 100%; max-width: 400px; padding: 2px; border-radius: 20px; background: linear-gradient(135deg, ${data.color}, ${adjustColor(data.color, -30)}); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);">
+  <div class="glass-card" style="border-radius: 18px; padding: 36px;">
+    <span style="font-size: 64px; display: block; margin-bottom: 24px;">${data.emoji}</span>
+    <h3 style="font-size: 26px; font-weight: bold; color: #111827; margin-bottom: 12px;">${data.title}</h3>
+    <p style="color: #374151; font-size: 16px; margin-bottom: 24px; line-height: 1.6;">${data.description}</p>
+    <div style="display: flex; gap: 12px;">
+      <span style="padding: 8px 16px; border-radius: 12px; font-size: 13px; font-weight: 600; background: rgba(255, 255, 255, 0.5); color: #111827;">Elegante</span>
+      <span style="padding: 8px 16px; border-radius: 12px; font-size: 13px; font-weight: 600; background: rgba(255, 255, 255, 0.5); color: #111827;">Moderno</span>
+    </div>
+  </div>
+</div>`;
+          
+        case 'gradient':
+          return `<div class="card-preview" style="width: 100%; max-width: 400px; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15);">
+  <div style="padding: 36px; background: linear-gradient(135deg, ${data.color} 0%, ${adjustColor(data.color, -40)} 50%, ${adjustColor(data.color, 40)} 100%)">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 48px;">
+      <span style="font-size: 56px;">${data.emoji}</span>
+      <span style="width: 48px; height: 48px; border-radius: 50%; background: rgba(255, 255, 255, 0.25); display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; font-weight: bold;">→</span>
+    </div>
+    <h3 style="font-size: 28px; font-weight: bold; color: white; margin-bottom: 12px;">${data.title}</h3>
+    <p style="color: rgba(255, 255, 255, 0.95); font-size: 16px; line-height: 1.6;">${data.description}</p>
+  </div>
+  <div style="background: white; padding: 24px; display: flex; justify-content: space-between; align-items: center;">
+    <span style="color: #374151; font-size: 16px; font-weight: 600;">Dettagli</span>
+    <div style="display: flex; margin-left: -12px;">
+      <span style="width: 40px; height: 40px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); background: ${data.color}"></span>
+      <span style="width: 40px; height: 40px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); background: ${adjustColor(data.color, -30)}"></span>
+    </div>
+  </div>
+</div>`;
+          
+        case 'flip':
+          return `<div class="flip-card" style="width: 100%; max-width: 280px; height: 320px;">
+  <div class="flip-card-inner" style="position: relative; width: 100%; height: 100%;">
+    <div class="flip-card-front" style="position: absolute; width: 100%; height: 100%; border-radius: 16px; box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; background: linear-gradient(135deg, ${data.color}, ${adjustColor(data.color, -30)})">
+      <span style="font-size: 48px; margin-bottom: 16px;">${data.emoji}</span>
+      <h3 style="font-size: 20px; font-weight: bold; color: white; text-align: center; margin-bottom: 8px;">${data.title}</h3>
+      <p style="color: rgba(255, 255, 255, 0.85); font-size: 13px;">Passa sopra per girare</p>
+    </div>
+    <div class="flip-card-back" style="position: absolute; width: 100%; height: 100%; background: white; border-radius: 16px; box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); padding: 24px; display: flex; flex-direction: column; justify-content: center; border: 2px solid #e5e7eb;">
+      <h4 style="font-size: 18px; font-weight: 700; color: #111827; margin-bottom: 10px;">Retro della Card</h4>
+      <p style="color: #4b5563; font-size: 13px; margin-bottom: 16px; line-height: 1.5;">${data.description}</p>
+      <ul style="list-style: none; padding: 0; margin: 0;">
+        <li style="display: flex; align-items: center; gap: 8px; color: #374151; font-size: 13px; margin-bottom: 8px;">
+          <span style="width: 8px; height: 8px; border-radius: 50%; background: ${data.color}; flex-shrink: 0;"></span>
+          Caratteristica 1
+        </li>
+        <li style="display: flex; align-items: center; gap: 8px; color: #374151; font-size: 13px; margin-bottom: 8px;">
+          <span style="width: 8px; height: 8px; border-radius: 50%; background: ${data.color}; flex-shrink: 0;"></span>
+          Caratteristica 2
+        </li>
+        <li style="display: flex; align-items: center; gap: 8px; color: #374151; font-size: 13px;">
+          <span style="width: 8px; height: 8px; border-radius: 50%; background: ${data.color}; flex-shrink: 0;"></span>
+          Caratteristica 3
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>`;
+
+        case 'minimal':
+          return `<div class="minimal-card card-preview" style="width: 100%; max-width: 400px; background: white; border-radius: 20px; padding: 36px;">
+  <div style="display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 24px;">
+    <span style="font-size: 56px;">${data.emoji}</span>
+    <span style="font-size: 14px; font-family: 'Courier New', monospace; color: #9ca3af; font-weight: 600;">#${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}</span>
+  </div>
+  <h3 style="font-size: 28px; font-weight: bold; color: #111827; margin-bottom: 12px;">${data.title}</h3>
+  <p style="color: #6b7280; font-size: 16px; margin-bottom: 32px; line-height: 1.6;">${data.description}</p>
+  <div style="display: flex; align-items: center; gap: 14px;">
+    <div style="width: 10px; height: 10px; border-radius: 50%; background: ${data.color};"></div>
+    <span style="font-size: 13px; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600;">Minimal Design</span>
+  </div>
+</div>`;
+
+        case 'neon':
+          return `<div class="neon-card card-preview" style="width: 100%; max-width: 400px; background: #111827; border-radius: 20px; padding: 36px; border: 3px solid ${data.color}; box-shadow: 0 0 30px ${data.color}80, 0 0 60px ${data.color}40;">
+  <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 32px;">
+    <span style="font-size: 64px; filter: drop-shadow(0 0 15px ${data.color})">${data.emoji}</span>
+    <div class="pulse-anim" style="width: 16px; height: 16px; border-radius: 50%; background: ${data.color}; box-shadow: 0 0 15px ${data.color};"></div>
+  </div>
+  <h3 style="font-size: 28px; font-weight: bold; color: white; margin-bottom: 12px; text-shadow: 0 0 25px ${data.color}cc">${data.title}</h3>
+  <p style="color: #d1d5db; font-size: 16px; margin-bottom: 28px; line-height: 1.6;">${data.description}</p>
+  <button style="width: 100%; padding: 14px; border-radius: 12px; font-weight: 600; transition: all 0.3s; border: 3px solid ${data.color}; color: ${data.color}; background: transparent; cursor: pointer; font-size: 16px;">
+    Accedi
+  </button>
+</div>`;
+          
+        default:
+          return '';
+      }
+    }
+
+    function generateCardHTML(type, data) {
+      const fullHTMLWrapper = (content, styles = '') => {
+        return `<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${data.title}</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      min-height: 100vh; 
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 20px;
+    }
+    ${styles}
+  </style>
+</head>
+<body>
+  ${content}
+</body>
+</html>`;
+      };
+      
+      const preview = generateCardPreview(type, data);
+      
+      // Add appropriate styles based on card type
+      let styles = '';
+      switch(type) {
+        case 'classic':
+          styles = `.card-preview { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+.card-preview:hover { transform: translateY(-8px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2); }
+button:hover { opacity: 0.9; transform: scale(1.02); }`;
+          break;
+        case 'circle':
+          styles = `.card-preview { transition: all 0.4s ease; }
+.card-preview:hover { transform: scale(1.05); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }`;
+          break;
+        case 'stacked':
+          styles = `.stacked-card { transition: all 0.4s ease; }
+.stacked-container:hover .stacked-card:nth-child(1) { transform: translateY(-16px) rotate(-4deg); }
+.stacked-container:hover .stacked-card:nth-child(2) { transform: translateY(-8px) rotate(-3deg); }`;
+          break;
+        case 'glass':
+          styles = `.card-preview { transition: all 0.4s ease; }
+.card-preview:hover { transform: translateY(-8px); }
+.glass-card { backdrop-filter: blur(16px); background: rgba(255, 255, 255, 0.8); }`;
+          break;
+        case 'gradient':
+          styles = `.card-preview { transition: all 0.4s ease; }
+.card-preview:hover { transform: translateY(-8px); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }`;
+          break;
+        case 'flip':
+          styles = `.flip-card { perspective: 1000px; }
+.flip-card-inner { transition: transform 0.8s; transform-style: preserve-3d; }
+.flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
+.flip-card-front, .flip-card-back { backface-visibility: hidden; }
+.flip-card-back { transform: rotateY(180deg); }`;
+          break;
+        case 'minimal':
+          styles = `.minimal-card { border: 3px solid #e5e7eb; transition: all 0.4s ease; }
+.minimal-card:hover { border-color: ${data.color}; box-shadow: 0 20px 40px rgba(139, 92, 246, 0.15); transform: translateY(-4px); }`;
+          break;
+        case 'neon':
+          styles = `.neon-card { box-shadow: 0 0 30px ${data.color}80, 0 0 60px ${data.color}40; transition: all 0.4s ease; }
+.neon-card:hover { box-shadow: 0 0 40px ${data.color}, 0 0 80px ${data.color}60; transform: translateY(-8px); }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+.pulse-anim { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+button:hover { background: ${data.color}20 !important; transform: scale(1.05); }`;
+          break;
+      }
+      
+      return fullHTMLWrapper(preview, styles);
+    }
+
+    function adjustColor(hex, amount) {
+      let r = parseInt(hex.slice(1, 3), 16);
+      let g = parseInt(hex.slice(3, 5), 16);
+      let b = parseInt(hex.slice(5, 7), 16);
+      
+      r = Math.max(0, Math.min(255, r + amount));
+      g = Math.max(0, Math.min(255, g + amount));
+      b = Math.max(0, Math.min(255, b + amount));
+      
+      return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+    }
+
+    function updatePreview() {
+      const container = document.getElementById('preview-container');
+      const codeDisplay = document.getElementById('code-display');
+      const data = getCardData();
+      const previewHTML = generateCardPreview(currentCardType, data);
+      const fullHTML = generateCardHTML(currentCardType, data);
+      
+      container.innerHTML = previewHTML;
+      if (codeDisplay) {
+        codeDisplay.textContent = fullHTML;
+      }
+    }
+
+    function copyCurrentHTML() {
+      const codeDisplay = document.getElementById('code-display');
+      const html = codeDisplay.textContent;
+      
+      navigator.clipboard.writeText(html).then(() => {
+        showToast('✅ HTML copiato negli appunti!', 'success');
+      }).catch(() => {
+        const textarea = document.createElement('textarea');
+        textarea.value = html;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+          document.execCommand('copy');
+          showToast('✅ HTML copiato negli appunti!', 'success');
+        } catch (err) {
+          showToast('❌ Errore nella copia', 'error');
+        }
+        document.body.removeChild(textarea);
+      });
+    }
+
+    function copyCardHTML(id) {
+      const codeElement = document.getElementById(`code-${id}`);
+      if (!codeElement) return;
+      
+      const html = codeElement.textContent;
+      
+      navigator.clipboard.writeText(html).then(() => {
+        showToast('✅ HTML copiato!', 'success');
+      }).catch(() => {
+        const textarea = document.createElement('textarea');
+        textarea.value = html;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+          document.execCommand('copy');
+          showToast('✅ HTML copiato!', 'success');
+        } catch (err) {
+          showToast('❌ Errore nella copia', 'error');
+        }
+        document.body.removeChild(textarea);
+      });
+    }
+
+    function escapeHtml(text) {
+      const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+      };
+      return text.replace(/[&<>"']/g, m => map[m]);
+    }
+
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      const bgColor = type === 'success' ? 'bg-green-500' : 'bg-red-500';
+      
+      toast.className = `toast ${bgColor} text-white px-5 py-3 rounded-xl shadow-lg font-medium text-sm`;
+      toast.textContent = message;
+      
+      container.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(400px)';
+        setTimeout(() => toast.remove(), 300);
+      }, 2500);
+    }
+
+    function addToGallery() {
+      const data = getCardData();
+      const galleryItem = {
+        id: ++galleryIdCounter,
+        type: currentCardType,
+        data: { ...data }
+      };
+      
+      galleryItems.push(galleryItem);
+      renderGallery();
+      showToast('✅ Card aggiunta alla galleria!', 'success');
+    }
+
+    function removeFromGallery(id) {
+      galleryItems = galleryItems.filter(item => item.id !== id);
+      renderGallery();
+      showToast('🗑️ Card rimossa', 'success');
+    }
+
+    function renderGallery() {
+      const gallery = document.getElementById('gallery');
+      const countEl = document.getElementById('gallery-count');
+      
+      countEl.textContent = `(${galleryItems.length})`;
+      
+      if (galleryItems.length === 0) {
+        gallery.innerHTML = `
+          <div class="col-span-full text-center py-16 bg-white rounded-2xl border-2 border-dashed border-gray-300">
+            <span class="text-5xl block mb-3">🎴</span>
+            <p class="text-gray-500 font-medium">Nessuna card nella galleria</p>
+            <p class="text-gray-400 text-sm mt-1">Crea la tua prima card e aggiungila!</p>
+          </div>
+        `;
+        return;
+      }
+      
+      gallery.innerHTML = galleryItems.map(item => {
+        const cardPreview = generateCardPreview(item.type, item.data);
+        const cardHTML = generateCardHTML(item.type, item.data);
+        return `
+        <div class="relative bg-white rounded-2xl border-2 border-gray-200 overflow-hidden shadow-sm hover:shadow-lg transition-all">
+          <div class="p-6">
+            <div class="flex justify-center items-center min-h-80 mb-4">
+              ${cardPreview}
+            </div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="badge bg-purple-100 text-purple-700">${getCardTypeName(item.type)}</span>
+              <button onclick="removeFromGallery(${item.id})" 
+                      class="w-9 h-9 rounded-lg bg-red-500 text-white flex items-center justify-center hover:bg-red-600 transition-colors btn-press"
+                      title="Rimuovi">
+                ✕
+              </button>
+            </div>
+          </div>
+          
+          <div class="bg-gray-900 border-t-2 border-gray-700">
+            <div class="flex items-center justify-between px-4 py-2 bg-gray-800">
+              <span class="text-white font-medium text-xs">HTML</span>
+              <button onclick="copyCardHTML(${item.id})" 
+                      class="px-3 py-1.5 rounded-lg bg-purple-600 text-white font-medium text-xs transition-all hover:bg-purple-700 btn-press">
+                📋 Copia
+              </button>
+            </div>
+            <div class="p-3 overflow-x-auto max-h-40">
+              <pre class="code-block text-green-400 whitespace-pre-wrap break-words text-xs" id="code-${item.id}">${escapeHtml(cardHTML)}</pre>
+            </div>
+          </div>
+        </div>
+      `;
+      }).join('');
+    }
+
+    function getCardTypeName(type) {
+      const names = {
+        'classic': 'Classica',
+        'circle': 'Cerchio',
+        'stacked': 'Stack',
+        'glass': 'Glass',
+        'gradient': 'Gradient',
+        'flip': 'Flip',
+        'minimal': 'Minimal',
+        'neon': 'Neon'
+      };
+      return names[type] || type;
+    }
+
+    // Initialize
+    updatePreview();
+    renderGallery();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9bb7a6ba6336ed1a',t:'MTc2ODAwMDY4MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

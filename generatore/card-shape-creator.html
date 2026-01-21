@@ -1,0 +1,593 @@
+<!doctype html>
+<html lang="it" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Card Shape Creator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&amp;family=Roboto:wght@400;700&amp;family=Playfair+Display:wght@400;700&amp;family=Courier+Prime:wght@400;700&amp;family=Pacifico&amp;family=Dancing+Script:wght@400;700&amp;family=Satisfy&amp;family=Indie+Flower&amp;family=Caveat:wght@400;700&amp;family=Permanent+Marker&amp;family=Righteous&amp;family=Bebas+Neue&amp;family=Cinzel:wght@400;700&amp;family=Lobster&amp;family=Architects+Daughter&amp;family=Kalam:wght@400;700&amp;family=Shadows+Into+Light&amp;family=Gloria+Hallelujah&amp;family=Amatic+SC:wght@400;700&amp;display=swap" rel="stylesheet">
+  <style>
+    body {
+      box-sizing: border-box;
+    }
+    
+    * {
+      font-family: 'Nunito', sans-serif;
+    }
+    
+    .shape-btn {
+      transition: all 0.2s ease;
+    }
+    
+    .shape-btn:hover {
+      transform: scale(1.05);
+    }
+    
+    .shape-btn.active {
+      ring: 3px;
+      ring-offset: 2px;
+    }
+    
+    .card-preview {
+      transition: all 0.3s ease;
+    }
+    
+    .sticky-shape {
+      clip-path: polygon(0 0, 100% 0, 100% 85%, 85% 100%, 0 100%);
+    }
+    
+    .hexagon-shape {
+      clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+    }
+    
+    .diamond-shape {
+      clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+    }
+    
+    .star-shape {
+      clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+    }
+    
+    .badge-shape {
+      clip-path: polygon(50% 0%, 65% 10%, 80% 0%, 80% 20%, 100% 30%, 85% 45%, 100% 60%, 80% 70%, 80% 90%, 65% 80%, 50% 100%, 35% 80%, 20% 90%, 20% 70%, 0% 60%, 15% 45%, 0% 30%, 20% 20%, 20% 0%, 35% 10%);
+    }
+    
+    .tag-shape {
+      clip-path: polygon(0 0, 85% 0, 100% 50%, 85% 100%, 0 100%);
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    .float-animation {
+      animation: float 3s ease-in-out infinite;
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full">
+  <div id="app-container" class="h-full overflow-auto" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+   <div class="min-h-full p-6"><!-- Header -->
+    <div class="text-center mb-8">
+     <h1 id="app-title" class="text-5xl font-extrabold text-white mb-2 drop-shadow-lg">Card Shape Creator</h1>
+     <p class="text-white/80 text-base">Crea card uniche con forme personalizzate</p>
+    </div><!-- Main Content -->
+    <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6"><!-- Controls Panel -->
+     <div class="bg-white/95 backdrop-blur rounded-2xl p-6 shadow-2xl"><!-- Shape Selection -->
+      <div class="mb-6"><label class="block text-gray-700 font-bold mb-3 text-sm uppercase tracking-wide">Scegli la Forma</label>
+       <div class="grid grid-cols-4 gap-2" id="shape-buttons"><button class="shape-btn active p-3 rounded-xl bg-purple-100 border-2 border-purple-500 flex flex-col items-center gap-1" data-shape="rectangle">
+         <div class="w-8 h-6 bg-purple-500 rounded"></div><span class="text-xs font-semibold text-purple-700">Rettangolo</span> </button> <button class="shape-btn p-3 rounded-xl bg-gray-100 border-2 border-transparent hover:border-purple-300 flex flex-col items-center gap-1" data-shape="circle">
+         <div class="w-7 h-7 bg-purple-500 rounded-full"></div><span class="text-xs font-semibold text-gray-600">Cerchio</span> </button> <button class="shape-btn p-3 rounded-xl bg-gray-100 border-2 border-transparent hover:border-purple-300 flex flex-col items-center gap-1" data-shape="sticky">
+         <div class="w-7 h-7 bg-yellow-400 sticky-shape"></div><span class="text-xs font-semibold text-gray-600">Sticky</span> </button> <button class="shape-btn p-3 rounded-xl bg-gray-100 border-2 border-transparent hover:border-purple-300 flex flex-col items-center gap-1" data-shape="hexagon">
+         <div class="w-8 h-7 bg-purple-500 hexagon-shape"></div><span class="text-xs font-semibold text-gray-600">Esagono</span> </button> <button class="shape-btn p-3 rounded-xl bg-gray-100 border-2 border-transparent hover:border-purple-300 flex flex-col items-center gap-1" data-shape="diamond">
+         <div class="w-7 h-7 bg-purple-500 diamond-shape"></div><span class="text-xs font-semibold text-gray-600">Diamante</span> </button> <button class="shape-btn p-3 rounded-xl bg-gray-100 border-2 border-transparent hover:border-purple-300 flex flex-col items-center gap-1" data-shape="star">
+         <div class="w-8 h-8 bg-purple-500 star-shape"></div><span class="text-xs font-semibold text-gray-600">Stella</span> </button> <button class="shape-btn p-3 rounded-xl bg-gray-100 border-2 border-transparent hover:border-purple-300 flex flex-col items-center gap-1" data-shape="badge">
+         <div class="w-8 h-8 bg-purple-500 badge-shape"></div><span class="text-xs font-semibold text-gray-600">Badge</span> </button> <button class="shape-btn p-3 rounded-xl bg-gray-100 border-2 border-transparent hover:border-purple-300 flex flex-col items-center gap-1" data-shape="tag">
+         <div class="w-8 h-6 bg-purple-500 tag-shape"></div><span class="text-xs font-semibold text-gray-600">Tag</span> </button>
+       </div>
+      </div><!-- Content Type -->
+      <div class="mb-6"><label class="block text-gray-700 font-bold mb-3 text-sm uppercase tracking-wide">Tipo Contenuto</label>
+       <div class="flex gap-2 mb-3"><button id="content-type-text" class="content-type-btn flex-1 py-2 px-4 rounded-xl bg-purple-500 text-white font-semibold" data-type="text">📝 Testo</button> <button id="content-type-image" class="content-type-btn flex-1 py-2 px-4 rounded-xl bg-gray-200 text-gray-700 font-semibold" data-type="image">🖼️ Immagine</button> <button id="content-type-both" class="content-type-btn flex-1 py-2 px-4 rounded-xl bg-gray-200 text-gray-700 font-semibold" data-type="both">🎨 Immagine + Testo</button>
+       </div><!-- Image Mode Selection (shown only when image or both is selected) -->
+       <div id="image-mode-selector" class="hidden"><label class="block text-gray-600 font-semibold mb-2 text-xs uppercase tracking-wide">Modalità Layout</label>
+        <div class="flex gap-2"><button id="mode-overlay" class="image-mode-btn flex-1 py-2 px-3 rounded-lg bg-purple-100 border-2 border-purple-500 text-purple-700 font-semibold text-sm" data-mode="overlay">Sfondo + Testo</button> <button id="mode-card" class="image-mode-btn flex-1 py-2 px-3 rounded-lg bg-gray-100 border-2 border-transparent text-gray-700 font-semibold text-sm" data-mode="card">Card Classica</button>
+        </div>
+       </div>
+      </div><!-- Text Content -->
+      <div id="text-content" class="mb-6"><label for="card-text" class="block text-gray-700 font-bold mb-2 text-sm uppercase tracking-wide">Testo della Card</label> <textarea id="card-text" rows="3" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition-colors resize-none" placeholder="Scrivi il tuo messaggio...">La tua card</textarea>
+      </div><!-- Image Content -->
+      <div id="image-content" class="mb-6 hidden"><label for="card-image-url" class="block text-gray-700 font-bold mb-2 text-sm uppercase tracking-wide">URL Immagine</label> <input type="url" id="card-image-url" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition-colors" placeholder="https://esempio.com/immagine.jpg">
+       <p class="text-xs text-gray-500 mt-1">Incolla l'URL completo di un'immagine</p>
+      </div><!-- Font Selection -->
+      <div class="mb-6"><label for="font-select" class="block text-gray-700 font-bold mb-2 text-sm uppercase tracking-wide">Font</label> <select id="font-select" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition-colors bg-white"> <optgroup label="Moderni"> <option value="Nunito" selected>Nunito</option> <option value="Roboto">Roboto</option> <option value="Bebas Neue">Bebas Neue</option> <option value="Righteous">Righteous</option> </optgroup> <optgroup label="Eleganti"> <option value="Playfair Display">Playfair Display</option> <option value="Cinzel">Cinzel</option> </optgroup> <optgroup label="Scrittura a Mano"> <option value="Dancing Script">Dancing Script</option> <option value="Satisfy">Satisfy</option> <option value="Indie Flower">Indie Flower</option> <option value="Caveat">Caveat</option> <option value="Architects Daughter">Architects Daughter</option> <option value="Kalam">Kalam</option> <option value="Shadows Into Light">Shadows Into Light</option> <option value="Gloria Hallelujah">Gloria Hallelujah</option> <option value="Amatic SC">Amatic SC</option> </optgroup> <optgroup label="Artistici"> <option value="Pacifico">Pacifico</option> <option value="Permanent Marker">Permanent Marker</option> <option value="Lobster">Lobster</option> </optgroup> <optgroup label="Monospace"> <option value="Courier Prime">Courier Prime</option> </optgroup> </select>
+      </div><!-- Color Selection -->
+      <div class="mb-6"><label class="block text-gray-700 font-bold mb-3 text-sm uppercase tracking-wide">Colore Card</label>
+       <div class="flex flex-wrap gap-2" id="color-buttons"><button class="w-10 h-10 rounded-full border-4 border-white shadow-md hover:scale-110 transition-transform ring-2 ring-purple-500" style="background: linear-gradient(135deg, #667eea, #764ba2);" data-color="linear-gradient(135deg, #667eea, #764ba2)"></button> <button class="w-10 h-10 rounded-full border-4 border-white shadow-md hover:scale-110 transition-transform" style="background: linear-gradient(135deg, #f093fb, #f5576c);" data-color="linear-gradient(135deg, #f093fb, #f5576c)"></button> <button class="w-10 h-10 rounded-full border-4 border-white shadow-md hover:scale-110 transition-transform" style="background: linear-gradient(135deg, #4facfe, #00f2fe);" data-color="linear-gradient(135deg, #4facfe, #00f2fe)"></button> <button class="w-10 h-10 rounded-full border-4 border-white shadow-md hover:scale-110 transition-transform" style="background: linear-gradient(135deg, #43e97b, #38f9d7);" data-color="linear-gradient(135deg, #43e97b, #38f9d7)"></button> <button class="w-10 h-10 rounded-full border-4 border-white shadow-md hover:scale-110 transition-transform" style="background: linear-gradient(135deg, #fa709a, #fee140);" data-color="linear-gradient(135deg, #fa709a, #fee140)"></button> <button class="w-10 h-10 rounded-full border-4 border-white shadow-md hover:scale-110 transition-transform" style="background: linear-gradient(135deg, #ff6b6b, #ee5a6f);" data-color="linear-gradient(135deg, #ff6b6b, #ee5a6f)"></button> <button class="w-10 h-10 rounded-full border-4 border-white shadow-md hover:scale-110 transition-transform" style="background: linear-gradient(135deg, #ffeaa7, #fdcb6e);" data-color="linear-gradient(135deg, #ffeaa7, #fdcb6e)"></button> <button class="w-10 h-10 rounded-full border-4 border-white shadow-md hover:scale-110 transition-transform" style="background: linear-gradient(135deg, #a29bfe, #6c5ce7);" data-color="linear-gradient(135deg, #a29bfe, #6c5ce7)"></button> <button class="w-10 h-10 rounded-full border-4 border-white shadow-md hover:scale-110 transition-transform" style="background: linear-gradient(135deg, #fd79a8, #e84393);" data-color="linear-gradient(135deg, #fd79a8, #e84393)"></button> <button class="w-10 h-10 rounded-full border-4 border-white shadow-md hover:scale-110 transition-transform" style="background: linear-gradient(135deg, #74b9ff, #0984e3);" data-color="linear-gradient(135deg, #74b9ff, #0984e3)"></button> <button class="w-10 h-10 rounded-full border-4 border-white shadow-md hover:scale-110 transition-transform" style="background: linear-gradient(135deg, #55efc4, #00b894);" data-color="linear-gradient(135deg, #55efc4, #00b894)"></button> <button class="w-10 h-10 rounded-full border-4 border-white shadow-md hover:scale-110 transition-transform" style="background: linear-gradient(135deg, #ff7675, #d63031);" data-color="linear-gradient(135deg, #ff7675, #d63031)"></button> <button class="w-10 h-10 rounded-full border-4 border-white shadow-md hover:scale-110 transition-transform" style="background: linear-gradient(135deg, #fab1a0, #e17055);" data-color="linear-gradient(135deg, #fab1a0, #e17055)"></button> <button class="w-10 h-10 rounded-full border-4 border-white shadow-md hover:scale-110 transition-transform" style="background: linear-gradient(135deg, #dfe6e9, #b2bec3);" data-color="linear-gradient(135deg, #dfe6e9, #b2bec3)"></button> <button class="w-10 h-10 rounded-full border-4 border-white shadow-md hover:scale-110 transition-transform" style="background: #fbbf24;" data-color="#fbbf24"></button> <button class="w-10 h-10 rounded-full border-4 border-white shadow-md hover:scale-110 transition-transform" style="background: #1f2937;" data-color="#1f2937"></button> <button class="w-10 h-10 rounded-full border-4 border-white shadow-md hover:scale-110 transition-transform" style="background: #ffffff;" data-color="#ffffff"></button> <button class="w-10 h-10 rounded-full border-4 border-white shadow-md hover:scale-110 transition-transform" style="background: #8b5cf6;" data-color="#8b5cf6"></button> <button class="w-10 h-10 rounded-full border-4 border-white shadow-md hover:scale-110 transition-transform" style="background: #ec4899;" data-color="#ec4899"></button> <button class="w-10 h-10 rounded-full border-4 border-white shadow-md hover:scale-110 transition-transform" style="background: #10b981;" data-color="#10b981"></button>
+       </div>
+      </div><!-- Text Color -->
+      <div class="mb-6"><label class="block text-gray-700 font-bold mb-3 text-sm uppercase tracking-wide">Colore Testo</label>
+       <div class="flex gap-2"><button class="text-color-btn flex-1 py-2 px-4 rounded-xl bg-gray-900 text-white font-semibold border-2 border-purple-500" data-text-color="#ffffff">Bianco</button> <button class="text-color-btn flex-1 py-2 px-4 rounded-xl bg-white text-gray-900 font-semibold border-2 border-transparent" data-text-color="#1f2937">Scuro</button> <button class="text-color-btn flex-1 py-2 px-4 rounded-xl bg-yellow-400 text-gray-900 font-semibold border-2 border-transparent" data-text-color="#fbbf24">Giallo</button>
+       </div>
+      </div><!-- Animation Toggle -->
+      <div class="flex items-center justify-between p-4 bg-purple-50 rounded-xl"><span class="font-bold text-gray-700">Animazione Fluttuante</span> <button id="animation-toggle" class="w-14 h-8 bg-gray-300 rounded-full relative transition-colors"> <span class="absolute w-6 h-6 bg-white rounded-full top-1 left-1 transition-transform shadow-md"></span> </button>
+      </div>
+     </div><!-- Preview Panel -->
+     <div class="bg-white/20 backdrop-blur rounded-2xl p-6 flex flex-col gap-4">
+      <div class="flex-1 flex items-center justify-center min-h-[400px]">
+       <div id="card-preview" class="card-preview w-80 h-80 flex items-center justify-center p-8 text-center rounded-2xl shadow-2xl" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+        <p id="preview-text" class="text-white font-bold text-2xl leading-relaxed" style="font-family: 'Nunito', sans-serif;">La tua card</p><img id="preview-image" class="hidden max-w-full max-h-full object-contain" alt="Anteprima immagine" onerror="this.style.display='none'; document.getElementById('preview-text').textContent='Immagine non caricata'; document.getElementById('preview-text').style.display='block';">
+       </div>
+      </div><button id="add-card-btn" class="bg-white text-purple-600 font-bold px-6 py-3 rounded-xl hover:bg-purple-100 transition-colors shadow-lg text-lg"> + Aggiungi Card </button>
+     </div>
+    </div><!-- Created Cards Gallery -->
+    <div class="max-w-6xl mx-auto mt-8">
+     <div class="flex items-center justify-between mb-4">
+      <h2 class="text-white font-bold text-2xl">Le Tue Card</h2><button id="clear-all-btn" class="bg-red-500 text-white font-bold px-4 py-2 rounded-xl hover:bg-red-600 transition-colors shadow-lg"> 🗑️ Cancella Tutto </button>
+     </div>
+     <div id="cards-gallery" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"><!-- Cards will be added here -->
+     </div>
+     <p id="empty-message" class="text-white/60 text-center py-8">Clicca "Aggiungi Card" per creare la tua prima card!</p>
+    </div>
+   </div>
+  </div>
+  <script>
+    let currentShape = 'rectangle';
+    let currentColor = 'linear-gradient(135deg, #667eea, #764ba2)';
+    let currentTextColor = '#ffffff';
+    let currentFont = 'Nunito';
+    let animationEnabled = false;
+    let contentType = 'text';
+    let imageMode = 'overlay';
+    let createdCards = [];
+
+    const cardPreview = document.getElementById('card-preview');
+    const previewText = document.getElementById('preview-text');
+    const previewImage = document.getElementById('preview-image');
+    const cardTextInput = document.getElementById('card-text');
+    const cardImageUrl = document.getElementById('card-image-url');
+    const shapeButtons = document.querySelectorAll('[data-shape]');
+    const colorButtons = document.querySelectorAll('[data-color]');
+    const textColorButtons = document.querySelectorAll('.text-color-btn');
+    const contentTypeButtons = document.querySelectorAll('.content-type-btn');
+    const imageModeButtons = document.querySelectorAll('.image-mode-btn');
+    const imageModeSelector = document.getElementById('image-mode-selector');
+    const textContent = document.getElementById('text-content');
+    const imageContent = document.getElementById('image-content');
+    const fontSelect = document.getElementById('font-select');
+    const animationToggle = document.getElementById('animation-toggle');
+    const addCardBtn = document.getElementById('add-card-btn');
+    const clearAllBtn = document.getElementById('clear-all-btn');
+    const cardsGallery = document.getElementById('cards-gallery');
+    const emptyMessage = document.getElementById('empty-message');
+
+    const shapeClasses = {
+      rectangle: 'rounded-2xl',
+      circle: 'rounded-full',
+      sticky: 'sticky-shape',
+      hexagon: 'hexagon-shape',
+      diamond: 'diamond-shape',
+      star: 'star-shape',
+      badge: 'badge-shape',
+      tag: 'tag-shape'
+    };
+
+    function loadCards() {
+      const saved = localStorage.getItem('cardShapeCreator');
+      if (saved) {
+        try {
+          createdCards = JSON.parse(saved);
+          renderGallery();
+        } catch (e) {
+          console.error('Errore nel caricamento delle card:', e);
+        }
+      }
+    }
+
+    function saveCards() {
+      localStorage.setItem('cardShapeCreator', JSON.stringify(createdCards));
+    }
+
+    function updatePreview() {
+      Object.values(shapeClasses).forEach(cls => cardPreview.classList.remove(cls));
+      cardPreview.classList.add(shapeClasses[currentShape]);
+      cardPreview.style.background = currentColor;
+      
+      if (contentType === 'text') {
+        previewText.style.display = 'block';
+        previewImage.style.display = 'none';
+        previewText.style.color = currentTextColor;
+        previewText.style.fontFamily = `'${currentFont}', sans-serif`;
+        previewText.textContent = cardTextInput.value || 'La tua card';
+        cardPreview.style.backgroundImage = 'none';
+        cardPreview.style.backgroundSize = '';
+        cardPreview.style.backgroundPosition = '';
+        
+        if (currentTextColor === '#ffffff' || currentTextColor === '#fbbf24') {
+          previewText.style.textShadow = '1px 1px 3px rgba(0,0,0,0.7), -1px -1px 3px rgba(0,0,0,0.7), 1px -1px 3px rgba(0,0,0,0.7), -1px 1px 3px rgba(0,0,0,0.7)';
+        } else {
+          previewText.style.textShadow = '1px 1px 3px rgba(255,255,255,0.9), -1px -1px 3px rgba(255,255,255,0.9), 1px -1px 3px rgba(255,255,255,0.9), -1px 1px 3px rgba(255,255,255,0.9)';
+        }
+        previewText.style.backgroundColor = 'transparent';
+        previewText.style.padding = '0';
+        previewText.style.borderRadius = '0';
+      } else if (contentType === 'image') {
+        previewText.style.display = 'none';
+        previewText.style.textShadow = 'none';
+        if (cardImageUrl.value) {
+          previewImage.style.display = 'block';
+          previewImage.src = cardImageUrl.value;
+          cardPreview.style.backgroundImage = 'none';
+          previewImage.style.maxWidth = '90%';
+          previewImage.style.maxHeight = '90%';
+          previewImage.style.objectFit = 'contain';
+        } else {
+          previewText.style.display = 'block';
+          previewText.style.color = currentTextColor;
+          previewText.textContent = '🖼️ Inserisci URL';
+          previewImage.style.display = 'none';
+          if (currentTextColor === '#ffffff' || currentTextColor === '#fbbf24') {
+            previewText.style.textShadow = '1px 1px 3px rgba(0,0,0,0.7), -1px -1px 3px rgba(0,0,0,0.7), 1px -1px 3px rgba(0,0,0,0.7), -1px 1px 3px rgba(0,0,0,0.7)';
+          } else {
+            previewText.style.textShadow = '1px 1px 3px rgba(255,255,255,0.9), -1px -1px 3px rgba(255,255,255,0.9), 1px -1px 3px rgba(255,255,255,0.9), -1px 1px 3px rgba(255,255,255,0.9)';
+          }
+        }
+      } else if (contentType === 'both') {
+        if (!cardImageUrl.value) {
+          previewText.style.display = 'block';
+          previewText.style.color = currentTextColor;
+          previewText.textContent = '🖼️ Inserisci URL immagine';
+          previewImage.style.display = 'none';
+          cardPreview.style.backgroundImage = 'none';
+        } else {
+          if (imageMode === 'overlay') {
+            cardPreview.style.backgroundImage = `url('${cardImageUrl.value}')`;
+            cardPreview.style.backgroundSize = 'cover';
+            cardPreview.style.backgroundPosition = 'center';
+            previewImage.style.display = 'none';
+            previewText.style.display = 'block';
+            previewText.style.color = currentTextColor;
+            previewText.style.fontFamily = `'${currentFont}', sans-serif`;
+            previewText.textContent = cardTextInput.value || 'La tua card';
+            previewText.style.textShadow = '2px 2px 8px rgba(0,0,0,0.7)';
+            previewText.style.backgroundColor = 'rgba(0,0,0,0.3)';
+            previewText.style.padding = '12px';
+            previewText.style.borderRadius = '8px';
+          } else {
+            cardPreview.style.backgroundImage = 'none';
+            cardPreview.style.flexDirection = 'column';
+            cardPreview.style.justifyContent = 'flex-start';
+            cardPreview.style.gap = '12px';
+            previewImage.style.display = 'block';
+            previewImage.src = cardImageUrl.value;
+            previewImage.style.maxHeight = '65%';
+            previewImage.style.maxWidth = '100%';
+            previewImage.style.width = 'auto';
+            previewImage.style.objectFit = 'contain';
+            previewImage.style.borderRadius = '8px';
+            previewText.style.display = 'block';
+            previewText.style.color = currentTextColor;
+            previewText.style.fontFamily = `'${currentFont}', sans-serif`;
+            previewText.textContent = cardTextInput.value || 'La tua card';
+            if (currentTextColor === '#ffffff' || currentTextColor === '#fbbf24') {
+              previewText.style.textShadow = '1px 1px 3px rgba(0,0,0,0.7), -1px -1px 3px rgba(0,0,0,0.7), 1px -1px 3px rgba(0,0,0,0.7), -1px 1px 3px rgba(0,0,0,0.7)';
+            } else {
+              previewText.style.textShadow = '1px 1px 3px rgba(255,255,255,0.9), -1px -1px 3px rgba(255,255,255,0.9), 1px -1px 3px rgba(255,255,255,0.9), -1px 1px 3px rgba(255,255,255,0.9)';
+            }
+            previewText.style.backgroundColor = 'transparent';
+            previewText.style.padding = '0';
+            previewText.style.marginTop = '0';
+          }
+        }
+      }
+      
+      if (contentType !== 'both' || imageMode !== 'card') {
+        cardPreview.style.flexDirection = '';
+        cardPreview.style.justifyContent = '';
+      }
+      
+      if (animationEnabled) {
+        cardPreview.classList.add('float-animation');
+      } else {
+        cardPreview.classList.remove('float-animation');
+      }
+    }
+
+    contentTypeButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        contentType = btn.dataset.type;
+        contentTypeButtons.forEach(b => {
+          b.classList.remove('bg-purple-500', 'text-white');
+          b.classList.add('bg-gray-200', 'text-gray-700');
+        });
+        btn.classList.add('bg-purple-500', 'text-white');
+        btn.classList.remove('bg-gray-200', 'text-gray-700');
+        
+        if (contentType === 'both') {
+          imageModeSelector.classList.remove('hidden');
+          textContent.classList.remove('hidden');
+          imageContent.classList.remove('hidden');
+        } else if (contentType === 'text') {
+          imageModeSelector.classList.add('hidden');
+          textContent.classList.remove('hidden');
+          imageContent.classList.add('hidden');
+        } else {
+          imageModeSelector.classList.add('hidden');
+          textContent.classList.add('hidden');
+          imageContent.classList.remove('hidden');
+        }
+        updatePreview();
+      });
+    });
+
+    imageModeButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        imageMode = btn.dataset.mode;
+        imageModeButtons.forEach(b => {
+          b.classList.remove('bg-purple-100', 'border-purple-500', 'text-purple-700');
+          b.classList.add('bg-gray-100', 'border-transparent', 'text-gray-700');
+        });
+        btn.classList.add('bg-purple-100', 'border-purple-500', 'text-purple-700');
+        btn.classList.remove('bg-gray-100', 'border-transparent', 'text-gray-700');
+        updatePreview();
+      });
+    });
+
+    shapeButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        shapeButtons.forEach(b => {
+          b.classList.remove('active', 'bg-purple-100', 'border-purple-500');
+          b.classList.add('bg-gray-100', 'border-transparent');
+          b.querySelector('span').classList.remove('text-purple-700');
+          b.querySelector('span').classList.add('text-gray-600');
+        });
+        btn.classList.add('active', 'bg-purple-100', 'border-purple-500');
+        btn.classList.remove('bg-gray-100', 'border-transparent');
+        btn.querySelector('span').classList.add('text-purple-700');
+        btn.querySelector('span').classList.remove('text-gray-600');
+        currentShape = btn.dataset.shape;
+        updatePreview();
+      });
+    });
+
+    colorButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        colorButtons.forEach(b => b.classList.remove('ring-2', 'ring-purple-500'));
+        btn.classList.add('ring-2', 'ring-purple-500');
+        currentColor = btn.dataset.color;
+        updatePreview();
+      });
+    });
+
+    textColorButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        textColorButtons.forEach(b => {
+          b.classList.remove('border-purple-500');
+          b.classList.add('border-transparent');
+        });
+        btn.classList.add('border-purple-500');
+        btn.classList.remove('border-transparent');
+        currentTextColor = btn.dataset.textColor;
+        updatePreview();
+      });
+    });
+
+    fontSelect.addEventListener('change', (e) => {
+      currentFont = e.target.value;
+      updatePreview();
+    });
+
+    cardTextInput.addEventListener('input', updatePreview);
+    cardImageUrl.addEventListener('input', updatePreview);
+
+    animationToggle.addEventListener('click', () => {
+      animationEnabled = !animationEnabled;
+      const toggleBall = animationToggle.querySelector('span');
+      if (animationEnabled) {
+        animationToggle.classList.remove('bg-gray-300');
+        animationToggle.classList.add('bg-purple-500');
+        toggleBall.style.transform = 'translateX(24px)';
+      } else {
+        animationToggle.classList.add('bg-gray-300');
+        animationToggle.classList.remove('bg-purple-500');
+        toggleBall.style.transform = 'translateX(0)';
+      }
+      updatePreview();
+    });
+
+    addCardBtn.addEventListener('click', () => {
+      const card = {
+        id: Date.now(),
+        shape: currentShape,
+        color: currentColor,
+        textColor: currentTextColor,
+        font: currentFont,
+        text: cardTextInput.value || 'La tua card',
+        imageUrl: cardImageUrl.value || '',
+        contentType: contentType,
+        imageMode: imageMode,
+        animated: animationEnabled
+      };
+      
+      createdCards.push(card);
+      saveCards();
+      renderGallery();
+    });
+
+    clearAllBtn.addEventListener('click', () => {
+      if (createdCards.length === 0) return;
+      
+      const confirmDiv = document.createElement('div');
+      confirmDiv.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 9999;';
+      confirmDiv.innerHTML = `
+        <div style="background: white; padding: 24px; border-radius: 16px; max-width: 400px; text-align: center;">
+          <p style="font-size: 18px; font-weight: bold; margin-bottom: 16px;">Sei sicuro di voler cancellare tutte le card?</p>
+          <div style="display: flex; gap: 12px; justify-content: center;">
+            <button id="confirm-yes" style="background: #ef4444; color: white; padding: 10px 20px; border-radius: 8px; font-weight: bold; border: none; cursor: pointer;">Sì, cancella</button>
+            <button id="confirm-no" style="background: #6b7280; color: white; padding: 10px 20px; border-radius: 8px; font-weight: bold; border: none; cursor: pointer;">Annulla</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(confirmDiv);
+      
+      document.getElementById('confirm-yes').addEventListener('click', () => {
+        createdCards = [];
+        saveCards();
+        renderGallery();
+        confirmDiv.remove();
+      });
+      
+      document.getElementById('confirm-no').addEventListener('click', () => {
+        confirmDiv.remove();
+      });
+    });
+
+    function generateCardHTML(card) {
+      const shapeStyle = card.shape === 'circle' ? 'border-radius: 50%;' : 
+                         card.shape === 'rectangle' ? 'border-radius: 1rem;' :
+                         card.shape === 'sticky' ? 'clip-path: polygon(0 0, 100% 0, 100% 85%, 85% 100%, 0 100%);' :
+                         card.shape === 'hexagon' ? 'clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);' :
+                         card.shape === 'diamond' ? 'clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);' :
+                         card.shape === 'star' ? 'clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);' :
+                         card.shape === 'badge' ? 'clip-path: polygon(50% 0%, 65% 10%, 80% 0%, 80% 20%, 100% 30%, 85% 45%, 100% 60%, 80% 70%, 80% 90%, 65% 80%, 50% 100%, 35% 80%, 20% 90%, 20% 70%, 0% 60%, 15% 45%, 0% 30%, 20% 20%, 20% 0%, 35% 10%);' :
+                         'clip-path: polygon(0 0, 85% 0, 100% 50%, 85% 100%, 0 100%);';
+
+      const animationStyle = card.animated ? `
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+.float-animation {
+  animation: float 3s ease-in-out infinite;
+}` : '';
+
+      let content = '';
+      let extraStyles = '';
+      
+      if (card.contentType === 'text') {
+        const textShadow = (card.textColor === '#ffffff' || card.textColor === '#fbbf24') ? 'text-shadow: 1px 1px 3px rgba(0,0,0,0.7), -1px -1px 3px rgba(0,0,0,0.7), 1px -1px 3px rgba(0,0,0,0.7), -1px 1px 3px rgba(0,0,0,0.7);' : 'text-shadow: 1px 1px 3px rgba(255,255,255,0.9), -1px -1px 3px rgba(255,255,255,0.9), 1px -1px 3px rgba(255,255,255,0.9), -1px 1px 3px rgba(255,255,255,0.9);';
+        content = `<p style="color: ${card.textColor}; font-family: '${card.font}', sans-serif; font-weight: bold; font-size: 1.25rem; line-height: 1.75rem; ${textShadow}">${card.text}</p>`;
+      } else if (card.contentType === 'image' && card.imageUrl) {
+        content = `<img src="${card.imageUrl}" alt="Card image" style="max-width: 90%; max-height: 90%; object-fit: contain;">`;
+      } else if (card.contentType === 'both' && card.imageUrl) {
+        const mode = card.imageMode || 'overlay';
+        if (mode === 'overlay') {
+          extraStyles = `background-image: url('${card.imageUrl}'); background-size: cover; background-position: center;`;
+          content = `<p style="color: ${card.textColor}; font-family: '${card.font}', sans-serif; font-weight: bold; font-size: 1.25rem; line-height: 1.75rem; text-shadow: 2px 2px 8px rgba(0,0,0,0.7); background-color: rgba(0,0,0,0.3); padding: 12px; border-radius: 8px;">${card.text}</p>`;
+        } else {
+          const textShadow = (card.textColor === '#ffffff' || card.textColor === '#fbbf24') ? 'text-shadow: 1px 1px 3px rgba(0,0,0,0.7), -1px -1px 3px rgba(0,0,0,0.7), 1px -1px 3px rgba(0,0,0,0.7), -1px 1px 3px rgba(0,0,0,0.7);' : 'text-shadow: 1px 1px 3px rgba(255,255,255,0.9), -1px -1px 3px rgba(255,255,255,0.9), 1px -1px 3px rgba(255,255,255,0.9), -1px 1px 3px rgba(255,255,255,0.9);';
+          extraStyles = 'flex-direction: column; justify-content: flex-start; gap: 12px;';
+          content = `<img src="${card.imageUrl}" alt="Card image" style="max-height: 65%; max-width: 100%; width: auto; object-fit: contain; border-radius: 8px;"><p style="color: ${card.textColor}; font-family: '${card.font}', sans-serif; font-weight: bold; font-size: 1.25rem; line-height: 1.75rem; ${textShadow}">${card.text}</p>`;
+        }
+      } else {
+        const textShadow = (card.textColor === '#ffffff' || card.textColor === '#fbbf24') ? 'text-shadow: 1px 1px 3px rgba(0,0,0,0.7), -1px -1px 3px rgba(0,0,0,0.7), 1px -1px 3px rgba(0,0,0,0.7), -1px 1px 3px rgba(0,0,0,0.7);' : 'text-shadow: 1px 1px 3px rgba(255,255,255,0.9), -1px -1px 3px rgba(255,255,255,0.9), 1px -1px 3px rgba(255,255,255,0.9), -1px 1px 3px rgba(255,255,255,0.9);';
+        content = `<p style="color: ${card.textColor}; font-family: '${card.font}', sans-serif; font-weight: bold; font-size: 1.25rem; line-height: 1.75rem; ${textShadow}">${card.text}</p>`;
+      }
+
+      return `<div style="width: 16rem; height: 16rem; display: flex; align-items: center; justify-content: center; padding: 1.5rem; text-align: center; background: ${card.color}; ${shapeStyle} ${extraStyles} box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);" ${card.animated ? 'class="float-animation"' : ''}>
+  ${content}
+</div>
+
+<style>
+${animationStyle}
+</style>`;
+    }
+
+    function copyToClipboard(text) {
+      const textArea = document.createElement('textarea');
+      textArea.value = text;
+      textArea.style.position = 'fixed';
+      textArea.style.left = '-999999px';
+      document.body.appendChild(textArea);
+      textArea.select();
+      
+      try {
+        document.execCommand('copy');
+        const toast = document.createElement('div');
+        toast.textContent = '✓ HTML copiato!';
+        toast.style.cssText = 'position: fixed; top: 20px; right: 20px; background: #10b981; color: white; padding: 12px 24px; border-radius: 8px; font-weight: bold; z-index: 9999; box-shadow: 0 4px 12px rgba(0,0,0,0.15);';
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 2000);
+      } catch (err) {
+        const toast = document.createElement('div');
+        toast.textContent = '❌ Errore copia';
+        toast.style.cssText = 'position: fixed; top: 20px; right: 20px; background: #ef4444; color: white; padding: 12px 24px; border-radius: 8px; font-weight: bold; z-index: 9999; box-shadow: 0 4px 12px rgba(0,0,0,0.15);';
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 2000);
+      }
+      
+      document.body.removeChild(textArea);
+    }
+
+    function renderGallery() {
+      if (createdCards.length === 0) {
+        emptyMessage.style.display = 'block';
+        cardsGallery.innerHTML = '';
+        return;
+      }
+      
+      emptyMessage.style.display = 'none';
+      cardsGallery.innerHTML = createdCards.map(card => {
+        let content = '';
+        let cardStyle = `background: ${card.color};`;
+        let containerClass = shapeClasses[card.shape];
+        const textShadow = (card.textColor === '#ffffff' || card.textColor === '#fbbf24') ? 'text-shadow: 1px 1px 3px rgba(0,0,0,0.7), -1px -1px 3px rgba(0,0,0,0.7), 1px -1px 3px rgba(0,0,0,0.7), -1px 1px 3px rgba(0,0,0,0.7);' : 'text-shadow: 1px 1px 3px rgba(255,255,255,0.9), -1px -1px 3px rgba(255,255,255,0.9), 1px -1px 3px rgba(255,255,255,0.9), -1px 1px 3px rgba(255,255,255,0.9);';
+        
+        if (card.contentType === 'text') {
+          content = `<p class="font-bold text-lg leading-tight" style="color: ${card.textColor}; font-family: '${card.font}', sans-serif; ${textShadow}">${card.text}</p>`;
+        } else if (card.contentType === 'image' && card.imageUrl) {
+          content = `<img src="${card.imageUrl}" style="max-width: 90%; max-height: 90%; object-fit: contain;" alt="Card" onerror="this.style.display='none';">`;
+        } else if (card.contentType === 'both' && card.imageUrl) {
+          const mode = card.imageMode || 'overlay';
+          if (mode === 'overlay') {
+            cardStyle += ` background-image: url('${card.imageUrl}'); background-size: cover; background-position: center;`;
+            content = `<p class="font-bold text-sm leading-tight" style="color: ${card.textColor}; font-family: '${card.font}', sans-serif; text-shadow: 2px 2px 8px rgba(0,0,0,0.7); background-color: rgba(0,0,0,0.3); padding: 8px; border-radius: 6px;">${card.text}</p>`;
+          } else {
+            content = `<img src="${card.imageUrl}" style="max-height: 65%; max-width: 100%; width: auto; object-fit: contain; border-radius: 6px;" alt="Card" onerror="this.style.display='none';"><p class="font-bold text-xs leading-tight" style="color: ${card.textColor}; font-family: '${card.font}', sans-serif; margin-top: 8px; ${textShadow}">${card.text}</p>`;
+            containerClass += ' flex-col justify-start gap-2';
+          }
+        } else {
+          content = `<p class="font-bold text-lg leading-tight" style="color: ${card.textColor}; font-family: '${card.font}', sans-serif; ${textShadow}">${card.text}</p>`;
+        }
+        
+        return `
+        <div class="relative group">
+          <div class="card-preview w-full aspect-square flex items-center justify-center p-4 text-center shadow-lg ${containerClass} ${card.animated ? 'float-animation' : ''}" style="${cardStyle}">
+            ${content}
+          </div>
+          <div class="absolute -top-2 -right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+            <button class="copy-html w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold shadow-lg hover:bg-blue-600" data-id="${card.id}" title="Copia HTML">📋</button>
+            <button class="delete-card w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center text-sm font-bold shadow-lg hover:bg-red-600" data-id="${card.id}" title="Elimina">✕</button>
+          </div>
+        </div>
+      `}).join('');
+      
+      document.querySelectorAll('.copy-html').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const id = parseInt(e.currentTarget.dataset.id);
+          const card = createdCards.find(c => c.id === id);
+          if (card) {
+            const html = generateCardHTML(card);
+            copyToClipboard(html);
+          }
+        });
+      });
+      
+      document.querySelectorAll('.delete-card').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const id = parseInt(e.currentTarget.dataset.id);
+          createdCards = createdCards.filter(c => c.id !== id);
+          saveCards();
+          renderGallery();
+        });
+      });
+    }
+
+    loadCards();
+    updatePreview();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9bceff9143df0e4a',t:'MTc2ODI0NTQ5MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

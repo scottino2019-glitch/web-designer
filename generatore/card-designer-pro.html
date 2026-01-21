@@ -1,0 +1,573 @@
+<!doctype html>
+<html lang="it" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Card Designer Pro - Flip, Cerchio &amp; Stack</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&amp;family=Space+Grotesk:wght@500;700&amp;display=swap" rel="stylesheet">
+  <style>
+    body {
+      box-sizing: border-box;
+    }
+    * {
+      font-family: 'Poppins', sans-serif;
+    }
+    .title-font {
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    
+    /* Stack Card Animations - Separate Effect */
+    .stack-card {
+      transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .effect-separate:hover .layer-0 {
+      transform: translateY(-30px) translateX(-20px) rotate(-8deg) !important;
+    }
+    .effect-separate:hover .layer-1 {
+      transform: translateY(-15px) translateX(-10px) rotate(-4deg) !important;
+    }
+    .effect-separate:hover .layer-top {
+      transform: translateY(0) translateX(0) rotate(0deg) !important;
+    }
+    
+    /* Stack Card Animations - Rotate Effect */
+    .effect-rotate:hover .layer-0 {
+      transform: rotate(-15deg) !important;
+    }
+    .effect-rotate:hover .layer-1 {
+      transform: rotate(-7.5deg) !important;
+    }
+    .effect-rotate:hover .layer-top {
+      transform: rotate(0deg) !important;
+    }
+    
+    /* Stack Card Animations - Scale Effect */
+    .effect-scale:hover .layer-0 {
+      transform: scale(0.88) translateY(-10px) !important;
+    }
+    .effect-scale:hover .layer-1 {
+      transform: scale(0.94) translateY(-5px) !important;
+    }
+    .effect-scale:hover .layer-top {
+      transform: scale(1.08) translateY(0) !important;
+    }
+    
+    /* Flip Card Animations */
+    .flip-card {
+      perspective: 1200px;
+    }
+    .flip-card-inner {
+      transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transform-style: preserve-3d;
+    }
+    .flip-card:hover .flip-card-inner {
+      transform: rotateY(180deg);
+    }
+    .flip-card-front, .flip-card-back {
+      backface-visibility: hidden;
+    }
+    .flip-card-back {
+      transform: rotateY(180deg);
+    }
+    
+    /* Circle Card Animations */
+    .circle-card {
+      transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .circle-scale:hover {
+      transform: scale(1.15);
+    }
+    .circle-rotate:hover {
+      transform: rotate(360deg) scale(1.05);
+    }
+    
+    /* Pulse Animation */
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 20px currentColor; opacity: 1; }
+      50% { box-shadow: 0 0 40px currentColor; opacity: 0.8; }
+    }
+    .pulse-effect {
+      animation: pulse-glow 2s ease-in-out infinite;
+    }
+    
+    /* Gradient Animation */
+    @keyframes gradient-shift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .animated-gradient {
+      background-size: 200% 200%;
+      animation: gradient-shift 3s ease infinite;
+    }
+    
+    /* Button Press Effect */
+    .btn-press:active {
+      transform: scale(0.96);
+    }
+    
+    /* Toast Animation */
+    @keyframes slideInRight {
+      from {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+    .toast {
+      animation: slideInRight 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #8b5cf6;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #7c3aed;
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full overflow-auto bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
+  <div id="app-container" class="min-h-full w-full"><!-- Header -->
+   <header class="bg-white/80 backdrop-blur-lg border-b border-purple-200 shadow-lg sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-6">
+     <div class="flex items-center justify-between">
+      <div>
+       <h1 class="title-font text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 bg-clip-text text-transparent">Card Designer Pro</h1>
+       <p class="text-gray-600 text-sm mt-2 font-medium">✨ Flip • Cerchio • Stack - Personalizzazione Avanzata</p>
+      </div>
+      <div class="hidden sm:flex items-center gap-3"><span class="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-bold shadow-lg">PRO</span>
+      </div>
+     </div>
+    </div>
+   </header>
+   <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8"><!-- Card Type Selector -->
+    <section class="mb-8">
+     <h2 class="text-2xl font-bold text-gray-800 mb-5 flex items-center gap-3"><span class="w-10 h-10 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 text-white flex items-center justify-center shadow-lg">🎯</span> Scegli il Tipo di Card</h2>
+     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4"><button onclick="selectCardType('stack')" id="btn-stack" class="card-type-btn active-type group relative overflow-hidden px-6 py-5 rounded-2xl bg-gradient-to-br from-purple-600 to-purple-700 text-white font-bold text-lg transition-all hover:shadow-2xl btn-press">
+       <div class="relative z-10 flex items-center justify-center gap-3"><span class="text-3xl">📚</span> <span>Stack</span>
+       </div>
+       <div class="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div></button> <button onclick="selectCardType('flip')" id="btn-flip" class="card-type-btn group relative overflow-hidden px-6 py-5 rounded-2xl bg-white text-gray-700 font-bold text-lg transition-all hover:shadow-xl border-3 border-gray-200 btn-press">
+       <div class="relative z-10 flex items-center justify-center gap-3"><span class="text-3xl">🔄</span> <span>Flip</span>
+       </div></button> <button onclick="selectCardType('circle')" id="btn-circle" class="card-type-btn group relative overflow-hidden px-6 py-5 rounded-2xl bg-white text-gray-700 font-bold text-lg transition-all hover:shadow-xl border-3 border-gray-200 btn-press">
+       <div class="relative z-10 flex items-center justify-center gap-3"><span class="text-3xl">⭕</span> <span>Cerchio</span>
+       </div></button>
+     </div>
+    </section><!-- Customization Panel -->
+    <section class="mb-8">
+     <div class="bg-white/90 backdrop-blur-sm rounded-3xl p-6 border-2 border-purple-200 shadow-xl">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-3"><span class="w-10 h-10 rounded-2xl bg-gradient-to-br from-pink-500 to-purple-500 text-white flex items-center justify-center shadow-lg">⚙️</span> Personalizzazione <span class="text-purple-600" id="card-type-name">Stack</span></h2><!-- Common Settings -->
+      <div class="mb-6">
+       <h3 class="text-lg font-bold text-gray-700 mb-4 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-purple-500"></span> Contenuto Base</h3>
+       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div><label for="card-title" class="block text-gray-700 text-sm font-semibold mb-2">Titolo</label> <input type="text" id="card-title" value="Creatività" oninput="updatePreview()" class="w-full px-4 py-3 rounded-xl bg-purple-50 border-2 border-purple-200 text-gray-900 font-medium focus:outline-none focus:border-purple-500 transition-all">
+        </div>
+        <div><label for="card-desc" class="block text-gray-700 text-sm font-semibold mb-2">Descrizione</label> <input type="text" id="card-desc" value="Esprimi il tuo stile unico" oninput="updatePreview()" class="w-full px-4 py-3 rounded-xl bg-purple-50 border-2 border-purple-200 text-gray-900 font-medium focus:outline-none focus:border-purple-500 transition-all">
+        </div>
+        <div><label for="card-emoji" class="block text-gray-700 text-sm font-semibold mb-2">Emoji/Icona</label> <input type="text" id="card-emoji" value="✨" oninput="updatePreview()" class="w-full px-4 py-3 rounded-xl bg-purple-50 border-2 border-purple-200 text-gray-900 font-medium text-center text-2xl focus:outline-none focus:border-purple-500 transition-all">
+        </div>
+        <div><label for="card-color" class="block text-gray-700 text-sm font-semibold mb-2">Colore Primario</label> <input type="color" id="card-color" value="#8b5cf6" oninput="updatePreview()" class="w-full h-12 rounded-xl bg-purple-50 border-2 border-purple-200 cursor-pointer">
+        </div>
+       </div>
+      </div><!-- Stack Specific Settings -->
+      <div id="stack-settings" class="mb-6">
+       <h3 class="text-lg font-bold text-gray-700 mb-4 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-pink-500"></span> Impostazioni Stack</h3>
+       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div><label for="stack-shape" class="block text-gray-700 text-sm font-semibold mb-2">Forma delle Card</label> <select id="stack-shape" onchange="updatePreview()" class="w-full px-4 py-3 rounded-xl bg-purple-50 border-2 border-purple-200 text-gray-900 font-medium focus:outline-none focus:border-purple-500 transition-all"> <option value="all-square">Tutte Quadrate</option> <option value="all-circle">Tutte Cerchi</option> <option value="circle-on-square">Cerchio su Quadrati</option> <option value="square-on-circle">Quadrato su Cerchi</option> <option value="mixed">Misto Alternato</option> </select>
+        </div>
+        <div><label for="stack-layers" class="block text-gray-700 text-sm font-semibold mb-2">Numero di Strati</label> <select id="stack-layers" onchange="updatePreview()" class="w-full px-4 py-3 rounded-xl bg-purple-50 border-2 border-purple-200 text-gray-900 font-medium focus:outline-none focus:border-purple-500 transition-all"> <option value="2">2 Strati</option> <option value="3" selected>3 Strati</option> <option value="4">4 Strati</option> </select>
+        </div>
+        <div><label for="stack-effect" class="block text-gray-700 text-sm font-semibold mb-2">Effetto Hover</label> <select id="stack-effect" onchange="updatePreview()" class="w-full px-4 py-3 rounded-xl bg-purple-50 border-2 border-purple-200 text-gray-900 font-medium focus:outline-none focus:border-purple-500 transition-all"> <option value="separate">Separazione</option> <option value="rotate">Rotazione</option> <option value="scale">Ingrandimento</option> </select>
+        </div>
+       </div>
+      </div><!-- Flip Specific Settings -->
+      <div id="flip-settings" class="mb-6 hidden">
+       <h3 class="text-lg font-bold text-gray-700 mb-4 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-blue-500"></span> Impostazioni Flip</h3>
+       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div><label for="flip-shape" class="block text-gray-700 text-sm font-semibold mb-2">Forma</label> <select id="flip-shape" onchange="updatePreview()" class="w-full px-4 py-3 rounded-xl bg-purple-50 border-2 border-purple-200 text-gray-900 font-medium focus:outline-none focus:border-purple-500 transition-all"> <option value="square">Quadrata</option> <option value="circle">Circolare</option> <option value="rounded">Arrotondata</option> </select>
+        </div>
+        <div><label for="flip-speed" class="block text-gray-700 text-sm font-semibold mb-2">Velocità</label> <select id="flip-speed" onchange="updatePreview()" class="w-full px-4 py-3 rounded-xl bg-purple-50 border-2 border-purple-200 text-gray-900 font-medium focus:outline-none focus:border-purple-500 transition-all"> <option value="fast">Veloce (0.4s)</option> <option value="medium" selected>Media (0.8s)</option> <option value="slow">Lenta (1.2s)</option> </select>
+        </div>
+        <div><label for="flip-back-color" class="block text-gray-700 text-sm font-semibold mb-2">Colore Retro</label> <input type="color" id="flip-back-color" value="#ec4899" oninput="updatePreview()" class="w-full h-12 rounded-xl bg-purple-50 border-2 border-purple-200 cursor-pointer">
+        </div>
+       </div>
+      </div><!-- Circle Specific Settings -->
+      <div id="circle-settings" class="mb-6 hidden">
+       <h3 class="text-lg font-bold text-gray-700 mb-4 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-cyan-500"></span> Impostazioni Cerchio</h3>
+       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div><label for="circle-size" class="block text-gray-700 text-sm font-semibold mb-2">Dimensione</label> <select id="circle-size" onchange="updatePreview()" class="w-full px-4 py-3 rounded-xl bg-purple-50 border-2 border-purple-200 text-gray-900 font-medium focus:outline-none focus:border-purple-500 transition-all"> <option value="small">Piccolo (240px)</option> <option value="medium" selected>Medio (320px)</option> <option value="large">Grande (400px)</option> </select>
+        </div>
+        <div><label for="circle-border" class="block text-gray-700 text-sm font-semibold mb-2">Bordo</label> <select id="circle-border" onchange="updatePreview()" class="w-full px-4 py-3 rounded-xl bg-purple-50 border-2 border-purple-200 text-gray-900 font-medium focus:outline-none focus:border-purple-500 transition-all"> <option value="none">Nessuno</option> <option value="solid" selected>Solido</option> <option value="gradient">Gradiente</option> <option value="glow">Luminoso</option> </select>
+        </div>
+        <div><label for="circle-effect" class="block text-gray-700 text-sm font-semibold mb-2">Effetto</label> <select id="circle-effect" onchange="updatePreview()" class="w-full px-4 py-3 rounded-xl bg-purple-50 border-2 border-purple-200 text-gray-900 font-medium focus:outline-none focus:border-purple-500 transition-all"> <option value="scale">Ingrandimento</option> <option value="rotate">Rotazione</option> <option value="pulse">Pulsazione</option> </select>
+        </div>
+       </div>
+      </div>
+     </div>
+    </section><!-- Preview Section -->
+    <section class="mb-8">
+     <div class="flex items-center justify-between mb-5">
+      <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-3"><span class="w-10 h-10 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-500 text-white flex items-center justify-center shadow-lg">���️</span> Anteprima Live</h2>
+     </div>
+     <div id="preview-container" class="flex justify-center items-center min-h-96 bg-gradient-to-br from-white/50 to-purple-100/50 backdrop-blur-sm rounded-3xl p-12 border-2 border-purple-200 shadow-xl"><!-- Preview will be rendered here -->
+     </div>
+    </section><!-- Export Section -->
+    <section class="mb-8">
+     <div class="bg-white/90 backdrop-blur-sm rounded-3xl p-6 border-2 border-purple-200 shadow-xl">
+      <div class="flex items-center justify-between mb-4">
+       <h2 class="text-xl font-bold text-gray-800 flex items-center gap-3"><span class="w-9 h-9 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 text-white flex items-center justify-center shadow-lg">💾</span> Codice HTML</h2><button onclick="copyHTML()" class="px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold transition-all hover:shadow-xl btn-press flex items-center gap-2"> <span>📋</span> <span>Copia Codice</span> </button>
+      </div>
+      <div class="bg-gray-900 rounded-2xl overflow-hidden border-2 border-gray-700">
+       <div class="p-5 overflow-x-auto max-h-80">
+        <pre id="code-display" class="text-green-400 text-xs font-mono whitespace-pre-wrap break-words"></pre>
+       </div>
+      </div>
+     </div>
+    </section>
+   </main><!-- Toast Container -->
+   <div id="toast-container" class="fixed top-24 right-4 z-50 space-y-3"></div>
+  </div>
+  <script>
+    let currentCardType = 'stack';
+
+    function selectCardType(type) {
+      currentCardType = type;
+      
+      // Update buttons
+      document.querySelectorAll('.card-type-btn').forEach(btn => {
+        btn.classList.remove('active-type', 'from-purple-600', 'to-purple-700', 'text-white', 'shadow-2xl');
+        btn.classList.add('bg-white', 'text-gray-700', 'border-3', 'border-gray-200');
+      });
+      
+      const activeBtn = document.getElementById(`btn-${type}`);
+      if (activeBtn) {
+        activeBtn.classList.add('active-type', 'from-purple-600', 'to-purple-700', 'text-white', 'shadow-2xl');
+        activeBtn.classList.remove('bg-white', 'text-gray-700', 'border-3', 'border-gray-200');
+        activeBtn.classList.add('bg-gradient-to-br');
+      }
+      
+      // Show/hide specific settings
+      document.getElementById('stack-settings').classList.toggle('hidden', type !== 'stack');
+      document.getElementById('flip-settings').classList.toggle('hidden', type !== 'flip');
+      document.getElementById('circle-settings').classList.toggle('hidden', type !== 'circle');
+      
+      // Update card type name
+      const names = { stack: 'Stack', flip: 'Flip', circle: 'Cerchio' };
+      document.getElementById('card-type-name').textContent = names[type];
+      
+      updatePreview();
+    }
+
+    function getCardData() {
+      return {
+        title: document.getElementById('card-title').value || 'Creatività',
+        description: document.getElementById('card-desc').value || 'Esprimi il tuo stile unico',
+        emoji: document.getElementById('card-emoji').value || '✨',
+        color: document.getElementById('card-color').value || '#8b5cf6',
+        
+        // Stack settings
+        stackShape: document.getElementById('stack-shape').value,
+        stackLayers: parseInt(document.getElementById('stack-layers').value),
+        stackEffect: document.getElementById('stack-effect').value,
+        
+        // Flip settings
+        flipShape: document.getElementById('flip-shape').value,
+        flipSpeed: document.getElementById('flip-speed').value,
+        flipBackColor: document.getElementById('flip-back-color').value,
+        
+        // Circle settings
+        circleSize: document.getElementById('circle-size').value,
+        circleBorder: document.getElementById('circle-border').value,
+        circleEffect: document.getElementById('circle-effect').value
+      };
+    }
+
+    function adjustColor(hex, amount) {
+      let r = parseInt(hex.slice(1, 3), 16);
+      let g = parseInt(hex.slice(3, 5), 16);
+      let b = parseInt(hex.slice(5, 7), 16);
+      
+      r = Math.max(0, Math.min(255, r + amount));
+      g = Math.max(0, Math.min(255, g + amount));
+      b = Math.max(0, Math.min(255, b + amount));
+      
+      return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+    }
+
+    function generateStackCard(data) {
+      const layers = data.stackLayers;
+      const shape = data.stackShape;
+      const effect = data.stackEffect;
+      
+      let layerHTML = '';
+      const shapes = [];
+      
+      // Determine shapes for each layer
+      if (shape === 'all-square') {
+        shapes.push(...Array(layers).fill('square'));
+      } else if (shape === 'all-circle') {
+        shapes.push(...Array(layers).fill('circle'));
+      } else if (shape === 'circle-on-square') {
+        shapes.push(...Array(layers - 1).fill('square'), 'circle');
+      } else if (shape === 'square-on-circle') {
+        shapes.push(...Array(layers - 1).fill('circle'), 'square');
+      } else if (shape === 'mixed') {
+        for (let i = 0; i < layers; i++) {
+          shapes.push(i % 2 === 0 ? 'square' : 'circle');
+        }
+      }
+      
+      // Generate layers (bottom cards with colors)
+      for (let i = 0; i < layers - 1; i++) {
+        const isCircle = shapes[i] === 'circle';
+        const colorShift = -15 * (layers - 1 - i);
+        const rotation = effect === 'rotate' ? -6 * (layers - 1 - i) : -3 * (layers - 1 - i);
+        layerHTML += `<div class="stack-card layer-${i}" style="position: absolute; inset: 0; ${isCircle ? 'border-radius: 50%;' : 'border-radius: 16px;'} box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15); background: ${adjustColor(data.color, colorShift)}; transform: rotate(${rotation}deg); z-index: ${i};"></div>`;
+      }
+      
+      // Top layer (with content) - use gradient background based on shape
+      const topIsCircle = shapes[layers - 1] === 'circle';
+      const topLayer = `<div class="stack-card layer-top" style="position: absolute; inset: 0; background: linear-gradient(135deg, ${data.color}, ${adjustColor(data.color, -30)}); ${topIsCircle ? 'border-radius: 50%;' : 'border-radius: 20px;'} box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2); padding: ${topIsCircle ? '48px 36px' : '40px'}; display: flex; flex-direction: column; ${topIsCircle ? 'align-items: center; justify-content: center; text-align: center;' : ''} z-index: ${layers - 1};">
+        <span style="font-size: 56px; ${topIsCircle ? 'margin-bottom: 20px;' : 'margin-bottom: 24px;'}">${data.emoji}</span>
+        <h3 style="font-size: ${topIsCircle ? '24px' : '28px'}; font-weight: bold; color: white; margin-bottom: 12px;">${data.title}</h3>
+        <p style="color: rgba(255, 255, 255, 0.95); font-size: 15px; ${topIsCircle ? '' : 'flex: 1;'} line-height: 1.6; margin-bottom: ${topIsCircle ? '0' : '24px'};">${data.description}</p>
+        ${!topIsCircle ? `<div style="height: 12px; border-radius: 9999px; background: rgba(255, 255, 255, 0.3);"></div>` : ''}
+      </div>`;
+      
+      return `<div class="stack-container effect-${effect}" style="position: relative; width: 100%; max-width: ${topIsCircle ? '340px' : '400px'}; height: ${topIsCircle ? '340px' : '460px'};">
+        ${layerHTML}
+        ${topLayer}
+      </div>`;
+    }
+
+    function generateFlipCard(data) {
+      const isCircle = data.flipShape === 'circle';
+      const isRounded = data.flipShape === 'rounded';
+      const borderRadius = isCircle ? '50%' : (isRounded ? '24px' : '12px');
+      const speed = data.flipSpeed === 'fast' ? '0.4s' : (data.flipSpeed === 'slow' ? '1.2s' : '0.8s');
+      
+      return `<div class="flip-card" style="width: 100%; max-width: ${isCircle ? '320px' : '360px'}; height: ${isCircle ? '320px' : '400px'};">
+        <div class="flip-card-inner" style="position: relative; width: 100%; height: 100%; transition: transform ${speed} cubic-bezier(0.34, 1.56, 0.64, 1);">
+          <div class="flip-card-front" style="position: absolute; width: 100%; height: 100%; border-radius: ${borderRadius}; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: ${isCircle ? '40px 32px' : '40px'}; text-align: center; background: linear-gradient(135deg, ${data.color}, ${adjustColor(data.color, -40)})">
+            <span style="font-size: ${isCircle ? '56px' : '64px'}; margin-bottom: 20px;">${data.emoji}</span>
+            <h3 style="font-size: ${isCircle ? '22px' : '26px'}; font-weight: bold; color: white; margin-bottom: 12px;">${data.title}</h3>
+            <p style="color: rgba(255, 255, 255, 0.9); font-size: 14px; font-weight: 500;">✨ Passa sopra per girare</p>
+          </div>
+          <div class="flip-card-back" style="position: absolute; width: 100%; height: 100%; background: linear-gradient(135deg, ${data.flipBackColor}, ${adjustColor(data.flipBackColor, -40)}); border-radius: ${borderRadius}; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15); padding: ${isCircle ? '40px 32px' : '40px'}; display: flex; flex-direction: column; justify-content: center; ${isCircle ? 'align-items: center; text-align: center;' : ''}">
+            <h4 style="font-size: ${isCircle ? '20px' : '22px'}; font-weight: 800; color: white; margin-bottom: 16px;">🎯 Dettagli</h4>
+            <p style="color: rgba(255, 255, 255, 0.95); font-size: 14px; margin-bottom: 20px; line-height: 1.7;">${data.description}</p>
+            <ul style="list-style: none; padding: 0; margin: 0;">
+              <li style="display: flex; align-items: center; gap: 10px; color: white; font-size: 14px; margin-bottom: 10px; ${isCircle ? 'justify-content: center;' : ''}">
+                <span style="width: 10px; height: 10px; border-radius: 50%; background: white; flex-shrink: 0;"></span>
+                Personalizzabile
+              </li>
+              <li style="display: flex; align-items: center; gap: 10px; color: white; font-size: 14px; margin-bottom: 10px; ${isCircle ? 'justify-content: center;' : ''}">
+                <span style="width: 10px; height: 10px; border-radius: 50%; background: white; flex-shrink: 0;"></span>
+                Responsive
+              </li>
+              <li style="display: flex; align-items: center; gap: 10px; color: white; font-size: 14px; ${isCircle ? 'justify-content: center;' : ''}">
+                <span style="width: 10px; height: 10px; border-radius: 50%; background: white; flex-shrink: 0;"></span>
+                Animato
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>`;
+    }
+
+    function generateCircleCard(data) {
+      const sizes = { small: '240px', medium: '320px', large: '400px' };
+      const size = sizes[data.circleSize];
+      
+      let borderStyle = '';
+      if (data.circleBorder === 'solid') {
+        borderStyle = `border: 6px solid white; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);`;
+      } else if (data.circleBorder === 'gradient') {
+        borderStyle = `border: 6px solid transparent; background-image: linear-gradient(white, white), linear-gradient(135deg, ${data.color}, ${adjustColor(data.color, 60)}); background-origin: border-box; background-clip: padding-box, border-box; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);`;
+      } else if (data.circleBorder === 'glow') {
+        borderStyle = `border: 4px solid ${data.color}; box-shadow: 0 0 30px ${data.color}80, 0 20px 40px rgba(0, 0, 0, 0.2);`;
+      } else {
+        borderStyle = `box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);`;
+      }
+      
+      let effectClass = 'circle-card';
+      let extraStyles = '';
+      if (data.circleEffect === 'scale') {
+        effectClass += ' circle-scale';
+      } else if (data.circleEffect === 'rotate') {
+        effectClass += ' circle-rotate';
+      } else if (data.circleEffect === 'pulse') {
+        extraStyles = `animation: pulse-glow 2.5s ease-in-out infinite; color: ${data.color};`;
+      }
+      
+      return `<div class="${effectClass}" style="width: 100%; max-width: ${size}; height: ${size}; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: ${data.circleSize === 'small' ? '32px' : '48px'}; ${borderStyle} background: linear-gradient(135deg, ${data.color}, ${adjustColor(data.color, -50)}); ${extraStyles}">
+        <span style="font-size: ${data.circleSize === 'small' ? '48px' : (data.circleSize === 'large' ? '72px' : '64px')}; margin-bottom: ${data.circleSize === 'small' ? '16px' : '24px'};">${data.emoji}</span>
+        <h3 style="font-size: ${data.circleSize === 'small' ? '22px' : (data.circleSize === 'large' ? '32px' : '28px')}; font-weight: bold; color: white; margin-bottom: 12px;">${data.title}</h3>
+        <p style="color: rgba(255, 255, 255, 0.95); font-size: ${data.circleSize === 'small' ? '13px' : '15px'}; line-height: 1.6;">${data.description}</p>
+      </div>`;
+    }
+
+    function generateCardPreview(type, data) {
+      switch(type) {
+        case 'stack':
+          return generateStackCard(data);
+        case 'flip':
+          return generateFlipCard(data);
+        case 'circle':
+          return generateCircleCard(data);
+        default:
+          return '';
+      }
+    }
+
+    function generateFullHTML(type, data) {
+      const preview = generateCardPreview(type, data);
+      
+      let styles = '';
+      if (type === 'stack') {
+        const effect = data.stackEffect;
+        styles = `.stack-card { transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }`;
+        
+        if (effect === 'separate') {
+          styles += `
+.effect-separate:hover .layer-0 { transform: translateY(-30px) translateX(-20px) rotate(-8deg) !important; }
+.effect-separate:hover .layer-1 { transform: translateY(-15px) translateX(-10px) rotate(-4deg) !important; }
+.effect-separate:hover .layer-top { transform: translateY(0) translateX(0) rotate(0deg) !important; }`;
+        } else if (effect === 'rotate') {
+          styles += `
+.effect-rotate:hover .layer-0 { transform: rotate(-15deg) !important; }
+.effect-rotate:hover .layer-1 { transform: rotate(-7.5deg) !important; }
+.effect-rotate:hover .layer-top { transform: rotate(0deg) !important; }`;
+        } else if (effect === 'scale') {
+          styles += `
+.effect-scale:hover .layer-0 { transform: scale(0.88) translateY(-10px) !important; }
+.effect-scale:hover .layer-1 { transform: scale(0.94) translateY(-5px) !important; }
+.effect-scale:hover .layer-top { transform: scale(1.08) translateY(0) !important; }`;
+        }
+        
+        if (data.stackLayers === 4) {
+          if (effect === 'separate') {
+            styles += `\n.effect-separate:hover .layer-2 { transform: translateY(-7px) translateX(-5px) rotate(-2deg) !important; }`;
+          } else if (effect === 'rotate') {
+            styles += `\n.effect-rotate:hover .layer-2 { transform: rotate(-3.75deg) !important; }`;
+          } else if (effect === 'scale') {
+            styles += `\n.effect-scale:hover .layer-2 { transform: scale(0.97) translateY(-2px) !important; }`;
+          }
+        }
+      } else if (type === 'flip') {
+        const speed = data.flipSpeed === 'fast' ? '0.4s' : (data.flipSpeed === 'slow' ? '1.2s' : '0.8s');
+        styles = `.flip-card { perspective: 1200px; }
+.flip-card-inner { transition: transform ${speed} cubic-bezier(0.34, 1.56, 0.64, 1); transform-style: preserve-3d; }
+.flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
+.flip-card-front, .flip-card-back { backface-visibility: hidden; }
+.flip-card-back { transform: rotateY(180deg); }`;
+      } else if (type === 'circle') {
+        styles = `.circle-card { transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }`;
+        if (data.circleEffect === 'scale') {
+          styles += `.circle-scale:hover { transform: scale(1.15); }`;
+        } else if (data.circleEffect === 'rotate') {
+          styles += `.circle-rotate:hover { transform: rotate(360deg) scale(1.05); }`;
+        } else if (data.circleEffect === 'pulse') {
+          styles += `@keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 20px currentColor; opacity: 1; } 50% { box-shadow: 0 0 40px currentColor; opacity: 0.85; } }
+.circle-card { animation: pulse-glow 2.5s ease-in-out infinite; }`;
+        }
+      }
+      
+      return `<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${data.title} - Card</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      min-height: 100vh; 
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 20px;
+    }
+    ${styles}
+  </style>
+</head>
+<body>
+  ${preview}
+</body>
+</html>`;
+    }
+
+    function updatePreview() {
+      const container = document.getElementById('preview-container');
+      const codeDisplay = document.getElementById('code-display');
+      const data = getCardData();
+      
+      const previewHTML = generateCardPreview(currentCardType, data);
+      const fullHTML = generateFullHTML(currentCardType, data);
+      
+      container.innerHTML = previewHTML;
+      codeDisplay.textContent = fullHTML;
+    }
+
+    function copyHTML() {
+      const codeDisplay = document.getElementById('code-display');
+      const html = codeDisplay.textContent;
+      
+      navigator.clipboard.writeText(html).then(() => {
+        showToast('✅ Codice HTML copiato negli appunti!', 'success');
+      }).catch(() => {
+        const textarea = document.createElement('textarea');
+        textarea.value = html;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+          document.execCommand('copy');
+          showToast('✅ Codice HTML copiato!', 'success');
+        } catch (err) {
+          showToast('❌ Errore nella copia', 'error');
+        }
+        document.body.removeChild(textarea);
+      });
+    }
+
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      const bgColor = type === 'success' ? 'from-green-500 to-emerald-500' : 'from-red-500 to-pink-500';
+      
+      toast.className = `toast bg-gradient-to-r ${bgColor} text-white px-6 py-4 rounded-2xl shadow-2xl font-bold text-sm`;
+      toast.textContent = message;
+      
+      container.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(400px)';
+        setTimeout(() => toast.remove(), 400);
+      }, 3000);
+    }
+
+    // Initialize
+    updatePreview();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9bb7cadf17dd5602',t:'MTc2ODAwMjE2MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

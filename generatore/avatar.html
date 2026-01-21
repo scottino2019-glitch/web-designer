@@ -1,0 +1,761 @@
+<!doctype html>
+<html lang="it" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Avatar Creator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <style>
+    body {
+      box-sizing: border-box;
+    }
+    
+    * {
+      font-family: 'Fredoka', sans-serif;
+    }
+    
+    .option-card {
+      transition: all 0.25s ease;
+      cursor: pointer;
+      border: 3px solid transparent;
+    }
+    
+    .option-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+    
+    .option-card.active {
+      border-color: #f59e0b;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(245, 158, 11, 0.4);
+    }
+    
+    .color-swatch {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: 3px solid transparent;
+    }
+    
+    .color-swatch:hover {
+      transform: scale(1.15);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    
+    .color-swatch.active {
+      border-color: white;
+      transform: scale(1.15);
+      box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.5);
+    }
+    
+    .section-card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+    
+    .avatar-display {
+      background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+      border-radius: 24px;
+      padding: 48px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.3s ease;
+    }
+    
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #10b981;
+      color: white;
+      padding: 16px 28px;
+      border-radius: 12px;
+      font-weight: 600;
+      box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s ease;
+      pointer-events: none;
+      z-index: 1000;
+    }
+    
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full">
+  <div id="app-container" class="h-full w-full overflow-auto" style="background: linear-gradient(135deg, #f59e0b 0%, #ec4899 50%, #8b5cf6 100%);">
+   <div class="min-h-full w-full p-6">
+    <header class="text-center mb-8">
+     <h1 id="main-title" class="font-bold mb-2" style="color: #ffffff; font-size: 48px;">Avatar Creator</h1>
+     <p id="subtitle" class="font-medium" style="color: rgba(255,255,255,0.95); font-size: 20px;">Crea il tuo avatar personalizzato</p>
+    </header>
+    <div class="max-w-7xl mx-auto">
+     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="lg:col-span-1">
+       <div class="section-card sticky top-6">
+        <h3 class="font-bold text-xl mb-4" style="color: #d97706;">Il Tuo Avatar</h3>
+        <div class="avatar-display mb-6">
+         <svg id="avatar-svg" width="280" height="340" viewbox="0 0 280 340" style="display: block; margin: 0 auto;"><defs>
+           <clippath id="faceClip">
+            <ellipse id="faceClipShape" cx="140" cy="170" rx="70" ry="80" />
+           </clippath>
+          </defs> <!-- Background --> <circle cx="140" cy="170" r="135" fill="#ffffff" opacity="0.4" /> <!-- Hair Back --> <g id="hair-back"></g> <!-- Face --> <ellipse id="face" cx="140" cy="170" rx="70" ry="80" fill="#fcc89b" /> <!-- Ears --> <ellipse id="ear-left" cx="70" cy="170" rx="15" ry="20" fill="#fcc89b" /> <ellipse id="ear-right" cx="210" cy="170" rx="15" ry="20" fill="#fcc89b" /> <!-- Neck --> <rect id="neck" x="115" y="235" width="50" height="40" fill="#fcc89b" /> <!-- Body --> <g id="body">
+           <path d="M 85 275 L 85 340 L 195 340 L 195 275 Q 190 265 140 265 Q 90 265 85 275 Z" fill="#3b82f6" />
+          </g> <!-- Hair Front --> <g id="hair-front"></g> <!-- Eyebrows --> <g id="eyebrows"></g> <!-- Eyes --> <g id="eyes"></g> <!-- Nose --> <ellipse id="nose" cx="140" cy="185" rx="8" ry="12" fill="#f4a582" opacity="0.5" /> <!-- Mouth --> <g id="mouth"></g> <!-- Glasses --> <g id="glasses"></g> <!-- Accessory --> <g id="accessory"></g>
+         </svg>
+        </div><button id="download-btn" class="w-full font-bold py-3 px-6 rounded-xl transition-all" style="background: #f59e0b; color: white; font-size: 16px;"> ⬇️ Scarica SVG </button> <button id="random-btn" class="w-full mt-3 font-semibold py-3 px-6 rounded-xl transition-all" style="background: rgba(245, 158, 11, 0.15); color: #d97706; font-size: 15px;"> 🎲 Randomizza </button>
+       </div>
+      </div>
+      <div class="lg:col-span-2 space-y-6"><!-- Gender -->
+       <div class="section-card fade-in">
+        <h3 class="font-bold text-lg mb-4" style="color: #d97706;">👤 Genere</h3>
+        <div class="grid grid-cols-2 gap-4">
+         <div class="option-card active rounded-xl p-6 text-center" data-option="gender" data-value="male" style="background: #fef3c7;">
+          <div class="text-5xl mb-2">
+           👨
+          </div>
+          <div class="text-sm font-semibold" style="color: #d97706;">
+           Uomo
+          </div>
+         </div>
+         <div class="option-card rounded-xl p-6 text-center" data-option="gender" data-value="female" style="background: #fef3c7;">
+          <div class="text-5xl mb-2">
+           👩
+          </div>
+          <div class="text-sm font-semibold" style="color: #d97706;">
+           Donna
+          </div>
+         </div>
+        </div>
+       </div><!-- Face Shape -->
+       <div class="section-card fade-in">
+        <h3 class="font-bold text-lg mb-4" style="color: #d97706;">🎭 Forma Viso</h3>
+        <div class="grid grid-cols-3 gap-3">
+         <div class="option-card active rounded-xl p-4 text-center" data-option="face" data-value="oval" style="background: #fef3c7;">
+          <div class="text-3xl mb-1">
+           😊
+          </div>
+          <div class="text-xs font-semibold" style="color: #d97706;">
+           Ovale
+          </div>
+         </div>
+         <div class="option-card rounded-xl p-4 text-center" data-option="face" data-value="round" style="background: #fef3c7;">
+          <div class="text-3xl mb-1">
+           😄
+          </div>
+          <div class="text-xs font-semibold" style="color: #d97706;">
+           Rotondo
+          </div>
+         </div>
+         <div class="option-card rounded-xl p-4 text-center" data-option="face" data-value="square" style="background: #fef3c7;">
+          <div class="text-3xl mb-1">
+           🙂
+          </div>
+          <div class="text-xs font-semibold" style="color: #d97706;">
+           Quadrato
+          </div>
+         </div>
+        </div>
+       </div><!-- Skin -->
+       <div class="section-card fade-in">
+        <h3 class="font-bold text-lg mb-4" style="color: #d97706;">🎨 Tonalità Pelle</h3>
+        <div class="flex flex-wrap gap-3">
+         <div class="color-swatch active" data-option="skin" data-value="#fcc89b" style="background: #fcc89b;"></div>
+         <div class="color-swatch" data-option="skin" data-value="#f4a582" style="background: #f4a582;"></div>
+         <div class="color-swatch" data-option="skin" data-value="#e59a72" style="background: #e59a72;"></div>
+         <div class="color-swatch" data-option="skin" data-value="#d88d67" style="background: #d88d67;"></div>
+         <div class="color-swatch" data-option="skin" data-value="#c47f5f" style="background: #c47f5f;"></div>
+         <div class="color-swatch" data-option="skin" data-value="#8b5a3c" style="background: #8b5a3c;"></div>
+        </div>
+       </div><!-- Hair -->
+       <div class="section-card fade-in">
+        <h3 class="font-bold text-lg mb-4" style="color: #d97706;">💇 Capelli</h3>
+        <div class="grid grid-cols-4 gap-3">
+         <div class="option-card active rounded-xl p-4 text-center" data-option="hair" data-value="short" style="background: #fef3c7;">
+          <div class="text-3xl mb-1">
+           ✂️
+          </div>
+          <div class="text-xs font-semibold" style="color: #d97706;">
+           Corti
+          </div>
+         </div>
+         <div class="option-card rounded-xl p-4 text-center" data-option="hair" data-value="long" style="background: #fef3c7;">
+          <div class="text-3xl mb-1">
+           👱‍♀️
+          </div>
+          <div class="text-xs font-semibold" style="color: #d97706;">
+           Lunghi
+          </div>
+         </div>
+         <div class="option-card rounded-xl p-4 text-center" data-option="hair" data-value="curly" style="background: #fef3c7;">
+          <div class="text-3xl mb-1">
+           🦱
+          </div>
+          <div class="text-xs font-semibold" style="color: #d97706;">
+           Ricci
+          </div>
+         </div>
+         <div class="option-card rounded-xl p-4 text-center" data-option="hair" data-value="bald" style="background: #fef3c7;">
+          <div class="text-3xl mb-1">
+           👨‍🦲
+          </div>
+          <div class="text-xs font-semibold" style="color: #d97706;">
+           Calvo
+          </div>
+         </div>
+        </div>
+       </div><!-- Hair Color -->
+       <div class="section-card fade-in">
+        <h3 class="font-bold text-lg mb-4" style="color: #d97706;">🌈 Colore Capelli</h3>
+        <div class="flex flex-wrap gap-3">
+         <div class="color-swatch active" data-option="hairColor" data-value="#2c1810" style="background: #2c1810;"></div>
+         <div class="color-swatch" data-option="hairColor" data-value="#8b4513" style="background: #8b4513;"></div>
+         <div class="color-swatch" data-option="hairColor" data-value="#daa520" style="background: #daa520;"></div>
+         <div class="color-swatch" data-option="hairColor" data-value="#f4e7c3" style="background: #f4e7c3;"></div>
+         <div class="color-swatch" data-option="hairColor" data-value="#dc143c" style="background: #dc143c;"></div>
+         <div class="color-swatch" data-option="hairColor" data-value="#9b59b6" style="background: #9b59b6;"></div>
+        </div>
+       </div><!-- Eyes -->
+       <div class="section-card fade-in">
+        <h3 class="font-bold text-lg mb-4" style="color: #d97706;">👁️ Occhi</h3>
+        <div class="grid grid-cols-3 gap-3">
+         <div class="option-card active rounded-xl p-4 text-center" data-option="eyes" data-value="normal" style="background: #fef3c7;">
+          <div class="text-3xl mb-1">
+           👁️
+          </div>
+          <div class="text-xs font-semibold" style="color: #d97706;">
+           Normali
+          </div>
+         </div>
+         <div class="option-card rounded-xl p-4 text-center" data-option="eyes" data-value="happy" style="background: #fef3c7;">
+          <div class="text-3xl mb-1">
+           😊
+          </div>
+          <div class="text-xs font-semibold" style="color: #d97706;">
+           Felici
+          </div>
+         </div>
+         <div class="option-card rounded-xl p-4 text-center" data-option="eyes" data-value="surprised" style="background: #fef3c7;">
+          <div class="text-3xl mb-1">
+           😮
+          </div>
+          <div class="text-xs font-semibold" style="color: #d97706;">
+           Sorpresi
+          </div>
+         </div>
+        </div>
+       </div><!-- Mouth -->
+       <div class="section-card fade-in">
+        <h3 class="font-bold text-lg mb-4" style="color: #d97706;">😊 Bocca</h3>
+        <div class="grid grid-cols-3 gap-3">
+         <div class="option-card active rounded-xl p-4 text-center" data-option="mouth" data-value="smile" style="background: #fef3c7;">
+          <div class="text-3xl mb-1">
+           😊
+          </div>
+          <div class="text-xs font-semibold" style="color: #d97706;">
+           Sorriso
+          </div>
+         </div>
+         <div class="option-card rounded-xl p-4 text-center" data-option="mouth" data-value="big" style="background: #fef3c7;">
+          <div class="text-3xl mb-1">
+           😄
+          </div>
+          <div class="text-xs font-semibold" style="color: #d97706;">
+           Grande
+          </div>
+         </div>
+         <div class="option-card rounded-xl p-4 text-center" data-option="mouth" data-value="neutral" style="background: #fef3c7;">
+          <div class="text-3xl mb-1">
+           😐
+          </div>
+          <div class="text-xs font-semibold" style="color: #d97706;">
+           Neutro
+          </div>
+         </div>
+        </div>
+       </div><!-- Glasses -->
+       <div class="section-card fade-in">
+        <h3 class="font-bold text-lg mb-4" style="color: #d97706;">👓 Occhiali</h3>
+        <div class="grid grid-cols-4 gap-3">
+         <div class="option-card active rounded-xl p-4 text-center" data-option="glasses" data-value="none" style="background: #fef3c7;">
+          <div class="text-3xl mb-1">
+           ❌
+          </div>
+          <div class="text-xs font-semibold" style="color: #d97706;">
+           Nessuno
+          </div>
+         </div>
+         <div class="option-card rounded-xl p-4 text-center" data-option="glasses" data-value="round" style="background: #fef3c7;">
+          <div class="text-3xl mb-1">
+           👓
+          </div>
+          <div class="text-xs font-semibold" style="color: #d97706;">
+           Tondi
+          </div>
+         </div>
+         <div class="option-card rounded-xl p-4 text-center" data-option="glasses" data-value="square" style="background: #fef3c7;">
+          <div class="text-3xl mb-1">
+           🤓
+          </div>
+          <div class="text-xs font-semibold" style="color: #d97706;">
+           Quadrati
+          </div>
+         </div>
+         <div class="option-card rounded-xl p-4 text-center" data-option="glasses" data-value="sun" style="background: #fef3c7;">
+          <div class="text-3xl mb-1">
+           🕶️
+          </div>
+          <div class="text-xs font-semibold" style="color: #d97706;">
+           Da sole
+          </div>
+         </div>
+        </div>
+       </div><!-- Accessory -->
+       <div class="section-card fade-in">
+        <h3 class="font-bold text-lg mb-4" style="color: #d97706;">🎩 Accessori</h3>
+        <div class="grid grid-cols-4 gap-3">
+         <div class="option-card active rounded-xl p-4 text-center" data-option="accessory" data-value="none" style="background: #fef3c7;">
+          <div class="text-3xl mb-1">
+           ❌
+          </div>
+          <div class="text-xs font-semibold" style="color: #d97706;">
+           Nessuno
+          </div>
+         </div>
+         <div class="option-card rounded-xl p-4 text-center" data-option="accessory" data-value="cap" style="background: #fef3c7;">
+          <div class="text-3xl mb-1">
+           🧢
+          </div>
+          <div class="text-xs font-semibold" style="color: #d97706;">
+           Cappello
+          </div>
+         </div>
+         <div class="option-card rounded-xl p-4 text-center" data-option="accessory" data-value="beanie" style="background: #fef3c7;">
+          <div class="text-3xl mb-1">
+           🎿
+          </div>
+          <div class="text-xs font-semibold" style="color: #d97706;">
+           Berretto
+          </div>
+         </div>
+         <div class="option-card rounded-xl p-4 text-center" data-option="accessory" data-value="headphones" style="background: #fef3c7;">
+          <div class="text-3xl mb-1">
+           🎧
+          </div>
+          <div class="text-xs font-semibold" style="color: #d97706;">
+           Cuffie
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <div id="toast" class="toast">
+   ✓ Avatar scaricato!
+  </div>
+  <script>
+    const defaultConfig = {
+      background_start: '#f59e0b',
+      background_end: '#8b5cf6',
+      text_primary: '#ffffff',
+      button_color: '#f59e0b',
+      font_family: 'Fredoka',
+      font_size: 16,
+      title_text: 'Avatar Creator',
+      subtitle_text: 'Crea il tuo avatar personalizzato'
+    };
+
+    const state = {
+      gender: 'male',
+      face: 'oval',
+      skin: '#fcc89b',
+      hair: 'short',
+      hairColor: '#2c1810',
+      eyes: 'normal',
+      mouth: 'smile',
+      glasses: 'none',
+      accessory: 'none'
+    };
+
+    function drawAvatar() {
+      const isFemale = state.gender === 'female';
+      
+      // Face
+      const face = document.getElementById('face');
+      const faceClip = document.getElementById('faceClipShape');
+      
+      let rx = 70, ry = 80;
+      if (state.face === 'round') { rx = 75; ry = 75; }
+      if (state.face === 'square') { rx = 73; ry = 73; }
+      
+      // Women: more delicate face
+      if (isFemale) {
+        rx -= 5;
+        ry += 3;
+      }
+      
+      face.setAttribute('rx', rx);
+      face.setAttribute('ry', ry);
+      face.setAttribute('fill', state.skin);
+      faceClip.setAttribute('rx', rx);
+      faceClip.setAttribute('ry', ry);
+      
+      // Ears
+      document.getElementById('ear-left').setAttribute('fill', state.skin);
+      document.getElementById('ear-right').setAttribute('fill', state.skin);
+      
+      // Neck
+      const neck = document.getElementById('neck');
+      neck.setAttribute('fill', state.skin);
+      if (isFemale) {
+        neck.setAttribute('x', '120');
+        neck.setAttribute('width', '40');
+      } else {
+        neck.setAttribute('x', '115');
+        neck.setAttribute('width', '50');
+      }
+      
+      // Body
+      const body = document.getElementById('body');
+      if (isFemale) {
+        body.innerHTML = '<path d="M 90 275 L 95 340 L 185 340 L 190 275 Q 185 265 140 265 Q 95 265 90 275 Z" fill="#ec4899"/>';
+      } else {
+        body.innerHTML = '<path d="M 85 275 L 85 340 L 195 340 L 195 275 Q 190 265 140 265 Q 90 265 85 275 Z" fill="#3b82f6"/>';
+      }
+      
+      // Hair Back
+      const hairBack = document.getElementById('hair-back');
+      hairBack.innerHTML = '';
+      
+      if (state.hair === 'short') {
+        hairBack.innerHTML = `<ellipse cx="140" cy="125" rx="80" ry="50" fill="${state.hairColor}"/>`;
+      } else if (state.hair === 'long') {
+        hairBack.innerHTML = `
+          <ellipse cx="140" cy="125" rx="80" ry="50" fill="${state.hairColor}"/>
+          <path d="M 60 150 Q 55 180 60 240 L 70 240 Q 68 180 65 150 Z" fill="${state.hairColor}"/>
+          <path d="M 220 150 Q 225 180 220 240 L 210 240 Q 212 180 215 150 Z" fill="${state.hairColor}"/>
+        `;
+      } else if (state.hair === 'curly') {
+        hairBack.innerHTML = `
+          <circle cx="90" cy="115" r="28" fill="${state.hairColor}"/>
+          <circle cx="120" cy="105" r="30" fill="${state.hairColor}"/>
+          <circle cx="140" cy="100" r="32" fill="${state.hairColor}"/>
+          <circle cx="160" cy="105" r="30" fill="${state.hairColor}"/>
+          <circle cx="190" cy="115" r="28" fill="${state.hairColor}"/>
+        `;
+      }
+      
+      // Hair Front
+      const hairFront = document.getElementById('hair-front');
+      hairFront.innerHTML = '';
+      
+      if (state.hair === 'short') {
+        hairFront.innerHTML = `
+          <path d="M 65 145 Q 60 120 75 110 Q 95 100 115 110 L 120 145" fill="${state.hairColor}"/>
+          <path d="M 215 145 Q 220 120 205 110 Q 185 100 165 110 L 160 145" fill="${state.hairColor}"/>
+          <ellipse cx="140" cy="115" rx="45" ry="25" fill="${state.hairColor}"/>
+        `;
+      } else if (state.hair === 'long') {
+        hairFront.innerHTML = `
+          <path d="M 65 145 Q 60 120 75 110 Q 95 100 115 110 L 120 145" fill="${state.hairColor}"/>
+          <path d="M 215 145 Q 220 120 205 110 Q 185 100 165 110 L 160 145" fill="${state.hairColor}"/>
+          <ellipse cx="140" cy="115" rx="48" ry="28" fill="${state.hairColor}"/>
+        `;
+      } else if (state.hair === 'curly') {
+        hairFront.innerHTML = `
+          <circle cx="75" cy="140" r="22" fill="${state.hairColor}"/>
+          <circle cx="205" cy="140" r="22" fill="${state.hairColor}"/>
+          <circle cx="110" cy="120" r="25" fill="${state.hairColor}"/>
+          <circle cx="170" cy="120" r="25" fill="${state.hairColor}"/>
+          <circle cx="140" cy="115" r="22" fill="${state.hairColor}"/>
+        `;
+      }
+      
+      // Eyebrows
+      const eyebrows = document.getElementById('eyebrows');
+      if (isFemale) {
+        eyebrows.innerHTML = `
+          <path d="M 105 148 Q 115 145 125 148" stroke="${state.hairColor}" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M 155 148 Q 165 145 175 148" stroke="${state.hairColor}" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        `;
+      } else {
+        eyebrows.innerHTML = `
+          <path d="M 105 150 Q 115 147 125 150" stroke="${state.hairColor}" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <path d="M 155 150 Q 165 147 175 150" stroke="${state.hairColor}" stroke-width="4" fill="none" stroke-linecap="round"/>
+        `;
+      }
+      
+      // Eyes
+      const eyes = document.getElementById('eyes');
+      
+      if (state.eyes === 'normal') {
+        if (isFemale) {
+          eyes.innerHTML = `
+            <ellipse cx="115" cy="165" rx="10" ry="14" fill="#1a1a1a"/>
+            <ellipse cx="165" cy="165" rx="10" ry="14" fill="#1a1a1a"/>
+            <ellipse cx="117" cy="162" rx="4" ry="5" fill="#ffffff"/>
+            <ellipse cx="167" cy="162" rx="4" ry="5" fill="#ffffff"/>
+            <path d="M 105 155 Q 115 153 125 155" stroke="#1a1a1a" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <path d="M 155 155 Q 165 153 175 155" stroke="#1a1a1a" stroke-width="2" fill="none" stroke-linecap="round"/>
+          `;
+        } else {
+          eyes.innerHTML = `
+            <ellipse cx="115" cy="165" rx="9" ry="12" fill="#1a1a1a"/>
+            <ellipse cx="165" cy="165" rx="9" ry="12" fill="#1a1a1a"/>
+            <ellipse cx="117" cy="162" rx="3" ry="4" fill="#ffffff"/>
+            <ellipse cx="167" cy="162" rx="3" ry="4" fill="#ffffff"/>
+          `;
+        }
+      } else if (state.eyes === 'happy') {
+        eyes.innerHTML = `
+          <path d="M 105 160 Q 115 168 125 160" stroke="#1a1a1a" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <path d="M 155 160 Q 165 168 175 160" stroke="#1a1a1a" stroke-width="4" fill="none" stroke-linecap="round"/>
+        `;
+      } else if (state.eyes === 'surprised') {
+        eyes.innerHTML = `
+          <circle cx="115" cy="165" r="12" fill="#1a1a1a"/>
+          <circle cx="165" cy="165" r="12" fill="#1a1a1a"/>
+          <circle cx="117" cy="162" r="5" fill="#ffffff"/>
+          <circle cx="167" cy="162" r="5" fill="#ffffff"/>
+        `;
+      }
+      
+      // Mouth
+      const mouth = document.getElementById('mouth');
+      const mouthColor = isFemale ? '#ff6b9d' : '#d97777';
+      
+      if (state.mouth === 'smile') {
+        if (isFemale) {
+          mouth.innerHTML = `
+            <path d="M 120 205 Q 140 215 160 205" stroke="${mouthColor}" stroke-width="4" fill="none" stroke-linecap="round"/>
+            <ellipse cx="140" cy="202" rx="25" ry="4" fill="${mouthColor}" opacity="0.3"/>
+          `;
+        } else {
+          mouth.innerHTML = `<path d="M 120 205 Q 140 213 160 205" stroke="${mouthColor}" stroke-width="3.5" fill="none" stroke-linecap="round"/>`;
+        }
+      } else if (state.mouth === 'big') {
+        mouth.innerHTML = `
+          <path d="M 115 200 Q 140 218 165 200" stroke="${mouthColor}" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <path d="M 125 208 Q 140 214 155 208" fill="#ffffff" opacity="0.7"/>
+        `;
+      } else if (state.mouth === 'neutral') {
+        mouth.innerHTML = `<line x1="125" y1="208" x2="155" y2="208" stroke="${mouthColor}" stroke-width="3" stroke-linecap="round"/>`;
+      }
+      
+      // Glasses
+      const glasses = document.getElementById('glasses');
+      
+      if (state.glasses === 'none') {
+        glasses.innerHTML = '';
+      } else if (state.glasses === 'round') {
+        glasses.innerHTML = `
+          <circle cx="115" cy="165" r="20" fill="none" stroke="#2c3e50" stroke-width="3"/>
+          <circle cx="165" cy="165" r="20" fill="none" stroke="#2c3e50" stroke-width="3"/>
+          <line x1="135" y1="165" x2="145" y2="165" stroke="#2c3e50" stroke-width="3"/>
+          <line x1="95" y1="165" x2="85" y2="168" stroke="#2c3e50" stroke-width="2.5"/>
+          <line x1="185" y1="165" x2="195" y2="168" stroke="#2c3e50" stroke-width="2.5"/>
+        `;
+      } else if (state.glasses === 'square') {
+        glasses.innerHTML = `
+          <rect x="95" y="150" width="40" height="30" rx="3" fill="none" stroke="#2c3e50" stroke-width="3"/>
+          <rect x="145" y="150" width="40" height="30" rx="3" fill="none" stroke="#2c3e50" stroke-width="3"/>
+          <line x1="135" y1="165" x2="145" y2="165" stroke="#2c3e50" stroke-width="3"/>
+          <line x1="95" y1="165" x2="85" y2="168" stroke="#2c3e50" stroke-width="2.5"/>
+          <line x1="185" y1="165" x2="195" y2="168" stroke="#2c3e50" stroke-width="2.5"/>
+        `;
+      } else if (state.glasses === 'sun') {
+        glasses.innerHTML = `
+          <ellipse cx="115" cy="165" rx="22" ry="16" fill="#2c3e50" opacity="0.85"/>
+          <ellipse cx="165" cy="165" rx="22" ry="16" fill="#2c3e50" opacity="0.85"/>
+          <line x1="137" y1="165" x2="143" y2="165" stroke="#2c3e50" stroke-width="4"/>
+          <line x1="93" y1="165" x2="83" y2="168" stroke="#2c3e50" stroke-width="3"/>
+          <line x1="187" y1="165" x2="197" y2="168" stroke="#2c3e50" stroke-width="3"/>
+        `;
+      }
+      
+      // Accessory
+      const accessory = document.getElementById('accessory');
+      
+      if (state.accessory === 'none') {
+        accessory.innerHTML = '';
+      } else if (state.accessory === 'cap') {
+        accessory.innerHTML = `
+          <ellipse cx="140" cy="115" rx="75" ry="20" fill="#e74c3c"/>
+          <path d="M 65 115 Q 75 95 140 98 Q 205 95 215 115" fill="#e74c3c"/>
+          <ellipse cx="110" cy="120" rx="45" ry="12" fill="#c0392b"/>
+        `;
+      } else if (state.accessory === 'beanie') {
+        accessory.innerHTML = `
+          <path d="M 65 145 Q 63 120 80 105 Q 110 90 140 88 Q 170 90 200 105 Q 217 120 215 145" fill="#9b59b6"/>
+          <ellipse cx="140" cy="95" rx="55" ry="25" fill="#8e44ad"/>
+        `;
+      } else if (state.accessory === 'headphones') {
+        accessory.innerHTML = `
+          <path d="M 70 155 Q 65 125 85 105 Q 110 90 140 88 Q 170 90 195 105 Q 215 125 210 155" stroke="#2c3e50" stroke-width="6" fill="none" stroke-linecap="round"/>
+          <ellipse cx="75" cy="170" rx="18" ry="24" fill="#34495e"/>
+          <ellipse cx="205" cy="170" rx="18" ry="24" fill="#34495e"/>
+        `;
+      }
+    }
+
+    function setupListeners() {
+      document.querySelectorAll('[data-option]').forEach(el => {
+        el.addEventListener('click', () => {
+          const option = el.dataset.option;
+          const value = el.dataset.value;
+          
+          document.querySelectorAll(`[data-option="${option}"]`).forEach(e => e.classList.remove('active'));
+          el.classList.add('active');
+          
+          state[option] = value;
+          drawAvatar();
+        });
+      });
+      
+      document.getElementById('download-btn').addEventListener('click', () => {
+        const svg = document.getElementById('avatar-svg');
+        const serializer = new XMLSerializer();
+        const svgString = serializer.serializeToString(svg);
+        const blob = new Blob([svgString], { type: 'image/svg+xml' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'my-avatar.svg';
+        link.click();
+        URL.revokeObjectURL(url);
+        
+        const toast = document.getElementById('toast');
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2500);
+      });
+      
+      document.getElementById('random-btn').addEventListener('click', () => {
+        const options = {
+          gender: ['male', 'female'],
+          face: ['oval', 'round', 'square'],
+          skin: ['#fcc89b', '#f4a582', '#e59a72', '#d88d67', '#c47f5f', '#8b5a3c'],
+          hair: ['short', 'long', 'curly', 'bald'],
+          hairColor: ['#2c1810', '#8b4513', '#daa520', '#f4e7c3', '#dc143c', '#9b59b6'],
+          eyes: ['normal', 'happy', 'surprised'],
+          mouth: ['smile', 'big', 'neutral'],
+          glasses: ['none', 'round', 'square', 'sun'],
+          accessory: ['none', 'cap', 'beanie', 'headphones']
+        };
+        
+        for (let key in options) {
+          const values = options[key];
+          state[key] = values[Math.floor(Math.random() * values.length)];
+        }
+        
+        document.querySelectorAll('[data-option]').forEach(el => {
+          const option = el.dataset.option;
+          const value = el.dataset.value;
+          el.classList.toggle('active', state[option] === value);
+        });
+        
+        drawAvatar();
+      });
+    }
+
+    async function onConfigChange(config) {
+      const bgStart = config.background_start || defaultConfig.background_start;
+      const bgEnd = config.background_end || defaultConfig.background_end;
+      const textPrimary = config.text_primary || defaultConfig.text_primary;
+      const buttonColor = config.button_color || defaultConfig.button_color;
+      const fontFamily = config.font_family || defaultConfig.font_family;
+      const fontSize = config.font_size || defaultConfig.font_size;
+      const titleText = config.title_text || defaultConfig.title_text;
+      const subtitleText = config.subtitle_text || defaultConfig.subtitle_text;
+
+      document.getElementById('app-container').style.background = `linear-gradient(135deg, ${bgStart} 0%, ${bgEnd} 100%)`;
+      document.getElementById('main-title').style.color = textPrimary;
+      document.getElementById('main-title').textContent = titleText;
+      document.getElementById('subtitle').style.color = 'rgba(255,255,255,0.95)';
+      document.getElementById('subtitle').textContent = subtitleText;
+      document.getElementById('download-btn').style.background = buttonColor;
+
+      document.querySelectorAll('*').forEach(el => {
+        el.style.fontFamily = `${fontFamily}, sans-serif`;
+      });
+
+      document.getElementById('main-title').style.fontSize = `${fontSize * 3}px`;
+      document.getElementById('subtitle').style.fontSize = `${fontSize * 1.25}px`;
+    }
+
+    function mapToCapabilities(config) {
+      return {
+        recolorables: [
+          {
+            get: () => config.background_start || defaultConfig.background_start,
+            set: (value) => { config.background_start = value; window.elementSdk.setConfig({ background_start: value }); }
+          },
+          {
+            get: () => config.background_end || defaultConfig.background_end,
+            set: (value) => { config.background_end = value; window.elementSdk.setConfig({ background_end: value }); }
+          },
+          {
+            get: () => config.text_primary || defaultConfig.text_primary,
+            set: (value) => { config.text_primary = value; window.elementSdk.setConfig({ text_primary: value }); }
+          },
+          {
+            get: () => config.button_color || defaultConfig.button_color,
+            set: (value) => { config.button_color = value; window.elementSdk.setConfig({ button_color: value }); }
+          }
+        ],
+        borderables: [],
+        fontEditable: {
+          get: () => config.font_family || defaultConfig.font_family,
+          set: (value) => { config.font_family = value; window.elementSdk.setConfig({ font_family: value }); }
+        },
+        fontSizeable: {
+          get: () => config.font_size || defaultConfig.font_size,
+          set: (value) => { config.font_size = value; window.elementSdk.setConfig({ font_size: value }); }
+        }
+      };
+    }
+
+    function mapToEditPanelValues(config) {
+      return new Map([
+        ['title_text', config.title_text || defaultConfig.title_text],
+        ['subtitle_text', config.subtitle_text || defaultConfig.subtitle_text]
+      ]);
+    }
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities,
+        mapToEditPanelValues
+      });
+    } else {
+      onConfigChange(defaultConfig);
+    }
+
+    setupListeners();
+    drawAvatar();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9c0102de45d559e3',t:'MTc2ODc2OTkxNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

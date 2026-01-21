@@ -1,0 +1,961 @@
+<!doctype html>
+<html lang="it">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generatore HTML Avanzato</title>
+  <style>
+    body {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 20px;
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100%;
+    }
+    
+    .card {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      overflow: hidden;
+    }
+    
+    .header {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      padding: 30px;
+      color: white;
+    }
+    
+    .header h1 {
+      margin: 0 0 10px 0;
+      font-size: 28px;
+    }
+    
+    .header p {
+      margin: 0;
+      opacity: 0.7;
+      font-size: 14px;
+    }
+    
+    .tabs {
+      display: flex;
+      gap: 10px;
+      background: rgba(0,0,0,0.2);
+      padding: 10px;
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+    
+    .tab-btn {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      background: transparent;
+      color: rgba(255,255,255,0.6);
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+    
+    .tab-btn.active {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+    
+    .tab-btn:hover {
+      color: white;
+    }
+    
+    .content {
+      padding: 30px;
+    }
+    
+    .tab-content {
+      display: none;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #333;
+    }
+    
+    input[type="text"],
+    input[type="url"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: Arial, sans-serif;
+    }
+    
+    input[type="text"]:focus,
+    input[type="url"]:focus,
+    textarea:focus,
+    select:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+    
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+    
+    select {
+      cursor: pointer;
+      background: white;
+    }
+    
+    .btn {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+    
+    .btn:active {
+      transform: translateY(0);
+    }
+    
+    .preview-container {
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      overflow: hidden;
+      background: white;
+    }
+    
+    iframe {
+      width: 100%;
+      height: 500px;
+      border: none;
+    }
+    
+    .code-container {
+      background: #1a1a2e;
+      border-radius: 8px;
+      padding: 20px;
+      max-height: 500px;
+      overflow: auto;
+    }
+    
+    pre {
+      margin: 0;
+      color: #a0aec0;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    
+    .help-section {
+      background: #f5f5f5;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    
+    .help-section h3 {
+      margin: 0 0 10px 0;
+      color: #667eea;
+    }
+    
+    .help-section p {
+      margin: 0;
+      color: #666;
+      line-height: 1.6;
+    }
+    
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #667eea;
+      color: white;
+      padding: 15px 30px;
+      border-radius: 8px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+      display: none;
+      z-index: 1000;
+    }
+    
+    .toast.show {
+      display: block;
+      animation: slideUp 0.3s ease-out;
+    }
+    
+    @keyframes slideUp {
+      from {
+        transform: translate(-50%, 100px);
+        opacity: 0;
+      }
+      to {
+        transform: translate(-50%, 0);
+        opacity: 1;
+      }
+    }
+    
+    .btn-secondary {
+      background: #667eea;
+      padding: 10px 20px;
+      display: inline-block;
+    }
+
+    .section-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #999;
+      margin-top: 25px;
+      margin-bottom: 15px;
+      font-weight: 700;
+    }
+
+    .list-items {
+      margin-top: 10px;
+    }
+
+    .list-item-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .list-item-group input {
+      flex: 1;
+    }
+
+    .btn-add {
+      padding: 8px 15px;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+
+    .btn-add:hover {
+      background: #5568d3;
+    }
+
+    .btn-remove {
+      padding: 8px 12px;
+      background: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .btn-remove:hover {
+      background: #c0392b;
+    }
+
+    .dynamic-fields {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+
+    .content-block {
+      background: #f8f9fa;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 15px;
+      position: relative;
+    }
+
+    .block-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #e0e0e0;
+    }
+
+    .block-number {
+      font-weight: 700;
+      color: #667eea;
+      font-size: 14px;
+    }
+
+    .btn-delete-block {
+      padding: 6px 12px;
+      background: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .btn-delete-block:hover {
+      background: #c0392b;
+    }
+
+    .btn-move {
+      padding: 6px 10px;
+      background: #95a5a6;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      margin-right: 5px;
+    }
+
+    .btn-move:hover {
+      background: #7f8c8d;
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  <div class="card">
+   <div class="header">
+    <h1>🎨 Generatore HTML Avanzato</h1>
+    <p>Editor completo con contenuti dinamici</p>
+    <div class="tabs"><button class="tab-btn active" id="tab-editor-btn">✏️ Editor</button> <button class="tab-btn" id="tab-preview-btn">👁️ Anteprima</button> <button class="tab-btn" id="tab-code-btn">📋 Codice</button> <button class="tab-btn" id="tab-help-btn">❓ Aiuto</button>
+    </div>
+   </div>
+   <div class="content"><!-- Editor Tab -->
+    <div class="tab-content active" id="tab-editor">
+     <div class="form-group"><label for="page-title">Titolo Pagina</label> <input type="text" id="page-title" value="La Mia Card">
+     </div>
+     <div class="form-group"><label for="card-title">Titolo Card</label> <input type="text" id="card-title" value="Il Mio Progetto">
+     </div>
+     <div class="form-group"><label for="card-subtitle">Sottotitolo</label> <input type="text" id="card-subtitle" value="Una card moderna con contenuti avanzati">
+     </div>
+     <div class="section-label">
+      📑 Tab 1 - Home
+     </div>
+     <div class="form-group"><label for="tab1-title">Intestazione Tab 1</label> <input type="text" id="tab1-title" value="Benvenuto!">
+     </div>
+     <div id="tab1-content-blocks"></div><button type="button" class="btn-add" onclick="addContentBlock(1)" style="width: 100%; margin-bottom: 20px;">+ Aggiungi Contenuto</button>
+     <div class="section-label">
+      📑 Tab 2 - Info
+     </div>
+     <div class="form-group"><label for="tab2-title">Intestazione Tab 2</label> <input type="text" id="tab2-title" value="Caratteristiche">
+     </div>
+     <div id="tab2-content-blocks"></div><button type="button" class="btn-add" onclick="addContentBlock(2)" style="width: 100%; margin-bottom: 20px;">+ Aggiungi Contenuto</button>
+     <div class="section-label">
+      📑 Tab 3 - Contatti
+     </div>
+     <div class="form-group"><label for="tab3-title">Intestazione Tab 3</label> <input type="text" id="tab3-title" value="Contattami">
+     </div>
+     <div id="tab3-content-blocks"></div><button type="button" class="btn-add" onclick="addContentBlock(3)" style="width: 100%; margin-bottom: 20px;">+ Aggiungi Contenuto</button> <button class="btn" id="update-preview-btn">🔄 Aggiorna Anteprima</button>
+    </div><!-- Preview Tab -->
+    <div class="tab-content" id="tab-preview">
+     <div style="margin-bottom: 15px;"><button class="btn btn-secondary" id="refresh-preview-btn">🔄 Ricarica</button>
+     </div>
+     <div class="preview-container"><iframe id="preview-frame"></iframe>
+     </div>
+    </div><!-- Code Tab -->
+    <div class="tab-content" id="tab-code">
+     <div style="margin-bottom: 15px;"><button class="btn btn-secondary" id="copy-code-btn">📋 Copia Codice</button>
+     </div>
+     <div class="code-container">
+      <pre id="code-display"></pre>
+     </div>
+    </div><!-- Help Tab -->
+    <div class="tab-content" id="tab-help">
+     <div class="help-section">
+      <h3>📝 Tipi di Contenuto</h3>
+      <p><strong>Testo:</strong> Paragrafi di testo semplice<br><strong>Lista:</strong> Elenchi puntati o numerati<br><strong>Pulsante:</strong> Bottoni cliccabili con link<br><strong>Immagine:</strong> Immagini da URL<br><strong>Card Info:</strong> Box informativo con icona</p>
+     </div>
+     <div class="help-section">
+      <h3>✏️ Editor Dinamico</h3>
+      <p>Seleziona il tipo di contenuto per ogni tab e vedrai apparire i campi specifici per quel tipo. Puoi aggiungere multiple voci per le liste!</p>
+     </div>
+     <div class="help-section" style="background: #e6f2ff; border: 2px solid #667eea;">
+      <h3>💡 Suggerimento</h3>
+      <p>Ogni tab può avere un tipo di contenuto diverso. Sperimenta con le varie combinazioni per creare card uniche e interattive!</p>
+     </div>
+    </div>
+   </div>
+  </div>
+  <div class="toast" id="toast"></div>
+  <script>
+    // Storage for content blocks
+    var contentBlocks = {
+      tab1: [
+        { type: 'text', data: { text: 'Benvenuto nella mia card interattiva!' } }
+      ],
+      tab2: [
+        { type: 'list', data: { listType: 'ul', items: ['Design moderno', 'Facile da usare', 'Completamente responsive'] } }
+      ],
+      tab3: [
+        { type: 'button', data: { text: 'Contattami', link: 'https://example.com' } }
+      ]
+    };
+    
+    var currentEditingTab = 1;
+
+    // Get elements
+    var tabEditorBtn = document.getElementById('tab-editor-btn');
+    var tabPreviewBtn = document.getElementById('tab-preview-btn');
+    var tabCodeBtn = document.getElementById('tab-code-btn');
+    var tabHelpBtn = document.getElementById('tab-help-btn');
+    
+    var tabEditor = document.getElementById('tab-editor');
+    var tabPreview = document.getElementById('tab-preview');
+    var tabCode = document.getElementById('tab-code');
+    var tabHelp = document.getElementById('tab-help');
+    
+    var updatePreviewBtn = document.getElementById('update-preview-btn');
+    var refreshPreviewBtn = document.getElementById('refresh-preview-btn');
+    var copyCodeBtn = document.getElementById('copy-code-btn');
+    
+    var previewFrame = document.getElementById('preview-frame');
+    var codeDisplay = document.getElementById('code-display');
+    var toast = document.getElementById('toast');
+    
+    // Add content block
+    function addContentBlock(tabNum) {
+      contentBlocks['tab' + tabNum].push({
+        type: 'text',
+        data: { text: 'Nuovo contenuto' }
+      });
+      renderContentBlocks(tabNum);
+    }
+    
+    // Remove content block
+    function removeContentBlock(tabNum, index) {
+      contentBlocks['tab' + tabNum].splice(index, 1);
+      renderContentBlocks(tabNum);
+    }
+    
+    // Move content block
+    function moveContentBlock(tabNum, index, direction) {
+      var blocks = contentBlocks['tab' + tabNum];
+      if (direction === 'up' && index > 0) {
+        var temp = blocks[index];
+        blocks[index] = blocks[index - 1];
+        blocks[index - 1] = temp;
+        renderContentBlocks(tabNum);
+      } else if (direction === 'down' && index < blocks.length - 1) {
+        var temp = blocks[index];
+        blocks[index] = blocks[index + 1];
+        blocks[index + 1] = temp;
+        renderContentBlocks(tabNum);
+      }
+    }
+    
+    // Render content blocks for a tab
+    function renderContentBlocks(tabNum) {
+      var container = document.getElementById('tab' + tabNum + '-content-blocks');
+      var blocks = contentBlocks['tab' + tabNum];
+      container.innerHTML = '';
+      
+      for (var i = 0; i < blocks.length; i++) {
+        var block = blocks[i];
+        var blockDiv = document.createElement('div');
+        blockDiv.className = 'content-block';
+        blockDiv.id = 'block-' + tabNum + '-' + i;
+        
+        var headerHtml = '<div class="block-header">';
+        headerHtml += '<span class="block-number">Contenuto #' + (i + 1) + '</span>';
+        headerHtml += '<div>';
+        if (i > 0) {
+          headerHtml += '<button type="button" class="btn-move" onclick="moveContentBlock(' + tabNum + ', ' + i + ', \'up\')">↑</button>';
+        }
+        if (i < blocks.length - 1) {
+          headerHtml += '<button type="button" class="btn-move" onclick="moveContentBlock(' + tabNum + ', ' + i + ', \'down\')">↓</button>';
+        }
+        headerHtml += '<button type="button" class="btn-delete-block" onclick="removeContentBlock(' + tabNum + ', ' + i + ')">Elimina</button>';
+        headerHtml += '</div></div>';
+        
+        var typeSelectHtml = '<div class="form-group"><label>Tipo Contenuto</label>';
+        typeSelectHtml += '<select onchange="changeBlockType(' + tabNum + ', ' + i + ', this.value)">';
+        typeSelectHtml += '<option value="text"' + (block.type === 'text' ? ' selected' : '') + '>📝 Testo</option>';
+        typeSelectHtml += '<option value="list"' + (block.type === 'list' ? ' selected' : '') + '>📋 Lista</option>';
+        typeSelectHtml += '<option value="button"' + (block.type === 'button' ? ' selected' : '') + '>🔘 Pulsante</option>';
+        typeSelectHtml += '<option value="image"' + (block.type === 'image' ? ' selected' : '') + '>🖼️ Immagine</option>';
+        typeSelectHtml += '<option value="card"' + (block.type === 'card' ? ' selected' : '') + '>📊 Card Info</option>';
+        typeSelectHtml += '</select></div>';
+        
+        blockDiv.innerHTML = headerHtml + typeSelectHtml + '<div id="block-fields-' + tabNum + '-' + i + '"></div>';
+        container.appendChild(blockDiv);
+        
+        renderBlockFields(tabNum, i);
+      }
+    }
+    
+    // Change block type
+    function changeBlockType(tabNum, index, newType) {
+      var defaultData = {
+        text: { text: 'Nuovo testo' },
+        list: { listType: 'ul', items: ['Elemento 1', 'Elemento 2'] },
+        button: { text: 'Clicca qui', link: 'https://example.com' },
+        image: { url: 'https://via.placeholder.com/600x300', alt: 'Immagine' },
+        card: { icon: '✨', title: 'Titolo', desc: 'Descrizione' }
+      };
+      
+      contentBlocks['tab' + tabNum][index] = {
+        type: newType,
+        data: defaultData[newType]
+      };
+      
+      renderBlockFields(tabNum, index);
+    }
+    
+    // Render fields for a specific block
+    function renderBlockFields(tabNum, index) {
+      var container = document.getElementById('block-fields-' + tabNum + '-' + index);
+      var block = contentBlocks['tab' + tabNum][index];
+      var html = '';
+      
+      if (block.type === 'text') {
+        html = '<div class="form-group"><label>Testo</label>';
+        html += '<textarea id="field-' + tabNum + '-' + index + '-text" onchange="updateBlockData(' + tabNum + ', ' + index + ', \'text\', this.value)">' + escapeHtml(block.data.text) + '</textarea></div>';
+      } else if (block.type === 'list') {
+        html = '<div class="form-group"><label>Tipo Lista</label>';
+        html += '<select id="field-' + tabNum + '-' + index + '-listType" onchange="updateBlockData(' + tabNum + ', ' + index + ', \'listType\', this.value)">';
+        html += '<option value="ul"' + (block.data.listType === 'ul' ? ' selected' : '') + '>Puntata</option>';
+        html += '<option value="ol"' + (block.data.listType === 'ol' ? ' selected' : '') + '>Numerata</option>';
+        html += '</select></div>';
+        html += '<div class="form-group"><label>Elementi</label><div id="list-items-' + tabNum + '-' + index + '"></div>';
+        html += '<button type="button" class="btn-add" onclick="addListItemToBlock(' + tabNum + ', ' + index + ')">+ Elemento</button></div>';
+      } else if (block.type === 'button') {
+        html = '<div class="form-group"><label>Testo Pulsante</label>';
+        html += '<input type="text" id="field-' + tabNum + '-' + index + '-text" value="' + escapeHtml(block.data.text) + '" onchange="updateBlockData(' + tabNum + ', ' + index + ', \'text\', this.value)"></div>';
+        html += '<div class="form-group"><label>Link</label>';
+        html += '<input type="url" id="field-' + tabNum + '-' + index + '-link" value="' + escapeHtml(block.data.link) + '" onchange="updateBlockData(' + tabNum + ', ' + index + ', \'link\', this.value)"></div>';
+      } else if (block.type === 'image') {
+        html = '<div class="form-group"><label>URL Immagine</label>';
+        html += '<input type="url" id="field-' + tabNum + '-' + index + '-url" value="' + escapeHtml(block.data.url) + '" onchange="updateBlockData(' + tabNum + ', ' + index + ', \'url\', this.value)"></div>';
+        html += '<div class="form-group"><label>Descrizione</label>';
+        html += '<input type="text" id="field-' + tabNum + '-' + index + '-alt" value="' + escapeHtml(block.data.alt) + '" onchange="updateBlockData(' + tabNum + ', ' + index + ', \'alt\', this.value)"></div>';
+      } else if (block.type === 'card') {
+        html = '<div class="form-group"><label>Icona</label>';
+        html += '<input type="text" id="field-' + tabNum + '-' + index + '-icon" value="' + escapeHtml(block.data.icon) + '" onchange="updateBlockData(' + tabNum + ', ' + index + ', \'icon\', this.value)" maxlength="2"></div>';
+        html += '<div class="form-group"><label>Titolo</label>';
+        html += '<input type="text" id="field-' + tabNum + '-' + index + '-title" value="' + escapeHtml(block.data.title) + '" onchange="updateBlockData(' + tabNum + ', ' + index + ', \'title\', this.value)"></div>';
+        html += '<div class="form-group"><label>Descrizione</label>';
+        html += '<textarea id="field-' + tabNum + '-' + index + '-desc" onchange="updateBlockData(' + tabNum + ', ' + index + ', \'desc\', this.value)">' + escapeHtml(block.data.desc) + '</textarea></div>';
+      }
+      
+      container.innerHTML = html;
+      
+      if (block.type === 'list') {
+        renderListItemsForBlock(tabNum, index);
+      }
+    }
+    
+    // Update block data
+    function updateBlockData(tabNum, index, field, value) {
+      contentBlocks['tab' + tabNum][index].data[field] = value;
+    }
+    
+    // List items for blocks
+    function renderListItemsForBlock(tabNum, blockIndex) {
+      var container = document.getElementById('list-items-' + tabNum + '-' + blockIndex);
+      var items = contentBlocks['tab' + tabNum][blockIndex].data.items;
+      container.innerHTML = '';
+      
+      for (var i = 0; i < items.length; i++) {
+        var div = document.createElement('div');
+        div.className = 'list-item-group';
+        div.innerHTML = '<input type="text" value="' + escapeHtml(items[i]) + '" onchange="updateListItemInBlock(' + tabNum + ', ' + blockIndex + ', ' + i + ', this.value)">' +
+                       '<button type="button" class="btn-remove" onclick="removeListItemFromBlock(' + tabNum + ', ' + blockIndex + ', ' + i + ')">×</button>';
+        container.appendChild(div);
+      }
+    }
+    
+    function addListItemToBlock(tabNum, blockIndex) {
+      contentBlocks['tab' + tabNum][blockIndex].data.items.push('Nuovo elemento');
+      renderListItemsForBlock(tabNum, blockIndex);
+    }
+    
+    function removeListItemFromBlock(tabNum, blockIndex, itemIndex) {
+      contentBlocks['tab' + tabNum][blockIndex].data.items.splice(itemIndex, 1);
+      renderListItemsForBlock(tabNum, blockIndex);
+    }
+    
+    function updateListItemInBlock(tabNum, blockIndex, itemIndex, value) {
+      contentBlocks['tab' + tabNum][blockIndex].data.items[itemIndex] = value;
+    }
+    
+    // Tab switching
+    function switchToTab(tabName) {
+      var allBtns = [tabEditorBtn, tabPreviewBtn, tabCodeBtn, tabHelpBtn];
+      for (var i = 0; i < allBtns.length; i++) {
+        allBtns[i].classList.remove('active');
+      }
+      
+      var allTabs = [tabEditor, tabPreview, tabCode, tabHelp];
+      for (var i = 0; i < allTabs.length; i++) {
+        allTabs[i].classList.remove('active');
+      }
+      
+      if (tabName === 'editor') {
+        tabEditorBtn.classList.add('active');
+        tabEditor.classList.add('active');
+      } else if (tabName === 'preview') {
+        tabPreviewBtn.classList.add('active');
+        tabPreview.classList.add('active');
+        updatePreviewFrame();
+      } else if (tabName === 'code') {
+        tabCodeBtn.classList.add('active');
+        tabCode.classList.add('active');
+        updateCodeDisplay();
+      } else if (tabName === 'help') {
+        tabHelpBtn.classList.add('active');
+        tabHelp.classList.add('active');
+      }
+    }
+    
+    // Generate tab content HTML from blocks
+    function generateTabContent(tabNum) {
+      var blocks = contentBlocks['tab' + tabNum];
+      var html = '';
+      
+      for (var i = 0; i < blocks.length; i++) {
+        var block = blocks[i];
+        
+        if (block.type === 'text') {
+          html += '<p>' + escapeHtml(block.data.text) + '</p>';
+          if (i < blocks.length - 1) html += '<div style="margin-bottom: 20px;"></div>';
+        } else if (block.type === 'list') {
+          html += '<' + block.data.listType + ' style="margin-left: 20px; line-height: 2;">';
+          for (var j = 0; j < block.data.items.length; j++) {
+            html += '<li>' + escapeHtml(block.data.items[j]) + '</li>';
+          }
+          html += '</' + block.data.listType + '>';
+          if (i < blocks.length - 1) html += '<div style="margin-bottom: 20px;"></div>';
+        } else if (block.type === 'button') {
+          html += '<div style="text-align: center; margin-top: 20px;">' +
+                 '<a href="' + escapeHtml(block.data.link) + '" target="_blank" rel="noopener noreferrer" class="cta-btn">' + 
+                 escapeHtml(block.data.text) + '</a></div>';
+          if (i < blocks.length - 1) html += '<div style="margin-bottom: 20px;"></div>';
+        } else if (block.type === 'image') {
+          html += '<div style="text-align: center; margin-top: 20px;">' +
+                 '<img src="' + escapeHtml(block.data.url) + '" alt="' + escapeHtml(block.data.alt) + '" style="max-width: 100%; height: auto; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">' +
+                 '</div>';
+          if (i < blocks.length - 1) html += '<div style="margin-bottom: 20px;"></div>';
+        } else if (block.type === 'card') {
+          html += '<div class="info-card">' +
+                 '<div class="info-icon">' + escapeHtml(block.data.icon) + '</div>' +
+                 '<h3>' + escapeHtml(block.data.title) + '</h3>' +
+                 '<p>' + escapeHtml(block.data.desc) + '</p>' +
+                 '</div>';
+          if (i < blocks.length - 1) html += '<div style="margin-bottom: 15px;"></div>';
+        }
+      }
+      
+      return html;
+    }
+    
+    // Generate HTML
+    function generateHTML() {
+      var pageTitle = document.getElementById('page-title').value;
+      var cardTitle = document.getElementById('card-title').value;
+      var cardSubtitle = document.getElementById('card-subtitle').value;
+      var tab1Title = document.getElementById('tab1-title').value;
+      var tab2Title = document.getElementById('tab2-title').value;
+      var tab3Title = document.getElementById('tab3-title').value;
+      
+      var tab1Content = generateTabContent(1);
+      var tab2Content = generateTabContent(2);
+      var tab3Content = generateTabContent(3);
+      
+      var html = '<!DOCTYPE html>\n';
+      html += '<html lang="it">\n';
+      html += '<head>\n';
+      html += '  <meta charset="UTF-8">\n';
+      html += '  <meta name="viewport" content="width=device-width, initial-scale=1.0">\n';
+      html += '  <title>' + escapeHtml(pageTitle) + '</title>\n';
+      html += '  <style>\n';
+      html += '    * { margin: 0; padding: 0; box-sizing: border-box; }\n';
+      html += '    body {\n';
+      html += '      font-family: Arial, sans-serif;\n';
+      html += '      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);\n';
+      html += '      padding: 40px 20px;\n';
+      html += '      min-height: 100vh;\n';
+      html += '      display: flex;\n';
+      html += '      align-items: center;\n';
+      html += '      justify-content: center;\n';
+      html += '    }\n';
+      html += '    .card {\n';
+      html += '      max-width: 700px;\n';
+      html += '      width: 100%;\n';
+      html += '      background: white;\n';
+      html += '      border-radius: 20px;\n';
+      html += '      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);\n';
+      html += '      overflow: hidden;\n';
+      html += '    }\n';
+      html += '    .header {\n';
+      html += '      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);\n';
+      html += '      padding: 30px;\n';
+      html += '      color: white;\n';
+      html += '    }\n';
+      html += '    .header h1 {\n';
+      html += '      margin: 0 0 10px 0;\n';
+      html += '      font-size: 28px;\n';
+      html += '    }\n';
+      html += '    .header p {\n';
+      html += '      margin: 0;\n';
+      html += '      opacity: 0.7;\n';
+      html += '      font-size: 14px;\n';
+      html += '    }\n';
+      html += '    .tabs {\n';
+      html += '      display: flex;\n';
+      html += '      gap: 10px;\n';
+      html += '      background: rgba(0,0,0,0.2);\n';
+      html += '      padding: 10px;\n';
+      html += '      border-radius: 10px;\n';
+      html += '      margin-top: 20px;\n';
+      html += '    }\n';
+      html += '    .tab-btn {\n';
+      html += '      flex: 1;\n';
+      html += '      padding: 12px;\n';
+      html += '      border: none;\n';
+      html += '      border-radius: 8px;\n';
+      html += '      background: transparent;\n';
+      html += '      color: rgba(255,255,255,0.6);\n';
+      html += '      cursor: pointer;\n';
+      html += '      font-size: 14px;\n';
+      html += '      font-weight: 600;\n';
+      html += '      transition: all 0.3s;\n';
+      html += '    }\n';
+      html += '    .tab-btn.active {\n';
+      html += '      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);\n';
+      html += '      color: white;\n';
+      html += '    }\n';
+      html += '    .content {\n';
+      html += '      padding: 30px;\n';
+      html += '    }\n';
+      html += '    .tab-content {\n';
+      html += '      display: none;\n';
+      html += '      animation: fadeIn 0.3s;\n';
+      html += '    }\n';
+      html += '    .tab-content.active {\n';
+      html += '      display: block;\n';
+      html += '    }\n';
+      html += '    @keyframes fadeIn {\n';
+      html += '      from { opacity: 0; transform: translateY(10px); }\n';
+      html += '      to { opacity: 1; transform: translateY(0); }\n';
+      html += '    }\n';
+      html += '    h2 {\n';
+      html += '      color: #667eea;\n';
+      html += '      margin-bottom: 15px;\n';
+      html += '      font-size: 24px;\n';
+      html += '    }\n';
+      html += '    p {\n';
+      html += '      color: #666;\n';
+      html += '      line-height: 1.7;\n';
+      html += '      font-size: 15px;\n';
+      html += '    }\n';
+      html += '    .cta-btn {\n';
+      html += '      display: inline-block;\n';
+      html += '      padding: 14px 40px;\n';
+      html += '      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);\n';
+      html += '      color: white;\n';
+      html += '      text-decoration: none;\n';
+      html += '      border-radius: 10px;\n';
+      html += '      font-weight: 600;\n';
+      html += '      transition: transform 0.2s;\n';
+      html += '      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);\n';
+      html += '    }\n';
+      html += '    .cta-btn:hover {\n';
+      html += '      transform: translateY(-2px);\n';
+      html += '      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);\n';
+      html += '    }\n';
+      html += '    .info-card {\n';
+      html += '      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);\n';
+      html += '      padding: 25px;\n';
+      html += '      border-radius: 12px;\n';
+      html += '      text-align: center;\n';
+      html += '      margin-top: 20px;\n';
+      html += '    }\n';
+      html += '    .info-icon {\n';
+      html += '      font-size: 48px;\n';
+      html += '      margin-bottom: 15px;\n';
+      html += '    }\n';
+      html += '    .info-card h3 {\n';
+      html += '      color: #667eea;\n';
+      html += '      margin-bottom: 10px;\n';
+      html += '      font-size: 20px;\n';
+      html += '    }\n';
+      html += '    .info-card p {\n';
+      html += '      color: #555;\n';
+      html += '      font-size: 14px;\n';
+      html += '    }\n';
+      html += '  </style>\n';
+      html += '</head>\n';
+      html += '<body>\n';
+      html += '  <div class="card">\n';
+      html += '    <div class="header">\n';
+      html += '      <h1>' + escapeHtml(cardTitle) + '</h1>\n';
+      html += '      <p>' + escapeHtml(cardSubtitle) + '</p>\n';
+      html += '      <div class="tabs">\n';
+      html += '        <button class="tab-btn active" id="tab1-btn">🏠 Home</button>\n';
+      html += '        <button class="tab-btn" id="tab2-btn">ℹ️ Info</button>\n';
+      html += '        <button class="tab-btn" id="tab3-btn">📧 Contatti</button>\n';
+      html += '      </div>\n';
+      html += '    </div>\n';
+      html += '    <div class="content">\n';
+      html += '      <div class="tab-content active" id="tab1">\n';
+      html += '        <h2>' + escapeHtml(tab1Title) + '</h2>\n';
+      html += '        ' + tab1Content + '\n';
+      html += '      </div>\n';
+      html += '      <div class="tab-content" id="tab2">\n';
+      html += '        <h2>' + escapeHtml(tab2Title) + '</h2>\n';
+      html += '        ' + tab2Content + '\n';
+      html += '      </div>\n';
+      html += '      <div class="tab-content" id="tab3">\n';
+      html += '        <h2>' + escapeHtml(tab3Title) + '</h2>\n';
+      html += '        ' + tab3Content + '\n';
+      html += '      </div>\n';
+      html += '    </div>\n';
+      html += '  </div>\n';
+      html += '  <script>\n';
+      html += '    var tab1Btn = document.getElementById("tab1-btn");\n';
+      html += '    var tab2Btn = document.getElementById("tab2-btn");\n';
+      html += '    var tab3Btn = document.getElementById("tab3-btn");\n';
+      html += '    var tab1 = document.getElementById("tab1");\n';
+      html += '    var tab2 = document.getElementById("tab2");\n';
+      html += '    var tab3 = document.getElementById("tab3");\n';
+      html += '    function showTab(num) {\n';
+      html += '      var allBtns = [tab1Btn, tab2Btn, tab3Btn];\n';
+      html += '      var allTabs = [tab1, tab2, tab3];\n';
+      html += '      for (var i = 0; i < allBtns.length; i++) {\n';
+      html += '        allBtns[i].classList.remove("active");\n';
+      html += '        allTabs[i].classList.remove("active");\n';
+      html += '      }\n';
+      html += '      allBtns[num-1].classList.add("active");\n';
+      html += '      allTabs[num-1].classList.add("active");\n';
+      html += '    }\n';
+      html += '    tab1Btn.onclick = function() { showTab(1); };\n';
+      html += '    tab2Btn.onclick = function() { showTab(2); };\n';
+      html += '    tab3Btn.onclick = function() { showTab(3); };\n';
+      html += '  </' + 'script>\n';
+      html += '</body>\n';
+      html += '</html>';
+      
+      return html;
+    }
+    
+    // Escape HTML
+    function escapeHtml(text) {
+      var div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+    
+    // Update preview frame
+    function updatePreviewFrame() {
+      var html = generateHTML();
+      previewFrame.srcdoc = html;
+      showToast('Anteprima aggiornata!');
+    }
+    
+    // Update code display
+    function updateCodeDisplay() {
+      var html = generateHTML();
+      codeDisplay.textContent = html;
+    }
+    
+    // Copy code
+    function copyCode() {
+      var code = generateHTML();
+      
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(code).then(function() {
+          showToast('Codice copiato!');
+        }).catch(function() {
+          fallbackCopy(code);
+        });
+      } else {
+        fallbackCopy(code);
+      }
+    }
+    
+    // Fallback copy
+    function fallbackCopy(text) {
+      var textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.left = '-9999px';
+      document.body.appendChild(textarea);
+      textarea.select();
+      
+      try {
+        document.execCommand('copy');
+        showToast('Codice copiato!');
+      } catch (err) {
+        showToast('Errore nella copia');
+      }
+      
+      document.body.removeChild(textarea);
+    }
+    
+    // Show toast
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add('show');
+      
+      setTimeout(function() {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+    
+    // Event listeners
+    tabEditorBtn.onclick = function() { switchToTab('editor'); };
+    tabPreviewBtn.onclick = function() { switchToTab('preview'); };
+    tabCodeBtn.onclick = function() { switchToTab('code'); };
+    tabHelpBtn.onclick = function() { switchToTab('help'); };
+    
+    updatePreviewBtn.onclick = updatePreviewFrame;
+    refreshPreviewBtn.onclick = updatePreviewFrame;
+    copyCodeBtn.onclick = copyCode;
+    
+    // Initialize content blocks
+    renderContentBlocks(1);
+    renderContentBlocks(2);
+    renderContentBlocks(3);
+    
+    // Initial preview
+    updatePreviewFrame();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9bc08f35c35d5267',t:'MTc2ODA5NDA4OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
