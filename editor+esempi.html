@@ -200,7 +200,12 @@
 <option value="card2">Card2</option>
 <option value="card3">Card3</option>
 <option value="nav">Navigazione</option>
-<option value="footer">Footer</option> <option value="grid">Griglia</option> <option value="flex">Flex</option> <option value="buttons">Bottoni</option> <option value="form">Form</option> </select>
+<option value="footer">Footer</option> <option value="grid">Griglia</option> <option value="flex">Flex</option> <option value="buttons">Bottoni</option> <option value="form">Form</option> 
+<option value="call">Call</option> 
+<option value="heading">Heading</option> 
+<option value="megamenu">Megamenu</option> 
+ 
+</select>
     </div>
    </div>
    <div class="view-container">
@@ -613,7 +618,206 @@ function switchTab(index) {
   </div>
   <button type="submit" style="background: #2563eb; color: white; border: none; padding: 14px 32px; border-radius: 8px; font-weight: 700; font-size: 16px; cursor: pointer; width: 100%; transition: background 0.2s;" onmouseover="this.style.background='#1d4ed8'" onmouseout="this.style.background='#2563eb'">Invia Messaggio</button>
   <div id="msg" style="display: none; margin-top: 16px; padding: 14px; background: #d1fae5; color: #065f46; border-radius: 8px; text-align: center; font-weight: 600;">✓ Messaggio inviato con successo!</div>
-</form>`
+</form>`,
+ call:`<style>
+#fws_call_to_action_5{
+     background: #222831;
+     padding: 80px 0;
+     color: #fff;
+     text-align: center;
+}
+ #fws_call_to_action_5 .fws_des span{
+     text-transform: capitalize;
+     color: #d7d4d4;
+}
+ #fws_call_to_action_5 .fws_des h2{
+     text-transform: capitalize;
+     margin-bottom: 30px;
+}
+ #fws_call_to_action_5 .fws_btn a.btn{
+     background: #f96d00;
+     color: #fff;
+     border-radius: 5px;
+     padding: 10px 25px;
+     font-weight: 500;
+}
+ #fws_call_to_action_5 .fws_btn a.btn:last-child{
+     margin-left: 10px;
+     background: transparent;
+     color: #f96d00;
+     border-color: #f96d00;
+}
+ @media (max-width: 576px){
+     #fws_call_to_action_5{
+         padding: 50px 0;
+    }
+}
+</style>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">/script
+<section id="fws_call_to_action_5">
+    <div class="container">
+        <div class="fws_content">
+            <div class="fws_des">
+                <span>lorem ipsum</span>
+                <h2>lorem ipsum dolor sit amet</h2>
+            </div>
+            <div class="fws_btn">
+                <a href="#0" class="btn">About Us</a>
+                <a href="#0" class="btn">Contact Us</a>
+            </div>
+        </div>
+    </div>
+</section>`,
+heading:`<style>
+@import url("https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap");
+body {
+    font-family: "Nunito", sans-serif;
+}
+.heading {
+    text-align: center;
+    margin-top: 30px;
+}
+.heading span {
+    background: rgba(255, 0, 0, 0.05);
+    padding: 5px 20px;
+    font-weight: 700;
+    font-size: 10px;
+    border-radius: 15px;
+    color: red;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    display: inline-block;
+}
+.heading h2 {
+    margin: 0;
+    text-transform: capitalize;
+    font-weight: 700;
+    margin-top: 10px;
+}
+</style><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">/script
+<div class="container">
+    <div class="heading">
+        <span>lorem ipsum</span>
+        <h2>write a message</h2>
+    </div>
+</div>`,
+megamenu: `
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background: #0f0520;
+      color: #ffffff;
+      padding: 40px 20px;
+    }
+    .component-wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+  </style>
+  <div class="component-wrapper">
+    
+            <div style="position: relative; background: #8b5cf610; padding: 1rem; border-radius: 0.5rem; border: 1px solid #8b5cf640;">
+              <div style="display: flex; gap: 1,5rem; justify-content: center; margin-bottom: 1rem;">
+                
+                  <button style="padding: 0.75rem 1.5rem; background: #8b5cf6; color: #ffffff; border: none; border-radius: 0.5rem; font-weight: 600; cursor: pointer; font-family: 'Space Grotesk', sans-serif; transition: all 0.3s;" onmouseover="this.style.background='#ec4899';" onmouseout="this.style.background='#8b5cf6';">Products</button>
+                
+                  <button style="padding: 0.75rem 1.5rem; background: #8b5cf6; color: #ffffff; border: none; border-radius: 0.5rem; font-weight: 600; cursor: pointer; font-family: 'Space Grotesk', sans-serif; transition: all 0.3s;" onmouseover="this.style.background='#ec4899';" onmouseout="this.style.background='#8b5cf6';">Services</button>
+                
+                  <button style="padding: 0.75rem 1.5rem; background: #8b5cf6; color: #ffffff; border: none; border-radius: 0.5rem; font-weight: 600; cursor: pointer; font-family: 'Space Grotesk', sans-serif; transition: all 0.3s;" onmouseover="this.style.background='#ec4899';" onmouseout="this.style.background='#8b5cf6';">Resources</button>
+                
+              </div>
+              
+              <div style="background: #ffffff05; padding: 2rem; border-radius: 0.5rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1,8rem;">
+                
+                  <div>
+                    <h4 style="color: #8b5cf6; font-weight: 700; margin-bottom: 1rem; font-family: 'Space Grotesk', sans-serif;">Category 1</h4>
+                    <ul style="list-style: none; padding: 0;">
+                      
+                        <li style="margin-bottom: 0.5rem;"><a href="#" style="color: #ffffff; text-decoration: none; opacity: 0.8; font-family: 'Space Grotesk', sans-serif;">Link 1</a></li>
+                      
+                        <li style="margin-bottom: 0.5rem;"><a href="#" style="color: #ffffff; text-decoration: none; opacity: 0.8; font-family: 'Space Grotesk', sans-serif;">Link 2</a></li>
+                      
+                        <li style="margin-bottom: 0.5rem;"><a href="#" style="color: #ffffff; text-decoration: none; opacity: 0.8; font-family: 'Space Grotesk', sans-serif;">Link 3</a></li>
+                      
+                        <li style="margin-bottom: 0.5rem;"><a href="#" style="color: #ffffff; text-decoration: none; opacity: 0.8; font-family: 'Space Grotesk', sans-serif;">Link 4</a></li>
+                      
+                    </ul>
+                  </div>
+                
+                  <div>
+                    <h4 style="color: #8b5cf6; font-weight: 700; margin-bottom: 1rem; font-family: 'Space Grotesk', sans-serif;">Category 2</h4>
+                    <ul style="list-style: none; padding: 0;">
+                      
+                        <li style="margin-bottom: 0.5rem;"><a href="#" style="color: #ffffff; text-decoration: none; opacity: 0.8; font-family: 'Space Grotesk', sans-serif;">Link 1</a></li>
+                      
+                        <li style="margin-bottom: 0.5rem;"><a href="#" style="color: #ffffff; text-decoration: none; opacity: 0.8; font-family: 'Space Grotesk', sans-serif;">Link 2</a></li>
+                      
+                        <li style="margin-bottom: 0.5rem;"><a href="#" style="color: #ffffff; text-decoration: none; opacity: 0.8; font-family: 'Space Grotesk', sans-serif;">Link 3</a></li>
+                      
+                        <li style="margin-bottom: 0.5rem;"><a href="#" style="color: #ffffff; text-decoration: none; opacity: 0.8; font-family: 'Space Grotesk', sans-serif;">Link 4</a></li>
+                      
+                    </ul>
+                  </div>
+                
+                  <div>
+                    <h4 style="color: #8b5cf6; font-weight: 700; margin-bottom: 1rem; font-family: 'Space Grotesk', sans-serif;">Category 3</h4>
+                    <ul style="list-style: none; padding: 0;">
+                      
+                        <li style="margin-bottom: 0.5rem;"><a href="#" style="color: #ffffff; text-decoration: none; opacity: 0.8; font-family: 'Space Grotesk', sans-serif;">Link 1</a></li>
+                      
+                        <li style="margin-bottom: 0.5rem;"><a href="#" style="color: #ffffff; text-decoration: none; opacity: 0.8; font-family: 'Space Grotesk', sans-serif;">Link 2</a></li>
+                      
+                        <li style="margin-bottom: 0.5rem;"><a href="#" style="color: #ffffff; text-decoration: none; opacity: 0.8; font-family: 'Space Grotesk', sans-serif;">Link 3</a></li>
+                      
+                        <li style="margin-bottom: 0.5rem;"><a href="#" style="color: #ffffff; text-decoration: none; opacity: 0.8; font-family: 'Space Grotesk', sans-serif;">Link 4</a></li>
+                      
+                    </ul>
+                  </div>
+                
+              </div>
+            </div>
+          
+  </div>
+script
+document.addEventListener("DOMContentLoaded", function() {
+  const buttons = document.querySelectorAll('div[style*="display: flex"] button');
+  const megaPanel = document.querySelector('div[style*="grid-template-columns"]');
+  
+  megaPanel.style.display = "none";
+  
+  buttons.forEach(btn => {
+    // CLICK: SEMPRE apre (1 click solo!)
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();  // Blocca click fuori
+      megaPanel.style.display = megaPanel.style.display === "grid" ? "none" : "grid";
+    });
+    
+    // HOVER solo desktop (non mobile)
+    if (window.matchMedia("(hover: hover)").matches) {
+      btn.addEventListener("mouseenter", () => {
+        megaPanel.style.display = "grid";
+      });
+      btn.addEventListener("mouseleave", () => {
+        megaPanel.style.display = "none";
+      });
+    }
+  });
+  
+  // Click fuori chiude
+  document.addEventListener("click", () => {
+    megaPanel.style.display = "none";
+  });
+  
+  console.log("✅ Mega menu 1-click OK!");
+});
+/script
+`
     };
 
     const editor = document.getElementById('editor');
