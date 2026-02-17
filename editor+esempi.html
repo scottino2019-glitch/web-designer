@@ -204,6 +204,7 @@
 <option value="call">Call</option> 
 <option value="heading">Heading</option> 
 <option value="megamenu">Megamenu</option> 
+<option value="menu3">menu3</option> 
  
 </select>
     </div>
@@ -816,8 +817,95 @@ document.addEventListener("DOMContentLoaded", function() {
   
   console.log("✅ Mega menu 1-click OK!");
 });
-/script
-`
+/script`,
+menu3: `
+<style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        /* Classe CSS cruciale per nascondere l'elemento. */
+        .hidden {
+            display: none; 
+        }
+
+        #main-menu {
+            list-style: none;
+            padding: 0;
+            margin-top: 10px;
+            border: 1px solid #333;
+            width: 200px;
+            background-color: #f4f4f4;
+        }
+
+        #main-menu li a {
+            display: block;
+            padding: 10px;
+            text-decoration: none;
+            color: #333;
+        }
+
+        #main-menu li a:hover {
+            background-color: #ddd;
+        }
+
+        #toggle-button {
+            padding: 10px 15px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+    </style>
+
+    <!-- Pulsante che scatena l'interazione -->
+    <button id="toggle-button">Mostra/Nascondi Menù</button>
+
+    <!-- Il menù effettivo. Inizialmente ha la classe 'hidden' per essere invisibile -->
+    <ul id="main-menu" class="hidden">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about">Chi Siamo</a></li>
+        <li><a href="#services">Servizi</a></li>
+        <li><a href="#contact">Contatti</a></li>
+    </ul>
+
+    script
+        // Funzione eseguita dopo che tutto l'HTML è stato caricato. 
+        // Questo è fondamentale per assicurarsi che gli elementi DOM esistano prima che JS cerchi di manipolarli.
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // 1. Ottiene i riferimenti agli elementi DOM tramite ID
+            const toggleButton = document.getElementById('toggle-button');
+            const menu = document.getElementById('main-menu');
+
+            /**
+             * Funzione che gestisce il toggle (mostra/nascondi) del menù.
+             */
+            function toggleMenu() {
+                /* 
+                 * classList.toggle('className'):
+                 * Questa è la parte complessa e fondamentale.
+                 * Se la classe 'hidden' è presente sull'elemento, la rimuove.
+                 * Se la classe 'hidden' NON è presente, la aggiunge.
+                 * È il modo più pulito e moderno per gestire lo stato visivo di un elemento.
+                 */
+                menu.classList.toggle('hidden');
+                
+                // Opzionale: Aggiorna il testo del pulsante in base allo stato
+                if (menu.classList.contains('hidden')) {
+                    toggleButton.textContent = 'Mostra Menù';
+                } else {
+                    toggleButton.textContent = 'Nascondi Menù';
+                }
+            }
+
+            // 2. Collega la funzione 'toggleMenu' all'evento 'click' del pulsante
+            toggleButton.addEventListener('click', toggleMenu);
+
+        });
+    /script `
     };
 
     const editor = document.getElementById('editor');
