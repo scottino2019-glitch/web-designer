@@ -205,6 +205,7 @@
 <option value="heading">Heading</option> 
 <option value="megamenu">Megamenu</option> 
 <option value="menu3">menu3</option> 
+<opzion value="ciao">ciao</option>
  
 </select>
     </div>
@@ -905,7 +906,51 @@ menu3: `
             toggleButton.addEventListener('click', toggleMenu);
 
         });
-    /script `
+    /script `,
+ciao: `
+<style>
+  .scatola-scrittura {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+  }
+
+  /* L'anima dell'animazione */
+  .testo-animato {
+    font-family: 'Arial', sans-serif;
+    font-size: 80px;
+    font-weight: bold;
+    fill: transparent; /* Nasconde il colore interno inizialmente */
+    stroke: #3498db;   /* Colore del bordo (il "tratto") */
+    stroke-width: 2;
+    stroke-dasharray: 1000; /* Lunghezza del tratto */
+    stroke-dashoffset: 1000; /* Inizia completamente nascosto */
+    animation: scrivi 4s ease-in-out forwards;
+  }
+
+  @keyframes scrivi {
+    0% {
+      stroke-dashoffset: 1000;
+    }
+    80% {
+      fill: transparent;
+    }
+    100% {
+      stroke-dashoffset: 0;
+      fill: #3498db; /* Riempie la lettera alla fine del disegno */
+    }
+  }
+</style>
+
+<div class="scatola-scrittura">
+  <svg width="500" height="200">
+    <text x="50%" y="50%" text-anchor="middle" class="testo-animato">
+      Ciao!
+    </text>
+  </svg>
+</div>`
     };
 
     const editor = document.getElementById('editor');
