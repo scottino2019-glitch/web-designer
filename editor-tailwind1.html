@@ -1940,6 +1940,64 @@ function openModal(id) {
       }
     });
 
+/script`,
+modal6: `
+<button id="openModal" class="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-300 transition duration-300 ease-in-out">
+    Apri Modale
+</button>
+
+<!-- Modale -->
+<div id="modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden flex items-center justify-center z-50">
+    <div class="relative p-8 bg-white w-full max-w-md m-auto flex-col flex rounded-lg shadow-lg">
+        <div class="text-2xl font-semibold mb-4 text-gray-900">Titolo Modale</div>
+        <div class="text-gray-700 mb-6">
+            Questo è il contenuto del tuo modale. Puoi inserire qualsiasi informazione o form qui.
+            È completamente personalizzabile con le classi Tailwind.
+        </div>
+        <div class="flex justify-end gap-2">
+            <button id="closeModal" class="px-5 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-4 focus:ring-gray-300 transition duration-300 ease-in-out">
+                Chiudi
+            </button>
+            <button class="px-5 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-300 transition duration-300 ease-in-out">
+                Azione Principale
+            </button>
+        </div>
+    </div>
+</div>
+script
+    document.addEventListener('DOMContentLoaded', () => {
+        const openModalBtn = document.getElementById('openModal');
+        const closeModalBtn = document.getElementById('closeModal');
+        const modal = document.getElementById('modal');
+
+        if (openModalBtn && closeModalBtn && modal) {
+            openModalBtn.addEventListener('click', () => {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex'); // Assicurati che sia visualizzato come flex container
+            });
+
+            closeModalBtn.addEventListener('click', () => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            });
+
+            // Chiudi la modale cliccando fuori di essa
+            modal.addEventListener('click', (event) => {
+                if (event.target === modal) {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                }
+            });
+
+            // Chiudi la modale con il tasto ESC
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape' && !modal.classList.contains('hidden')) {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                }
+            });
+        }
+    });
 /script`
 
 
