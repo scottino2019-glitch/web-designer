@@ -1,171 +1,511 @@
-From: <Saved by Blink>
-Snapshot-Content-Location: https://ppl-ai-code-interpreter-files.s3.amazonaws.com/web/direct-files/b4825937a7128fa7397caad64ddbfe79/028623de-cf83-4c18-a656-2cbc673ec9be/9c57c69c.html?rnd=1761378761057&utm_source=perplexity
-Subject: Generatore Card con Modal
-Date: Sat, 25 Oct 2025 09:52:47 +0200
-MIME-Version: 1.0
-Content-Type: multipart/related;
-	type="text/html";
-	boundary="----MultipartBoundary--NWFoUw7XiXq5tDx7zkaJBdIQfmIUFXEQJNfLbrBXyl----"
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generatore Card con Modal</title>
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --header-gradient: linear-gradient(135deg, #4f46e5, #7c3aed);
+            --bg-light: #f8fafc;
+            --border-color: #e2e8f0;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+        }
 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-------MultipartBoundary--NWFoUw7XiXq5tDx7zkaJBdIQfmIUFXEQJNfLbrBXyl----
-Content-Type: text/html
-Content-ID: <frame-2FECDB9687E6757DFA876290560BA5A9@mhtml.blink>
-Content-Transfer-Encoding: binary
-Content-Location: https://ppl-ai-code-interpreter-files.s3.amazonaws.com/web/direct-files/b4825937a7128fa7397caad64ddbfe79/028623de-cf83-4c18-a656-2cbc673ec9be/9c57c69c.html?rnd=1761378761057&utm_source=perplexity
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--primary-gradient);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--text-main);
+        }
 
-<!DOCTYPE html><html lang="it"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><link rel="stylesheet" type="text/css" href="cid:css-01f3960f-3fe5-4cd6-a095-c52cf582f55e@mhtml.blink" />
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Generatore Card con Modal</title>
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
 
-  
+        .header {
+            background: var(--header-gradient);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        /* Form Styling */
+        .config-panel {
+            background: var(--bg-light);
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+        }
+
+        .config-panel h2 {
+            margin-bottom: 20px;
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .form-group input, 
+        .form-group textarea, 
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #7c3aed;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        .checkbox-group input {
+            width: auto;
+        }
+
+        /* Preview Styling */
+        .preview-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .card-preview-area {
+            background: #eee;
+            background-image: radial-gradient(#ccc 1px, transparent 1px);
+            background-size: 20px 20px;
+            padding: 40px;
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 300px;
+        }
+
+        /* The actual generated card style */
+        .custom-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            padding: 30px;
+            text-align: center;
+            width: 100%;
+            max-width: 320px;
+            transition: transform 0.3s ease;
+        }
+
+        .card-icon {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+            color: #1e293b;
+        }
+
+        .card-desc {
+            color: #64748b;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+
+        .card-btn {
+            display: inline-block;
+            padding: 12px 24px;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        /* Output Area */
+        .output-area {
+            margin-top: 10px;
+        }
+
+        #code-output {
+            width: 100%;
+            height: 150px;
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            margin-top: 10px;
+            resize: none;
+        }
+
+        .action-btns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: filter 0.2s;
+        }
+
+        .btn-generate { background: #7c3aed; color: white; width: 100%; margin-top: 20px; }
+        .btn-copy { background: #3b82f6; color: white; }
+        .btn-download { background: #10b981; color: white; }
+
+        .btn:hover { filter: brightness(1.1); }
+
+        /* Modal Preview */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-box {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            max-width: 500px;
+            width: 100%;
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 768px) {
+            .main-layout { grid-template-columns: 1fr; }
+            .header h1 { font-size: 1.5rem; }
+        }
+    </style>
 </head>
-
 <body>
-  <div class="container">
-    <header class="header">
-      <h1>🎨 Generatore Card con Modal</h1>
-    </header>
 
-    <main class="content">
-      <section class="form-section">
-        <h2>Configurazione Card</h2>
-        <div class="form-group">
-          <label for="card-title">Titolo della Card</label>
-          <input id="card-title" type="text" placeholder="Inserisci titolo" value="Titolo Esempio">
-        </div>
-        <div class="form-group">
-          <label for="card-description">Descrizione</label>
-          <textarea id="card-description" rows="4" placeholder="Inserisci descrizione">Questa è una descrizione di esempio per la card. Puoi personalizzarla come preferisci.</textarea>
-        </div>
-        <div class="form-group">
-          <label for="card-emoji">Icona (emoji)</label>
-          <input id="card-emoji" type="text" maxlength="2" placeholder="es: 🎨" value="🚀">
-        </div>
-        <div class="form-group">
-          <label for="button-text">Testo Pulsante</label>
-          <input id="button-text" type="text" placeholder="Es: Scopri di più" value="Scopri di più">
-        </div>
-        <div class="form-group">
-          <label for="main-color">Colore Principale</label>
-          <select id="main-color">
-            <option value="#764ba2">Viola</option>
-            <option value="#e11d48">Rosso</option>
-            <option value="#16a34a">Verde</option>
-            <option value="#f97316">Arancione</option>
-            <option value="#3b82f6">Blu</option>
-            <option value="#c8b5ff">Viola Chiaro</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>
-            <input id="include-modal" type="checkbox" checked="">
-            Includi Modal
-          </label>
-        </div>
-        <div class="form-group" id="modal-settings">
-          <label for="modal-title">Titolo Modal</label>
-          <input id="modal-title" type="text" placeholder="Inserisci titolo modal" value="Dettagli">
-          <label for="modal-content" style="margin-top: 10px;">Contenuto Modal</label>
-          <textarea id="modal-content" rows="4" placeholder="Inserisci contenuto modal">Questo è il contenuto del modal. Puoi inserire qui tutte le informazioni dettagliate che vuoi mostrare quando l'utente clicca sulla card.</textarea>
-        </div>
-        <button id="generate-btn">🎯 Genera HTML Completo</button>
-      </section>
+    <div class="container">
+        <header class="header">
+            <h1>🎨 Card Generator Pro</h1>
+            <p>Crea card interattive con modal in pochi secondi</p>
+        </header>
 
-      <section class="preview-section">
-        <h2>Anteprima</h2>
-        <div id="card-preview"><div class="card"><div class="card-emoji">🚀</div><h3>Titolo Esempio</h3><p>Questa è una descrizione di esempio per la card. Puoi personalizzarla come preferisci.</p><button style="background-color: rgb(118, 75, 162);">Scopri di più</button></div></div>
-        
-        <div class="html-output">
-          <h3>HTML Generato</h3>
-          <textarea id="html-code" readonly=""></textarea>
-          <button class="copy-btn" id="copy-btn">📋 Copia HTML</button>
-        </div>
-      </section>
-    </main>
-  </div>
+        <main class="main-layout">
+            <!-- Pannello Configurazione -->
+            <section class="config-panel">
+                <h2>⚙️ Personalizza</h2>
+                
+                <div class="form-group">
+                    <label for="input-title">Titolo Card</label>
+                    <input type="text" id="input-title" value="Progetto Alpha">
+                </div>
 
-  <!-- Modal (nascosto di default) -->
-  <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title-label">
-    <div class="modal-content">
-      <button class="close-modal" aria-label="Chiudi modal">×</button>
-      <h4 id="modal-title-label"></h4>
-      <p id="modal-body-content"></p>
+                <div class="form-group">
+                    <label for="input-desc">Descrizione Breve</label>
+                    <textarea id="input-desc" rows="2">Un esempio di descrizione accattivante per la tua card personalizzata.</textarea>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label for="input-emoji">Emoji / Icona</label>
+                        <input type="text" id="input-emoji" value="🚀" maxlength="2">
+                    </div>
+                    <div class="form-group">
+                        <label for="input-color">Colore Tema</label>
+                        <select id="input-color">
+                            <option value="#7c3aed">Viola</option>
+                            <option value="#ef4444">Rosso</option>
+                            <option value="#10b981">Verde</option>
+                            <option value="#3b82f6">Blu</option>
+                            <option value="#f59e0b">Ambra</option>
+                            <option value="#000000">Nero</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="input-btn-text">Testo Pulsante</label>
+                    <input type="text" id="input-btn-text" value="Scopri di più">
+                </div>
+
+                <label class="checkbox-group">
+                    <input type="checkbox" id="check-modal" checked>
+                    Includi finestra Modal al click
+                </label>
+
+                <div id="modal-fields">
+                    <div class="form-group" style="margin-top: 15px;">
+                        <label for="input-modal-title">Titolo Modal</label>
+                        <input type="text" id="input-modal-title" value="Dettagli Progetto">
+                    </div>
+                    <div class="form-group">
+                        <label for="input-modal-body">Contenuto Esteso Modal</label>
+                        <textarea id="input-modal-body" rows="3">Qui puoi inserire testi molto più lunghi, elenchi o spiegazioni che appariranno solo all'apertura del popup.</textarea>
+                    </div>
+                </div>
+
+                <button class="btn btn-generate" onclick="generateCode()">✨ Genera Codice HTML</button>
+            </section>
+
+            <!-- Pannello Anteprima -->
+            <section class="preview-panel">
+                <h2>👁️ Anteprima Live</h2>
+                <div class="card-preview-area">
+                    <div class="custom-card" id="card-element">
+                        <span class="card-icon" id="preview-emoji">🚀</span>
+                        <h3 class="card-title" id="preview-title">Progetto Alpha</h3>
+                        <p class="card-desc" id="preview-desc">Un esempio di descrizione accattivante per la tua card personalizzata.</p>
+                        <button class="card-btn" id="preview-btn" style="background-color: #7c3aed;">Scopri di più</button>
+                    </div>
+                </div>
+
+                <div class="output-area">
+                    <label style="font-weight: 600; font-size: 0.9rem;">Codice Pronto all'uso:</label>
+                    <textarea id="code-output" readonly placeholder="Clicca su Genera per vedere il codice..."></textarea>
+                    <div class="action-btns">
+                        <button class="btn btn-copy" onclick="copyCode()">📋 Copia</button>
+                        <button class="btn btn-download" onclick="downloadHTML()">💾 Scarica .html</button>
+                    </div>
+                </div>
+            </section>
+        </main>
     </div>
-  </div>
 
-  
+    <!-- Modal per l'anteprima -->
+    <div class="modal-overlay" id="preview-modal-overlay">
+        <div class="modal-box">
+            <button class="close-btn" onclick="closeModal()">×</button>
+            <h2 id="preview-modal-h">Dettagli</h2>
+            <p id="preview-modal-p" style="margin-top: 15px; color: #64748b; line-height: 1.6;"></p>
+        </div>
+    </div>
 
-</body></html>
-------MultipartBoundary--NWFoUw7XiXq5tDx7zkaJBdIQfmIUFXEQJNfLbrBXyl----
-Content-Type: text/css
-Content-Transfer-Encoding: binary
-Content-Location: cid:css-01f3960f-3fe5-4cd6-a095-c52cf582f55e@mhtml.blink
+    <script>
+        // Elementi Input
+        const inputTitle = document.getElementById('input-title');
+        const inputDesc = document.getElementById('input-desc');
+        const inputEmoji = document.getElementById('input-emoji');
+        const inputColor = document.getElementById('input-color');
+        const inputBtnText = document.getElementById('input-btn-text');
+        const checkModal = document.getElementById('check-modal');
+        const modalFields = document.getElementById('modal-fields');
+        const inputModalTitle = document.getElementById('input-modal-title');
+        const inputModalBody = document.getElementById('input-modal-body');
 
-@charset "utf-8";
+        // Elementi Anteprima
+        const previewTitle = document.getElementById('preview-title');
+        const previewDesc = document.getElementById('preview-desc');
+        const previewEmoji = document.getElementById('preview-emoji');
+        const previewBtn = document.getElementById('preview-btn');
+        const codeOutput = document.getElementById('code-output');
 
-body { box-sizing: border-box; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; margin: 0px; padding: 20px; background: linear-gradient(135deg, rgb(102, 126, 234) 0%, rgb(118, 75, 162) 100%); min-height: 100vh; }
+        // Aggiornamento Real-time
+        function updatePreview() {
+            previewTitle.innerText = inputTitle.value;
+            previewDesc.innerText = inputDesc.value;
+            previewEmoji.innerText = inputEmoji.value;
+            previewBtn.innerText = inputBtnText.value;
+            previewBtn.style.backgroundColor = inputColor.value;
+            
+            modalFields.style.display = checkModal.checked ? 'block' : 'none';
+        }
 
-.container { max-width: 1200px; margin: 0px auto; background: white; border-radius: 16px; box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 40px; overflow: hidden; }
+        [inputTitle, inputDesc, inputEmoji, inputColor, inputBtnText, checkModal, inputModalTitle, inputModalBody].forEach(el => {
+            el.addEventListener('input', updatePreview);
+        });
 
-.header { background: linear-gradient(135deg, rgb(79, 70, 229), rgb(124, 58, 237)); color: white; padding: 30px; text-align: center; }
+        // Gestione Modal Anteprima
+        previewBtn.onclick = () => {
+            if (checkModal.checked) {
+                document.getElementById('preview-modal-h').innerText = inputModalTitle.value;
+                document.getElementById('preview-modal-p').innerText = inputModalBody.value;
+                document.getElementById('preview-modal-overlay').style.display = 'flex';
+            }
+        };
 
-.header h1 { margin: 0px; font-size: 2.5rem; font-weight: 700; }
+        function closeModal() {
+            document.getElementById('preview-modal-overlay').style.display = 'none';
+        }
 
-.content { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; padding: 30px; }
+        // Generazione del codice finale
+        function generateCode() {
+            const id = "card_" + Math.random().toString(36).substr(2, 5);
+            const color = inputColor.value;
+            const hasModal = checkModal.checked;
 
-.form-section { background: rgb(248, 250, 252); padding: 25px; border-radius: 12px; border: 2px solid rgb(226, 232, 240); }
+            let finalHtml = `
+<!-- Card: ${inputTitle.value} -->
+<div class="card-container" id="${id}_container">
+    <style>
+        #${id}_container .my-card {
+            font-family: sans-serif;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 25px;
+            text-align: center;
+            max-width: 300px;
+            border: 1px solid #eee;
+        }
+        #${id}_container .my-icon { font-size: 3rem; margin-bottom: 15px; display: block; }
+        #${id}_container .my-title { font-size: 1.4rem; margin: 0 0 10px 0; color: #333; }
+        #${id}_container .my-desc { color: #666; font-size: 0.95rem; line-height: 1.5; margin-bottom: 20px; }
+        #${id}_container .my-btn {
+            background: ${color};
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            text-decoration: none;
+        }
+        #${id}_container .my-btn:hover { opacity: 0.9; }
 
-.form-section h2 { margin: 0px 0px 20px; color: rgb(30, 41, 59); font-size: 1.5rem; }
+        /* Modal Styles */
+        #${id}_modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); z-index: 9999; justify-content: center; align-items: center;
+        }
+        #${id}_modal .m-content {
+            background: white; padding: 30px; border-radius: 12px; max-width: 450px; width: 90%;
+            position: relative; font-family: sans-serif;
+        }
+        #${id}_modal .m-close {
+            position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; color: #999;
+        }
+    </style>
 
-.form-group { margin-bottom: 20px; }
+    <div class="my-card">
+        <span class="my-icon">${inputEmoji.value}</span>
+        <h3 class="my-title">${inputTitle.value}</h3>
+        <p class="my-desc">${inputDesc.value}</p>
+        <button class="my-btn" onclick="${hasModal ? `openModal_${id}()` : ''}">${inputBtnText.value}</button>
+    </div>
 
-.form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: rgb(55, 65, 81); }
+    ${hasModal ? `
+    <div id="${id}_modal" onclick="closeModal_${id}(event)">
+        <div class="m-content" onclick="event.stopPropagation()">
+            <span class="m-close" onclick="closeModal_${id}()">&times;</span>
+            <h2 style="margin-top:0">${inputModalTitle.value}</h2>
+            <p style="color:#555; line-height:1.6">${inputModalBody.value.replace(/\n/g, '<br>')}</p>
+        </div>
+    </div>
 
-.form-group input, .form-group textarea, .form-group select { width: 100%; padding: 12px; border: 2px solid rgb(203, 213, 225); border-radius: 8px; font-size: 1rem; font-family: inherit; resize: vertical; box-sizing: border-box; }
+    <script>
+        function openModal_${id}() { document.getElementById('${id}_modal').style.display = 'flex'; }
+        function closeModal_${id}() { document.getElementById('${id}_modal').style.display = 'none'; }
+    <\/script>
+    ` : ''}
+</div>
+            `.trim();
 
-button { background-color: rgb(118, 75, 162); color: white; padding: 12px 20px; border: none; border-radius: 8px; font-size: 1rem; cursor: pointer; transition: background-color 0.3s; font-weight: 600; }
+            codeOutput.value = finalHtml;
+        }
 
-button:hover { background-color: rgb(90, 55, 157); }
+        // Utility per copiare
+        function copyCode() {
+            if (!codeOutput.value) {
+                alert("Genera prima il codice!");
+                return;
+            }
+            codeOutput.select();
+            document.execCommand('copy');
+            const btn = document.querySelector('.btn-copy');
+            btn.innerText = "✅ Copiato!";
+            setTimeout(() => btn.innerText = "📋 Copia", 2000);
+        }
 
-.preview-section { background: rgb(248, 250, 252); padding: 25px; border-radius: 12px; border: 2px solid rgb(226, 232, 240); }
+        // Scaricare il file
+        function downloadHTML() {
+            if (!codeOutput.value) {
+                alert("Genera prima il codice!");
+                return;
+            }
+            const blob = new Blob([codeOutput.value], { type: 'text/html' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = "mia_card.html";
+            a.click();
+        }
 
-.preview-section h2 { margin: 0px 0px 20px; color: rgb(30, 41, 59); font-size: 1.5rem; }
-
-.card { background: white; border-radius: 16px; box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 20px; padding: 30px; text-align: center; position: relative; margin-bottom: 20px; }
-
-.card-emoji { font-size: 3rem; margin-bottom: 15px; }
-
-.card h3 { margin: 0px 0px 15px; color: rgb(30, 41, 59); }
-
-.card p { color: rgb(100, 116, 139); line-height: 1.6; margin-bottom: 20px; }
-
-.card button { margin-top: 10px; }
-
-.modal { display: none; position: fixed; z-index: 1000; left: 0px; top: 0px; width: 100vw; height: 100vh; background-color: rgba(0, 0, 0, 0.5); align-items: center; justify-content: center; padding: 20px; }
-
-.modal-content { background: white; border-radius: 16px; max-width: 600px; width: 100%; padding: 30px; position: relative; box-shadow: rgba(0, 0, 0, 0.3) 0px 20px 40px; }
-
-.modal-content h4 { margin: 0px 0px 20px; color: rgb(30, 41, 59); font-size: 1.5rem; }
-
-.modal-content p { color: rgb(100, 116, 139); line-height: 1.6; }
-
-.close-modal { position: absolute; top: 15px; right: 15px; font-size: 1.8rem; cursor: pointer; border: none; background: none; color: rgb(100, 116, 139); line-height: 1; padding: 5px; }
-
-.close-modal:hover { color: rgb(30, 41, 59); }
-
-.html-output { margin-top: 30px; }
-
-.html-output h3 { margin: 0px 0px 15px; color: rgb(30, 41, 59); font-size: 1.2rem; }
-
-#html-code { width: 100%; min-height: 200px; padding: 15px; border: 2px solid rgb(203, 213, 225); border-radius: 8px; font-family: "Courier New", monospace; font-size: 0.9rem; background: rgb(241, 245, 249); resize: vertical; box-sizing: border-box; }
-
-.copy-btn { margin-top: 10px; background-color: rgb(59, 130, 246); }
-
-.copy-btn:hover { background-color: rgb(37, 99, 235); }
-
-@media (max-width: 768px) {
-  .content { grid-template-columns: 1fr; }
-}
-------MultipartBoundary--NWFoUw7XiXq5tDx7zkaJBdIQfmIUFXEQJNfLbrBXyl------
+        // Inizializzazione
+        updatePreview();
+    </script>
+</body>
+</html>
